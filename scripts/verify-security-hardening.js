@@ -53,26 +53,26 @@ async function runAudit() {
     console.error('❌ TEST 5 FAILED: get_product_stock_counts did not return valid data!', stocks);
   }
 
-  // Test 6: Free checkout exploit rejection
+  // Test 6: Free checkout exploit rejection (Permission denied at DB level)
   const hackCheckout = await sb.rpc('execute_order_checkout', {
     p_order_id: 'EXPLOIT_TEST',
     p_items: [{ id: 'nitro-booster-1m', quantity: 5 }],
     p_total_amount: 0
   });
-  if (hackCheckout.data?.error === 'UNAUTHORIZED') {
-    console.log('✅ TEST 6 PASSED: execute_order_checkout blocked anonymous unauthenticated checkout attempt.');
+  if (hackCheckout.error?.message?.includes('permission denied') || hackCheckout.data?.error === 'UNAUTHORIZED') {
+    console.log('✅ TEST 6 PASSED: execute_order_checkout blocked anonymous checkout attempt (Permission Denied by Postgres).');
     passCount++;
   } else {
-    console.error('❌ TEST 6 FAILED: execute_order_checkout allowed checkout without login!', hackCheckout.data);
+    console.error('❌ TEST 6 FAILED: execute_order_checkout allowed checkout without login!', hackCheckout);
   }
 
-  // Test 7: Admin metrics unauthorized access check
+  // Test 7: Admin metrics unauthorized access check (Permission denied at DB level)
   const adminTest = await sb.rpc('admin_get_metrics', { p_admin_secret: 'fake_guess_123' });
-  if (adminTest.data?.error === 'UNAUTHORIZED') {
-    console.log('✅ TEST 7 PASSED: admin_get_metrics rejects unauthorized callers.');
+  if (adminTest.error?.message?.includes('permission denied') || adminTest.data?.error === 'UNAUTHORIZED') {
+    console.log('✅ TEST 7 PASSED: admin_get_metrics rejects unauthorized callers (Permission Denied by Postgres).');
     passCount++;
   } else {
-    console.error('❌ TEST 7 FAILED: admin_get_metrics allowed invalid secret!', adminTest.data);
+    console.error('❌ TEST 7 FAILED: admin_get_metrics allowed invalid secret!', adminTest);
   }
 
   console.log(`\n========================================`);
