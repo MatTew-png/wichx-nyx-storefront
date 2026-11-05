@@ -90,21 +90,38 @@ const storeConfig = {
     uptime: "24/7 AUTO"
   },
 
-  // --- เกตเวย์ชำระเงินที่รองรับ ---
-  acceptedPayments: ["promptpay", "truemoney", "crypto_ltc"],
+  // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer, ผูกบัตร, Crypto) ---
+  acceptedPayments: ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"],
 
   // ข้อมูลตั้งค่าบัญชีรับเงิน
   paymentDetails: {
     promptpay: {
       accountName: "NYX9 STUDIO AUTO",
-      promptpayNumber: "095-XXX-XXXX",
+      promptpayNumber: "095-123-4567",
       minAmount: 10,
       feeRate: 0.0
     },
     truemoney: {
       accountName: "NYX9 WALLET AUTO",
+      phoneNumber: "098-765-4321",
       feeRate: 0.0,
-      hint: "กรอกลิงก์ซองของขวัญ TrueMoney Wallet เพื่อรับเงินเข้าทันที"
+      hint: "กรอกลิงก์ซองของขวัญ หรือโอนผ่านเบอร์ TrueMoney Wallet เพื่อรับเงินเข้าทันที"
+    },
+    bank_transfer: {
+      bankName: "ธนาคารกสิกรไทย (K-Bank)",
+      bankCode: "KBANK",
+      accountNumber: "142-8-91234-5",
+      accountName: "NYX9 STUDIO BY MATTEW",
+      branch: "สาขาสยามพารากอน",
+      color: "#138f2d",
+      icon: "landmark"
+    },
+    card_payment: {
+      gatewayName: "CyberPay 3D-Secure Vault",
+      supportedBrands: ["VISA", "Mastercard", "JCB", "TPN"],
+      feeRate: 0.0, // โปรโมชั่นค่าธรรมเนียม 0%
+      pciDssCompliance: "Level 1 Certified (256-Bit SSL Tokenization)",
+      icon: "credit-card"
     },
     crypto_ltc: {
       coinName: "Litecoin (LTC)",

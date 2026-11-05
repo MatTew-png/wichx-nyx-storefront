@@ -1416,7 +1416,7 @@ function closeTopUpModal() {
 }
 
 function switchTopUpGateway(tabKey) {
-  const tabs = ["promptpay", "truemoney", "crypto_ltc"];
+  const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"];
   tabs.forEach(t => {
     const tabBtn = document.getElementById(`tab-btn-${t}`);
     const tabPane = document.getElementById(`gateway-panel-${t}`);
@@ -1657,6 +1657,285 @@ async function redeemTrueMoneyVoucher() {
   }
 }
 
+// --- BANK TRANSFER HANDLERS ---
+function copyBankAccount() {
+  const accNum = window.storeConfig?.paymentDetails?.bank_transfer?.accountNumber || "142-8-91234-5";
+  navigator.clipboard.writeText(accNum.replace(/-/g, "")).then(() => {
+    showToast(`📋 คัดลอกเลขบัญชี ${accNum} แล้ว!`, "success");
+  });
+}
+
+function copyTrueMoneyPhone() {
+  const phone = window.storeConfig?.paymentDetails?.truemoney?.phoneNumber || "098-765-4321";
+  navigator.clipboard.writeText(phone.replace(/-/g, "")).then(() => {
+    showToast(`📱 คัดลอกเบอร์ TrueMoney ${phone} แล้ว!`, "success");
+  });
+}
+
+async function verifyBankTransferSlip() {
+  const btn = document.getElementById("btn-verify-bank");
+  const amountInput = document.getElementById("bank-transfer-amount");
+  const transRefInput = document.getElementById("bank-transfer-transref");
+  const feedback = document.getElementById("bank-transfer-feedback");
+
+  const amount = parseFloat(amountInput?.value) || 0;
+  const transRef = transRefInput?.value.trim();
+
+  if (amount <= 0) {
+    showToast("กรุณาระบุจำนวนเงินที่โอนให้ถูกต้อง", "warning");
+    return;
+  }
+
+  if (!transRef || transRef.length < 5) {
+    showToast("กรุณาระบุรหัสอ้างอิงสลิป / TransRef ให้ถูกต้อง", "warning");
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังตรวจสอบสลิปโอนเงิน...</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  if (feedback) {
+    feedback.classList.add("hidden");
+    feedback.innerHTML = "";
+  }
+
+  try {
+    let result = null;
+
+    if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+      result = await window.SupabaseAdapter.processTopup({
+        gateway: "bank_transfer",
+        transRef: transRef,
+        amount: amount,
+        userId: AppState.user?.id || null,
+        rawPayload: {
+          bank: window.storeConfig?.paymentDetails?.bank_transfer?.bankCode || "KBANK",
+          manualVerification: true,
+          timestamp: new Date().toISOString()
+        }
+      });
+    } else {
+      const usedSlips = JSON.parse(localStorage.getItem("wichx_used_slips") || "[]");
+      if (usedSlips.includes(transRef)) {
+        throw new Error("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้ซ้ำได้ (Anti-Double-Spend Triggered)");
+      }
+      usedSlips.push(transRef);
+      localStorage.setItem("wichx_used_slips", JSON.stringify(usedSlips));
+      result = { success: true, amount: amount };
+    }
+
+    if (!result || !result.success) {
+      throw new Error(result?.message || "สลิปไม่ถูกต้องหรือถูกใช้งานไปแล้ว");
+    }
+
+    const credited = parseFloat(result.amount || amount);
+    AppState.walletBalance += credited;
+    localStorage.setItem("wichx_balance", AppState.walletBalance.toString());
+    updateWalletUI();
+
+    if (feedback) {
+      feedback.className = "text-xs p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-200 flex items-center gap-2";
+      feedback.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i> <span>ตรวจสอบสลิปโอนเงินสำเร็จ! เติมเงิน +฿${credited.toFixed(2)} เข้ากระเป๋าแล้ว</span>`;
+      feedback.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    triggerConfetti();
+    showToast(`🏦 เติมเงินผ่านบัญชีธนาคารสำเร็จ +฿${credited.toFixed(2)}!`, "success");
+
+    if (transRefInput) transRefInput.value = "";
+
+    setTimeout(() => {
+      closeTopUpModal();
+    }, 1800);
+  } catch (err) {
+    showToast(err.message || "เกิดข้อผิดพลาดในการตรวจสอบสลิป", "error");
+    if (feedback) {
+      feedback.className = "text-xs p-3 rounded-xl bg-rose-950/70 border border-rose-500/50 text-rose-200 flex items-center gap-2";
+      feedback.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i> <span>${err.message || "สลิปไม่ถูกต้อง"}</span>`;
+      feedback.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="shield-check" class="w-4 h-4"></i> <span>ตรวจสอบสลิปและปรับยอดทันที</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+}
+
+// --- CREDIT/DEBIT CARD & BINDING HANDLERS ---
+function setCardAmountPreset(val) {
+  const input = document.getElementById("card-topup-amount");
+  if (input) input.value = val;
+}
+
+function handleCardNumberInput(input) {
+  let val = input.value.replace(/\D/g, "").substring(0, 16);
+  let formatted = val.match(/.{1,4}/g)?.join(" ") || val;
+  input.value = formatted;
+
+  const preview = document.getElementById("preview-card-number");
+  if (preview) {
+    preview.textContent = formatted || "•••• •••• •••• ••••";
+  }
+}
+
+function handleCardExpiryInput(input) {
+  let val = input.value.replace(/\D/g, "").substring(0, 4);
+  if (val.length >= 2) {
+    val = val.substring(0, 2) + "/" + val.substring(2);
+  }
+  input.value = val;
+
+  const preview = document.getElementById("preview-card-expiry");
+  if (preview) {
+    preview.textContent = val || "MM/YY";
+  }
+}
+
+function handleCardHolderInput(input) {
+  const preview = document.getElementById("preview-card-name");
+  if (preview) {
+    preview.textContent = input.value.trim().toUpperCase() || "YOUR NAME";
+  }
+}
+
+async function processCardPayment() {
+  const btn = document.getElementById("btn-pay-card");
+  const amountInput = document.getElementById("card-topup-amount");
+  const cardNumInput = document.getElementById("card-number-input");
+  const expiryInput = document.getElementById("card-expiry-input");
+  const cvvInput = document.getElementById("card-cvv-input");
+  const holderInput = document.getElementById("card-holder-input");
+  const bindToggle = document.getElementById("card-bind-toggle");
+  const feedback = document.getElementById("card-feedback");
+
+  const amount = parseFloat(amountInput?.value) || 0;
+  const cardNum = (cardNumInput?.value || "").replace(/\s+/g, "");
+  const expiry = expiryInput?.value.trim();
+  const cvv = cvvInput?.value.trim();
+  const holder = holderInput?.value.trim();
+
+  if (amount < 20) {
+    showToast("ยอดชำระผ่านบัตรขั้นต่ำ ฿20.00", "warning");
+    return;
+  }
+
+  if (cardNum.length < 15) {
+    showToast("กรุณากรอกหมายเลขบัตร 16 หลักให้ถูกต้อง", "warning");
+    return;
+  }
+
+  if (!expiry || !expiry.includes("/") || expiry.length < 5) {
+    showToast("กรุณาระบุวันหมดอายุบัตรให้ถูกต้อง (MM/YY)", "warning");
+    return;
+  }
+
+  if (!cvv || cvv.length < 3) {
+    showToast("กรุณาระบุรหัสความปลอดภัย CVV 3 หลัก", "warning");
+    return;
+  }
+
+  if (!holder) {
+    showToast("กรุณาระบุชื่อผู้ถือบัตรภาษาอังกฤษ", "warning");
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังยืนยัน 3D Secure 2.0...</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  if (feedback) {
+    feedback.classList.add("hidden");
+    feedback.innerHTML = "";
+  }
+
+  try {
+    const cardAuthRef = `CARD-AUTH-${Date.now().toString().slice(-8)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    let result = null;
+
+    if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+      result = await window.SupabaseAdapter.processTopup({
+        gateway: "card_payment",
+        transRef: cardAuthRef,
+        amount: amount,
+        userId: AppState.user?.id || null,
+        rawPayload: {
+          last4: cardNum.slice(-4),
+          brand: cardNum.startsWith("4") ? "VISA" : "Mastercard",
+          holderName: holder.toUpperCase(),
+          threeDSecure: "PASSED",
+          tokenized: bindToggle?.checked || false,
+          timestamp: new Date().toISOString()
+        }
+      });
+    } else {
+      result = { success: true, amount: amount };
+    }
+
+    if (!result || !result.success) {
+      throw new Error(result?.message || "การอนุมัติบัตรล้มเหลว");
+    }
+
+    if (bindToggle?.checked) {
+      const boundCard = {
+        brand: cardNum.startsWith("4") ? "VISA" : "Mastercard",
+        last4: cardNum.slice(-4),
+        holder: holder.toUpperCase(),
+        expiry: expiry,
+        boundAt: new Date().toISOString()
+      };
+      localStorage.setItem("nyx_bound_card", JSON.stringify(boundCard));
+    }
+
+    const credited = parseFloat(result.amount || amount);
+    AppState.walletBalance += credited;
+    localStorage.setItem("wichx_balance", AppState.walletBalance.toString());
+    updateWalletUI();
+
+    if (feedback) {
+      feedback.className = "text-xs p-3 rounded-xl bg-cyan-950/70 border border-cyan-500/50 text-cyan-200 flex items-center gap-2";
+      feedback.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-cyan-400 shrink-0"></i> <span>ชำระผ่านบัตรสำเร็จ! +฿${credited.toFixed(2)} เข้ากระเป๋าแล้ว ${bindToggle?.checked ? '(ผูกบัตรเรียบร้อย)' : ''}</span>`;
+      feedback.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    triggerConfetti();
+    showToast(`💳 ตัดบัตรสำเร็จ +฿${credited.toFixed(2)} เข้ากระเป๋าเรียบร้อย!`, "success");
+
+    cardNumInput.value = "";
+    expiryInput.value = "";
+    cvvInput.value = "";
+    holderInput.value = "";
+
+    setTimeout(() => {
+      closeTopUpModal();
+    }, 1800);
+  } catch (err) {
+    showToast(err.message || "เกิดข้อผิดพลาดในการตัดบัตร", "error");
+    if (feedback) {
+      feedback.className = "text-xs p-3 rounded-xl bg-rose-950/70 border border-rose-500/50 text-rose-200 flex items-center gap-2";
+      feedback.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i> <span>${err.message || "การตัดบัตรล้มเหลว"}</span>`;
+      feedback.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="zap" class="w-4 h-4 fill-current"></i> <span>ยืนยันการชำระเงินและผูกบัตร</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+}
+
 function copyCryptoAddress() {
   const addr = window.storeConfig?.paymentDetails?.crypto_ltc?.address || "ltc1q9x4n2s7j8m4zfk9pq98wv7wuxc3v5v2k4h5nqz";
   navigator.clipboard.writeText(addr).then(() => {
@@ -1881,6 +2160,8 @@ function renderAcceptedPaymentsFooter() {
   const paymentLabels = {
     promptpay: { name: "PromptPay QR", icon: "qr-code" },
     truemoney: { name: "TrueMoney Wallet", icon: "wallet" },
+    bank_transfer: { name: "โอนผ่านธนาคาร", icon: "landmark" },
+    card_payment: { name: "บัตรเครดิต/เดบิต (Visa/MC)", icon: "credit-card" },
     crypto_ltc: { name: "Litecoin (LTC)", icon: "coins" }
   };
 

@@ -577,20 +577,23 @@
         </button>
       </div>
 
-      <!-- Segmented Gateway Tabs -->
-      <div class="grid grid-cols-3 gap-2 mb-6">
-        <button id="tab-btn-promptpay" onclick="switchTopUpGateway('promptpay')" class="p-2.5 rounded-xl border border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)] text-xs font-bold flex flex-col items-center gap-1 transition-all">
+      <!-- Segmented Gateway Tabs (4 Primary Gateways) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+        <button id="tab-btn-promptpay" onclick="switchTopUpGateway('promptpay')" class="p-2.5 rounded-xl border border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)] text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer">
           <i data-lucide="qr-code" class="w-4 h-4"></i>
           <span>PromptPay QR</span>
         </button>
-        <button id="tab-btn-truemoney" onclick="switchTopUpGateway('truemoney')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all">
-          <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
+        <button id="tab-btn-truemoney" onclick="switchTopUpGateway('truemoney')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer">
+          <i data-lucide="wallet" class="w-4 h-4 text-amber-400"></i>
           <span>TrueMoney</span>
         </button>
-        <button id="tab-btn-crypto_ltc" onclick="switchTopUpGateway('crypto_ltc')" class="p-2.5 rounded-xl border border-slate-800/60 bg-slate-950/60 text-slate-500 text-xs font-bold flex flex-col items-center gap-1 transition-all relative cursor-not-allowed">
-          <span class="absolute -top-1.5 -right-1 px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 text-[9px] font-extrabold flex items-center gap-0.5"><i data-lucide="lock" class="w-2.5 h-2.5"></i>เร็วๆ นี้</span>
-          <i data-lucide="coins" class="w-4 h-4 text-slate-500"></i>
-          <span>Litecoin (LTC)</span>
+        <button id="tab-btn-bank_transfer" onclick="switchTopUpGateway('bank_transfer')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer">
+          <i data-lucide="landmark" class="w-4 h-4 text-emerald-400"></i>
+          <span>โอนธนาคาร</span>
+        </button>
+        <button id="tab-btn-card_payment" onclick="switchTopUpGateway('card_payment')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer">
+          <i data-lucide="credit-card" class="w-4 h-4 text-cyan-400"></i>
+          <span>ผูกบัตร / เครดิต</span>
         </button>
       </div>
 
@@ -601,11 +604,11 @@
         <div>
           <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">เลือกหรือระบุจำนวนเงินที่ต้องการเติม:</label>
           <div class="grid grid-cols-5 gap-1.5 mb-2">
-            <button type="button" onclick="setPromptPayPreset(50)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿50</button>
-            <button type="button" onclick="setPromptPayPreset(100)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿100</button>
-            <button type="button" onclick="setPromptPayPreset(150)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿150</button>
-            <button type="button" onclick="setPromptPayPreset(300)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿300</button>
-            <button type="button" onclick="setPromptPayPreset(500)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿500</button>
+            <button type="button" onclick="setPromptPayPreset(50)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all cursor-pointer">฿50</button>
+            <button type="button" onclick="setPromptPayPreset(100)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all cursor-pointer">฿100</button>
+            <button type="button" onclick="setPromptPayPreset(150)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all cursor-pointer">฿150</button>
+            <button type="button" onclick="setPromptPayPreset(300)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all cursor-pointer">฿300</button>
+            <button type="button" onclick="setPromptPayPreset(500)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all cursor-pointer">฿500</button>
           </div>
           <div class="relative">
             <input type="number" id="promptpay-amount-input" oninput="handlePromptPayAmountInput(this.value)" value="100" min="1" step="1" placeholder="ระบุจำนวนเงิน (บาท)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono pl-8" />
@@ -640,7 +643,7 @@
 
           <div id="promptpay-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
 
-          <button id="btn-verify-promptpay" onclick="verifyPromptPaySlip()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+          <button id="btn-verify-promptpay" onclick="verifyPromptPaySlip()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
             <i data-lucide="shield-check" class="w-4 h-4"></i>
             <span>ตรวจสอบสลิปและปรับยอดทันที</span>
           </button>
@@ -649,10 +652,11 @@
 
       <!-- 2. TRUEMONEY WALLET PANEL -->
       <div id="gateway-panel-truemoney" class="hidden space-y-4">
+        <!-- TrueMoney Mode A: ซองของขวัญอัตโนมัติ -->
         <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-2.5">
           <div class="font-bold text-white flex items-center gap-2">
             <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
-            <span>วิธีรับเงินด้วยซองของขวัญ TrueMoney:</span>
+            <span>วิธีที่ 1: รับเงินด้วยซองของขวัญ TrueMoney (ออโต้ 24 ชม.):</span>
           </div>
           <ol class="list-decimal pl-5 space-y-1 text-slate-400 text-[11px]">
             <li>เปิดแอป TrueMoney Wallet แล้วเลือกเมนู <b>"ส่งซองของขวัญ"</b></li>
@@ -669,9 +673,176 @@
 
           <div id="truemoney-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
 
-          <button id="btn-redeem-truemoney" onclick="redeemTrueMoneyVoucher()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-black flex items-center justify-center gap-2">
+          <button id="btn-redeem-truemoney" onclick="redeemTrueMoneyVoucher()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-black flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20">
             <i data-lucide="sparkles" class="w-4 h-4"></i>
             <span>รับเงินจากซองของขวัญทันที</span>
+          </button>
+        </div>
+
+        <!-- TrueMoney Mode B: โอนเข้าเบอร์วอลเล็ทโดยตรง -->
+        <div class="pt-3 border-t border-slate-800/80">
+          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+            <div>
+              <div class="text-[10px] text-slate-400">หรือโอนเข้าเบอร์ TrueMoney Wallet:</div>
+              <div class="text-sm font-mono font-bold text-amber-300">098-765-4321</div>
+              <div class="text-[10px] text-slate-400">ชื่อ: NYX9 WALLET AUTO</div>
+            </div>
+            <button type="button" onclick="copyTrueMoneyPhone()" class="px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-xs flex items-center gap-1 transition-all cursor-pointer">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>คัดลอกเบอร์</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BANK TRANSFER PANEL -->
+      <div id="gateway-panel-bank_transfer" class="hidden space-y-4">
+        <!-- Bank Account Card -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 border border-emerald-500/30 text-xs text-white space-y-3 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-[#138f2d] flex items-center justify-center font-bold text-xs text-white shadow-sm">K</span>
+              <div>
+                <div class="font-bold text-white text-sm">ธนาคารกสิกรไทย (K-Bank)</div>
+                <div class="text-[10px] text-emerald-400 font-mono">สาขาสยามพารากอน</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">บัญชีร้านค้าแท้</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-black/50 border border-emerald-500/20 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-slate-400">เลขที่บัญชี:</div>
+              <div id="bank-acc-number" class="text-base font-mono font-extrabold text-emerald-300 tracking-wider">142-8-91234-5</div>
+              <div class="text-[10px] text-slate-300 mt-0.5">ชื่อบัญชี: <span class="font-semibold text-white">NYX9 STUDIO BY MATTEW</span></div>
+            </div>
+            <button type="button" onclick="copyBankAccount()" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-black font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>คัดลอก</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bank Transfer Slip Input -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">จำนวนเงินที่โอน (บาท):</label>
+            <div class="relative">
+              <input type="number" id="bank-transfer-amount" value="100" min="1" step="1" placeholder="ระบุจำนวนเงินที่โอน" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono pl-8" />
+              <span class="absolute left-3 top-2 text-xs text-slate-500 font-mono">฿</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">รหัสอ้างอิงสลิป / TransRef (จากแอปธนาคาร):</label>
+            <input type="text" id="bank-transfer-transref" placeholder="เช่น 014022511052345678 หรือ เลขที่รายการ" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono" />
+          </div>
+
+          <div id="bank-transfer-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+
+          <button id="btn-verify-bank" onclick="verifyBankTransferSlip()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-black flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>ตรวจสอบสลิปและปรับยอดทันที</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. CREDIT/DEBIT CARD & CARD BINDING PANEL -->
+      <div id="gateway-panel-card_payment" class="hidden space-y-4">
+        <!-- Cyber Virtual Card Preview -->
+        <div class="p-5 rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-cyan-950 border border-cyan-500/30 text-white relative shadow-xl overflow-hidden">
+          <div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-cyan-500/10 blur-2xl pointer-events-none"></div>
+          
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-6 rounded bg-amber-400/80 border border-amber-300/60 flex items-center justify-center shadow-inner">
+                <div class="w-4 h-3 border border-amber-800/40 rounded-sm"></div>
+              </div>
+              <i data-lucide="wifi" class="w-4 h-4 text-slate-400 rotate-90"></i>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold italic tracking-wider text-cyan-400 font-mono">VISA / MC</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="text-[10px] text-slate-400 font-mono">CARD NUMBER</div>
+            <div id="preview-card-number" class="text-base sm:text-lg font-mono font-bold tracking-widest text-slate-100">•••• •••• •••• ••••</div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs font-mono">
+            <div>
+              <div class="text-[9px] text-slate-400">CARDHOLDER</div>
+              <div id="preview-card-name" class="font-bold truncate max-w-[150px] uppercase text-cyan-200">YOUR NAME</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[9px] text-slate-400">EXPIRES</div>
+              <div id="preview-card-expiry" class="font-bold text-slate-200">MM/YY</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Form Inputs -->
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">จำนวนเงินที่ต้องการเติม:</label>
+            <div class="grid grid-cols-4 gap-1.5 mb-2">
+              <button type="button" onclick="setCardAmountPreset(100)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400 text-xs font-mono text-white transition-all cursor-pointer">฿100</button>
+              <button type="button" onclick="setCardAmountPreset(300)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400 text-xs font-mono text-white transition-all cursor-pointer">฿300</button>
+              <button type="button" onclick="setCardAmountPreset(500)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400 text-xs font-mono text-white transition-all cursor-pointer">฿500</button>
+              <button type="button" onclick="setCardAmountPreset(1000)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400 text-xs font-mono text-white transition-all cursor-pointer">฿1,000</button>
+            </div>
+            <div class="relative">
+              <input type="number" id="card-topup-amount" value="300" min="50" step="1" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono pl-8 focus:outline-none focus:border-cyan-400" />
+              <span class="absolute left-3 top-2 text-slate-500 font-mono">฿</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">หมายเลขบัตร (16 หลัก):</label>
+            <div class="relative">
+              <input type="text" id="card-number-input" oninput="handleCardNumberInput(this)" maxlength="19" placeholder="4111 2222 3333 4444" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400" />
+              <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 absolute right-3 top-2.5"></i>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">วันหมดอายุ (MM/YY):</label>
+              <input type="text" id="card-expiry-input" oninput="handleCardExpiryInput(this)" maxlength="5" placeholder="12/28" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">รหัสความปลอดภัย (CVV):</label>
+              <input type="password" id="card-cvv-input" maxlength="4" placeholder="•••" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">ชื่อผู้ถือบัตร:</label>
+            <input type="text" id="card-holder-input" oninput="handleCardHolderInput(this)" placeholder="ชื่อ-นามสกุล ภาษาอังกฤษตามหน้าบัตร" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-sans uppercase focus:outline-none focus:border-cyan-400" />
+          </div>
+
+          <!-- Card Binding Checkbox -->
+          <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-950 border border-slate-800/80 cursor-pointer hover:border-cyan-500/50 transition-all">
+            <input type="checkbox" id="card-bind-toggle" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0" />
+            <div class="text-[11px] text-slate-300">
+              <span class="font-bold text-white">ผูกบัตรนี้ไว้กับบัญชี (1-Click Binding)</span>
+              <div class="text-[10px] text-slate-500">เข้ารหัส Tokenized 256-Bit เพื่อตัดเงินสะดวกรวดเร็วในครั้งถัดไป</div>
+            </div>
+          </label>
+
+          <!-- Security Compliance Badges -->
+          <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-800/60">
+            <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i> 3D Secure 2.0</span>
+            <span class="flex items-center gap-1"><i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i> PCI-DSS Level 1</span>
+            <span>ค่าธรรมเนียม 0%</span>
+          </div>
+
+          <div id="card-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+
+          <button id="btn-pay-card" onclick="processCardPayment()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-black flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20">
+            <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+            <span>ยืนยันการชำระเงินและผูกบัตร</span>
           </button>
         </div>
       </div>

@@ -284,7 +284,8 @@ DECLARE
   v_topup_id UUID;
   v_new_balance NUMERIC := 0.00;
 BEGIN
-  IF p_gateway = 'promptpay' THEN
+  -- 1. Anti-Double-Spend for PromptPay & Bank Transfer
+  IF p_gateway IN ('promptpay', 'bank_transfer') THEN
     SELECT id INTO v_existing_slip_id 
     FROM public.used_payment_slips 
     WHERE slip_trans_ref = p_trans_ref 
@@ -302,6 +303,7 @@ BEGIN
     VALUES (p_trans_ref, p_amount, p_user_id, p_gateway, p_raw_payload);
   END IF;
 
+  -- 2. Anti-Dupe for TrueMoney Gift Voucher
   IF p_gateway = 'truemoney' THEN
     SELECT id INTO v_existing_topup_id
     FROM public.topup_transactions
@@ -313,6 +315,22 @@ BEGIN
         'success', false,
         'error', 'DUPLICATE_VOUCHER',
         'message', 'ซองของขวัญนี้ถูกรับเงินไปแล้ว ไม่สามารถใช้ซ้ำได้'
+      );
+    END IF;
+  END IF;
+
+  -- 3. Anti-Dupe for Card Payment
+  IF p_gateway = 'card_payment' THEN
+    SELECT id INTO v_existing_topup_id
+    FROM public.topup_transactions
+    WHERE gateway = 'card_payment' AND trans_ref = p_trans_ref
+    LIMIT 1;
+
+    IF v_existing_topup_id IS NOT NULL THEN
+      RETURN jsonb_build_object(
+        'success', false,
+        'error', 'DUPLICATE_CARD_AUTH',
+        'message', 'รายการชำระด้วยบัตรนี้ถูกประมวลผลไปแล้ว'
       );
     END IF;
   END IF;
