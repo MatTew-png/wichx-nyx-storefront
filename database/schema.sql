@@ -212,7 +212,12 @@ DROP POLICY IF EXISTS "Allow users read own promo usage" ON public.promo_code_us
 CREATE POLICY "Allow users read own promo usage" ON public.promo_code_usages FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Allow insert warranty claims" ON public.warranty_claims;
-CREATE POLICY "Allow insert warranty claims" ON public.warranty_claims FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow insert warranty claims" ON public.warranty_claims 
+  FOR INSERT WITH CHECK (
+    order_id IS NOT NULL AND length(trim(order_id)) > 0 
+    AND reason IS NOT NULL AND length(trim(reason)) > 0
+    AND replacement_key IS NULL
+  );
 
 DROP POLICY IF EXISTS "Allow read warranty claims" ON public.warranty_claims;
 CREATE POLICY "Allow read warranty claims" ON public.warranty_claims FOR SELECT USING (true);
