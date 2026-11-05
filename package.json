@@ -1,0 +1,22 @@
+{
+  "name": "wichx-whitelabel-webshop",
+  "version": "1.0.0",
+  "description": "High-Action Graphic E-Commerce Storefront Template (XenonHub × Melody191 × WichxShop)",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000 .",
+    "dev": "npx serve -l 3000 ."
+  },
+  "keywords": [
+    "ecommerce",
+    "whitelabel",
+    "discord-services",
+    "nitro",
+    "fivem",
+    "cyberpunk",
+    "crypto-ltc",
+    "promptpay"
+  ],
+  "author": "Antigravity Architect",
+  "license": "MIT"
+}
