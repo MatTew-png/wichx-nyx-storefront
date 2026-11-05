@@ -1,12 +1,13 @@
 /**
  * ==============================================================================
- * 🛡️ NYX9 STUDIO — CLIENT SECURITY & ANTI-TAMPER ENGINE v1.0
+ * 🛡️ NYX9 STUDIO — CLIENT SECURITY & ANTI-TAMPER ENGINE v2.0
  * ==============================================================================
- * - บล็อกการคลิกขวา (Disable Context Menu) ยกเว้นช่องกรอกข้อมูล (Input/Textarea)
- * - บล็อกปุ่มลัด DevTools: F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S
- * - ระบบแจ้งเตือน Cyber Security HUD เมื่อมีคนพยายามแกะโค้ด
- * - ระบบ Self-XSS Warning ใน Console ป้องกันโดนหลอกขโมย Token
- * - ข้อยกเว้นพิเศษสำหรับแอดมิน (Admin Bypass): เมื่อล็อกอินไอดีแอดมิน จะเปิดให้ใช้ได้ตามปกติ
+ * 1. Global Context Menu Blocker (Capture Phase on Window + Document)
+ * 2. Developer Key Shortcuts Interceptor (F12, Ctrl+Shift+I/J/C, Ctrl+U/S/P)
+ * 3. Framebusting & Anti-Clickjacking (Immune to iframe phishing)
+ * 4. Anti-Drag & Asset Extraction Protection
+ * 5. Self-XSS Anti-Theft Console Warnings
+ * 6. Admin Developer Mode (Toggle with Ctrl+Alt+D only for whitelisted Admins)
  * ==============================================================================
  */
 
@@ -14,14 +15,17 @@ class SecurityEngine {
   constructor(store) {
     this.store = store;
     this.lastToastTime = 0;
+    this.adminUnlocked = false;
     this.init();
   }
 
   init() {
     if (typeof window === "undefined" || typeof document === "undefined") return;
 
+    this.initAntiFrame();
     this.initContextMenuBlocker();
     this.initKeyboardBlocker();
+    this.initAntiDrag();
     this.initConsoleProtection();
   }
 
@@ -37,8 +41,7 @@ class SecurityEngine {
 
   triggerSecurityAlert(msg = "ระบบรักษาความปลอดภัย: ไม่อนุญาตให้ตรวจสอบโค้ดหรือคลิกขวา") {
     const now = Date.now();
-    // Throttle alert to prevent spamming
-    if (now - this.lastToastTime < 2500) return;
+    if (now - this.lastToastTime < 2000) return;
     this.lastToastTime = now;
 
     if (window.UI && typeof window.UI.toast === "function") {
@@ -46,31 +49,65 @@ class SecurityEngine {
     }
   }
 
-  initContextMenuBlocker() {
-    document.addEventListener("contextmenu", (e) => {
-      // แอดมินสามารถคลิกขวาได้ตามปกติ
-      if (this.isAdmin()) return;
+  initAntiFrame() {
+    try {
+      if (window.top !== window.self) {
+        window.top.location = window.self.location;
+      }
+    } catch (e) {
+      // If framed cross-origin, blank out display
+      try {
+        document.documentElement.style.display = "none";
+      } catch (err) {}
+    }
+  }
 
-      // อนุญาตให้คลิกขวาใน input และ textarea เพื่อ copy/paste ข้อมูลได้
-      const targetTag = e.target.tagName ? e.target.tagName.toLowerCase() : "";
-      if (targetTag === "input" || targetTag === "textarea" || e.target.isContentEditable) {
+  initContextMenuBlocker() {
+    const blockContextMenu = (e) => {
+      // If admin pressed Ctrl+Alt+D to unlock
+      if (this.adminUnlocked) return;
+
+      // Allow right-click inside actual form inputs for paste
+      const targetTag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : "";
+      if (targetTag === "input" || targetTag === "textarea" || (e.target && e.target.isContentEditable)) {
         return;
       }
 
       e.preventDefault();
+      e.stopPropagation();
       this.triggerSecurityAlert("คลิกขวาถูกจำกัดสิทธิ์ (Right-Click Disabled)");
-    }, { passive: false });
+      return false;
+    };
+
+    window.addEventListener("contextmenu", blockContextMenu, true);
+    document.addEventListener("contextmenu", blockContextMenu, true);
   }
 
   initKeyboardBlocker() {
-    document.addEventListener("keydown", (e) => {
-      // แอดมินสามารถกดปุ่ม DevTools ได้ตามปกติ
-      if (this.isAdmin()) return;
-
+    window.addEventListener("keydown", (e) => {
       const key = e.key ? e.key.toLowerCase() : "";
       const isCtrlOrMeta = e.ctrlKey || e.metaKey;
 
-      // 1. บล็อก F12
+      // Special Admin Developer Mode Shortcut: Ctrl + Alt + D
+      if (isCtrlOrMeta && e.altKey && key === "d") {
+        if (this.isAdmin()) {
+          this.adminUnlocked = !this.adminUnlocked;
+          if (window.UI && typeof window.UI.toast === "function") {
+            window.UI.toast(
+              this.adminUnlocked 
+                ? "🔓 Admin Developer Mode: UNLOCKED (Inspect Enabled)" 
+                : "🔒 Admin Developer Mode: LOCKED (Protection Active)",
+              this.adminUnlocked ? "info" : "warning"
+            );
+          }
+          return;
+        }
+      }
+
+      // If Admin unlocked dev mode, allow dev keys
+      if (this.adminUnlocked) return;
+
+      // 1. Block F12
       if (e.key === "F12" || e.keyCode === 123) {
         e.preventDefault();
         e.stopPropagation();
@@ -78,7 +115,7 @@ class SecurityEngine {
         return;
       }
 
-      // 2. บล็อก Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools Shortcuts)
+      // 2. Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
       if (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) {
         e.preventDefault();
         e.stopPropagation();
@@ -86,7 +123,7 @@ class SecurityEngine {
         return;
       }
 
-      // 3. บล็อก Ctrl+U (View Source)
+      // 3. Block Ctrl+U (View Source)
       if (isCtrlOrMeta && key === "u") {
         e.preventDefault();
         e.stopPropagation();
@@ -94,24 +131,31 @@ class SecurityEngine {
         return;
       }
 
-      // 4. บล็อก Ctrl+S (Save Page)
-      if (isCtrlOrMeta && key === "s") {
+      // 4. Block Ctrl+S (Save Page) & Ctrl+P (Print Page)
+      if (isCtrlOrMeta && (key === "s" || key === "p")) {
         e.preventDefault();
         e.stopPropagation();
         return;
       }
-    }, { capture: true });
+    }, true);
+  }
+
+  initAntiDrag() {
+    document.addEventListener("dragstart", (e) => {
+      if (this.adminUnlocked) return;
+      e.preventDefault();
+    }, true);
   }
 
   initConsoleProtection() {
     try {
-      const bannerStyle = "color: #00F2FF; font-size: 20px; font-weight: 900; text-shadow: 0 0 10px rgba(0,242,255,0.8);";
-      const warningStyle = "color: #FF3366; font-size: 14px; font-weight: bold;";
-      const subStyle = "color: #94A3B8; font-size: 12px;";
+      const bannerStyle = "color: #00F2FF; font-size: 22px; font-weight: 900; text-shadow: 0 0 10px rgba(0,242,255,0.8);";
+      const warningStyle = "color: #FF3366; font-size: 16px; font-weight: bold;";
+      const subStyle = "color: #94A3B8; font-size: 13px;";
 
-      console.log("%c🛡️ NYX9 STUDIO SECURITY PROTOCOL v1.0", bannerStyle);
-      console.log("%c⚠️ คำเตือน: ห้ามวางโค้ดสคริปต์ใด ๆ ที่ผู้อื่นส่งมาลงในช่องนี้เด็ดขาด!", warningStyle);
-      console.log("%cหากคุณวางโค้ดแปลกปลอม อาจทำให้สูญเสียบัญชี Discord หรือเงินในกระเป๋าของคุณได้ (Self-XSS Attack)", subStyle);
+      console.log("%c🛡️ NYX9 SHIELD ENGINE v2.0 ACTIVE", bannerStyle);
+      console.log("%c⛔ คำเตือนความปลอดภัยสูงสุด (STOP!):", warningStyle);
+      console.log("%cห้ามคัดลอกหรือวางคำสั่งใด ๆ ลงใน Console นี้โดยเด็ดขาด หากมีใครบอกให้คุณวางเพื่อรับ 'Nitro ฟรี' หรือ 'สคริปต์แฮกเงิน' นั่นคือการหลอกลวงขโมย Session Discord และกระเป๋าเงินของคุณ!", subStyle);
     } catch (e) {}
   }
 }

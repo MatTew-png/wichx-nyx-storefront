@@ -1,94 +1,83 @@
-const { Client } = require('pg');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
+const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+async function runAudit() {
+  console.log('🛡️ RUNNING COMPREHENSIVE SECURITY VERIFICATION AUDIT...\n');
+  let passCount = 0;
+  let totalTests = 7;
 
-async function verifyHardening() {
-  console.log('=== VERIFYING SUPABASE SECURITY HARDENING ===\n');
-
-  await client.connect();
-
-  // 1. Check RLS status on all public tables
-  const rlsCheck = await client.query(`
-    SELECT tablename, rowsecurity 
-    FROM pg_tables 
-    WHERE schemaname = 'public'
-    ORDER BY tablename;
-  `);
-
-  console.log('--- 1. Table Row Level Security (RLS) Status ---');
-  let allRlsEnabled = true;
-  for (const row of rlsCheck.rows) {
-    console.log(`Table "${row.tablename}": RLS Enabled = ${row.rowsecurity}`);
-    if (!row.rowsecurity) allRlsEnabled = false;
-  }
-  console.log(`\nResult 1: All tables have RLS enabled = ${allRlsEnabled}`);
-
-  // 2. Check search_path on functions
-  const fnCheck = await client.query(`
-    SELECT proname, proconfig
-    FROM pg_proc
-    WHERE pronamespace = 'public'::regnamespace
-      AND proname IN (
-        'dispense_product_key',
-        'process_topup',
-        'execute_order_checkout',
-        'admin_get_metrics',
-        'admin_bulk_restock',
-        'admin_resolve_claim'
-      )
-    ORDER BY proname;
-  `);
-
-  console.log('\n--- 2. Function search_path Settings ---');
-  let allSearchPathSet = true;
-  for (const row of fnCheck.rows) {
-    const config = row.proconfig ? row.proconfig.join(', ') : 'NONE';
-    console.log(`Function "${row.proname}()": config = [${config}]`);
-    if (!row.proconfig || !row.proconfig.some(c => c.includes('search_path'))) {
-      allSearchPathSet = false;
-    }
-  }
-  console.log(`\nResult 2: All functions have search_path set = ${allSearchPathSet}`);
-
-  await client.end();
-
-  // 3. Test that direct anon call to dispense_product_key is rejected
-  console.log('\n--- 3. Testing direct dispense_product_key call via anon ---');
-  const { data: dispData, error: dispErr } = await supabase.rpc('dispense_product_key', {
-    p_product_id: 'nitro-booster-1m',
-    p_order_id: 'HACK-TEST'
-  });
-
-  if (dispErr) {
-    console.log('✅ Direct dispense_product_key call correctly BLOCKED for anon role:', dispErr.message);
+  // Test 1: inventory_keys leak check
+  const inv = await sb.from('inventory_keys').select('id, credential_data').eq('is_sold', false);
+  if (!inv.data || inv.data.length === 0) {
+    console.log('✅ TEST 1 PASSED: inventory_keys table is impenetrable to anonymous requests (0 rows leaked).');
+    passCount++;
   } else {
-    console.error('❌ Direct dispense call succeeded when it should be revoked!', dispData);
+    console.error('❌ TEST 1 FAILED: inventory_keys leaked data!', inv.data);
   }
 
-  // 4. Test that public products query still works
-  console.log('\n--- 4. Testing public products query via anon ---');
-  const { data: prods, error: pErr } = await supabase.from('products').select('id, title, price, status');
-  if (pErr) throw pErr;
-  console.log(`✅ Products readable by public: ${prods.length} items`);
+  // Test 2: order_items leak check
+  const ordItems = await sb.from('order_items').select('id, delivered_content');
+  if (!ordItems.data || ordItems.data.length === 0) {
+    console.log('✅ TEST 2 PASSED: order_items delivered_content is impenetrable to anonymous visitors.');
+    passCount++;
+  } else {
+    console.error('❌ TEST 2 FAILED: order_items leaked data!', ordItems.data);
+  }
 
-  // 5. Test that admin_get_metrics still works
-  console.log('\n--- 5. Testing admin_get_metrics via RPC ---');
-  const { data: adminData, error: aErr } = await supabase.rpc('admin_get_metrics', {
-    p_admin_secret: process.env.ADMIN_SECRET_KEY
+  // Test 3: orders table privacy check
+  const orders = await sb.from('orders').select('id, total_amount, user_id');
+  if (!orders.data || orders.data.length === 0) {
+    console.log('✅ TEST 3 PASSED: orders table is protected from anonymous snooping.');
+    passCount++;
+  } else {
+    console.error('❌ TEST 3 FAILED: orders table leaked data!', orders.data);
+  }
+
+  // Test 4: profiles table privacy check
+  const profiles = await sb.from('profiles').select('id, balance, discord_id');
+  if (!profiles.data || profiles.data.length === 0) {
+    console.log('✅ TEST 4 PASSED: profiles table balances and discord IDs are protected from strangers.');
+    passCount++;
+  } else {
+    console.error('❌ TEST 4 FAILED: profiles table leaked data!', profiles.data);
+  }
+
+  // Test 5: get_product_stock_counts secure RPC
+  const stocks = await sb.rpc('get_product_stock_counts');
+  if (stocks.data && Array.isArray(stocks.data) && stocks.data.length > 0 && !('credential_data' in stocks.data[0])) {
+    console.log(`✅ TEST 5 PASSED: get_product_stock_counts returns sanitized aggregate counts (${stocks.data.length} active products in stock).`);
+    passCount++;
+  } else {
+    console.error('❌ TEST 5 FAILED: get_product_stock_counts did not return valid data!', stocks);
+  }
+
+  // Test 6: Free checkout exploit rejection
+  const hackCheckout = await sb.rpc('execute_order_checkout', {
+    p_order_id: 'EXPLOIT_TEST',
+    p_items: [{ id: 'nitro-booster-1m', quantity: 5 }],
+    p_total_amount: 0
   });
-  if (aErr) throw aErr;
-  console.log('✅ Admin metrics query succeeded:', adminData.success);
+  if (hackCheckout.data?.error === 'UNAUTHORIZED') {
+    console.log('✅ TEST 6 PASSED: execute_order_checkout blocked anonymous unauthenticated checkout attempt.');
+    passCount++;
+  } else {
+    console.error('❌ TEST 6 FAILED: execute_order_checkout allowed checkout without login!', hackCheckout.data);
+  }
 
-  console.log('\n===========================================');
-  console.log('🏆 ALL SUPABASE LINTER ERRORS & WARNINGS RESOLVED 100%!');
-  console.log('===========================================');
+  // Test 7: Admin metrics unauthorized access check
+  const adminTest = await sb.rpc('admin_get_metrics', { p_admin_secret: 'fake_guess_123' });
+  if (adminTest.data?.error === 'UNAUTHORIZED') {
+    console.log('✅ TEST 7 PASSED: admin_get_metrics rejects unauthorized callers.');
+    passCount++;
+  } else {
+    console.error('❌ TEST 7 FAILED: admin_get_metrics allowed invalid secret!', adminTest.data);
+  }
+
+  console.log(`\n========================================`);
+  console.log(`🎉 AUDIT RESULT: ${passCount}/${totalTests} SECURITY TESTS PASSED!`);
+  console.log(`========================================\n`);
 }
 
-verifyHardening().catch(console.error);
+runAudit().catch(console.error);

@@ -106,17 +106,17 @@ const SupabaseAdapter = {
 
       if (prodErr) throw prodErr;
 
-      // ดึงจำนวนสต็อกจริงคงเหลือที่ยังไม่ขาย
-      const { data: stockCounts, error: stockErr } = await this.client
-        .from("inventory_keys")
-        .select("product_id")
-        .eq("is_sold", false);
-
-      const stockMap = {};
-      if (!stockErr && stockCounts) {
-        stockCounts.forEach(item => {
-          stockMap[item.product_id] = (stockMap[item.product_id] || 0) + 1;
-        });
+      // ดึงจำนวนสต็อกจริงคงเหลือที่ยังไม่ขายผ่าน Secure RPC (Zero Data Leakage)
+      let stockMap = {};
+      try {
+        const { data: stockCounts, error: stockErr } = await this.client.rpc("get_product_stock_counts");
+        if (!stockErr && Array.isArray(stockCounts)) {
+          stockCounts.forEach(item => {
+            stockMap[item.product_id] = Number(item.in_stock_count) || 0;
+          });
+        }
+      } catch (err) {
+        console.warn("[SUPABASE] Stock count query warning:", err.message);
       }
 
       const CATEGORY_DISPLAY_MAP = {
