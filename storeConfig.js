@@ -19,8 +19,8 @@ const storeConfig = {
   brandShort: "NYX9",
   tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
   subTagline: "ศูนย์รวมบริการดิจิทัล Discord, บูสต์เซิร์ฟเวอร์, เควสอัตโนมัติ, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
-  logoUrl: "https://api.iconify.design/lucide:zap.svg?color=%2319BAFF",
-  faviconUrl: "https://api.iconify.design/lucide:shield-check.svg?color=%2319BAFF",
+  logoUrl: "assets/logo.png",
+  faviconUrl: "assets/logo.png",
   
   // --- ช่องทางติดต่อ & ชุมชน ---
   discordCommunityUrl: "https://discord.gg/nyx9studio",

@@ -24,7 +24,7 @@ class HeroSectionComponent {
     if (banners.length === 0) return;
 
     container.innerHTML = banners.map((banner, idx) => `
-      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-8 lg:p-10 border border-white/[0.12] bg-[#0A0E17]/70 backdrop-blur-xl transition-all duration-500 shadow-2xl">
+      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-8 lg:p-10 border border-white/[0.08] bg-[#0A0E17]/92 backdrop-blur-xl transition-all duration-500 shadow-2xl">
         <div class="max-w-2xl space-y-4 relative z-10">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(0,242,255,0.06)] border border-[rgba(0,242,255,0.2)] text-xs font-mono-val text-[var(--accent)] font-semibold">
             <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
