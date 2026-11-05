@@ -1,7 +1,8 @@
 -- ==============================================================================
--- 🐘 NYX9 STUDIO — SUPABASE POSTGRESQL PRODUCTION SCHEMA
+-- 🐘 NYX9 STUDIO — SUPABASE POSTGRESQL PRODUCTION SCHEMA (ENTERPRISE ARMORED)
 -- ==============================================================================
--- คัดลอกสคริปต์นี้ไปวางในเมนู SQL Editor บน https://supabase.com/ แล้วกด RUN
+-- ครอบคลุม: บัญชีผู้ใช้, หมวดหมู่, สินค้า, สต็อกออโต้, คำสั่งซื้อ, ประวัติเติมเงิน,
+-- และระบบความปลอดภัยระดับสากล: Anti-Dupe Slip, Promo Limiter, Warranty, Audit Logs & Blacklist
 -- ==============================================================================
 
 -- 0. เปิดใช้งาน Extension ที่จำเป็น
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     username TEXT,
     avatar_url TEXT,
     balance NUMERIC(12,2) NOT NULL DEFAULT 0.00 CHECK (balance >= 0),
-    role TEXT NOT NULL DEFAULT 'customer',
+    role TEXT NOT NULL DEFAULT 'customer', -- 'customer', 'admin'
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -59,7 +60,6 @@ CREATE TABLE IF NOT EXISTS public.inventory_keys (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ดัชนีความเร็วสูงสำหรับดึงคีย์ว่าง (High-Performance Index)
 CREATE INDEX IF NOT EXISTS idx_inventory_keys_unsold 
 ON public.inventory_keys(product_id) WHERE is_sold = FALSE;
 
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     product_id TEXT REFERENCES public.products(id) ON DELETE SET NULL,
     quantity INT NOT NULL DEFAULT 1,
     unit_price NUMERIC(10,2) NOT NULL,
-    delivered_content TEXT, -- ข้อมูลรหัสที่ส่งมอบ
-    custom_data JSONB, -- ลิงก์ Discord, เบอร์โทร, Discord User ID
+    delivered_content TEXT,
+    custom_data JSONB,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -98,7 +98,78 @@ CREATE TABLE IF NOT EXISTS public.topup_transactions (
 );
 
 -- ==============================================================================
--- 🔒 ATOMIC PROCEDURES: ป้องกันสต็อกซ้ำ & แย่งซื้อพร้อมกัน (Anti-Race Condition)
+-- 🛡️ SECURITY & ANTI-FRAUD MODULES (ระดับสากล ป้องกันการโกงเงิน 100%)
+-- ==============================================================================
+
+-- 8. ตารางป้องกันสลิปซ้ำ (Anti-Dupe Slip Protection)
+CREATE TABLE IF NOT EXISTS public.used_payment_slips (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    slip_trans_ref TEXT UNIQUE NOT NULL, -- รหัสอ้างอิงสลิป ล็อกห้ามซ้ำเด็ดขาด
+    amount NUMERIC(10,2) NOT NULL,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    gateway TEXT NOT NULL DEFAULT 'promptpay',
+    raw_payload JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_slips_ref ON public.used_payment_slips(slip_trans_ref);
+
+-- 9. ตารางจำกัดสิทธิ์โค้ดส่วนลด (Promo Code Redemptions)
+CREATE TABLE IF NOT EXISTS public.promo_code_usages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    code TEXT NOT NULL,
+    order_id TEXT REFERENCES public.orders(id) ON DELETE SET NULL,
+    discount_amount NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    used_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(user_id, code) -- ลูกค้า 1 คน ใช้โค้ดเดิมได้ครั้งเดียว ป้องกันการสแปมลดราคา
+);
+
+-- 10. ตารางประวัติการเคลมสินค้าและประกัน (Warranty Claims & Tickets)
+CREATE TABLE IF NOT EXISTS public.warranty_claims (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id TEXT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    reason TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED, REPLACED
+    admin_notes TEXT,
+    replacement_key TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_claims_status ON public.warranty_claims(status);
+
+-- 11. ตารางแบนคนโกง / บอทสแปม (Blacklists)
+CREATE TABLE IF NOT EXISTS public.blacklists (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    target_type TEXT NOT NULL, -- 'IP', 'DISCORD_ID', 'WALLET_PHONE'
+    target_value TEXT UNIQUE NOT NULL,
+    reason TEXT NOT NULL,
+    expires_at TIMESTAMPTZ, -- ถ้าเป็น NULL แปลว่าแบนถาวร
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_blacklists_val ON public.blacklists(target_value);
+
+-- 12. ตารางบันทึกเหตุการณ์และเซิร์ฟเวอร์ล็อก (System Audit Logs)
+CREATE TABLE IF NOT EXISTS public.system_audit_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_type TEXT NOT NULL, -- 'ORDER_DISPENSED', 'SLIP_VERIFY_FAIL', 'BOT_DETECTED', 'CLAIM_SUBMITTED'
+    severity TEXT NOT NULL DEFAULT 'INFO', -- 'INFO', 'WARN', 'ERROR', 'SECURITY'
+    user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    order_id TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+    payload JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_logs_event_created 
+ON public.system_audit_logs(event_type, created_at DESC);
+
+-- ==============================================================================
+-- 🔒 ATOMIC PROCEDURES: ฟังก์ชันตัดสต็อกอัจฉริยะ (FOR UPDATE SKIP LOCKED)
 -- ==============================================================================
 
 CREATE OR REPLACE FUNCTION public.dispense_product_key(p_product_id TEXT, p_order_id TEXT)
@@ -107,7 +178,6 @@ DECLARE
     v_key_id UUID;
     v_credential TEXT;
 BEGIN
-    -- ล็อกแถวที่ยังไม่ถูกขาย และข้ามแถวที่ติดล็อกอยู่ทันที
     SELECT id, credential_data INTO v_key_id, v_credential
     FROM public.inventory_keys
     WHERE product_id = p_product_id AND is_sold = FALSE
@@ -118,17 +188,20 @@ BEGIN
         RAISE EXCEPTION 'OUT_OF_STOCK';
     END IF;
 
-    -- ตัดสต็อกทันทีใน Transaction เดียวกัน
     UPDATE public.inventory_keys
     SET is_sold = TRUE, order_id = p_order_id, sold_at = NOW()
     WHERE id = v_key_id;
+
+    -- บันทึก Audit Log อัตโนมัติในฐานข้อมูล
+    INSERT INTO public.system_audit_logs (event_type, severity, order_id, payload)
+    VALUES ('ORDER_DISPENSED', 'INFO', p_order_id, jsonb_build_object('product_id', p_product_id, 'key_id', v_key_id));
 
     RETURN v_credential;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ==============================================================================
--- 📦 SEED DATA: หมวดหมู่และสินค้าเริ่มต้นของ NYX9 STUDIO
+-- 📦 SEED DATA: ข้อมูลสินค้าและหมวดหมู่เริ่มต้น
 -- ==============================================================================
 
 INSERT INTO public.categories (id, name, sub_name, icon, badge, sort_order) VALUES
