@@ -4003,24 +4003,26 @@ class ShopApp {
     const container = document.getElementById("footer-accepted-payments");
     if (!container) return;
 
-    const payments = window.storeConfig?.acceptedPayments || [];
-    const paymentLabels = {
-      promptpay: { name: "PromptPay QR", icon: "qr-code" },
-      truemoney: { name: "TrueMoney Wallet", icon: "wallet" },
-      bank_transfer: { name: "โอนผ่านธนาคาร", icon: "landmark" },
-      card_payment: { name: "บัตรเครดิต/เดบิต (Visa/MC)", icon: "credit-card" },
-      crypto_ltc: { name: "Litecoin (LTC)", icon: "coins" }
-    };
+    const paymentCards = [
+      { name: "PromptPay QR", icon: "qr-code", tag: "สแกนฟรี 0%" },
+      { name: "TrueMoney", icon: "wallet", tag: "ซอง/วอลเล็ท" },
+      { name: "โอนธนาคาร", icon: "landmark", tag: "ทุกธนาคาร" },
+      { name: "บัตรเครดิต/เดบิต", icon: "credit-card", tag: "Visa / MC" },
+      { name: "Crypto LTC", icon: "coins", tag: "Litecoin" },
+      { name: "e-Receipt", icon: "receipt", tag: "ใบเสร็จออโต้" }
+    ];
 
-    container.innerHTML = payments.map(p => {
-      const info = paymentLabels[p] || { name: p, icon: "credit-card" };
-      return `
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-mono-val text-slate-300">
-          <i data-lucide="${info.icon}" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
-          <span>${info.name}</span>
+    container.innerHTML = paymentCards.map(p => `
+      <div class="flex items-center gap-2 p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[var(--accent)]/40 hover:bg-white/[0.06] transition-all group cursor-default">
+        <div class="w-6 h-6 rounded-lg bg-[rgba(0,242,255,0.08)] group-hover:bg-[rgba(0,242,255,0.18)] flex items-center justify-center text-[var(--accent)] shrink-0 transition-colors">
+          <i data-lucide="${p.icon}" class="w-3.5 h-3.5"></i>
         </div>
-      `;
-    }).join("");
+        <div class="min-w-0 flex-1">
+          <div class="text-[11px] font-bold text-white truncate leading-tight">${p.name}</div>
+          <div class="text-[9px] text-slate-400 font-mono-val truncate">${p.tag}</div>
+        </div>
+      </div>
+    `).join("");
 
     if (window.lucide) lucide.createIcons();
   }
