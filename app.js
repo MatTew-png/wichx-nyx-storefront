@@ -83,12 +83,20 @@ class ShopApp {
   }
 
   initCardSpotlight() {
+    // ข้ามคำนวณบนมือถือ/แท็บเล็ตเพื่อประหยัดทรัพยากร 100%
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    let rafId = null;
     document.addEventListener("mousemove", (e) => {
-      const card = e.target.closest?.(".product-card");
-      if (!card) return;
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const card = e.target.closest?.(".product-card");
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      });
     }, { passive: true });
   }
 

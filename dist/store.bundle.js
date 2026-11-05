@@ -3641,13 +3641,16 @@ class AmbientWavesEngine {
     this.targetMouseX = 0;
     this.targetMouseY = 0;
     this.isRunning = false;
+    this.isScrolling = false;
+    this.scrollTimeout = null;
 
-    // 20 Subtle Ambient Motes (Whisper quiet)
+    // 8 Lightweight Ambient Motes (Zero CPU drain)
     this.particles = [];
-    this.particleCount = 20;
+    this.particleCount = 8;
 
-    // Respect reduced motion
-    this.prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Detect mobile or low-power device
+    this.isMobile = typeof window !== "undefined" && (window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024));
+    this.prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     this.init();
   }
@@ -3666,6 +3669,17 @@ class AmbientWavesEngine {
 
     this.ctx = this.canvas.getContext("2d", { alpha: true });
     this.resize();
+
+    // On mobile or reduced motion: Draw static once, zero continuous GPU load!
+    if (this.isMobile || this.prefersReducedMotion) {
+      this.drawStatic();
+      window.addEventListener("resize", () => {
+        this.resize();
+        this.drawStatic();
+      }, { passive: true });
+      return;
+    }
+
     this.initParticles();
 
     window.addEventListener("resize", () => {
@@ -3673,12 +3687,19 @@ class AmbientWavesEngine {
       this.initParticles();
     }, { passive: true });
     
-    // Smooth, gentle mouse parallax
+    // Smooth, gentle mouse parallax (throttled)
     window.addEventListener("mousemove", (e) => {
-      this.rawMouseX = e.clientX;
-      this.rawMouseY = e.clientY;
-      this.targetMouseX = (e.clientX / this.width - 0.5) * 40;
-      this.targetMouseY = (e.clientY / this.height - 0.5) * 30;
+      this.targetMouseX = (e.clientX / (this.width || 1) - 0.5) * 30;
+      this.targetMouseY = (e.clientY / (this.height || 1) - 0.5) * 20;
+    }, { passive: true });
+
+    // Scroll performance protector: Pause canvas redrawing during scroll!
+    window.addEventListener("scroll", () => {
+      this.isScrolling = true;
+      if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(() => {
+        this.isScrolling = false;
+      }, 120);
     }, { passive: true });
 
     // Battery / Background Tab Saver
@@ -3690,11 +3711,7 @@ class AmbientWavesEngine {
       }
     });
 
-    if (!this.prefersReducedMotion) {
-      this.start();
-    } else {
-      this.drawStatic();
-    }
+    this.start();
   }
 
   initParticles() {
@@ -3703,11 +3720,11 @@ class AmbientWavesEngine {
       this.particles.push({
         x: Math.random() * (this.width || 1200),
         y: Math.random() * (this.height || 800),
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: -0.2 - Math.random() * 0.3,
-        radius: 0.9 + Math.random() * 1.3,
-        baseAlpha: 0.12 + Math.random() * 0.18,
-        pulseSpeed: 0.015 + Math.random() * 0.025,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: -0.15 - Math.random() * 0.2,
+        radius: 0.9 + Math.random() * 1.1,
+        baseAlpha: 0.10 + Math.random() * 0.15,
+        pulseSpeed: 0.012 + Math.random() * 0.02,
         pulsePhase: Math.random() * Math.PI * 2
       });
     }
@@ -3715,23 +3732,30 @@ class AmbientWavesEngine {
 
   resize() {
     if (!this.canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.canvas.width = this.width * dpr;
-    this.canvas.height = this.height * dpr;
-    if (this.ctx) {
-      this.ctx.scale(dpr, dpr);
-    }
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
   }
 
   start() {
-    if (this.isRunning) return;
+    if (this.isRunning || this.isMobile) return;
     this.isRunning = true;
-    const render = () => {
+    let lastTime = 0;
+    const fpsInterval = 1000 / 30; // 30 FPS cap for maximum CPU/GPU efficiency
+
+    const render = (currentTime) => {
       if (!this.isRunning) return;
-      this.draw();
       this.animationFrameId = requestAnimationFrame(render);
+
+      // Skip redrawing during user scroll to give 100% GPU to buttery 120Hz smooth scrolling
+      if (this.isScrolling) return;
+
+      const elapsed = currentTime - lastTime;
+      if (elapsed > fpsInterval) {
+        lastTime = currentTime - (elapsed % fpsInterval);
+        this.draw();
+      }
     };
     this.animationFrameId = requestAnimationFrame(render);
   }
@@ -3814,25 +3838,25 @@ class AmbientWavesEngine {
     const w = this.width;
     const h = this.height;
 
-    // Faint Ice Blue Pool (Top Left)
-    const n1X = w * 0.3 + Math.sin(this.pulseTime * 0.6) * 70;
-    const n1Y = h * 0.2 + Math.cos(this.pulseTime * 0.4) * 40;
-    const g1 = ctx.createRadialGradient(n1X, n1Y, 20, n1X, n1Y, 460);
-    g1.addColorStop(0, "rgba(0, 163, 255, 0.06)");
-    g1.addColorStop(0.5, "rgba(0, 163, 255, 0.015)");
+    // Faint Ice Blue Pool (Top Left) - Bounded draw area for maximum GPU efficiency
+    const n1X = w * 0.3 + Math.sin(this.pulseTime * 0.6) * 50;
+    const n1Y = h * 0.2 + Math.cos(this.pulseTime * 0.4) * 30;
+    const g1 = ctx.createRadialGradient(n1X, n1Y, 20, n1X, n1Y, 400);
+    g1.addColorStop(0, "rgba(0, 163, 255, 0.055)");
+    g1.addColorStop(0.6, "rgba(0, 163, 255, 0.012)");
     g1.addColorStop(1, "rgba(0, 163, 255, 0.00)");
     ctx.fillStyle = g1;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(Math.max(0, n1X - 400), Math.max(0, n1Y - 400), Math.min(w, 800), Math.min(h, 800));
 
-    // Faint Deep Indigo Pool (Mid Right)
-    const n2X = w * 0.75 + Math.cos(this.pulseTime * 0.5) * 60;
-    const n2Y = h * 0.45 + Math.sin(this.pulseTime * 0.7) * 50;
-    const g2 = ctx.createRadialGradient(n2X, n2Y, 20, n2X, n2Y, 480);
-    g2.addColorStop(0, "rgba(30, 58, 138, 0.05)");
-    g2.addColorStop(0.5, "rgba(30, 58, 138, 0.01)");
+    // Faint Deep Indigo Pool (Mid Right) - Bounded draw area
+    const n2X = w * 0.75 + Math.cos(this.pulseTime * 0.5) * 50;
+    const n2Y = h * 0.45 + Math.sin(this.pulseTime * 0.7) * 40;
+    const g2 = ctx.createRadialGradient(n2X, n2Y, 20, n2X, n2Y, 420);
+    g2.addColorStop(0, "rgba(30, 58, 138, 0.045)");
+    g2.addColorStop(0.6, "rgba(30, 58, 138, 0.008)");
     g2.addColorStop(1, "rgba(30, 58, 138, 0.00)");
     ctx.fillStyle = g2;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(Math.max(0, n2X - 420), Math.max(0, n2Y - 420), Math.min(w, 840), Math.min(h, 840));
   }
 
   renderWave(opts) {
@@ -4009,12 +4033,20 @@ class ShopApp {
   }
 
   initCardSpotlight() {
+    // ข้ามคำนวณบนมือถือ/แท็บเล็ตเพื่อประหยัดทรัพยากร 100%
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    let rafId = null;
     document.addEventListener("mousemove", (e) => {
-      const card = e.target.closest?.(".product-card");
-      if (!card) return;
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const card = e.target.closest?.(".product-card");
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      });
     }, { passive: true });
   }
 

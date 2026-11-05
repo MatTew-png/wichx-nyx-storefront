@@ -3,8 +3,6 @@
    Synthesized from xenonhub.pro, melody191.shop & wichxshop.com
    ============================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap');
-
 :root {
   --accent: #00F2FF;
   --accent-hover: #38F8FF;
@@ -335,6 +333,8 @@ html, body {
 
 /* Tactile Product Card & Physical Response with Cursor Spotlight */
 .product-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px;
   position: relative;
   background-color: var(--card-bg, #0C111A);
   border: 1px solid rgba(255, 255, 255, 0.07);
