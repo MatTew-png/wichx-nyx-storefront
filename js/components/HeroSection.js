@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 🚀 HERO & TELEMETRY COMPONENT (OOP CONTROLLER)
+ * HERO & TELEMETRY COMPONENT (OOP CONTROLLER - ASYMMETRICAL SPLIT BENTO)
  * ==============================================================================
  */
 
@@ -24,24 +24,31 @@ class HeroSectionComponent {
     if (banners.length === 0) return;
 
     container.innerHTML = banners.map((banner, idx) => `
-      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-12 border border-[rgba(25,186,255,0.2)] bg-gradient-to-r ${banner.bgGradient} transition-all duration-500">
-        <div class="relative z-10 max-w-2xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(25,186,255,0.15)] border border-[rgba(25,186,255,0.3)] text-xs font-mono-val text-[var(--accent)] font-bold mb-4">
-            <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></span>
-            ${banner.badge} • ${banner.accentTag}
+      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-8 lg:p-10 border border-white/[0.12] bg-[#0A0E17]/70 backdrop-blur-xl transition-all duration-500 shadow-2xl">
+        <div class="max-w-2xl space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(0,242,255,0.06)] border border-[rgba(0,242,255,0.2)] text-xs font-mono-val text-[var(--accent)] font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+            <span>${banner.badge} • ${banner.accentTag}</span>
           </div>
-          <h2 class="text-2xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white tracking-wide leading-tight mb-3">
+
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-heading font-extrabold text-white tracking-wide leading-tight">
             ${banner.title}
           </h2>
-          <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6 font-normal font-body">
+
+          <p class="text-slate-400 text-xs md:text-sm leading-relaxed font-normal font-body max-w-xl">
             ${banner.description}
           </p>
-          <div class="flex flex-wrap items-center gap-4">
-            <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}')" class="btn-cyber-primary px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-bold cursor-pointer">
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}')" class="btn-cyber-primary btn-shimmer px-5 py-2.5 rounded-xl flex items-center gap-2 text-xs md:text-sm font-extrabold cursor-pointer active:scale-95 transition-transform">
               <span>${banner.ctaText}</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
-            ${banner.accentTag ? `<span class="text-xs font-mono text-slate-400">${banner.accentTag}</span>` : ""}
+            
+            <button onclick="window.openDiscordServicesModal()" class="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-slate-300 hover:text-white font-medium flex items-center gap-2 transition-all cursor-pointer">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>คำนวณราคาบูสต์</span>
+            </button>
           </div>
         </div>
       </div>
@@ -102,10 +109,12 @@ class HeroSectionComponent {
       const el = document.getElementById(id);
       if (el) el.textContent = val;
     };
-    setVal("metric-users", metrics.totalUsers || "30,000+");
-    setVal("metric-products", metrics.totalProducts || "145+");
-    setVal("metric-orders", metrics.ordersFulfilled || "660,000+");
-    setVal("metric-uptime", metrics.uptime || "24/7 AUTO");
+    setVal("live-visitors-today", metrics.visitorsToday || "12,450");
+    setVal("live-orders-today", metrics.ordersToday || "850");
+    setVal("live-total-members", metrics.totalMembers || "45,000+");
+    setVal("live-visitors-today-m", metrics.visitorsToday || "12,450");
+    setVal("live-orders-today-m", metrics.ordersToday || "850");
+    setVal("live-total-members-m", metrics.totalMembers || "45,000+");
   }
 }
 

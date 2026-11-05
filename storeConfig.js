@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 🚀 WHITELABEL CONFIGURATION ENGINE (1-FILE REBRANDING)
+ *  WHITELABEL CONFIGURATION ENGINE (1-FILE REBRANDING)
  * ==============================================================================
  * แก้ไขไฟล์นี้เพียงไฟล์เดียวเพื่อเปลี่ยนชื่อร้าน, ธีมสี, คอนแทค, ข้อมูลโซเชียล,
  * ตัวเลขสถิติ (Metrics) และช่องทางชำระเงินทั้งระบบทันที
@@ -8,7 +8,7 @@
  */
 
 const storeConfig = {
-  // --- 🐘 SUPABASE POSTGRESQL PRODUCTION CONNECTION ---
+  // ---  SUPABASE POSTGRESQL PRODUCTION CONNECTION ---
   supabase: {
     url: "https://ymaulztlbctpzyhdhjvn.supabase.co",
     anonKey: "sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u"
@@ -40,32 +40,32 @@ const storeConfig = {
     heroBanners: [
     {
       id: "banner-1",
-      badge: "⚡ AUTO FULFILLMENT",
+      badge: "AUTO FULFILLMENT",
       title: "ศูนย์รวมบริการ Discord, FiveM & แอปพรีเมียม 24 ชม.",
       description: "กดสั่งปุ๊บรับรหัสทันทีในระบบคลังคีย์ ไม่ต้องรอแอดมินตอบแชท • รับประกันไอดีแท้ 100% มีปัญหาเคลมใหม่ได้ทันที",
       ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
       ctaCategory: "cat-discord-nitro",
-      bgGradient: "from-cyan-950/70 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
-      badge: "🎮 สต็อกพร้อมส่ง",
+      badge: "สต็อกพร้อมส่ง",
       title: "FIVEM READY & STEAM GTA V ไอดีสะอาดแท้",
       description: "รหัสยกเมลเปลี่ยนได้ 100% ปลดแบน HWID สะอาด ไร้ประวัติแบน คัดเกรดก่อนลงคลังส่งมอบ",
       ctaText: "ดูรายการไอดี FiveM",
       ctaCategory: "cat-gaming-apps",
-      bgGradient: "from-blue-950/70 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "ประกันไอดีสะอาด"
     },
     {
       id: "banner-3",
-      badge: "💳 เติมเงินออโต้",
+      badge: "เติมเงินออโต้",
       title: "ชำระเงินง่ายทุกช่องทาง ฟรีค่าธรรมเนียม 0%",
       description: "รองรับ PromptPay QR สแกนฟรี, TrueMoney Wallet, โอนผ่านธนาคาร และบัตรเครดิต ปลอดภัย 3D Secure",
       ctaText: "เติมเงินเข้ากระเป๋า",
       ctaAction: "openTopUp",
-      bgGradient: "from-emerald-950/60 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "เติมเงิน 24 ชม."
     }
   ],
@@ -84,9 +84,9 @@ const storeConfig = {
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
   metrics: {
-    totalUsers: "30,000+",
-    totalProducts: "145+",
-    ordersFulfilled: "660,000+",
+    visitorsToday: "12,450",
+    ordersToday: "850",
+    totalMembers: "45,000+",
     uptime: "24/7 AUTO"
   },
 

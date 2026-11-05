@@ -47,6 +47,14 @@ class CartDrawerComponent {
 
     this.store.addToCart(prod, qty);
     window.UI?.toast(`เพิ่ม "${prod.title}" ลงตะกร้าแล้ว!`, "success");
+
+    // Tactile Cart Badge Pop
+    const cartBtn = document.querySelector('[onclick="toggleCartDrawer()"]');
+    if (cartBtn) {
+      cartBtn.classList.remove('animate-cart-pop');
+      void cartBtn.offsetWidth;
+      cartBtn.classList.add('animate-cart-pop');
+    }
   }
 
   render() {

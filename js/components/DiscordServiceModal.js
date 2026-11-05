@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 🚀 DISCORD SERVICES & INTERACTIVE CALCULATOR (BOOST & QUESTS)
+ * DISCORD SERVICES & INTERACTIVE CALCULATOR (BOOST & QUESTS)
  * ==============================================================================
  */
 
@@ -38,7 +38,7 @@ class DiscordServiceModalComponent {
       modalEl.id = "discord-services-modal";
       modalEl.className = "fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all";
       modalEl.innerHTML = `
-        <div class="relative w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[#5865F2]/20 overflow-hidden">
+        <div class="relative modal-spring-dialog w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[#5865F2]/20 overflow-hidden">
           
           <!-- Header -->
           <div class="p-5 md:p-6 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/60">
@@ -197,7 +197,7 @@ class DiscordServiceModalComponent {
               onclick="window.setBoostPreset(14)" 
               class="p-3 rounded-2xl border text-center transition-all ${this.boostCount === 14 ? 'bg-[#5865F2]/20 border-[#5865F2] text-white shadow-lg shadow-[#5865F2]/20 ring-1 ring-[#5865F2]' : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'}"
             >
-              <div class="text-[10px] font-mono text-emerald-400 font-bold">🔥 POPULAR • LV.3</div>
+              <div class="text-[10px] font-mono text-emerald-400 font-bold">POPULAR • LV.3</div>
               <div class="text-sm font-extrabold text-white">14 Boosts</div>
               <div class="text-[10px] text-slate-400 mt-1">แบนเนอร์ + ลิงก์ Custom</div>
             </button>

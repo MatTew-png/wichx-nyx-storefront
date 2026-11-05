@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 📦 CATALOG & PRODUCT CARDS COMPONENT (OOP CONTROLLER)
+ * CATALOG & PRODUCT CARDS COMPONENT (OOP CONTROLLER)
  * ==============================================================================
  */
 
@@ -8,7 +8,16 @@ class CatalogViewComponent {
   constructor(store) {
     this.store = store;
     this.store.on("change:categories", () => this.render());
-    this.store.on("change:categoryFilters", () => this.render());
+    this.store.on("change:categoryFilters", () => {
+      this.renderCategoryFilterBar();
+      this.renderProducts();
+    });
+    this.store.on("change:activeCategory", () => this.renderCategoryFilterBar());
+    this.store.on("change:sortOrder", () => this.renderProducts());
+    this.store.on("change:inStockOnly", () => {
+      this.renderCategoryFilterBar();
+      this.renderProducts();
+    });
     this.store.on("change:searchQuery", () => this.renderProducts());
   }
 
@@ -22,30 +31,80 @@ class CatalogViewComponent {
     if (!container) return;
 
     const categories = this.store.get("categories") || [];
-    const filters = this.store.get("categoryFilters") || {};
-    const allActive = categories.every(c => filters[c.id]);
+    const activeCategory = this.store.get("activeCategory") || "all";
+    const sortOrder = this.store.get("sortOrder") || "popular";
+    const inStockOnly = this.store.get("inStockOnly") || false;
+
+    // Calculate total product count
+    const totalCount = categories.reduce((acc, c) => acc + (c.products?.length || 0), 0);
 
     let html = `
-      <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" class="px-3.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${allActive ? 'border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)]' : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white'}">
-        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-        <span>ทั้งหมด (${categories.reduce((acc, c) => acc + (c.products?.length || 0), 0)})</span>
-      </button>
+      <!-- Left: Ghost Tabs Rail (Frameless & Breathable) -->
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1 scroll-smooth flex-nowrap">
+        <!-- ALL TAB -->
+        <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" 
+          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-white'}"></i>
+          <span>ทั้งหมด</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${activeCategory === 'all' ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${totalCount}</span>
+        </button>
     `;
 
     categories.forEach(cat => {
-      const isVisible = !!filters[cat.id];
+      const isActive = activeCategory === cat.id;
+      const count = cat.products?.length || 0;
+      const icon = cat.icon || "box";
+
       html += `
-        <div class="inline-flex items-center rounded-xl border ${isVisible ? 'border-[var(--accent)] bg-[rgba(25,186,255,0.1)]' : 'border-slate-800 bg-slate-900/60 opacity-60'} transition-all overflow-hidden">
-          <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" class="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer ${isVisible ? 'text-[var(--accent)]' : 'text-slate-400 hover:text-white'}">
-            <i data-lucide="${cat.icon || 'folder'}" class="w-3.5 h-3.5"></i>
-            <span>${cat.name} (${cat.products?.length || 0})</span>
-          </button>
-          <button onclick="window.Shop?.catalogService?.toggleCategoryEye('${cat.id}')" class="px-2 py-1.5 border-l border-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-[var(--accent)] transition-colors cursor-pointer" title="เปิด/ปิดการแสดงผล">
-            <i data-lucide="${isVisible ? 'eye' : 'eye-off'}" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
+        <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" 
+          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-[var(--accent)]'}"></i>
+          <span>${cat.name}</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${isActive ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${count}</span>
+        </button>
       `;
     });
+
+    html += `
+      </div>
+
+      <!-- Right: Utility Controls (Frameless Minimalist Controls) -->
+      <div class="flex items-center gap-2 flex-shrink-0 pt-2 md:pt-0 justify-end">
+        <!-- IN-STOCK ONLY TOGGLE -->
+        <button onclick="window.Shop?.catalogService?.toggleInStockOnly()" 
+          title="กรองเฉพาะสินค้าที่มีของพร้อมจัดส่ง"
+          class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer select-none active:scale-95 ${inStockOnly 
+            ? 'bg-emerald-500/15 text-emerald-300' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <span class="relative flex h-2 w-2">
+            ${inStockOnly ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
+            <span class="relative inline-flex rounded-full h-2 w-2 ${inStockOnly ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-slate-600'}"></span>
+          </span>
+          <span class="text-xs">เฉพาะพร้อมส่ง</span>
+        </button>
+
+        <!-- SORT DROPDOWN -->
+        <div class="relative flex items-center">
+          <div class="pointer-events-none absolute left-2.5 flex items-center text-slate-400">
+            <i data-lucide="arrow-down-up" class="w-3.5 h-3.5 text-slate-400"></i>
+          </div>
+          <select onchange="window.Shop?.catalogService?.setSortOrder(this.value)" 
+            class="pl-7 pr-7 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-xs text-slate-300 hover:text-white font-semibold focus:outline-none cursor-pointer transition-colors appearance-none">
+            <option value="popular" class="bg-[#0C111A] text-white" ${sortOrder === 'popular' ? 'selected' : ''}>ยอดนิยม</option>
+            <option value="price_asc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_asc' ? 'selected' : ''}>ราคา: ต่ำ → สูง</option>
+            <option value="price_desc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_desc' ? 'selected' : ''}>ราคา: สูง → ต่ำ</option>
+            <option value="discount" class="bg-[#0C111A] text-white" ${sortOrder === 'discount' ? 'selected' : ''}>ส่วนลดสูงสุด</option>
+          </select>
+          <div class="pointer-events-none absolute right-2 flex items-center text-slate-400">
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+      </div>
+    `;
 
     container.innerHTML = html;
     if (window.lucide) lucide.createIcons();
@@ -58,22 +117,37 @@ class CatalogViewComponent {
     const categories = this.store.get("categories") || [];
     const filters = this.store.get("categoryFilters") || {};
     const query = this.store.get("searchQuery") || "";
+    const sortOrder = this.store.get("sortOrder") || "popular";
+    const inStockOnly = this.store.get("inStockOnly") || false;
 
     const visibleCategories = categories.filter(c => filters[c.id]);
 
     if (visibleCategories.length === 0) {
       container.innerHTML = `
-        <div class="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800">
-          <i data-lucide="eye-off" class="w-8 h-8 mx-auto text-slate-500 mb-2"></i>
-          <p class="text-sm text-slate-400">ทุกหมวดหมู่ถูกปิดการแสดงผลอยู่ กดเปิดที่แถบตัวกรองด้านบนเพื่อดูสินค้า</p>
+        <div class="p-12 text-center rounded-3xl bg-[#0C111A]/80 border border-[rgba(255,255,255,0.08)]">
+          <i data-lucide="package-x" class="w-10 h-10 mx-auto text-slate-500 mb-3"></i>
+          <h4 class="text-base font-heading font-bold text-white mb-1">ไม่พบหมวดหมู่ที่เลือก</h4>
+          <p class="text-xs text-slate-400">คลิกปุ่ม "ทั้งหมด" ด้านบนเพื่อดูสินค้าครบทุกหมวดหมู่</p>
+          <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" class="mt-4 px-4 py-2 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold text-xs cursor-pointer active:scale-95 transition-transform shadow-lg">
+            ดูสินค้าทั้งหมด
+          </button>
         </div>
       `;
       if (window.lucide) lucide.createIcons();
       return;
     }
 
-    container.innerHTML = visibleCategories.map(cat => {
+    let renderedAnyProduct = false;
+
+    const html = visibleCategories.map(cat => {
       let prods = cat.products || [];
+
+      // Filter: In-Stock Only
+      if (inStockOnly) {
+        prods = prods.filter(p => p.stock > 0);
+      }
+
+      // Filter: Search Query
       if (query) {
         prods = prods.filter(p => 
           p.title.toLowerCase().includes(query) || 
@@ -81,17 +155,36 @@ class CatalogViewComponent {
         );
       }
 
-      if (prods.length === 0 && query) return "";
+      // Sort
+      if (sortOrder === "price_asc") {
+        prods = [...prods].sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price_desc") {
+        prods = [...prods].sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "discount") {
+        prods = [...prods].sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+      }
+
+      if (prods.length === 0) {
+        if (query || inStockOnly) return "";
+      }
+
+      renderedAnyProduct = true;
 
       return `
-        <div id="${cat.id}" class="space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-5 rounded-full bg-[var(--accent)]"></span>
-              <h3 class="text-base sm:text-lg font-heading font-extrabold text-white">${cat.name}</h3>
-              <span class="text-xs text-slate-400 font-mono">${cat.subName || ""}</span>
+        <div id="${cat.id}" class="space-y-4 mb-10">
+          <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-6 rounded-full bg-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.5)]"></span>
+              <div>
+                <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
+                <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
+              </div>
             </div>
-            <span class="text-xs text-slate-400 font-mono">${prods.length} รายการ</span>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-[#0C111A] border border-[rgba(255,255,255,0.06)] text-xs text-slate-300 font-mono-val font-bold">
+                ${prods.length} รายการ
+              </span>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -100,6 +193,23 @@ class CatalogViewComponent {
         </div>
       `;
     }).join("");
+
+    if (!renderedAnyProduct) {
+      container.innerHTML = `
+        <div class="p-12 text-center rounded-3xl bg-[#0C111A]/80 border border-[rgba(255,255,255,0.08)]">
+          <i data-lucide="package-x" class="w-10 h-10 mx-auto text-slate-500 mb-3"></i>
+          <h4 class="text-base font-heading font-bold text-white mb-1">ไม่พบสินค้าที่ตรงกับเงื่อนไข</h4>
+          <p class="text-xs text-slate-400">ลองรีเซ็ตตัวกรอง หรือค้นหาด้วยคำอื่น</p>
+          <div class="mt-4 flex items-center justify-center gap-3">
+            <button onclick="window.Shop?.catalogService?.setCategoryFilter('all'); if (window.Shop?.catalogService?.toggleInStockOnly) window.Shop.catalogService.toggleInStockOnly(false); if (window.Shop?.catalogService?.setSearchQuery) { window.Shop.catalogService.setSearchQuery(''); const el = document.getElementById('search-input'); if (el) el.value = ''; const elMob = document.getElementById('search-input-mobile'); if (elMob) elMob.value = ''; }" class="px-4 py-2 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold text-xs cursor-pointer active:scale-95 transition-transform shadow-lg">
+              รีเซ็ตตัวกรองทั้งหมด
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      container.innerHTML = html;
+    }
 
     if (window.lucide) lucide.createIcons();
   }
@@ -136,7 +246,7 @@ class CatalogViewComponent {
           </div>
         </div>
 
-        <!-- Footer & Action (Fitts's Law Optimized Hit Area) -->
+                <!-- Footer & Action (Fitts's Law Dual-Action: Cart + 1-Click Buy) -->
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
@@ -146,13 +256,18 @@ class CatalogViewComponent {
           ${isCustom ? `
             <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-              <span>สั่งทำพิเศษ</span>
+              <span>สั่งทำ</span>
             </button>
           ` : `
-            <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5">
-              <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
-              <span>ใส่ตะกร้า</span>
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
+                <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-300"></i>
+              </button>
+              <button onclick="window.quickBuyProduct('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
+                <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
+                <span>ซื้อด่วน</span>
+              </button>
+            </div>
           `}
         </div>
       </div>

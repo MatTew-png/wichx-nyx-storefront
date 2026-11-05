@@ -59,7 +59,7 @@ class NavbarComponent {
 
     if (totalCount > 0) {
       badge.textContent = totalCount;
-      badge.className = "absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold flex items-center justify-center animate-pulse shadow-lg shadow-[var(--accent)]/40";
+      badge.className = "absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-mono-val font-extrabold flex items-center justify-center animate-pulse shadow-md shadow-[var(--accent)]/40";
     } else {
       badge.className = "hidden";
     }

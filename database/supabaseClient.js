@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * ⚡ SUPABASE CLIENT & LIVE DATA ADAPTER (FRONTEND & SERVERLESS COMPATIBLE)
+ * SUPABASE CLIENT & LIVE DATA ADAPTER (FRONTEND & SERVERLESS COMPATIBLE)
  * ==============================================================================
  * เชื่อมต่อ Supabase PostgreSQL เพื่อดึงสต็อกจริง, ยอดเงินในกระเป๋า,
  * และบันทึกคำสั่งซื้อแบบไร้รอยต่อ (Seamless Fallback to Local Cache)
@@ -119,12 +119,19 @@ const SupabaseAdapter = {
         });
       }
 
+      const CATEGORY_DISPLAY_MAP = {
+        "cat-discord-nitro": { name: "Discord Nitro & บูสต์", icon: "zap" },
+        "cat-discord-services": { name: "บริการดิสคอร์ด & ไอดี", icon: "bot" },
+        "cat-gaming-apps": { name: "FiveM, Steam & เกมมิ่ง", icon: "gamepad-2" },
+        "cat-uncategorized": { name: "ซอฟต์แวร์ & คีย์แท้", icon: "sparkles" }
+      };
+
       // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน
       return cats.map(cat => ({
         id: cat.id,
-        name: cat.name,
+        name: CATEGORY_DISPLAY_MAP[cat.id]?.name || cat.name,
         subName: cat.sub_name,
-        icon: cat.icon || "layers",
+        icon: CATEGORY_DISPLAY_MAP[cat.id]?.icon || cat.icon || "layers",
         badge: cat.badge || "AUTO",
         products: prods
           .filter(p => p.category_id === cat.id)
@@ -137,7 +144,7 @@ const SupabaseAdapter = {
             stock: stockMap[p.id] !== undefined ? stockMap[p.id] : 10,
             status: stockMap[p.id] === 0 ? "OUT OF STOCK" : (p.status || "SALE"),
             fulfillmentType: p.fulfillment_type || "instant",
-            chips: p.chips || [],
+            chips: (p.chips || []).map(c => String(c).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{1FA00}-\u{1FAFF}\u{FE0F}]/gu, '').trim()),
             imageUrl: typeof createCyberArtwork === "function" 
               ? createCyberArtwork(p.title, cat.name, p.id.includes("nitro") ? "nitro" : "discord", "#19BAFF", "#38D4FF")
               : ""

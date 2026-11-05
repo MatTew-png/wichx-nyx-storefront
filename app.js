@@ -42,6 +42,7 @@ class ShopApp {
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
+    this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
   }
 
   async init() {
@@ -75,8 +76,47 @@ class ShopApp {
     }
 
     this.socialProof.init();
+    this.initCardSpotlight();
+    this.animateMetricsCountUp();
     if (window.lucide) lucide.createIcons();
     console.info("✅ [NYX9 STUDIO] Storefront Ready!");
+  }
+
+  initCardSpotlight() {
+    document.addEventListener("mousemove", (e) => {
+      const card = e.target.closest?.(".product-card");
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+    }, { passive: true });
+  }
+
+  animateMetricsCountUp() {
+    const runCount = (id, target, suffix = "", duration = 1200) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const startTime = performance.now();
+      const frame = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const cur = Math.floor(target * ease);
+        el.textContent = cur.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(frame);
+        else el.textContent = target.toLocaleString() + suffix;
+      };
+      requestAnimationFrame(frame);
+    };
+
+    setTimeout(() => {
+      runCount("live-visitors-today", 12450);
+      runCount("live-visitors-today-m", 12450);
+      runCount("live-orders-today", 850);
+      runCount("live-orders-today-m", 850);
+      runCount("live-total-members", 45000, "+");
+      runCount("live-total-members-m", 45000, "+");
+    }, 150);
   }
 
   renderAcceptedPaymentsFooter() {
@@ -289,3 +329,56 @@ window.submitClaimTicket = () => window.Shop.modals.submitClaim();
 window.handleSearchInput = (e) => window.Shop.catalogService.setSearchQuery(e.target.value);
 window.showToast = (msg, type) => window.UI?.toast(msg, type);
 window.triggerConfetti = () => window.UI?.confetti();
+
+// ==============================================================================
+// ⚡ EXPRESS 1-CLICK FAST BUY ENGINE
+// ==============================================================================
+window.quickBuyProduct = async (productId) => {
+  const store = window.AppStore;
+  const categories = store.get("categories") || [];
+  let found = null;
+  for (const cat of categories) {
+    const p = (cat.products || []).find(x => x.id === productId);
+    if (p) { found = p; break; }
+  }
+  if (!found) return;
+
+  const currentBalance = store.get("walletBalance") || 0;
+  if (currentBalance < found.price) {
+    const deficit = found.price - currentBalance;
+    window.UI?.toast(`ยอดเงินในกระเป๋าไม่พอ (ขาด ฿${deficit.toFixed(2)}) เติมเงินเพื่อซื้อทันที`, "warning");
+    window.openTopUpModal(Math.ceil(deficit));
+    return;
+  }
+
+  try {
+    store.addToCart(found);
+    const res = await window.Shop.checkoutService.executeCheckout();
+    window.Shop.modals.showInstantDelivery(res);
+    window.UI?.toast(`⚡ ซื้อด่วนสำเร็จ! ส่งมอบรหัส "${found.title}" ในระบบคลังเรียบร้อย`, "success");
+    window.UI?.confetti();
+  } catch (err) {
+    window.UI?.toast(err.message, "error");
+  }
+};
+
+// ==============================================================================
+// ⌨️ GLOBAL KEYBOARD SHORTCUTS (LINEAR / DISCORD STYLE)
+// ==============================================================================
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA")) {
+    e.preventDefault();
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+      searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  if (e.key === "Escape") {
+    const searchInput = document.getElementById("search-input");
+    if (searchInput && document.activeElement === searchInput) {
+      searchInput.blur();
+    }
+  }
+});

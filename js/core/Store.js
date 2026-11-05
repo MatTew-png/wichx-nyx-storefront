@@ -33,6 +33,9 @@ class Store {
       appliedPromo: null,
       categories: initialCategories,
       categoryFilters: initialFilters,
+      activeCategory: "all",
+      sortOrder: "popular",
+      inStockOnly: false,
       categoryCollapses: {},
       searchQuery: "",
       activeCarouselIndex: 0

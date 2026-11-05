@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 💳 TOP-UP MODAL COMPONENT (OOP CONTROLLER)
+ * TOP-UP MODAL COMPONENT (OOP CONTROLLER)
  * ==============================================================================
  */
 
@@ -113,7 +113,7 @@ class TopUpModalComponent {
     try {
       const res = await this.paymentService.redeemTrueMoneyVoucher(url);
       window.UI?.confetti();
-      window.UI?.toast(`🧧 รับเงินจากซองของขวัญสำเร็จ +฿${res.amount.toFixed(2)}!`, "success");
+      window.UI?.toast(`รับเงินจากซองของขวัญสำเร็จ +฿${res.amount.toFixed(2)}!`, "success");
       input.value = "";
       setTimeout(() => this.close(), 1500);
     } catch (err) {
@@ -137,7 +137,7 @@ class TopUpModalComponent {
     try {
       await this.paymentService.verifyBankTransferSlip(amount, transRef);
       window.UI?.confetti();
-      window.UI?.toast(`🏦 เติมเงินผ่านธนาคารสำเร็จ +฿${amount.toFixed(2)}!`, "success");
+      window.UI?.toast(`เติมเงินผ่านธนาคารสำเร็จ +฿${amount.toFixed(2)}!`, "success");
       document.getElementById("bank-transfer-transref").value = "";
       setTimeout(() => this.close(), 1500);
     } catch (err) {
@@ -165,7 +165,7 @@ class TopUpModalComponent {
     try {
       await this.paymentService.processCardPayment(amount, { number, expiry, cvv, holder }, bindToggle);
       window.UI?.confetti();
-      window.UI?.toast(`💳 ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
+      window.UI?.toast(`ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
       setTimeout(() => this.close(), 1500);
     } catch (err) {
       window.UI?.toast(err.message, "error");

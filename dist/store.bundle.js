@@ -4,7 +4,7 @@
 /* ============================================================================== */
 /**
  * ==============================================================================
- * ⚡ SUPABASE CLIENT & LIVE DATA ADAPTER (FRONTEND & SERVERLESS COMPATIBLE)
+ * SUPABASE CLIENT & LIVE DATA ADAPTER (FRONTEND & SERVERLESS COMPATIBLE)
  * ==============================================================================
  * เชื่อมต่อ Supabase PostgreSQL เพื่อดึงสต็อกจริง, ยอดเงินในกระเป๋า,
  * และบันทึกคำสั่งซื้อแบบไร้รอยต่อ (Seamless Fallback to Local Cache)
@@ -123,12 +123,19 @@ const SupabaseAdapter = {
         });
       }
 
+      const CATEGORY_DISPLAY_MAP = {
+        "cat-discord-nitro": { name: "Discord Nitro & บูสต์", icon: "zap" },
+        "cat-discord-services": { name: "บริการดิสคอร์ด & ไอดี", icon: "bot" },
+        "cat-gaming-apps": { name: "FiveM, Steam & เกมมิ่ง", icon: "gamepad-2" },
+        "cat-uncategorized": { name: "ซอฟต์แวร์ & คีย์แท้", icon: "sparkles" }
+      };
+
       // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน
       return cats.map(cat => ({
         id: cat.id,
-        name: cat.name,
+        name: CATEGORY_DISPLAY_MAP[cat.id]?.name || cat.name,
         subName: cat.sub_name,
-        icon: cat.icon || "layers",
+        icon: CATEGORY_DISPLAY_MAP[cat.id]?.icon || cat.icon || "layers",
         badge: cat.badge || "AUTO",
         products: prods
           .filter(p => p.category_id === cat.id)
@@ -141,7 +148,7 @@ const SupabaseAdapter = {
             stock: stockMap[p.id] !== undefined ? stockMap[p.id] : 10,
             status: stockMap[p.id] === 0 ? "OUT OF STOCK" : (p.status || "SALE"),
             fulfillmentType: p.fulfillment_type || "instant",
-            chips: p.chips || [],
+            chips: (p.chips || []).map(c => String(c).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{1FA00}-\u{1FAFF}\u{FE0F}]/gu, '').trim()),
             imageUrl: typeof createCyberArtwork === "function" 
               ? createCyberArtwork(p.title, cat.name, p.id.includes("nitro") ? "nitro" : "discord", "#19BAFF", "#38D4FF")
               : ""
@@ -387,7 +394,7 @@ if (typeof module !== "undefined" && module.exports) {
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🚀 WHITELABEL CONFIGURATION ENGINE (1-FILE REBRANDING)
+ *  WHITELABEL CONFIGURATION ENGINE (1-FILE REBRANDING)
  * ==============================================================================
  * แก้ไขไฟล์นี้เพียงไฟล์เดียวเพื่อเปลี่ยนชื่อร้าน, ธีมสี, คอนแทค, ข้อมูลโซเชียล,
  * ตัวเลขสถิติ (Metrics) และช่องทางชำระเงินทั้งระบบทันที
@@ -395,7 +402,7 @@ if (typeof module !== "undefined" && module.exports) {
  */
 
 const storeConfig = {
-  // --- 🐘 SUPABASE POSTGRESQL PRODUCTION CONNECTION ---
+  // ---  SUPABASE POSTGRESQL PRODUCTION CONNECTION ---
   supabase: {
     url: "https://ymaulztlbctpzyhdhjvn.supabase.co",
     anonKey: "sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u"
@@ -427,32 +434,32 @@ const storeConfig = {
     heroBanners: [
     {
       id: "banner-1",
-      badge: "⚡ AUTO FULFILLMENT",
+      badge: "AUTO FULFILLMENT",
       title: "ศูนย์รวมบริการ Discord, FiveM & แอปพรีเมียม 24 ชม.",
       description: "กดสั่งปุ๊บรับรหัสทันทีในระบบคลังคีย์ ไม่ต้องรอแอดมินตอบแชท • รับประกันไอดีแท้ 100% มีปัญหาเคลมใหม่ได้ทันที",
       ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
       ctaCategory: "cat-discord-nitro",
-      bgGradient: "from-cyan-950/70 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
-      badge: "🎮 สต็อกพร้อมส่ง",
+      badge: "สต็อกพร้อมส่ง",
       title: "FIVEM READY & STEAM GTA V ไอดีสะอาดแท้",
       description: "รหัสยกเมลเปลี่ยนได้ 100% ปลดแบน HWID สะอาด ไร้ประวัติแบน คัดเกรดก่อนลงคลังส่งมอบ",
       ctaText: "ดูรายการไอดี FiveM",
       ctaCategory: "cat-gaming-apps",
-      bgGradient: "from-blue-950/70 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "ประกันไอดีสะอาด"
     },
     {
       id: "banner-3",
-      badge: "💳 เติมเงินออโต้",
+      badge: "เติมเงินออโต้",
       title: "ชำระเงินง่ายทุกช่องทาง ฟรีค่าธรรมเนียม 0%",
       description: "รองรับ PromptPay QR สแกนฟรี, TrueMoney Wallet, โอนผ่านธนาคาร และบัตรเครดิต ปลอดภัย 3D Secure",
       ctaText: "เติมเงินเข้ากระเป๋า",
       ctaAction: "openTopUp",
-      bgGradient: "from-emerald-950/60 via-slate-900/95 to-[#070A0F]",
+      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
       accentTag: "เติมเงิน 24 ชม."
     }
   ],
@@ -471,9 +478,9 @@ const storeConfig = {
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
   metrics: {
-    totalUsers: "30,000+",
-    totalProducts: "145+",
-    ordersFulfilled: "660,000+",
+    visitorsToday: "12,450",
+    ordersToday: "850",
+    totalMembers: "45,000+",
     uptime: "24/7 AUTO"
   },
 
@@ -541,7 +548,7 @@ if (typeof module !== "undefined" && module.exports) {
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 📦 COMMERCIAL MULTI-NICHE CATALOG DATA
+ * COMMERCIAL MULTI-NICHE CATALOG DATA
  * ==============================================================================
  * ข้อมูลสินค้าครอบคลุมทุกหมวดตามสเปก พร้อมระบบ Dual-Fulfillment
  * (Instant Delivery / Custom Order Form) และ SVG Artwork อัตราส่วน 16:9
@@ -616,8 +623,8 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
 const categoriesData = [
   {
     id: "cat-discord-nitro",
-    name: "DISCORD NITRO & BOOSTS",
-    subName: "แพ็กเกจไนโตร บูสเซิร์ฟเวอร์ & ไอเทมตกแต่งโปรไฟล์",
+    name: "Discord Nitro & บูสต์",
+    subName: "ไนโตรแท้ บูสต์เซิร์ฟเวอร์ & ไอเทมตกแต่งโปรไฟล์",
     icon: "zap",
     badge: "INSTANT KEY / AUTO",
     visible: true,
@@ -632,7 +639,7 @@ const categoriesData = [
         stock: 45,
         status: "SALE",
         discountPercent: 32,
-        chips: ["⚡ ส่งทันที", "🛡️ ประกันเต็ม", "💎 2 บูส"],
+        chips: ["ส่งทันที", "ประกันเต็ม", "2 บูส"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Nitro Booster", "1 Month Mailpass", "nitro", "#19BAFF", "#38D4FF"),
         sampleDelivery: "nitro_user_vip99@wichx.vip:PassNitro!2026",
@@ -647,7 +654,7 @@ const categoriesData = [
         stock: 20,
         status: "SALE",
         discountPercent: 48,
-        chips: ["👑 ยกเมลแท้", "💎 2 บูส", "🔑 เปลี่ยนรหัสได้"],
+        chips: ["ยกเมลแท้", "2 บูส", "เปลี่ยนรหัสได้"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Nitro 3 Months", "Full Email Transfer", "nitro", "#38D4FF", "#00FFA3"),
         sampleDelivery: "discord_3m_fresh@rambler.ru:RamblerP@ss2026 | Mailpass: Ok",
@@ -662,7 +669,7 @@ const categoriesData = [
         stock: 80,
         status: "SALE",
         discountPercent: 44,
-        chips: ["🚀 2 บูสแท้", "⚡ ใน 1 นาที"],
+        chips: ["2 บูสแท้", "ใน 1 นาที"],
         fulfillmentType: "custom_discord_boost",
         imageUrl: createCyberArtwork("Server Boost", "1 Month x2 Boosts", "boost", "#19BAFF", "#7928CA"),
         instructions: "กรอกลิงก์เซิร์ฟเวอร์ Discord ที่ต้องการให้บอทเข้าไปบูส (ต้องไม่หมดอายุ)"
@@ -676,7 +683,7 @@ const categoriesData = [
         stock: 60,
         status: "SALE",
         discountPercent: 44,
-        chips: ["⏳ 90 วันเต็ม", "🔥 ยอดนิยม"],
+        chips: ["90 วันเต็ม", "ยอดนิยม"],
         fulfillmentType: "custom_discord_boost",
         imageUrl: createCyberArtwork("Server Boost 90D", "3 Months x2 Boosts", "boost", "#FF0080", "#19BAFF"),
         instructions: "ระบบจะดำเนินการส่งบูสเข้าเซิร์ฟเวอร์ภายใน 1-5 นาทีหลังชำระเงิน"
@@ -690,7 +697,7 @@ const categoriesData = [
         stock: 999,
         status: "SALE",
         discountPercent: 58,
-        chips: ["🎁 กิฟต์ลิงก์", "✨ ไอดีใหม่"],
+        chips: ["กิฟต์ลิงก์", "ไอดีใหม่"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Nitro Promo Link", "3 Months Promo Xbox", "nitro", "#10B981", "#19BAFF"),
         sampleDelivery: "https://discord.com/billing/promotions/xbox-game-pass-promo-key-83749204812",
@@ -705,7 +712,7 @@ const categoriesData = [
         stock: 35,
         status: "SALE",
         discountPercent: 47,
-        chips: ["♾️ ถาวร", "🎨 ของแต่งแท้"],
+        chips: ["ถาวร", "ของแต่งแท้"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Avatar Deco", "Permanent Nameplates", "nitro", "#F59E0B", "#EF4444"),
         sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-WICHX",
@@ -715,9 +722,9 @@ const categoriesData = [
   },
   {
     id: "cat-discord-services",
-    name: "DISCORD SERVICES & ACCOUNTS",
-    subName: "บริการปั๊มเมมเบอร์ ยืนยันเบอร์ OTP และไอดีดิสคอร์ดปีเก่า",
-    icon: "cpu",
+    name: "บริการดิสคอร์ด & ไอดี",
+    subName: "เควสต์อัตโนมัติ บอท & ไอดีพร้อมใช้งาน",
+    icon: "bot",
     badge: "CUSTOM FLOW & FORM",
     visible: true,
     collapsed: false,
@@ -734,7 +741,7 @@ const categoriesData = [
         originalPrice: 0.80,
         stock: 9999,
         status: "SERVICE",
-        chips: ["👥 มีรูปโปรไฟล์", "⚡ เริ่มใน 5 นาที"],
+        chips: ["มีรูปโปรไฟล์", "เริ่มใน 5 นาที"],
         fulfillmentType: "custom_discord_members",
         imageUrl: createCyberArtwork("Member Booster", "Real Avatars 24/7", "discord", "#19BAFF", "#3B82F6"),
         instructions: "ระบบปั๊มเมมเบอร์อัตโนมัติ กรอกลิงก์ Discord Invite และเลือกจำนวนสมาชิกที่ต้องการ"
@@ -747,7 +754,7 @@ const categoriesData = [
         originalPrice: 20,
         stock: 500,
         status: "SERVICE",
-        chips: ["📱 เบอร์ไทย/นอก", "⏱️ ส่งรหัสใน 30 วิ"],
+        chips: ["เบอร์ไทย/นอก", "ส่งรหัสใน 30 วิ"],
         fulfillmentType: "custom_phone_otp",
         imageUrl: createCyberArtwork("Phone OTP Verify", "Instant SMS Code", "key", "#10B981", "#38D4FF"),
         instructions: "เลือกประเทศเพื่อขอรับเบอร์เสมือน และรอรับรหัส OTP สดได้ทันทีที่หน้าจอ"
@@ -760,7 +767,7 @@ const categoriesData = [
         originalPrice: 90,
         stock: 100,
         status: "SERVICE",
-        chips: ["🏅 รับตราทันที", "🎮 ไม่ต้องเปิดเกม"],
+        chips: ["รับตราทันที", "ไม่ต้องเปิดเกม"],
         fulfillmentType: "custom_quest_badge",
         imageUrl: createCyberArtwork("Quest Badge", "Discord Mission Auto", "boost", "#8B5CF6", "#19BAFF"),
         instructions: "กรอก Discord User ID เพื่อให้ระบบออโต้ส่งตราเควสต์เข้าโปรไฟล์ของคุณ"
@@ -773,7 +780,7 @@ const categoriesData = [
         originalPrice: 40,
         stock: 150,
         status: "STOCK",
-        chips: ["🛡️ พร้อมใช้งาน", "🤖 ไม่ติดบอท"],
+        chips: ["พร้อมใช้งาน", "ไม่ติดบอท"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Discord Age 1M+", "Aged Clean Account", "discord", "#6366F1", "#19BAFF"),
         sampleDelivery: "acc_aged30d_8812@wichxmail.com:SuperP@ss7721 | Token: MTA4...",
@@ -787,7 +794,7 @@ const categoriesData = [
         originalPrice: 650,
         stock: 10,
         status: "HOT",
-        chips: ["🏛️ ปีเก่าหายาก", "👑 ยกเมลหลัก"],
+        chips: ["ปีเก่าหายาก", "ยกเมลหลัก"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Discord Vintage", "Rare 2016-2018 ID", "discord", "#F59E0B", "#E11D48"),
         sampleDelivery: "og_discord_2016_legacy@rambler.ru:VintagePass2016! | Full Access",
@@ -797,8 +804,8 @@ const categoriesData = [
   },
   {
     id: "cat-gaming-apps",
-    name: "GAMING ACCOUNTS & STREAMING APPS",
-    subName: "ไอดีเกม FiveM, Steam GTAV, แอปพรีเมียม & AI Tools",
+    name: "FiveM, Steam & เกมมิ่ง",
+    subName: "ไอดีสะอาด ปลดแบน FiveM, GTAV & สตรีมมิ่ง",
     icon: "gamepad-2",
     badge: "WICHX SPECIALS",
     visible: true,
@@ -813,7 +820,7 @@ const categoriesData = [
         stock: 290,
         status: "SALE",
         discountPercent: 60,
-        chips: ["🚗 FiveM", "⚡ ส่งทันที"],
+        chips: ["FiveM", "ส่งทันที"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("FiveM Clean", "Rockstar 2-Step Auth", "game", "#19BAFF", "#EC4899"),
         sampleDelivery: "rockstar_fivem_clean991@firstmail.ltd:FiveMPassword2026",
@@ -828,7 +835,7 @@ const categoriesData = [
         stock: 160,
         status: "SALE",
         discountPercent: 43,
-        chips: ["🎮 Steam แท้", "🔑 ยกไอดี"],
+        chips: ["Steam แท้", "ยกไอดี"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Steam GTA V", "Unlinked Clean Account", "game", "#3B82F6", "#06B6D4"),
         sampleDelivery: "steam_gta5_fresh_id771:SteamMasterPass2026 | Email: steam_mail_gta@outlook.com:EmailPass2026",
@@ -843,7 +850,7 @@ const categoriesData = [
         stock: 44,
         status: "SALE",
         discountPercent: 35,
-        chips: ["🎬 จอส่วนตัว", "🛡️ ประกัน 30 วัน"],
+        chips: ["จอส่วนตัว", "ประกัน 30 วัน"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Netflix UHD", "30 Days Private Screen", "stream", "#E50914", "#19BAFF"),
         sampleDelivery: "netflix_vip_uhd291@wichxstream.com:NfPass4K!2026 | PIN: 1984 | Profile: 1",
@@ -858,7 +865,7 @@ const categoriesData = [
         stock: 100,
         status: "SALE",
         discountPercent: 45,
-        chips: ["🎵 ไร้โฆษณา", "⚡ อนุมัติไว"],
+        chips: ["ไร้โฆษณา", "อนุมัติไว"],
         fulfillmentType: "custom_email_invite",
         imageUrl: createCyberArtwork("YouTube Premium", "Ad-Free Background Play", "stream", "#FF0000", "#38D4FF"),
         instructions: "กรอก Gmail ของคุณเพื่อรับลิงก์คำเชิญเข้าร่วมครอบครัวพรีเมียม (ไม่จำเป็นต้องให้รหัสผ่าน)"
@@ -871,7 +878,7 @@ const categoriesData = [
         originalPrice: 750,
         stock: 15,
         status: "PRE-ORDER",
-        chips: ["💻 AI Tool", "⏳ พรีออเดอร์"],
+        chips: ["AI Tool", "พรีออเดอร์"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Cursor Pro AI", "Claude 3.7 & GPT-4o", "ai", "#00FFA3", "#19BAFF"),
         sampleDelivery: "PREORDER-CONFIRMED: ระบบจะจัดส่งรหัสคีย์เข้าอีเมลของคุณภายใน 24 ชม.",
@@ -885,7 +892,7 @@ const categoriesData = [
         originalPrice: 99,
         stock: 0,
         status: "OUT OF STOCK",
-        chips: ["❌ หมดชั่วคราว", "🔄 รอเติมของ"],
+        chips: ["หมดชั่วคราว", "รอเติมของ"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Out of Stock", "Item Unavailable", "key", "#6B7280", "#374151"),
         sampleDelivery: ""
@@ -894,9 +901,9 @@ const categoriesData = [
   },
   {
     id: "cat-uncategorized",
-    name: "📦 สินค้าทั่วไป (UNCATEGORIZED)",
-    subName: "หมวดสินค้าสแตนด์อโลน สามารถเปิด-ปิดการแสดงผลได้อย่างอิสระ",
-    icon: "box",
+    name: "ซอฟต์แวร์ & คีย์แท้",
+    subName: "Windows 11 Pro, Spotify Family & ดิจิทัลไอเทม",
+    icon: "sparkles",
     badge: "STANDALONE ITEMS",
     visible: true,
     collapsed: false,
@@ -910,7 +917,7 @@ const categoriesData = [
         stock: 50,
         status: "SALE",
         discountPercent: 73,
-        chips: ["🔑 คีย์แท้", "♾️ ถาวร", "🛡️ ย้ายเครื่องได้"],
+        chips: ["คีย์แท้", "ถาวร", "ย้ายเครื่องได้"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Windows 11 Pro", "Original Retail License", "key", "#0078D4", "#19BAFF"),
         sampleDelivery: "W269N-WFGWX-YVC9B-4J6C9-T83GX",
@@ -925,7 +932,7 @@ const categoriesData = [
         stock: 30,
         status: "SALE",
         discountPercent: 50,
-        chips: ["🎧 เมลเดิม", "⚡ ต่ออายุได้"],
+        chips: ["เมลเดิม", "ต่ออายุได้"],
         fulfillmentType: "custom_email_invite",
         imageUrl: createCyberArtwork("Spotify 3M", "Original Family Plan", "stream", "#1DB954", "#19BAFF"),
         instructions: "กรอกอีเมล Spotify เพื่อรับลิงก์ Family Invite เข้าใช้งานทันที"
@@ -983,6 +990,9 @@ class Store {
       appliedPromo: null,
       categories: initialCategories,
       categoryFilters: initialFilters,
+      activeCategory: "all",
+      sortOrder: "popular",
+      inStockOnly: false,
       categoryCollapses: {},
       searchQuery: "",
       activeCarouselIndex: 0
@@ -1227,6 +1237,7 @@ class CatalogService {
       filters[cat.id] = true; // Default all visible
     });
     this.store.set("categoryFilters", filters);
+    this.store.set("activeCategory", "all");
   }
 
   setCategoryFilter(catId) {
@@ -1237,7 +1248,18 @@ class CatalogService {
     } else {
       cats.forEach(c => filters[c.id] = (c.id === catId));
     }
+    this.store.set("activeCategory", catId);
     this.store.set("categoryFilters", filters);
+  }
+
+  setSortOrder(order) {
+    this.store.set("sortOrder", order || "popular");
+  }
+
+  toggleInStockOnly(forceState) {
+    const current = this.store.get("inStockOnly") || false;
+    const next = typeof forceState === "boolean" ? forceState : !current;
+    this.store.set("inStockOnly", next);
   }
 
   toggleCategoryEye(catId) {
@@ -1849,7 +1871,7 @@ class NavbarComponent {
 
     if (totalCount > 0) {
       badge.textContent = totalCount;
-      badge.className = "absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold flex items-center justify-center animate-pulse shadow-lg shadow-[var(--accent)]/40";
+      badge.className = "absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-mono-val font-extrabold flex items-center justify-center animate-pulse shadow-md shadow-[var(--accent)]/40";
     } else {
       badge.className = "hidden";
     }
@@ -1865,7 +1887,7 @@ window.NavbarComponent = NavbarComponent;
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🚀 HERO & TELEMETRY COMPONENT (OOP CONTROLLER)
+ * HERO & TELEMETRY COMPONENT (OOP CONTROLLER - ASYMMETRICAL SPLIT BENTO)
  * ==============================================================================
  */
 
@@ -1889,24 +1911,31 @@ class HeroSectionComponent {
     if (banners.length === 0) return;
 
     container.innerHTML = banners.map((banner, idx) => `
-      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-12 border border-[rgba(25,186,255,0.2)] bg-gradient-to-r ${banner.bgGradient} transition-all duration-500">
-        <div class="relative z-10 max-w-2xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(25,186,255,0.15)] border border-[rgba(25,186,255,0.3)] text-xs font-mono-val text-[var(--accent)] font-bold mb-4">
-            <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></span>
-            ${banner.badge} • ${banner.accentTag}
+      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-8 lg:p-10 border border-white/[0.12] bg-[#0A0E17]/70 backdrop-blur-xl transition-all duration-500 shadow-2xl">
+        <div class="max-w-2xl space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(0,242,255,0.06)] border border-[rgba(0,242,255,0.2)] text-xs font-mono-val text-[var(--accent)] font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+            <span>${banner.badge} • ${banner.accentTag}</span>
           </div>
-          <h2 class="text-2xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white tracking-wide leading-tight mb-3">
+
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-heading font-extrabold text-white tracking-wide leading-tight">
             ${banner.title}
           </h2>
-          <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6 font-normal font-body">
+
+          <p class="text-slate-400 text-xs md:text-sm leading-relaxed font-normal font-body max-w-xl">
             ${banner.description}
           </p>
-          <div class="flex flex-wrap items-center gap-4">
-            <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}')" class="btn-cyber-primary px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-bold cursor-pointer">
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}')" class="btn-cyber-primary btn-shimmer px-5 py-2.5 rounded-xl flex items-center gap-2 text-xs md:text-sm font-extrabold cursor-pointer active:scale-95 transition-transform">
               <span>${banner.ctaText}</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
-            ${banner.accentTag ? `<span class="text-xs font-mono text-slate-400">${banner.accentTag}</span>` : ""}
+            
+            <button onclick="window.openDiscordServicesModal()" class="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-slate-300 hover:text-white font-medium flex items-center gap-2 transition-all cursor-pointer">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>คำนวณราคาบูสต์</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1967,10 +1996,12 @@ class HeroSectionComponent {
       const el = document.getElementById(id);
       if (el) el.textContent = val;
     };
-    setVal("metric-users", metrics.totalUsers || "30,000+");
-    setVal("metric-products", metrics.totalProducts || "145+");
-    setVal("metric-orders", metrics.ordersFulfilled || "660,000+");
-    setVal("metric-uptime", metrics.uptime || "24/7 AUTO");
+    setVal("live-visitors-today", metrics.visitorsToday || "12,450");
+    setVal("live-orders-today", metrics.ordersToday || "850");
+    setVal("live-total-members", metrics.totalMembers || "45,000+");
+    setVal("live-visitors-today-m", metrics.visitorsToday || "12,450");
+    setVal("live-orders-today-m", metrics.ordersToday || "850");
+    setVal("live-total-members-m", metrics.totalMembers || "45,000+");
   }
 }
 
@@ -1983,7 +2014,7 @@ window.HeroSectionComponent = HeroSectionComponent;
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 📦 CATALOG & PRODUCT CARDS COMPONENT (OOP CONTROLLER)
+ * CATALOG & PRODUCT CARDS COMPONENT (OOP CONTROLLER)
  * ==============================================================================
  */
 
@@ -1991,7 +2022,16 @@ class CatalogViewComponent {
   constructor(store) {
     this.store = store;
     this.store.on("change:categories", () => this.render());
-    this.store.on("change:categoryFilters", () => this.render());
+    this.store.on("change:categoryFilters", () => {
+      this.renderCategoryFilterBar();
+      this.renderProducts();
+    });
+    this.store.on("change:activeCategory", () => this.renderCategoryFilterBar());
+    this.store.on("change:sortOrder", () => this.renderProducts());
+    this.store.on("change:inStockOnly", () => {
+      this.renderCategoryFilterBar();
+      this.renderProducts();
+    });
     this.store.on("change:searchQuery", () => this.renderProducts());
   }
 
@@ -2005,30 +2045,80 @@ class CatalogViewComponent {
     if (!container) return;
 
     const categories = this.store.get("categories") || [];
-    const filters = this.store.get("categoryFilters") || {};
-    const allActive = categories.every(c => filters[c.id]);
+    const activeCategory = this.store.get("activeCategory") || "all";
+    const sortOrder = this.store.get("sortOrder") || "popular";
+    const inStockOnly = this.store.get("inStockOnly") || false;
+
+    // Calculate total product count
+    const totalCount = categories.reduce((acc, c) => acc + (c.products?.length || 0), 0);
 
     let html = `
-      <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" class="px-3.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${allActive ? 'border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)]' : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white'}">
-        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-        <span>ทั้งหมด (${categories.reduce((acc, c) => acc + (c.products?.length || 0), 0)})</span>
-      </button>
+      <!-- Left: Ghost Tabs Rail (Frameless & Breathable) -->
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1 scroll-smooth flex-nowrap">
+        <!-- ALL TAB -->
+        <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" 
+          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-white'}"></i>
+          <span>ทั้งหมด</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${activeCategory === 'all' ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${totalCount}</span>
+        </button>
     `;
 
     categories.forEach(cat => {
-      const isVisible = !!filters[cat.id];
+      const isActive = activeCategory === cat.id;
+      const count = cat.products?.length || 0;
+      const icon = cat.icon || "box";
+
       html += `
-        <div class="inline-flex items-center rounded-xl border ${isVisible ? 'border-[var(--accent)] bg-[rgba(25,186,255,0.1)]' : 'border-slate-800 bg-slate-900/60 opacity-60'} transition-all overflow-hidden">
-          <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" class="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer ${isVisible ? 'text-[var(--accent)]' : 'text-slate-400 hover:text-white'}">
-            <i data-lucide="${cat.icon || 'folder'}" class="w-3.5 h-3.5"></i>
-            <span>${cat.name} (${cat.products?.length || 0})</span>
-          </button>
-          <button onclick="window.Shop?.catalogService?.toggleCategoryEye('${cat.id}')" class="px-2 py-1.5 border-l border-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-[var(--accent)] transition-colors cursor-pointer" title="เปิด/ปิดการแสดงผล">
-            <i data-lucide="${isVisible ? 'eye' : 'eye-off'}" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
+        <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" 
+          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-[var(--accent)]'}"></i>
+          <span>${cat.name}</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${isActive ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${count}</span>
+        </button>
       `;
     });
+
+    html += `
+      </div>
+
+      <!-- Right: Utility Controls (Frameless Minimalist Controls) -->
+      <div class="flex items-center gap-2 flex-shrink-0 pt-2 md:pt-0 justify-end">
+        <!-- IN-STOCK ONLY TOGGLE -->
+        <button onclick="window.Shop?.catalogService?.toggleInStockOnly()" 
+          title="กรองเฉพาะสินค้าที่มีของพร้อมจัดส่ง"
+          class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer select-none active:scale-95 ${inStockOnly 
+            ? 'bg-emerald-500/15 text-emerald-300' 
+            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+          <span class="relative flex h-2 w-2">
+            ${inStockOnly ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
+            <span class="relative inline-flex rounded-full h-2 w-2 ${inStockOnly ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-slate-600'}"></span>
+          </span>
+          <span class="text-xs">เฉพาะพร้อมส่ง</span>
+        </button>
+
+        <!-- SORT DROPDOWN -->
+        <div class="relative flex items-center">
+          <div class="pointer-events-none absolute left-2.5 flex items-center text-slate-400">
+            <i data-lucide="arrow-down-up" class="w-3.5 h-3.5 text-slate-400"></i>
+          </div>
+          <select onchange="window.Shop?.catalogService?.setSortOrder(this.value)" 
+            class="pl-7 pr-7 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-xs text-slate-300 hover:text-white font-semibold focus:outline-none cursor-pointer transition-colors appearance-none">
+            <option value="popular" class="bg-[#0C111A] text-white" ${sortOrder === 'popular' ? 'selected' : ''}>ยอดนิยม</option>
+            <option value="price_asc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_asc' ? 'selected' : ''}>ราคา: ต่ำ → สูง</option>
+            <option value="price_desc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_desc' ? 'selected' : ''}>ราคา: สูง → ต่ำ</option>
+            <option value="discount" class="bg-[#0C111A] text-white" ${sortOrder === 'discount' ? 'selected' : ''}>ส่วนลดสูงสุด</option>
+          </select>
+          <div class="pointer-events-none absolute right-2 flex items-center text-slate-400">
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+      </div>
+    `;
 
     container.innerHTML = html;
     if (window.lucide) lucide.createIcons();
@@ -2041,22 +2131,37 @@ class CatalogViewComponent {
     const categories = this.store.get("categories") || [];
     const filters = this.store.get("categoryFilters") || {};
     const query = this.store.get("searchQuery") || "";
+    const sortOrder = this.store.get("sortOrder") || "popular";
+    const inStockOnly = this.store.get("inStockOnly") || false;
 
     const visibleCategories = categories.filter(c => filters[c.id]);
 
     if (visibleCategories.length === 0) {
       container.innerHTML = `
-        <div class="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800">
-          <i data-lucide="eye-off" class="w-8 h-8 mx-auto text-slate-500 mb-2"></i>
-          <p class="text-sm text-slate-400">ทุกหมวดหมู่ถูกปิดการแสดงผลอยู่ กดเปิดที่แถบตัวกรองด้านบนเพื่อดูสินค้า</p>
+        <div class="p-12 text-center rounded-3xl bg-[#0C111A]/80 border border-[rgba(255,255,255,0.08)]">
+          <i data-lucide="package-x" class="w-10 h-10 mx-auto text-slate-500 mb-3"></i>
+          <h4 class="text-base font-heading font-bold text-white mb-1">ไม่พบหมวดหมู่ที่เลือก</h4>
+          <p class="text-xs text-slate-400">คลิกปุ่ม "ทั้งหมด" ด้านบนเพื่อดูสินค้าครบทุกหมวดหมู่</p>
+          <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" class="mt-4 px-4 py-2 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold text-xs cursor-pointer active:scale-95 transition-transform shadow-lg">
+            ดูสินค้าทั้งหมด
+          </button>
         </div>
       `;
       if (window.lucide) lucide.createIcons();
       return;
     }
 
-    container.innerHTML = visibleCategories.map(cat => {
+    let renderedAnyProduct = false;
+
+    const html = visibleCategories.map(cat => {
       let prods = cat.products || [];
+
+      // Filter: In-Stock Only
+      if (inStockOnly) {
+        prods = prods.filter(p => p.stock > 0);
+      }
+
+      // Filter: Search Query
       if (query) {
         prods = prods.filter(p => 
           p.title.toLowerCase().includes(query) || 
@@ -2064,17 +2169,36 @@ class CatalogViewComponent {
         );
       }
 
-      if (prods.length === 0 && query) return "";
+      // Sort
+      if (sortOrder === "price_asc") {
+        prods = [...prods].sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price_desc") {
+        prods = [...prods].sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "discount") {
+        prods = [...prods].sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+      }
+
+      if (prods.length === 0) {
+        if (query || inStockOnly) return "";
+      }
+
+      renderedAnyProduct = true;
 
       return `
-        <div id="${cat.id}" class="space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-5 rounded-full bg-[var(--accent)]"></span>
-              <h3 class="text-base sm:text-lg font-heading font-extrabold text-white">${cat.name}</h3>
-              <span class="text-xs text-slate-400 font-mono">${cat.subName || ""}</span>
+        <div id="${cat.id}" class="space-y-4 mb-10">
+          <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-6 rounded-full bg-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.5)]"></span>
+              <div>
+                <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
+                <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
+              </div>
             </div>
-            <span class="text-xs text-slate-400 font-mono">${prods.length} รายการ</span>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-[#0C111A] border border-[rgba(255,255,255,0.06)] text-xs text-slate-300 font-mono-val font-bold">
+                ${prods.length} รายการ
+              </span>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -2083,6 +2207,23 @@ class CatalogViewComponent {
         </div>
       `;
     }).join("");
+
+    if (!renderedAnyProduct) {
+      container.innerHTML = `
+        <div class="p-12 text-center rounded-3xl bg-[#0C111A]/80 border border-[rgba(255,255,255,0.08)]">
+          <i data-lucide="package-x" class="w-10 h-10 mx-auto text-slate-500 mb-3"></i>
+          <h4 class="text-base font-heading font-bold text-white mb-1">ไม่พบสินค้าที่ตรงกับเงื่อนไข</h4>
+          <p class="text-xs text-slate-400">ลองรีเซ็ตตัวกรอง หรือค้นหาด้วยคำอื่น</p>
+          <div class="mt-4 flex items-center justify-center gap-3">
+            <button onclick="window.Shop?.catalogService?.setCategoryFilter('all'); if (window.Shop?.catalogService?.toggleInStockOnly) window.Shop.catalogService.toggleInStockOnly(false); if (window.Shop?.catalogService?.setSearchQuery) { window.Shop.catalogService.setSearchQuery(''); const el = document.getElementById('search-input'); if (el) el.value = ''; const elMob = document.getElementById('search-input-mobile'); if (elMob) elMob.value = ''; }" class="px-4 py-2 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold text-xs cursor-pointer active:scale-95 transition-transform shadow-lg">
+              รีเซ็ตตัวกรองทั้งหมด
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      container.innerHTML = html;
+    }
 
     if (window.lucide) lucide.createIcons();
   }
@@ -2119,7 +2260,7 @@ class CatalogViewComponent {
           </div>
         </div>
 
-        <!-- Footer & Action (Fitts's Law Optimized Hit Area) -->
+                <!-- Footer & Action (Fitts's Law Dual-Action: Cart + 1-Click Buy) -->
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
@@ -2129,13 +2270,18 @@ class CatalogViewComponent {
           ${isCustom ? `
             <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-              <span>สั่งทำพิเศษ</span>
+              <span>สั่งทำ</span>
             </button>
           ` : `
-            <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5">
-              <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
-              <span>ใส่ตะกร้า</span>
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
+                <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-300"></i>
+              </button>
+              <button onclick="window.quickBuyProduct('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
+                <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
+                <span>ซื้อด่วน</span>
+              </button>
+            </div>
           `}
         </div>
       </div>
@@ -2204,6 +2350,14 @@ class CartDrawerComponent {
 
     this.store.addToCart(prod, qty);
     window.UI?.toast(`เพิ่ม "${prod.title}" ลงตะกร้าแล้ว!`, "success");
+
+    // Tactile Cart Badge Pop
+    const cartBtn = document.querySelector('[onclick="toggleCartDrawer()"]');
+    if (cartBtn) {
+      cartBtn.classList.remove('animate-cart-pop');
+      void cartBtn.offsetWidth;
+      cartBtn.classList.add('animate-cart-pop');
+    }
   }
 
   render() {
@@ -2318,7 +2472,7 @@ window.CartDrawerComponent = CartDrawerComponent;
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 💳 TOP-UP MODAL COMPONENT (OOP CONTROLLER)
+ * TOP-UP MODAL COMPONENT (OOP CONTROLLER)
  * ==============================================================================
  */
 
@@ -2431,7 +2585,7 @@ class TopUpModalComponent {
     try {
       const res = await this.paymentService.redeemTrueMoneyVoucher(url);
       window.UI?.confetti();
-      window.UI?.toast(`🧧 รับเงินจากซองของขวัญสำเร็จ +฿${res.amount.toFixed(2)}!`, "success");
+      window.UI?.toast(`รับเงินจากซองของขวัญสำเร็จ +฿${res.amount.toFixed(2)}!`, "success");
       input.value = "";
       setTimeout(() => this.close(), 1500);
     } catch (err) {
@@ -2455,7 +2609,7 @@ class TopUpModalComponent {
     try {
       await this.paymentService.verifyBankTransferSlip(amount, transRef);
       window.UI?.confetti();
-      window.UI?.toast(`🏦 เติมเงินผ่านธนาคารสำเร็จ +฿${amount.toFixed(2)}!`, "success");
+      window.UI?.toast(`เติมเงินผ่านธนาคารสำเร็จ +฿${amount.toFixed(2)}!`, "success");
       document.getElementById("bank-transfer-transref").value = "";
       setTimeout(() => this.close(), 1500);
     } catch (err) {
@@ -2483,7 +2637,7 @@ class TopUpModalComponent {
     try {
       await this.paymentService.processCardPayment(amount, { number, expiry, cvv, holder }, bindToggle);
       window.UI?.confetti();
-      window.UI?.toast(`💳 ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
+      window.UI?.toast(`ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
       setTimeout(() => this.close(), 1500);
     } catch (err) {
       window.UI?.toast(err.message, "error");
@@ -2537,7 +2691,7 @@ class HistoryModalComponent {
       modalEl.id = "history-modal";
       modalEl.className = "fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all";
       modalEl.innerHTML = `
-        <div class="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[var(--accent)]/10 overflow-hidden">
+        <div class="relative modal-spring-dialog w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[var(--accent)]/10 overflow-hidden">
           
           <!-- Header -->
           <div class="p-5 md:p-6 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/60">
@@ -2782,7 +2936,7 @@ if (typeof module !== "undefined" && module.exports) {
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🚀 DISCORD SERVICES & INTERACTIVE CALCULATOR (BOOST & QUESTS)
+ * DISCORD SERVICES & INTERACTIVE CALCULATOR (BOOST & QUESTS)
  * ==============================================================================
  */
 
@@ -2820,7 +2974,7 @@ class DiscordServiceModalComponent {
       modalEl.id = "discord-services-modal";
       modalEl.className = "fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all";
       modalEl.innerHTML = `
-        <div class="relative w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[#5865F2]/20 overflow-hidden">
+        <div class="relative modal-spring-dialog w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-[#5865F2]/20 overflow-hidden">
           
           <!-- Header -->
           <div class="p-5 md:p-6 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/60">
@@ -2979,7 +3133,7 @@ class DiscordServiceModalComponent {
               onclick="window.setBoostPreset(14)" 
               class="p-3 rounded-2xl border text-center transition-all ${this.boostCount === 14 ? 'bg-[#5865F2]/20 border-[#5865F2] text-white shadow-lg shadow-[#5865F2]/20 ring-1 ring-[#5865F2]' : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'}"
             >
-              <div class="text-[10px] font-mono text-emerald-400 font-bold">🔥 POPULAR • LV.3</div>
+              <div class="text-[10px] font-mono text-emerald-400 font-bold">POPULAR • LV.3</div>
               <div class="text-sm font-extrabold text-white">14 Boosts</div>
               <div class="text-[10px] text-slate-400 mt-1">แบนเนอร์ + ลิงก์ Custom</div>
             </button>
@@ -3409,6 +3563,376 @@ window.SocialProofComponent = SocialProofComponent;
 
 
 /* ============================================================================== */
+/* 📦 MODULE: js/components/AmbientWaves.js */
+/* ============================================================================== */
+/**
+ * ==============================================================================
+ * 🌊 DYNAMIC AMBIENT CYBER WAVES & PARTICLE ENGINE v2.5 (HIGH-ACTION LIVING CANVAS)
+ * High-action 60fps GPU-accelerated fluid wave canvas + floating cyber motes
+ * ==============================================================================
+ */
+
+class AmbientWavesEngine {
+  constructor(canvasId = "ambient-cyber-canvas") {
+    this.canvasId = canvasId;
+    this.canvas = null;
+    this.ctx = null;
+    this.animationFrameId = null;
+    this.width = 0;
+    this.height = 0;
+    this.step = 0;
+    this.pulseTime = 0;
+
+    // Mouse Physics
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.rawMouseX = -999;
+    this.rawMouseY = -999;
+    this.targetMouseX = 0;
+    this.targetMouseY = 0;
+    this.isRunning = false;
+
+    // 55 Floating Cyber Particles
+    this.particles = [];
+    this.particleCount = 55;
+
+    // Respect reduced motion
+    this.prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    this.init();
+  }
+
+  init() {
+    if (typeof document === "undefined") return;
+
+    this.canvas = document.getElementById(this.canvasId);
+    if (!this.canvas) {
+      this.canvas = document.createElement("canvas");
+      this.canvas.id = this.canvasId;
+      this.canvas.className = "fixed inset-0 pointer-events-none z-0 w-full h-full";
+      this.canvas.style.opacity = "1";
+      document.body.prepend(this.canvas);
+    }
+
+    this.ctx = this.canvas.getContext("2d", { alpha: true });
+    this.resize();
+    this.initParticles();
+
+    window.addEventListener("resize", () => {
+      this.resize();
+      this.initParticles();
+    }, { passive: true });
+    
+    // Smooth mouse tracking
+    window.addEventListener("mousemove", (e) => {
+      this.rawMouseX = e.clientX;
+      this.rawMouseY = e.clientY;
+      this.targetMouseX = (e.clientX / this.width - 0.5) * 90;
+      this.targetMouseY = (e.clientY / this.height - 0.5) * 60;
+    }, { passive: true });
+
+    // Battery / Background Tab Saver
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        this.stop();
+      } else {
+        this.start();
+      }
+    });
+
+    if (!this.prefersReducedMotion) {
+      this.start();
+    } else {
+      this.drawStatic();
+    }
+  }
+
+  initParticles() {
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * (this.width || 1200),
+        y: Math.random() * (this.height || 800),
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -0.35 - Math.random() * 0.55,
+        radius: 1.2 + Math.random() * 2.2,
+        baseAlpha: 0.35 + Math.random() * 0.55,
+        pulseSpeed: 0.025 + Math.random() * 0.04,
+        pulsePhase: Math.random() * Math.PI * 2,
+        isCyan: Math.random() > 0.3
+      });
+    }
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    if (this.ctx) {
+      this.ctx.scale(dpr, dpr);
+    }
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    const render = () => {
+      if (!this.isRunning) return;
+      this.draw();
+      this.animationFrameId = requestAnimationFrame(render);
+    };
+    this.animationFrameId = requestAnimationFrame(render);
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  draw() {
+    if (!this.ctx || !this.width || !this.height) return;
+
+    // Smooth mouse lerp
+    this.mouseX += (this.targetMouseX - this.mouseX) * 0.06;
+    this.mouseY += (this.targetMouseY - this.mouseY) * 0.06;
+
+    this.step += 0.014;
+    this.pulseTime += 0.018;
+
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // 1. Draw Floating Cyber Aurora Pools (Ambient Glow Nebulas)
+    this.drawNebulaGlows();
+
+    // 2. Draw Layered Harmonic Waves with Luminous Crests
+    // Layer 1: Deep Indigo Atmospheric Wave (Upper Atmosphere)
+    this.renderWave({
+      yBase: this.height * 0.20 - this.mouseY * 0.5,
+      amplitude: 62,
+      frequency: 0.0013,
+      speed: -this.step * 0.75,
+      phase: 0.4,
+      gradientStart: "rgba(88, 101, 242, 0.20)",
+      gradientEnd: "rgba(88, 101, 242, 0.00)",
+      strokeColor: "rgba(99, 102, 241, 0.55)",
+      lineWidth: 1.6
+    });
+
+    // Layer 2: Electric Cyan Hero Wave (Main Vibrant Ribbon)
+    this.renderWave({
+      yBase: this.height * 0.38 + this.mouseY * 0.9,
+      amplitude: 54,
+      frequency: 0.0018,
+      speed: this.step * 1.15,
+      phase: 0,
+      gradientStart: "rgba(0, 242, 255, 0.25)",
+      gradientEnd: "rgba(0, 242, 255, 0.00)",
+      strokeColor: "rgba(0, 242, 255, 0.85)",
+      lineWidth: 2.2,
+      glowBlur: 16,
+      glowColor: "rgba(0, 242, 255, 0.95)"
+    });
+
+    // Layer 3: Neon Mint / Teal Horizon Wave (Through Stats & Category Bar)
+    this.renderWave({
+      yBase: this.height * 0.56 - this.mouseY * 0.4,
+      amplitude: 44,
+      frequency: 0.0022,
+      speed: this.step * 1.45,
+      phase: Math.PI * 0.85,
+      gradientStart: "rgba(0, 255, 200, 0.18)",
+      gradientEnd: "rgba(0, 255, 200, 0.00)",
+      strokeColor: "rgba(0, 255, 200, 0.65)",
+      lineWidth: 1.6,
+      glowBlur: 12,
+      glowColor: "rgba(0, 255, 200, 0.8)"
+    });
+
+    // Layer 4: Lower Cyber Deep Blue Wave (Through Product Catalog)
+    this.renderWave({
+      yBase: this.height * 0.76 + this.mouseY * 0.6,
+      amplitude: 48,
+      frequency: 0.0016,
+      speed: -this.step * 0.9,
+      phase: Math.PI * 1.4,
+      gradientStart: "rgba(0, 168, 255, 0.16)",
+      gradientEnd: "rgba(0, 168, 255, 0.00)",
+      strokeColor: "rgba(0, 168, 255, 0.55)",
+      lineWidth: 1.5
+    });
+
+    // 3. Draw Floating Cyber Particles & Interactive Constellation
+    this.drawParticles();
+  }
+
+  drawNebulaGlows() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+
+    // Nebula 1: Top Center-Left Electric Cyan Pulse
+    const n1X = w * 0.35 + Math.sin(this.pulseTime * 0.7) * 110;
+    const n1Y = h * 0.22 + Math.cos(this.pulseTime * 0.5) * 60;
+    const g1 = ctx.createRadialGradient(n1X, n1Y, 15, n1X, n1Y, 480);
+    g1.addColorStop(0, "rgba(0, 242, 255, 0.22)");
+    g1.addColorStop(0.4, "rgba(0, 242, 255, 0.08)");
+    g1.addColorStop(1, "rgba(0, 242, 255, 0.00)");
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, w, h);
+
+    // Nebula 2: Mid-Right Deep Indigo Pulse
+    const n2X = w * 0.78 + Math.cos(this.pulseTime * 0.6) * 95;
+    const n2Y = h * 0.45 + Math.sin(this.pulseTime * 0.8) * 75;
+    const g2 = ctx.createRadialGradient(n2X, n2Y, 15, n2X, n2Y, 520);
+    g2.addColorStop(0, "rgba(88, 101, 242, 0.18)");
+    g2.addColorStop(0.4, "rgba(88, 101, 242, 0.06)");
+    g2.addColorStop(1, "rgba(88, 101, 242, 0.00)");
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  renderWave(opts) {
+    const { yBase, amplitude, frequency, speed, phase, gradientStart, gradientEnd, strokeColor, lineWidth, glowBlur, glowColor } = opts;
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+
+    ctx.save();
+
+    // 1. Path of the wave
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    ctx.lineTo(0, yBase);
+
+    const stepX = 18;
+    const points = [];
+    for (let x = 0; x <= w + stepX; x += stepX) {
+      const angle = (x + this.mouseX * 1.5) * frequency + speed + phase;
+      const y = yBase + Math.sin(angle) * amplitude + Math.cos(angle * 0.65) * (amplitude * 0.45);
+      points.push({ x, y });
+      ctx.lineTo(x, y);
+    }
+
+    ctx.lineTo(w, h);
+    ctx.closePath();
+
+    // Fill with smooth gradient
+    const grad = ctx.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude * 3);
+    grad.addColorStop(0, gradientStart);
+    grad.addColorStop(1, gradientEnd);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // 2. Stroke the luminous wave crest
+    if (strokeColor) {
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        const xc = (points[i - 1].x + points[i].x) / 2;
+        const yc = (points[i - 1].y + points[i].y) / 2;
+        ctx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+      }
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = lineWidth || 1.5;
+
+      if (glowBlur && glowColor) {
+        ctx.shadowBlur = glowBlur;
+        ctx.shadowColor = glowColor;
+      }
+
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  drawParticles() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+
+      // Move particle
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Mouse repulsion physics
+      if (this.rawMouseX > 0 && this.rawMouseY > 0) {
+        const dx = p.x - this.rawMouseX;
+        const dy = p.y - this.rawMouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130 && dist > 0) {
+          const force = (130 - dist) / 130;
+          p.x += (dx / dist) * force * 2.0;
+          p.y += (dy / dist) * force * 2.0;
+        }
+      }
+
+      // Wrap around edges
+      if (p.y < -10) {
+        p.y = h + 10;
+        p.x = Math.random() * w;
+      }
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+
+      // Pulse alpha
+      p.pulsePhase += p.pulseSpeed;
+      const curAlpha = p.baseAlpha * (0.6 + 0.4 * Math.sin(p.pulsePhase));
+
+      // Draw particle mote
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.isCyan
+        ? `rgba(0, 242, 255, ${curAlpha})`
+        : `rgba(226, 232, 240, ${curAlpha * 0.9})`;
+
+      ctx.shadowBlur = p.radius * 4;
+      ctx.shadowColor = p.isCyan ? "rgba(0, 242, 255, 0.95)" : "rgba(255, 255, 255, 0.85)";
+      ctx.fill();
+      ctx.restore();
+
+      // Draw connections between nearby particles
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const p2 = this.particles[j];
+        const cdx = p.x - p2.x;
+        const cdy = p.y - p2.y;
+        const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+
+        if (cdist < 85) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          const lineAlpha = (1 - cdist / 85) * 0.22;
+          ctx.strokeStyle = `rgba(0, 242, 255, ${lineAlpha})`;
+          ctx.lineWidth = 0.85;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  drawStatic() {
+    if (!this.ctx) return;
+    this.step = 1;
+    this.draw();
+  }
+}
+
+window.AmbientWavesEngine = AmbientWavesEngine;
+
+
+
+/* ============================================================================== */
 /* 📦 MODULE: app.js */
 /* ============================================================================== */
 /**
@@ -3455,6 +3979,7 @@ class ShopApp {
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
+    this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
   }
 
   async init() {
@@ -3488,8 +4013,47 @@ class ShopApp {
     }
 
     this.socialProof.init();
+    this.initCardSpotlight();
+    this.animateMetricsCountUp();
     if (window.lucide) lucide.createIcons();
     console.info("✅ [NYX9 STUDIO] Storefront Ready!");
+  }
+
+  initCardSpotlight() {
+    document.addEventListener("mousemove", (e) => {
+      const card = e.target.closest?.(".product-card");
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+    }, { passive: true });
+  }
+
+  animateMetricsCountUp() {
+    const runCount = (id, target, suffix = "", duration = 1200) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const startTime = performance.now();
+      const frame = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const cur = Math.floor(target * ease);
+        el.textContent = cur.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(frame);
+        else el.textContent = target.toLocaleString() + suffix;
+      };
+      requestAnimationFrame(frame);
+    };
+
+    setTimeout(() => {
+      runCount("live-visitors-today", 12450);
+      runCount("live-visitors-today-m", 12450);
+      runCount("live-orders-today", 850);
+      runCount("live-orders-today-m", 850);
+      runCount("live-total-members", 45000, "+");
+      runCount("live-total-members-m", 45000, "+");
+    }, 150);
   }
 
   renderAcceptedPaymentsFooter() {
@@ -3702,3 +4266,56 @@ window.submitClaimTicket = () => window.Shop.modals.submitClaim();
 window.handleSearchInput = (e) => window.Shop.catalogService.setSearchQuery(e.target.value);
 window.showToast = (msg, type) => window.UI?.toast(msg, type);
 window.triggerConfetti = () => window.UI?.confetti();
+
+// ==============================================================================
+// ⚡ EXPRESS 1-CLICK FAST BUY ENGINE
+// ==============================================================================
+window.quickBuyProduct = async (productId) => {
+  const store = window.AppStore;
+  const categories = store.get("categories") || [];
+  let found = null;
+  for (const cat of categories) {
+    const p = (cat.products || []).find(x => x.id === productId);
+    if (p) { found = p; break; }
+  }
+  if (!found) return;
+
+  const currentBalance = store.get("walletBalance") || 0;
+  if (currentBalance < found.price) {
+    const deficit = found.price - currentBalance;
+    window.UI?.toast(`ยอดเงินในกระเป๋าไม่พอ (ขาด ฿${deficit.toFixed(2)}) เติมเงินเพื่อซื้อทันที`, "warning");
+    window.openTopUpModal(Math.ceil(deficit));
+    return;
+  }
+
+  try {
+    store.addToCart(found);
+    const res = await window.Shop.checkoutService.executeCheckout();
+    window.Shop.modals.showInstantDelivery(res);
+    window.UI?.toast(`⚡ ซื้อด่วนสำเร็จ! ส่งมอบรหัส "${found.title}" ในระบบคลังเรียบร้อย`, "success");
+    window.UI?.confetti();
+  } catch (err) {
+    window.UI?.toast(err.message, "error");
+  }
+};
+
+// ==============================================================================
+// ⌨️ GLOBAL KEYBOARD SHORTCUTS (LINEAR / DISCORD STYLE)
+// ==============================================================================
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA")) {
+    e.preventDefault();
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+      searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  if (e.key === "Escape") {
+    const searchInput = document.getElementById("search-input");
+    if (searchInput && document.activeElement === searchInput) {
+      searchInput.blur();
+    }
+  }
+});

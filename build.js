@@ -21,6 +21,7 @@ const SOURCE_FILES = [
   'js/components/DiscordServiceModal.js',
   'js/components/Modals.js',
   'js/components/SocialProof.js',
+  'js/components/AmbientWaves.js',
   'app.js'
 ];
 

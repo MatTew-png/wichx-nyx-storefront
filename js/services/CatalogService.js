@@ -31,6 +31,7 @@ class CatalogService {
       filters[cat.id] = true; // Default all visible
     });
     this.store.set("categoryFilters", filters);
+    this.store.set("activeCategory", "all");
   }
 
   setCategoryFilter(catId) {
@@ -41,7 +42,18 @@ class CatalogService {
     } else {
       cats.forEach(c => filters[c.id] = (c.id === catId));
     }
+    this.store.set("activeCategory", catId);
     this.store.set("categoryFilters", filters);
+  }
+
+  setSortOrder(order) {
+    this.store.set("sortOrder", order || "popular");
+  }
+
+  toggleInStockOnly(forceState) {
+    const current = this.store.get("inStockOnly") || false;
+    const next = typeof forceState === "boolean" ? forceState : !current;
+    this.store.set("inStockOnly", next);
   }
 
   toggleCategoryEye(catId) {
