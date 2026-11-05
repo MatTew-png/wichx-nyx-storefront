@@ -49,6 +49,14 @@ function build() {
   const bundlePath = path.join(distDir, 'store.bundle.js');
   fs.writeFileSync(bundlePath, bundleCode, 'utf8');
 
+  // Copy assets folder into dist/assets for standalone deployability
+  const assetsDir = path.join(__dirname, 'assets');
+  const distAssetsDir = path.join(distDir, 'assets');
+  if (fs.existsSync(assetsDir)) {
+    fs.cpSync(assetsDir, distAssetsDir, { recursive: true });
+    console.log('✅ [BUILD] Synced assets/ into dist/assets/');
+  }
+
   // Validate syntax
   new Function(bundleCode);
 

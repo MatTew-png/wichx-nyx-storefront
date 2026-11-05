@@ -102,7 +102,7 @@
       <!-- Store Branding -->
       <a href="#" class="flex items-center gap-3 group shrink-0">
         <div class="relative w-10 h-10 rounded-xl bg-[#090D15] border border-white/[0.1] flex items-center justify-center overflow-hidden p-1.5 shadow-[0_0_15px_rgba(0,163,255,0.2)] transition-all group-hover:scale-105 group-hover:border-[var(--accent)]/50">
-          <img src="assets/logo.png" alt="NYX9 STUDIO" class="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,163,255,0.35)]" />
+          <img src="assets/logo.png" alt="NYX9 STUDIO" class="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,163,255,0.35)]" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpolygon points=\'50,5 90,25 90,75 50,95 10,75 10,25\' fill=\'%230A0E17\' stroke=\'%2300F2FF\' stroke-width=\'4\'/%3E%3Cpath d=\'M50,22 L35,52 L48,52 L42,78 L65,44 L52,44 Z\' fill=\'%2300F2FF\'/%3E%3C/svg%3E';" />
         </div>
         <div>
           <div class="text-base md:text-lg font-heading font-extrabold tracking-wider text-white group-hover:text-[var(--accent)] transition-colors" data-bind="storeName">
@@ -239,21 +239,21 @@
        2. HERO PROMO BANNER CAROUSEL (WICHX STYLE)
        ============================================================================== -->
   <main class="max-w-7xl mx-auto px-4 md:px-8 py-6 w-full flex-1 relative z-10">
-    <section class="relative mb-10">
+    <section class="relative mb-10 px-5 sm:px-0">
       <!-- Carousel Outer Container -->
-      <div class="overflow-hidden rounded-2xl relative">
+      <div class="overflow-hidden rounded-2xl relative border border-white/[0.08]">
         <div id="hero-carousel-track" class="flex transition-transform duration-500 ease-out">
           <!-- Banners Rendered Dynamically from storeConfig.heroBanners -->
         </div>
-
-        <!-- Carousel Navigation Arrows -->
-        <button onclick="prevCarouselSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 border border-slate-700 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black transition-all" title="สไลด์ก่อนหน้า">
-          <i data-lucide="chevron-left" class="w-5 h-5"></i>
-        </button>
-        <button onclick="nextCarouselSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 border border-slate-700 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black transition-all" title="สไลด์ถัดไป">
-          <i data-lucide="chevron-right" class="w-5 h-5"></i>
-        </button>
       </div>
+
+      <!-- Carousel Navigation Arrows (Positioned OUTSIDE the hero card - Zero overlap with content) -->
+      <button onclick="prevCarouselSlide()" class="absolute left-0 sm:-left-5 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A0E17]/95 border border-white/20 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black hover:border-[var(--accent)] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.6)] active:scale-95 cursor-pointer backdrop-blur-md" title="สไลด์ก่อนหน้า" aria-label="Previous slide">
+        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      </button>
+      <button onclick="nextCarouselSlide()" class="absolute right-0 sm:-right-5 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A0E17]/95 border border-white/20 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black hover:border-[var(--accent)] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.6)] active:scale-95 cursor-pointer backdrop-blur-md" title="สไลด์ถัดไป" aria-label="Next slide">
+        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+      </button>
 
       <!-- Carousel Indicators Dots -->
       <div id="hero-carousel-dots" class="flex items-center justify-center gap-1.5 mt-3">

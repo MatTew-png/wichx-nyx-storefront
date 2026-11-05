@@ -69,11 +69,15 @@ class AuthService {
       window.UI?.toast("ระบบยังไม่ได้เชื่อมต่อกับ Supabase", "error");
       return;
     }
-    window.UI?.toast("กำลังเปลี่ยนเส้นทางไปหน้าล็อกอิน Discord...", "info");
     try {
       await window.SupabaseAdapter.loginWithDiscord();
     } catch (err) {
-      window.UI?.toast(`เกิดข้อผิดพลาด: ${err.message}`, "error");
+      const msg = err.message || "";
+      if (msg.includes("provider is not enabled") || msg.includes("validation_failed")) {
+        window.UI?.toast("ยังไม่ได้เปิดใช้งาน Discord ใน Supabase Dashboard (ไปที่ Authentication -> Providers -> Discord เพื่อใส่ Client ID & Secret)", "warning");
+      } else {
+        window.UI?.toast(`เกิดข้อผิดพลาด: ${msg}`, "error");
+      }
     }
   }
 
