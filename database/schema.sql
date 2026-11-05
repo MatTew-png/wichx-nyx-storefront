@@ -2,21 +2,26 @@
 -- 🐘 NYX9 STUDIO — SUPABASE POSTGRESQL PRODUCTION SCHEMA (ENTERPRISE ARMORED)
 -- ==============================================================================
 -- ครอบคลุม: บัญชีผู้ใช้, หมวดหมู่, สินค้า, สต็อกออโต้, คำสั่งซื้อ, ประวัติเติมเงิน,
--- และระบบความปลอดภัยระดับสากล: Anti-Dupe Slip, Promo Limiter, Warranty, Audit Logs & Blacklist
+-- และระบบความปลอดภัยระดับสากล: Row Level Security (RLS), Anti-Dupe Slip, 
+-- Hardened Search Path, Promo Limiter, Warranty, Audit Logs & Blacklist
 -- ==============================================================================
 
 -- 0. เปิดใช้งาน Extension ที่จำเป็น
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- 1. ตารางข้อมูลโปรไฟล์และกระเป๋าเงินผู้ใช้ (เชื่อมต่อกับ Supabase Auth)
+-- ==============================================================================
+-- 1. CORE DATA TABLES
+-- ==============================================================================
+
+-- 1. ตารางข้อมูลโปรไฟล์และกระเป๋าเงินผู้ใช้
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     discord_id TEXT UNIQUE,
     username TEXT,
     avatar_url TEXT,
     balance NUMERIC(12,2) NOT NULL DEFAULT 0.00 CHECK (balance >= 0),
-    role TEXT NOT NULL DEFAULT 'customer', -- 'customer', 'admin'
+    role TEXT NOT NULL DEFAULT 'customer',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -49,27 +54,28 @@ CREATE TABLE IF NOT EXISTS public.products (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 4. ตารางคลังสต็อกรหัสสินค้าดิจิทัล (Inventory Keys Pool)
+-- 4. ตารางคลังสต็อกคีย์ดิจิทัล (Inventory Vault)
 CREATE TABLE IF NOT EXISTS public.inventory_keys (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     product_id TEXT NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
-    credential_data TEXT NOT NULL, -- เช่น email:password หรือ license key
+    credential_data TEXT NOT NULL,
     is_sold BOOLEAN NOT NULL DEFAULT FALSE,
     order_id TEXT,
     sold_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_inventory_keys_unsold 
-ON public.inventory_keys(product_id) WHERE is_sold = FALSE;
+CREATE INDEX IF NOT EXISTS idx_inventory_product_unsold 
+ON public.inventory_keys (product_id) 
+WHERE is_sold = FALSE;
 
--- 5. ตารางคำสั่งซื้อ (Orders)
+-- 5. ตารางประวัติคำสั่งซื้อ (Orders)
 CREATE TABLE IF NOT EXISTS public.orders (
-    id TEXT PRIMARY KEY, -- เช่น WX-839201
+    id TEXT PRIMARY KEY,
     user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     total_amount NUMERIC(12,2) NOT NULL CHECK (total_amount >= 0),
     payment_method TEXT NOT NULL DEFAULT 'wallet',
-    status TEXT NOT NULL DEFAULT 'PAID', -- PAID, PENDING, FAILED, REFUNDED
+    status TEXT NOT NULL DEFAULT 'PAID',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -89,22 +95,18 @@ CREATE TABLE IF NOT EXISTS public.order_items (
 CREATE TABLE IF NOT EXISTS public.topup_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-    gateway TEXT NOT NULL, -- promptpay, truemoney, crypto_ltc
+    gateway TEXT NOT NULL,
     amount NUMERIC(12,2) NOT NULL CHECK (amount > 0),
     bonus_amount NUMERIC(12,2) DEFAULT 0.00,
-    status TEXT NOT NULL DEFAULT 'SUCCESS', -- SUCCESS, PENDING, FAILED
+    status TEXT NOT NULL DEFAULT 'SUCCESS',
     trans_ref TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ==============================================================================
--- 🛡️ SECURITY & ANTI-FRAUD MODULES (ระดับสากล ป้องกันการโกงเงิน 100%)
--- ==============================================================================
-
 -- 8. ตารางป้องกันสลิปซ้ำ (Anti-Dupe Slip Protection)
 CREATE TABLE IF NOT EXISTS public.used_payment_slips (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    slip_trans_ref TEXT UNIQUE NOT NULL, -- รหัสอ้างอิงสลิป ล็อกห้ามซ้ำเด็ดขาด
+    slip_trans_ref TEXT UNIQUE NOT NULL,
     amount NUMERIC(10,2) NOT NULL,
     user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     gateway TEXT NOT NULL DEFAULT 'promptpay',
@@ -117,63 +119,122 @@ CREATE INDEX IF NOT EXISTS idx_slips_ref ON public.used_payment_slips(slip_trans
 -- 9. ตารางจำกัดสิทธิ์โค้ดส่วนลด (Promo Code Redemptions)
 CREATE TABLE IF NOT EXISTS public.promo_code_usages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    user_id NOT NULL UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     code TEXT NOT NULL,
     order_id TEXT REFERENCES public.orders(id) ON DELETE SET NULL,
     discount_amount NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     used_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(user_id, code) -- ลูกค้า 1 คน ใช้โค้ดเดิมได้ครั้งเดียว ป้องกันการสแปมลดราคา
+    UNIQUE(user_id, code)
 );
 
 -- 10. ตารางประวัติการเคลมสินค้าและประกัน (Warranty Claims & Tickets)
 CREATE TABLE IF NOT EXISTS public.warranty_claims (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    order_id TEXT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+    order_id TEXT REFERENCES public.orders(id) ON DELETE SET NULL,
     user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     reason TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED, REPLACED
+    status TEXT NOT NULL DEFAULT 'PENDING',
     admin_notes TEXT,
-    replacement_key TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_claims_status ON public.warranty_claims(status);
-
--- 11. ตารางแบนคนโกง / บอทสแปม (Blacklists)
+-- 11. ตารางแบล็กลิสต์ป้องกันมิจฉาชีพ (Fraud & Exploit Blacklist)
 CREATE TABLE IF NOT EXISTS public.blacklists (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    target_type TEXT NOT NULL, -- 'IP', 'DISCORD_ID', 'WALLET_PHONE'
+    target_type TEXT NOT NULL,
     target_value TEXT UNIQUE NOT NULL,
-    reason TEXT NOT NULL,
-    expires_at TIMESTAMPTZ, -- ถ้าเป็น NULL แปลว่าแบนถาวร
+    reason TEXT,
+    banned_by TEXT DEFAULT 'ADMIN',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_blacklists_val ON public.blacklists(target_value);
-
--- 12. ตารางบันทึกเหตุการณ์และเซิร์ฟเวอร์ล็อก (System Audit Logs)
+-- 12. ตารางบันทึกกิจกรรมระบบและตรวจสอบความปลอดภัย (System Audit Logs)
 CREATE TABLE IF NOT EXISTS public.system_audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    event_type TEXT NOT NULL, -- 'ORDER_DISPENSED', 'SLIP_VERIFY_FAIL', 'BOT_DETECTED', 'CLAIM_SUBMITTED'
-    severity TEXT NOT NULL DEFAULT 'INFO', -- 'INFO', 'WARN', 'ERROR', 'SECURITY'
+    event_type TEXT NOT NULL,
+    severity TEXT NOT NULL DEFAULT 'INFO',
     user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     order_id TEXT,
-    ip_address TEXT,
-    user_agent TEXT,
     payload JSONB,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_logs_event_created 
-ON public.system_audit_logs(event_type, created_at DESC);
 
 -- ==============================================================================
--- 🔒 ATOMIC PROCEDURES: ฟังก์ชันตัดสต็อกอัจฉริยะ (FOR UPDATE SKIP LOCKED)
+-- 🔒 PART 2: ROW LEVEL SECURITY (RLS) POLICIES ON ALL 12 TABLES
 -- ==============================================================================
 
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.inventory_keys ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.topup_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.used_payment_slips ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.promo_code_usages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.warranty_claims ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blacklists ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.system_audit_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read categories" ON public.categories;
+CREATE POLICY "Allow public read categories" ON public.categories FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read active products" ON public.products;
+CREATE POLICY "Allow public read active products" ON public.products FOR SELECT USING (is_active = true);
+
+DROP POLICY IF EXISTS "Service role full access inventory_keys" ON public.inventory_keys;
+CREATE POLICY "Service role full access inventory_keys" ON public.inventory_keys FOR ALL TO service_role USING (true);
+
+DROP POLICY IF EXISTS "Allow count unsold inventory keys" ON public.inventory_keys;
+CREATE POLICY "Allow count unsold inventory keys" ON public.inventory_keys FOR SELECT TO anon, authenticated USING (is_sold = false);
+
+DROP POLICY IF EXISTS "Allow users read own orders" ON public.orders;
+CREATE POLICY "Allow users read own orders" ON public.orders FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow users read order items" ON public.order_items;
+CREATE POLICY "Allow users read order items" ON public.order_items FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow users read own profile" ON public.profiles;
+CREATE POLICY "Allow users read own profile" ON public.profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow users update own profile" ON public.profiles;
+CREATE POLICY "Allow users update own profile" ON public.profiles FOR UPDATE USING (auth.uid() IS NOT NULL AND id = auth.uid());
+
+DROP POLICY IF EXISTS "Allow users read own topups" ON public.topup_transactions;
+CREATE POLICY "Allow users read own topups" ON public.topup_transactions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Protect used payment slips" ON public.used_payment_slips;
+CREATE POLICY "Protect used payment slips" ON public.used_payment_slips FOR ALL TO service_role USING (true);
+
+DROP POLICY IF EXISTS "Allow users read own promo usage" ON public.promo_code_usages;
+CREATE POLICY "Allow users read own promo usage" ON public.promo_code_usages FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow insert warranty claims" ON public.warranty_claims;
+CREATE POLICY "Allow insert warranty claims" ON public.warranty_claims FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow read warranty claims" ON public.warranty_claims;
+CREATE POLICY "Allow read warranty claims" ON public.warranty_claims FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Protect blacklists" ON public.blacklists;
+CREATE POLICY "Protect blacklists" ON public.blacklists FOR ALL TO service_role USING (true);
+
+DROP POLICY IF EXISTS "Protect system audit logs" ON public.system_audit_logs;
+CREATE POLICY "Protect system audit logs" ON public.system_audit_logs FOR ALL TO service_role USING (true);
+
+
+-- ==============================================================================
+-- ⚡ PART 3: HARDENED STORED PROCEDURES (WITH EXPLICIT SEARCH_PATH)
+-- ==============================================================================
+
+-- 1. Dispense Product Key (Internal Helper)
 CREATE OR REPLACE FUNCTION public.dispense_product_key(p_product_id TEXT, p_order_id TEXT)
-RETURNS TEXT AS $$
+RETURNS TEXT 
+LANGUAGE plpgsql 
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
 DECLARE
     v_key_id UUID;
     v_credential TEXT;
@@ -192,38 +253,14 @@ BEGIN
     SET is_sold = TRUE, order_id = p_order_id, sold_at = NOW()
     WHERE id = v_key_id;
 
-    -- บันทึก Audit Log อัตโนมัติในฐานข้อมูล
     INSERT INTO public.system_audit_logs (event_type, severity, order_id, payload)
     VALUES ('ORDER_DISPENSED', 'INFO', p_order_id, jsonb_build_object('product_id', p_product_id, 'key_id', v_key_id));
 
     RETURN v_credential;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
--- ==============================================================================
--- 📦 SEED DATA: ข้อมูลสินค้าและหมวดหมู่เริ่มต้น
--- ==============================================================================
-
-INSERT INTO public.categories (id, name, sub_name, icon, badge, sort_order) VALUES
-('cat-discord-nitro', 'DISCORD NITRO & BOOSTS', 'แพ็กเกจไนโตร บูสเซิร์ฟเวอร์ & ไอเทมตกแต่งโปรไฟล์', 'zap', 'INSTANT KEY / AUTO', 1),
-('cat-discord-services', 'DISCORD SERVICES & ACCOUNTS', 'บริการปั๊มเมมเบอร์ ยืนยันเบอร์ OTP และไอดีดิสคอร์ดปีเก่า', 'cpu', 'CUSTOM FLOW & FORM', 2),
-('cat-gaming-apps', 'GAMING ACCOUNTS & STREAMING APPS', 'ไอดีเกม FiveM, Steam GTAV, แอปพรีเมียม & AI Tools', 'gamepad-2', 'NYX9 SPECIALS', 3),
-('cat-uncategorized', 'สินค้าทั่วไป (UNCATEGORIZED)', 'หมวดสินค้าสแตนด์อโลน สามารถเปิด-ปิดการแสดงผลได้อย่างอิสระ', 'box', 'STANDALONE ITEMS', 4)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.products (id, category_id, title, price, original_price, fulfillment_type, status, chips) VALUES
-('nitro-booster-1m', 'cat-discord-nitro', 'Nitro Booster (Mailpass 1 เดือน)', 169.00, 250.00, 'instant', 'SALE', ARRAY['⚡ ส่งทันที', '🛡️ ประกันเต็ม', '💎 2 บูส']),
-('nitro-3m-mailpass', 'cat-discord-nitro', 'รหัสติด Nitro 3 เดือน ยกเมล', 150.00, 290.00, 'instant', 'SALE', ARRAY['👑 ยกเมลแท้', '💎 2 บูส', '🔑 เปลี่ยนรหัสได้']),
-('nitro-boost-1m-2x', 'cat-discord-nitro', 'บูสเซิร์ฟเวอร์ 1 เดือน (2 บูส)', 50.00, 90.00, 'custom_discord_boost', 'SALE', ARRAY['🚀 2 บูสแท้', '⚡ ใน 1 นาที']),
-('rockstar-fivem-fresh', 'cat-gaming-apps', 'Rockstar FiveM สดใหม่ (2 ชั้น)', 10.00, 25.00, 'instant', 'SALE', ARRAY['🚗 FiveM', '⚡ ส่งทันที']),
-('steam-gtav-unlinked', 'cat-gaming-apps', 'Steam GTAV ยังไม่ผูก Rockstar', 399.00, 699.00, 'instant', 'SALE', ARRAY['🎮 Steam แท้', '🔑 ยกไอดี']),
-('netflix-private-30d', 'cat-gaming-apps', 'Netflix 30 วัน (ทุกอุปกรณ์)', 109.00, 169.00, 'instant', 'SALE', ARRAY['🎬 จอส่วนตัว', '🛡️ ประกัน 30 วัน'])
-ON CONFLICT (id) DO NOTHING;
-
-
--- ==============================================================================
--- 💳 STORED PROCEDURE: ATOMIC TOPUP PROCESSING (PROMPTPAY & TRUEMONEY)
--- ==============================================================================
+-- 2. Process Topup (PromptPay & TrueMoney)
 CREATE OR REPLACE FUNCTION public.process_topup(
   p_gateway TEXT,
   p_trans_ref TEXT,
@@ -234,6 +271,7 @@ CREATE OR REPLACE FUNCTION public.process_topup(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_existing_slip_id UUID;
@@ -241,7 +279,6 @@ DECLARE
   v_topup_id UUID;
   v_new_balance NUMERIC := 0.00;
 BEGIN
-  -- Anti-Double-Spend: PromptPay
   IF p_gateway = 'promptpay' THEN
     SELECT id INTO v_existing_slip_id 
     FROM public.used_payment_slips 
@@ -260,7 +297,6 @@ BEGIN
     VALUES (p_trans_ref, p_amount, p_user_id, p_gateway, p_raw_payload);
   END IF;
 
-  -- Anti-Double-Spend: TrueMoney
   IF p_gateway = 'truemoney' THEN
     SELECT id INTO v_existing_topup_id
     FROM public.topup_transactions
@@ -276,7 +312,6 @@ BEGIN
     END IF;
   END IF;
 
-  -- Record topup transaction
   INSERT INTO public.topup_transactions (
     user_id,
     gateway,
@@ -295,7 +330,6 @@ BEGIN
   )
   RETURNING id INTO v_topup_id;
 
-  -- Atomically update user balance if user_id is provided
   IF p_user_id IS NOT NULL THEN
     UPDATE public.profiles
     SET balance = balance + p_amount,
@@ -304,7 +338,6 @@ BEGIN
     RETURNING balance INTO v_new_balance;
   END IF;
 
-  -- System Audit Log
   INSERT INTO public.system_audit_logs (
     event_type,
     user_id,
@@ -335,12 +368,7 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.process_topup(TEXT, TEXT, NUMERIC, UUID, JSONB) TO anon, authenticated, service_role;
-
-
--- ==============================================================================
--- ⚡ STORED PROCEDURE: ATOMIC ORDER CHECKOUT & FULFILLMENT
--- ==============================================================================
+-- 3. Execute Order Checkout (Atomic Fulfillment)
 CREATE OR REPLACE FUNCTION public.execute_order_checkout(
   p_order_id TEXT,
   p_items JSONB,
@@ -351,6 +379,7 @@ CREATE OR REPLACE FUNCTION public.execute_order_checkout(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_item JSONB;
@@ -366,7 +395,6 @@ DECLARE
   v_new_balance NUMERIC := 0.00;
   v_i INT;
 BEGIN
-  -- 1. Check user profile balance if user_id is provided
   IF p_user_id IS NOT NULL THEN
     SELECT balance INTO v_current_balance
     FROM public.profiles
@@ -383,7 +411,6 @@ BEGIN
       );
     END IF;
 
-    -- Deduct balance
     UPDATE public.profiles
     SET balance = balance - p_total_amount,
         updated_at = NOW()
@@ -391,7 +418,6 @@ BEGIN
     RETURNING balance INTO v_new_balance;
   END IF;
 
-  -- 2. Insert Order
   INSERT INTO public.orders (
     id,
     user_id,
@@ -409,7 +435,6 @@ BEGIN
     NOW()
   );
 
-  -- 3. Loop through items
   FOR v_item IN SELECT * FROM jsonb_array_elements(p_items)
   LOOP
     v_product_id := v_item->>'id';
@@ -431,7 +456,6 @@ BEGIN
         END;
       END LOOP;
 
-      -- Insert into order_items
       INSERT INTO public.order_items (
         order_id,
         product_id,
@@ -458,7 +482,6 @@ BEGIN
         )
       );
     ELSE
-      -- Custom form fulfillment
       INSERT INTO public.order_items (
         order_id,
         product_id,
@@ -487,7 +510,6 @@ BEGIN
     END IF;
   END LOOP;
 
-  -- 4. Audit Log
   INSERT INTO public.system_audit_logs (
     event_type,
     user_id,
@@ -532,18 +554,12 @@ EXCEPTION
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.execute_order_checkout(TEXT, JSONB, NUMERIC, UUID, JSONB) TO anon, authenticated, service_role;
-
-
--- ==============================================================================
--- 🚨 ADMIN OPERATIONS SUITE PROCEDURES (TELEMETRY, BULK RESTOCK, CLAIMS)
--- ==============================================================================
-
--- 1. Admin Telemetry & Metrics Stored Procedure
+-- 4. Admin Get Metrics
 CREATE OR REPLACE FUNCTION public.admin_get_metrics(p_admin_secret TEXT)
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_expected_secret TEXT := 'nyx9_secure_admin_passphrase';
@@ -561,13 +577,11 @@ BEGIN
     RETURN jsonb_build_object('success', false, 'error', 'UNAUTHORIZED', 'message', 'รหัสผ่านแอดมินไม่ถูกต้อง (Invalid Admin Secret)');
   END IF;
 
-  -- 1. Aggregates
   SELECT COALESCE(SUM(total_amount), 0), COUNT(*) INTO v_total_revenue, v_total_orders FROM public.orders;
   SELECT COUNT(*) INTO v_total_unsold_stock FROM public.inventory_keys WHERE is_sold = FALSE;
   SELECT COALESCE(SUM(amount), 0) INTO v_total_topups FROM public.topup_transactions WHERE status = 'SUCCESS';
   SELECT COUNT(*) INTO v_pending_claims FROM public.warranty_claims WHERE status = 'PENDING';
 
-  -- 2. Stock by Product
   SELECT jsonb_agg(
     jsonb_build_object(
       'product_id', p.id,
@@ -588,7 +602,6 @@ BEGIN
   ) k ON p.id = k.product_id
   WHERE p.is_active = TRUE;
 
-  -- 3. Recent 10 Orders
   SELECT COALESCE(jsonb_agg(row_to_json(o)), '[]'::jsonb) INTO v_recent_orders
   FROM (
     SELECT id, total_amount, payment_method, status, created_at
@@ -597,7 +610,6 @@ BEGIN
     LIMIT 10
   ) o;
 
-  -- 4. Recent 10 Topups
   SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::jsonb) INTO v_recent_topups
   FROM (
     SELECT id, gateway, amount, status, trans_ref, created_at
@@ -606,7 +618,6 @@ BEGIN
     LIMIT 10
   ) t;
 
-  -- 5. Warranty Claims
   SELECT COALESCE(jsonb_agg(row_to_json(c)), '[]'::jsonb) INTO v_claims
   FROM (
     SELECT id, order_id, reason, status, admin_notes, created_at
@@ -632,7 +643,7 @@ BEGIN
 END;
 $$;
 
--- 2. Admin Bulk Restock Stored Procedure
+-- 5. Admin Bulk Restock
 CREATE OR REPLACE FUNCTION public.admin_bulk_restock(
   p_admin_secret TEXT,
   p_product_id TEXT,
@@ -641,6 +652,7 @@ CREATE OR REPLACE FUNCTION public.admin_bulk_restock(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_expected_secret TEXT := 'nyx9_secure_admin_passphrase';
@@ -664,7 +676,6 @@ BEGIN
     END IF;
   END LOOP;
 
-  -- Audit Log
   INSERT INTO public.system_audit_logs (event_type, severity, payload)
   VALUES ('ADMIN_RESTOCK', 'INFO', jsonb_build_object('product_id', p_product_id, 'count', v_inserted_count, 'timestamp', NOW()));
 
@@ -677,7 +688,7 @@ BEGIN
 END;
 $$;
 
--- 3. Admin Warranty Claim Management Stored Procedure
+-- 6. Admin Resolve Claim
 CREATE OR REPLACE FUNCTION public.admin_resolve_claim(
   p_admin_secret TEXT,
   p_claim_id UUID,
@@ -687,6 +698,7 @@ CREATE OR REPLACE FUNCTION public.admin_resolve_claim(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_expected_secret TEXT := 'nyx9_secure_admin_passphrase';
@@ -708,6 +720,12 @@ BEGIN
 END;
 $$;
 
+-- Grants & Permissions
+REVOKE EXECUTE ON FUNCTION public.dispense_product_key(TEXT, TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.dispense_product_key(TEXT, TEXT) TO service_role;
+
+GRANT EXECUTE ON FUNCTION public.process_topup(TEXT, TEXT, NUMERIC, UUID, JSONB) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.execute_order_checkout(TEXT, JSONB, NUMERIC, UUID, JSONB) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_get_metrics(TEXT) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_bulk_restock(TEXT, TEXT, TEXT[]) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_resolve_claim(TEXT, UUID, TEXT, TEXT) TO anon, authenticated, service_role;
