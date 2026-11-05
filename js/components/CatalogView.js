@@ -52,7 +52,7 @@ class CatalogViewComponent {
   }
 
   renderProducts() {
-    const container = document.getElementById("products-catalog-container");
+    const container = document.getElementById("catalog-container") || document.getElementById("products-catalog-container");
     if (!container) return;
 
     const categories = this.store.get("categories") || [];

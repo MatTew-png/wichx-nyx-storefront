@@ -19,8 +19,12 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
     ai: `<path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" stroke="${primaryColor}" stroke-width="2"/>`
   };
 
+  const escapeXml = (str) => String(str || "").replace(/[<>&'"]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]));
+  const safeTitle = escapeXml(title).slice(0, 24);
+  const safeSub = escapeXml(sub).slice(0, 28);
   const selectedIcon = icons[iconType] || icons.nitro;
-  const safeId = title.replace(/[^a-zA-Z0-9]/g, '');
+  const hash = Math.abs((title || 'art').split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0)).toString(36);
+  const safeId = 'art_' + hash;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450" width="100%" height="100%">
     <defs>
@@ -53,11 +57,11 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
     </g>
 
     <!-- Typography -->
-    <text x="225" y="325" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="22" letter-spacing="0.5">
-      ${title.toUpperCase()}
+    <text x="225" y="325" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="16" letter-spacing="0.5">
+      ${safeTitle}
     </text>
     <text x="225" y="358" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="12" letter-spacing="1.5">
-      // ${sub.toUpperCase()} //
+      // ${safeSub} //
     </text>
 
     <!-- Top Badge Corner -->
@@ -389,8 +393,11 @@ const categoriesData = [
   }
 ];
 
+if (typeof window !== "undefined") {
+  window.categoriesData = categoriesData;
+  window.createCyberArtwork = createCyberArtwork;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = categoriesData;
-} else {
-  window.categoriesData = categoriesData;
 }

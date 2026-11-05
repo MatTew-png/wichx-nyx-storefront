@@ -239,6 +239,21 @@ window.addDiscordServiceToCart = () => {
   }
 };
 
+// Carousel Bridges
+window.prevCarouselSlide = () => window.Shop?.hero?.prevSlide();
+window.nextCarouselSlide = () => window.Shop?.hero?.nextSlide();
+window.setCarouselSlide = (idx) => window.Shop?.hero?.goToSlide(idx);
+window.handleBannerCta = (catId, action) => {
+  if (action === "openTopUp") {
+    window.openTopUpModal();
+  } else if (catId) {
+    const target = document.getElementById(catId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+};
+
 // Modal Helpers
 window.copyCredentials = () => {
   const el = document.getElementById("delivery-items-container");

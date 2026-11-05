@@ -16,37 +16,40 @@ class HeroSectionComponent {
   }
 
   renderCarousel() {
-    const container = document.getElementById("hero-carousel-container");
-    const indicators = document.getElementById("hero-carousel-indicators");
+    const container = document.getElementById("hero-carousel-track") || document.getElementById("hero-carousel-container");
+    const dotsContainer = document.getElementById("hero-carousel-dots") || document.getElementById("hero-carousel-indicators");
     if (!container) return;
 
     const banners = window.storeConfig?.heroBanners || [];
     if (banners.length === 0) return;
 
-    container.innerHTML = banners.map((b, idx) => `
-      <div class="carousel-slide ${idx === 0 ? 'active' : ''} p-6 sm:p-10 flex flex-col justify-between rounded-3xl bg-gradient-to-r ${b.bgGradient} border border-slate-800 shadow-2xl relative overflow-hidden" data-slide-index="${idx}">
-        <div class="space-y-2 relative z-10">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(25,186,255,0.15)] text-[var(--accent)] text-[11px] font-bold tracking-wider border border-[rgba(25,186,255,0.3)]">
-            <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-ping"></span>
-            ${b.badge}
-          </span>
-          <h2 class="text-xl sm:text-3xl font-heading font-extrabold text-white tracking-tight">${b.title}</h2>
-          <p class="text-xs sm:text-sm text-slate-300 max-w-xl font-body">${b.description}</p>
-        </div>
-
-        <div class="flex items-center justify-between pt-6 border-t border-slate-800/80 relative z-10">
-          <button onclick="window.Shop?.catalogView?.scrollToCategory('${b.ctaCategory}')" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer">
-            <span>${b.ctaText}</span>
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </button>
-          <span class="text-xs font-mono text-slate-400">${b.accentTag}</span>
+    container.innerHTML = banners.map((banner, idx) => `
+      <div class="w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-12 border border-[rgba(25,186,255,0.2)] bg-gradient-to-r ${banner.bgGradient} transition-all duration-500">
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(25,186,255,0.15)] border border-[rgba(25,186,255,0.3)] text-xs font-mono-val text-[var(--accent)] font-bold mb-4">
+            <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></span>
+            ${banner.badge} • ${banner.accentTag}
+          </div>
+          <h2 class="text-2xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white tracking-wide leading-tight mb-3">
+            ${banner.title}
+          </h2>
+          <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6 font-normal font-body">
+            ${banner.description}
+          </p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}')" class="btn-cyber-primary px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-bold cursor-pointer">
+              <span>${banner.ctaText}</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            ${banner.accentTag ? `<span class="text-xs font-mono text-slate-400">${banner.accentTag}</span>` : ""}
+          </div>
         </div>
       </div>
     `).join("");
 
-    if (indicators) {
-      indicators.innerHTML = banners.map((_, idx) => `
-        <button onclick="window.Shop?.hero?.goToSlide(${idx})" class="w-2.5 h-1.5 rounded-full transition-all ${idx === 0 ? 'w-6 bg-[var(--accent)]' : 'bg-slate-700'}" aria-label="Slide ${idx + 1}"></button>
+    if (dotsContainer) {
+      dotsContainer.innerHTML = banners.map((_, idx) => `
+        <button onclick="window.setCarouselSlide(${idx})" class="w-3 h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'w-7 bg-[var(--accent)]' : 'bg-slate-700'}" aria-label="Slide ${idx + 1}"></button>
       `).join("");
     }
 
@@ -55,27 +58,37 @@ class HeroSectionComponent {
   }
 
   goToSlide(index) {
-    const slides = document.querySelectorAll(".carousel-slide");
-    const dots = document.querySelectorAll("#hero-carousel-indicators button");
-    if (slides.length === 0) return;
+    const container = document.getElementById("hero-carousel-track") || document.getElementById("hero-carousel-container");
+    const dotsContainer = document.getElementById("hero-carousel-dots") || document.getElementById("hero-carousel-indicators");
+    const banners = window.storeConfig?.heroBanners || [];
+    const total = banners.length;
+    if (!container || total === 0) return;
 
-    slides.forEach((s, idx) => s.classList.toggle("active", idx === index));
-    dots.forEach((d, idx) => {
-      d.className = idx === index ? "w-6 h-1.5 rounded-full bg-[var(--accent)] transition-all" : "w-2.5 h-1.5 rounded-full bg-slate-700 transition-all";
-    });
-    this.store.set("activeCarouselIndex", index, true);
+    const activeIndex = (index + total) % total;
+    container.style.transform = `translateX(-${activeIndex * 100}%)`;
+
+    if (dotsContainer) {
+      const dots = dotsContainer.children;
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].className = i === activeIndex 
+          ? "w-7 h-1.5 rounded-full bg-[var(--accent)] transition-all duration-300"
+          : "w-3 h-1.5 rounded-full bg-slate-700 transition-all duration-300";
+      }
+    }
+
+    this.store.set("activeCarouselIndex", activeIndex, true);
   }
 
   nextSlide() {
     const banners = window.storeConfig?.heroBanners || [];
     let current = this.store.get("activeCarouselIndex") || 0;
-    this.goToSlide((current + 1) % banners.length);
+    this.goToSlide(current + 1);
   }
 
   prevSlide() {
     const banners = window.storeConfig?.heroBanners || [];
     let current = this.store.get("activeCarouselIndex") || 0;
-    this.goToSlide((current - 1 + banners.length) % banners.length);
+    this.goToSlide(current - 1);
   }
 
   startAutoTimer() {
