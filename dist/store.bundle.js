@@ -424,49 +424,49 @@ const storeConfig = {
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
-  heroBanners: [
+    heroBanners: [
     {
       id: "banner-1",
-      badge: "NYX9 SPECIAL SERVICE",
-      title: "DISCORD NITRO & AUTO QUEST ENGINE",
-      description: "ทำเควสดิสคอร์ดอัตโนมัติ รับของรางวัล Orbs และบูสต์แท้ 100% ไม่ต้องเปิดเกมทิ้งไว้",
-      ctaText: "เลือกซื้อบริการ",
+      badge: "⚡ AUTO FULFILLMENT",
+      title: "ศูนย์รวมบริการ Discord, FiveM & แอปพรีเมียม 24 ชม.",
+      description: "กดสั่งปุ๊บรับรหัสทันทีในระบบคลังคีย์ ไม่ต้องรอแอดมินตอบแชท • รับประกันไอดีแท้ 100% มีปัญหาเคลมใหม่ได้ทันที",
+      ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
       ctaCategory: "cat-discord-nitro",
-      bgGradient: "from-cyan-950/60 via-slate-900/90 to-[#06080C]",
+      bgGradient: "from-cyan-950/70 via-slate-900/95 to-[#070A0F]",
       accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
-      badge: "GAMING & FIVEM READY",
-      title: "FIVEM ROCKSTAR & STEAM GTA V",
-      description: "รหัสพร้อมเล่น ปลดแบน HWID สะอาดแท้ 2 ชั้น สต็อกแน่นพร้อมส่งทันที",
-      ctaText: "ดูรายการไอดี",
+      badge: "🎮 สต็อกพร้อมส่ง",
+      title: "FIVEM READY & STEAM GTA V ไอดีสะอาดแท้",
+      description: "รหัสยกเมลเปลี่ยนได้ 100% ปลดแบน HWID สะอาด ไร้ประวัติแบน คัดเกรดก่อนลงคลังส่งมอบ",
+      ctaText: "ดูรายการไอดี FiveM",
       ctaCategory: "cat-gaming-apps",
-      bgGradient: "from-blue-950/60 via-slate-900/90 to-[#06080C]",
-      accentTag: "สต็อกพร้อมส่ง"
+      bgGradient: "from-blue-950/70 via-slate-900/95 to-[#070A0F]",
+      accentTag: "ประกันไอดีสะอาด"
     },
     {
       id: "banner-3",
-      badge: "CRYPTO LTC BONUS",
-      title: "เติมเงินด้วย LITECOIN (LTC) รับฟรี +5%",
-      description: "ไร้ค่าธรรมเนียมแพง รวดเร็ว ไม่ต้องยืนยันตัวตน เติมได้ไม่อั้นตลอด 24 ชั่วโมง",
-      ctaText: "เติมเงินทันที",
+      badge: "💳 เติมเงินออโต้",
+      title: "ชำระเงินง่ายทุกช่องทาง ฟรีค่าธรรมเนียม 0%",
+      description: "รองรับ PromptPay QR สแกนฟรี, TrueMoney Wallet, โอนผ่านธนาคาร และบัตรเครดิต ปลอดภัย 3D Secure",
+      ctaText: "เติมเงินเข้ากระเป๋า",
       ctaAction: "openTopUp",
-      bgGradient: "from-emerald-950/50 via-slate-900/90 to-[#06080C]",
-      accentTag: "โบนัส +5%"
+      bgGradient: "from-emerald-950/60 via-slate-900/95 to-[#070A0F]",
+      accentTag: "เติมเงิน 24 ชม."
     }
   ],
 
   // --- ธีมสี (Futuristic Glacier Cyan & Obsidian Theme) ---
-  theme: {
-    accent: "#19BAFF",       // Glacier Cyan (Primary Action & Borders)
-    accentHover: "#38D4FF",  // Glowing Highlights
-    accentGlow: "rgba(25, 186, 255, 0.35)",
-    baseBg: "#06080C",       // Deep Obsidian Void Canvas
-    cardBg: "#0E131D",       // Surface Layer 1
-    cardHover: "#131926",    // Surface Hover
-    borderLight: "rgba(25, 186, 255, 0.15)",
-    borderActive: "rgba(25, 186, 255, 0.45)"
+    theme: {
+    accent: "#00F2FF",       // Electric Hyper-Cyan
+    accentHover: "#38F8FF",  // Glowing Highlights
+    accentGlow: "rgba(0, 242, 255, 0.35)",
+    baseBg: "#070A0F",       // Deep Obsidian Gunmetal Canvas
+    cardBg: "#0C111A",       // Surface Layer 1
+    cardHover: "#111724",    // Surface Hover
+    borderLight: "rgba(0, 242, 255, 0.14)",
+    borderActive: "rgba(0, 242, 255, 0.50)"
   },
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
@@ -2087,52 +2087,52 @@ class CatalogViewComponent {
     if (window.lucide) lucide.createIcons();
   }
 
-  createProductCardHTML(p, cat) {
+    createProductCardHTML(p, cat) {
     const isOut = p.stock === 0;
     const isCustom = p.fulfillmentType === "custom_form";
 
     return `
-      <div class="product-card group rounded-2xl bg-[#0E131D] hover:bg-[#131926] border border-slate-800 hover:border-[var(--accent)]/60 transition-all p-3.5 flex flex-col justify-between relative shadow-lg">
+      <div class="product-card group rounded-2xl bg-[#0C111A] hover:bg-[#111724] border border-[rgba(255,255,255,0.08)] hover:border-[var(--accent)] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.8),0_0_24px_-6px_rgba(0,242,255,0.25)] hover:-translate-y-1">
         <div>
-          <!-- Artwork Area (1:1 Ratio) -->
-          <div class="w-full aspect-square rounded-xl bg-slate-950/80 border border-slate-800/80 overflow-hidden relative mb-3 flex items-center justify-center p-2">
+          <!-- Artwork Area (1:1 Ratio with Subtle Dark Backdrop) -->
+          <div class="w-full aspect-square rounded-xl bg-[#06080D] border border-[rgba(255,255,255,0.06)] overflow-hidden relative mb-3.5 flex items-center justify-center p-2.5">
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />` : `<i data-lucide="box" class="w-12 h-12 text-slate-600"></i>`}
             
-            <div class="absolute top-2 left-2 flex flex-col gap-1 z-10">
-              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-[rgba(25,186,255,0.2)] text-[var(--accent)] border border-[rgba(25,186,255,0.4)] text-[10px] font-mono font-bold">${p.status}</span>` : ""}
+            <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] border border-[rgba(0,242,255,0.35)] text-[10px] font-mono-val font-bold uppercase tracking-wider">${p.status}</span>` : ""}
             </div>
 
-            <div class="absolute top-2 right-2 z-10">
-              <span class="px-2 py-0.5 rounded-md ${isOut ? 'bg-rose-950/80 text-rose-300 border-rose-500/40' : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40'} border text-[10px] font-mono font-bold">
-                ${isOut ? 'หมด' : `สต็อก: ${p.stock}`}
+            <div class="absolute top-2.5 right-2.5 z-10">
+              <span class="px-2 py-0.5 rounded-md ${isOut ? 'bg-rose-950/80 text-rose-300 border-rose-500/40' : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40'} border text-[10px] font-mono-val font-bold">
+                ${isOut ? 'สินค้าหมด' : `พร้อมส่ง: ${p.stock} ชิ้น`}
               </span>
             </div>
           </div>
 
           <!-- Title & Chips -->
-          <h4 class="text-sm font-heading font-bold text-white group-hover:text-[var(--accent)] transition-colors line-clamp-1 mb-1.5">${p.title}</h4>
+          <h4 class="text-sm font-heading font-extrabold text-white group-hover:text-[var(--accent)] transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
-          <div class="flex flex-wrap gap-1 mb-3">
+          <div class="flex flex-wrap gap-1.5 mb-3.5">
             ${(p.chips || []).map(chip => `
-              <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] text-slate-300 font-mono">${chip}</span>
+              <span class="px-2 py-0.5 rounded-md bg-[#070A0F] border border-[rgba(255,255,255,0.06)] text-[10px] text-slate-300 font-mono-val">${chip}</span>
             `).join("")}
           </div>
         </div>
 
-        <!-- Footer & Action -->
-        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+        <!-- Footer & Action (Fitts's Law Optimized Hit Area) -->
+        <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
-            <div class="text-[10px] text-slate-500 line-through">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono font-extrabold text-[var(--accent)]">฿${p.price.toFixed(2)}</div>
+            <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
+            <div class="text-base font-mono-val font-extrabold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
           ${isCustom ? `
-            <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+            <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-              <span>สั่งทำ</span>
+              <span>สั่งทำพิเศษ</span>
             </button>
           ` : `
-            <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer'} px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
+            <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5">
               <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
               <span>ใส่ตะกร้า</span>
             </button>

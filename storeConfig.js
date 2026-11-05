@@ -37,49 +37,49 @@ const storeConfig = {
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
-  heroBanners: [
+    heroBanners: [
     {
       id: "banner-1",
-      badge: "NYX9 SPECIAL SERVICE",
-      title: "DISCORD NITRO & AUTO QUEST ENGINE",
-      description: "ทำเควสดิสคอร์ดอัตโนมัติ รับของรางวัล Orbs และบูสต์แท้ 100% ไม่ต้องเปิดเกมทิ้งไว้",
-      ctaText: "เลือกซื้อบริการ",
+      badge: "⚡ AUTO FULFILLMENT",
+      title: "ศูนย์รวมบริการ Discord, FiveM & แอปพรีเมียม 24 ชม.",
+      description: "กดสั่งปุ๊บรับรหัสทันทีในระบบคลังคีย์ ไม่ต้องรอแอดมินตอบแชท • รับประกันไอดีแท้ 100% มีปัญหาเคลมใหม่ได้ทันที",
+      ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
       ctaCategory: "cat-discord-nitro",
-      bgGradient: "from-cyan-950/60 via-slate-900/90 to-[#06080C]",
+      bgGradient: "from-cyan-950/70 via-slate-900/95 to-[#070A0F]",
       accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
-      badge: "GAMING & FIVEM READY",
-      title: "FIVEM ROCKSTAR & STEAM GTA V",
-      description: "รหัสพร้อมเล่น ปลดแบน HWID สะอาดแท้ 2 ชั้น สต็อกแน่นพร้อมส่งทันที",
-      ctaText: "ดูรายการไอดี",
+      badge: "🎮 สต็อกพร้อมส่ง",
+      title: "FIVEM READY & STEAM GTA V ไอดีสะอาดแท้",
+      description: "รหัสยกเมลเปลี่ยนได้ 100% ปลดแบน HWID สะอาด ไร้ประวัติแบน คัดเกรดก่อนลงคลังส่งมอบ",
+      ctaText: "ดูรายการไอดี FiveM",
       ctaCategory: "cat-gaming-apps",
-      bgGradient: "from-blue-950/60 via-slate-900/90 to-[#06080C]",
-      accentTag: "สต็อกพร้อมส่ง"
+      bgGradient: "from-blue-950/70 via-slate-900/95 to-[#070A0F]",
+      accentTag: "ประกันไอดีสะอาด"
     },
     {
       id: "banner-3",
-      badge: "CRYPTO LTC BONUS",
-      title: "เติมเงินด้วย LITECOIN (LTC) รับฟรี +5%",
-      description: "ไร้ค่าธรรมเนียมแพง รวดเร็ว ไม่ต้องยืนยันตัวตน เติมได้ไม่อั้นตลอด 24 ชั่วโมง",
-      ctaText: "เติมเงินทันที",
+      badge: "💳 เติมเงินออโต้",
+      title: "ชำระเงินง่ายทุกช่องทาง ฟรีค่าธรรมเนียม 0%",
+      description: "รองรับ PromptPay QR สแกนฟรี, TrueMoney Wallet, โอนผ่านธนาคาร และบัตรเครดิต ปลอดภัย 3D Secure",
+      ctaText: "เติมเงินเข้ากระเป๋า",
       ctaAction: "openTopUp",
-      bgGradient: "from-emerald-950/50 via-slate-900/90 to-[#06080C]",
-      accentTag: "โบนัส +5%"
+      bgGradient: "from-emerald-950/60 via-slate-900/95 to-[#070A0F]",
+      accentTag: "เติมเงิน 24 ชม."
     }
   ],
 
   // --- ธีมสี (Futuristic Glacier Cyan & Obsidian Theme) ---
-  theme: {
-    accent: "#19BAFF",       // Glacier Cyan (Primary Action & Borders)
-    accentHover: "#38D4FF",  // Glowing Highlights
-    accentGlow: "rgba(25, 186, 255, 0.35)",
-    baseBg: "#06080C",       // Deep Obsidian Void Canvas
-    cardBg: "#0E131D",       // Surface Layer 1
-    cardHover: "#131926",    // Surface Hover
-    borderLight: "rgba(25, 186, 255, 0.15)",
-    borderActive: "rgba(25, 186, 255, 0.45)"
+    theme: {
+    accent: "#00F2FF",       // Electric Hyper-Cyan
+    accentHover: "#38F8FF",  // Glowing Highlights
+    accentGlow: "rgba(0, 242, 255, 0.35)",
+    baseBg: "#070A0F",       // Deep Obsidian Gunmetal Canvas
+    cardBg: "#0C111A",       // Surface Layer 1
+    cardHover: "#111724",    // Surface Hover
+    borderLight: "rgba(0, 242, 255, 0.14)",
+    borderActive: "rgba(0, 242, 255, 0.50)"
   },
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
