@@ -227,6 +227,47 @@ const SupabaseAdapter = {
       voucherHash,
       redeemedAmount: result.amount || redeemedAmount
     };
+  },
+
+  // 7. ดำเนินการชำระเงินและตัดจ่ายสินค้าอัตโนมัติ (Automated Fulfillment & Order Management)
+  async executeOrderCheckout({ orderId, items, totalAmount, userId = null, customerInfo = {} }) {
+    if (!orderId || !items || !items.length) {
+      return { success: false, message: "ไม่มีสินค้าในคำสั่งซื้อ" };
+    }
+
+    if (this.isLive && this.client) {
+      try {
+        const { data, error } = await this.client.rpc("execute_order_checkout", {
+          p_order_id: orderId,
+          p_items: items,
+          p_total_amount: parseFloat(totalAmount),
+          p_user_id: userId,
+          p_customer_info: customerInfo
+        });
+
+        if (error) throw error;
+        return data;
+      } catch (err) {
+        console.error("[SUPABASE CHECKOUT] RPC failed:", err.message);
+        return { success: false, error: "RPC_ERROR", message: err.message };
+      }
+    }
+
+    // Local / Offline Fallback Mode
+    const fallbackDispensed = items.map(item => ({
+      id: item.id,
+      title: item.title,
+      quantity: item.quantity,
+      credentials: Array.from({ length: item.quantity }, (_, i) => `${item.id}_key_sandbox_${Date.now()}_${i + 1}`)
+    }));
+
+    return {
+      success: true,
+      order_id: orderId,
+      total_amount: totalAmount,
+      dispensed_items: fallbackDispensed,
+      message: "สั่งซื้อสำเร็จ (Local Sandbox Mode)"
+    };
   }
 };
 

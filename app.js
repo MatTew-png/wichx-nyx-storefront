@@ -740,13 +740,27 @@ function applyCouponCode() {
   }
 }
 
+async function refreshLiveProducts() {
+  if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+    try {
+      const liveCats = await window.SupabaseAdapter.getProducts();
+      if (liveCats && liveCats.length > 0) {
+        window.categoriesData = liveCats;
+        renderProductsCatalog();
+      }
+    } catch (err) {
+      console.warn("[LIVE STOCK] Failed to refresh live products:", err.message);
+    }
+  }
+}
+
 async function executeCheckout() {
   if (AppState.cart.length === 0) {
     showToast("กรุณาเลือกสินค้าลงตะกร้าก่อนดำเนินการ", "warning");
     return;
   }
 
-  // 🍯 ตรวจสอบ Honeypot Trap ในฝั่ง Client ก่อน
+  // 🍯 ตรวจสอบ Honeypot Trap ป้องกันบอท
   const hpInput = document.getElementById("security_hp_verify");
   const honeypotVal = hpInput ? hpInput.value.trim() : "";
   if (honeypotVal !== "") {
@@ -754,7 +768,7 @@ async function executeCheckout() {
     return;
   }
 
-  // Calculate local total for instant validation
+  // คำนวณยอดเงินรวมหลังหักส่วนลด
   let subtotal = AppState.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   let discount = 0;
   if (AppState.appliedPromo) {
@@ -766,7 +780,7 @@ async function executeCheckout() {
   }
   const totalRequired = Math.max(0, subtotal - discount);
 
-  // Check Wallet Balance
+  // ตรวจสอบยอดเงินคงเหลือในกระเป๋า
   if (AppState.walletBalance < totalRequired) {
     const diff = (totalRequired - AppState.walletBalance).toFixed(2);
     showToast(`ยอดเงินในกระเป๋าไม่พอ (ขาดอีก ฿${diff}) กรุณาเติมเงิน`, "warning");
@@ -775,66 +789,92 @@ async function executeCheckout() {
     return;
   }
 
-  // เรียก Serverless API /api/checkout เพื่อตรวจสอบราคาจริงและรับรองความปลอดภัย
-  try {
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Idempotency-Key": `IDEM-${Date.now()}`
-      },
-      body: JSON.stringify({
-        items: AppState.cart,
-        honeypotTrap: honeypotVal,
-        promoCode: AppState.appliedPromo ? AppState.appliedPromo.code : null,
-        userBalance: AppState.walletBalance
-      })
-    });
-
-    if (res.ok) {
-      const serverResult = await res.json();
-      console.log("Server Verified Checkout:", serverResult);
-    }
-  } catch (e) {
-    // โหมด Sandbox / Local fallback เมื่อรันออฟไลน์
-    console.info("Running in local sandbox checkout mode:", e.message);
+  const btn = document.getElementById("btn-checkout-submit");
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังตัดยอดและเบิกสินค้าจากสต็อก...</span>`;
+    if (window.lucide) lucide.createIcons();
   }
 
-  // Deduct Balance
-  AppState.walletBalance -= totalRequired;
-  localStorage.setItem("wichx_balance", AppState.walletBalance.toString());
-  updateWalletUI();
-
-  // Create Order Record
   const orderId = `WX-${Date.now().toString().slice(-6)}`;
-  const orderItems = [...AppState.cart];
-  const orderRecord = {
-    orderId,
-    timestamp: new Date().toISOString(),
-    total: totalRequired,
-    items: orderItems
-  };
-  AppState.orderHistory.unshift(orderRecord);
-  localStorage.setItem("wichx_orders", JSON.stringify(AppState.orderHistory));
+  let checkoutResult = null;
 
-  // Trigger Celebration Confetti
-  triggerConfetti();
+  try {
+    if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+      checkoutResult = await window.SupabaseAdapter.executeOrderCheckout({
+        orderId,
+        items: AppState.cart,
+        totalAmount: totalRequired,
+        userId: AppState.user?.id || null,
+        customerInfo: {
+          source: "webshop",
+          timestamp: new Date().toISOString()
+        }
+      });
+    } else {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": `IDEM-${Date.now()}`
+        },
+        body: JSON.stringify({
+          items: AppState.cart,
+          honeypotTrap: honeypotVal,
+          promoCode: AppState.appliedPromo ? AppState.appliedPromo.code : null,
+          userBalance: AppState.walletBalance,
+          userId: AppState.user?.id || null
+        })
+      });
+      checkoutResult = await res.json();
+    }
 
-  // Close Cart Drawer
-  toggleCartDrawer();
+    if (!checkoutResult || !checkoutResult.success) {
+      const errorMsg = checkoutResult?.message || "ไม่สามารถทำรายการสั่งซื้อได้";
+      showToast(errorMsg, "error");
+      return;
+    }
 
-  // Check if order has instant delivery items vs service items
-  const instantItems = orderItems.filter(i => i.fulfillmentType === "instant");
+    // ตัดยอดเงินคงเหลือในกระเป๋า
+    AppState.walletBalance -= totalRequired;
+    localStorage.setItem("wichx_balance", AppState.walletBalance.toString());
+    updateWalletUI();
 
-  if (instantItems.length > 0) {
-    // Open Instant Delivery Fulfillment Modal
-    openInstantDeliveryModal(orderId, orderItems);
-  } else {
-    showToast(`สั่งซื้อสำเร็จ! รหัสคำสั่งซื้อ ${orderId} ดำเนินการส่งเข้าระบบเรียบร้อย`, "success");
+    // บันทึกประวัติคำสั่งซื้อ
+    const orderRecord = {
+      orderId,
+      timestamp: new Date().toISOString(),
+      total: totalRequired,
+      items: [...AppState.cart],
+      dispensedItems: checkoutResult.dispensed_items || []
+    };
+    AppState.orderHistory.unshift(orderRecord);
+    localStorage.setItem("wichx_orders", JSON.stringify(AppState.orderHistory));
+
+    // จุดพลุเฉลิมฉลอง
+    triggerConfetti();
+
+    // ปิดตะกร้าสินค้า และล้างรายการ
+    toggleCartDrawer();
+    clearCart();
+
+    // รีเฟรชจำนวนสต็อกจริงที่แสดงหน้าร้านทันที
+    await refreshLiveProducts();
+
+    // เปิดหน้าต่างส่งมอบรหัสสินค้าทันที
+    openInstantDeliveryModal(orderId, checkoutResult.dispensed_items || []);
+    showToast(`สั่งซื้อสำเร็จ! รหัสคำสั่งซื้อ ${orderId} เบิกสินค้าสำเร็จแล้ว`, "success");
+
+  } catch (err) {
+    console.error("[CHECKOUT ERROR]", err);
+    showToast(err.message || "เกิดข้อผิดพลาดในการประมวลผลคำสั่งซื้อ", "error");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>ยืนยันการสั่งซื้อทันที</span> <i data-lucide="zap" class="w-4 h-4 fill-current"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
   }
-
-  // Clear Cart
-  clearCart();
 }
 
 function buyNowInstant(productId) {
@@ -847,92 +887,116 @@ function buyNowInstant(productId) {
 }
 
 // ==============================================================================
-// 9. DUAL-FULFILLMENT MODALS (INSTANT KEY VS CUSTOM SERVICE FORMS)
+// 9. DUAL-FULFILLMENT MODALS (INSTANT KEY DELIVERY & RECEIPT GENERATOR)
 // ==============================================================================
 
-// --- TYPE A: Instant Credentials Modal ---
-function openInstantDeliveryModal(orderId, items) {
+window.currentOrderDelivery = null;
+
+function openInstantDeliveryModal(orderId, dispensedItems) {
   const modal = document.getElementById("instant-delivery-modal");
-  const content = document.getElementById("instant-delivery-content");
-  if (!modal || !content) return;
+  const orderIdEl = document.getElementById("delivery-order-id");
+  const contentEl = document.getElementById("delivered-content");
+  if (!modal) return;
 
-  const credentialsPayload = items.map(item => {
-    return `[${item.title}]\nข้อมูล: ${item.sampleDelivery || "GIFT-KEY-SAMPLE-WICHX-2026-AUTO"}\nจำนวน: ${item.quantity}\n`;
-  }).join("\n---------------------------\n");
+  if (orderIdEl) {
+    orderIdEl.textContent = orderId;
+  }
 
-  content.innerHTML = `
-    <div class="p-6 md:p-8">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
-            <i data-lucide="check-circle" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h4 class="text-xl font-heading font-extrabold text-white">ชำระเงินสำเร็จ • จัดส่งทันที</h4>
-            <p class="text-xs text-slate-400 font-mono-val">ORDER ID: <span class="text-[var(--accent)] font-bold">${orderId}</span></p>
-          </div>
-        </div>
-        <button onclick="closeInstantDeliveryModal()" class="p-2 text-slate-400 hover:text-white rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
+  let formattedText = "";
+  if (Array.isArray(dispensedItems) && dispensedItems.length > 0) {
+    formattedText = dispensedItems.map(item => {
+      let creds = "";
+      if (Array.isArray(item.credentials)) {
+        creds = item.credentials.join("\n");
+      } else if (item.delivered_content) {
+        creds = item.delivered_content;
+      } else {
+        creds = "รหัสอยู่ระหว่างการประมวลผล";
+      }
+      return `[${item.title || item.id}] (จำนวน: ${item.quantity || 1})\n----------------------------------------\n${creds}`;
+    }).join("\n========================================\n\n");
+  } else {
+    formattedText = "ได้รับคำสั่งซื้อเรียบร้อย ระบบบันทึกเข้าฐานข้อมูลแล้ว";
+  }
 
-      <div class="my-6">
-        <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center justify-between">
-          <span>ข้อมูลไอดี / คีย์ดิจิทัลของคุณ:</span>
-          <span class="text-emerald-400 text-[11px] font-mono-val">⚡ อัตโนมัติ 100%</span>
-        </label>
-        <div class="relative">
-          <textarea id="credentials-text-box" readonly class="w-full h-40 p-4 rounded-xl bg-slate-950 border border-[rgba(25,186,255,0.3)] text-emerald-300 font-mono-val text-xs leading-relaxed focus:outline-none resize-none">${credentialsPayload}</textarea>
-        </div>
-      </div>
+  if (contentEl) {
+    contentEl.value = formattedText;
+  }
 
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
-        <div class="flex items-center gap-2">
-          <button onclick="copyCredentials()" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 font-bold">
-            <i data-lucide="copy" class="w-4 h-4"></i>
-            <span>คัดลอกข้อมูลทั้งหมด</span>
-          </button>
-          <button onclick="downloadReceiptTxt('${orderId}', \`${encodeURIComponent(credentialsPayload)}\`)" class="btn-cyber-secondary px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5">
-            <i data-lucide="download" class="w-4 h-4"></i>
-            <span>บันทึกไฟล์ .TXT</span>
-          </button>
-        </div>
-        <button onclick="closeInstantDeliveryModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white">
-          ปิดหน้าต่าง
-        </button>
-      </div>
-    </div>
-  `;
+  window.currentOrderDelivery = {
+    orderId,
+    content: formattedText
+  };
 
   modal.classList.remove("hidden");
-  lucide.createIcons();
-}
-
-function closeInstantDeliveryModal() {
-  const modal = document.getElementById("instant-delivery-modal");
-  if (modal) modal.classList.add("hidden");
-}
-
-function copyCredentials() {
-  const el = document.getElementById("credentials-text-box");
-  if (el) {
-    el.select();
-    navigator.clipboard.writeText(el.value).then(() => {
-      showToast("คัดลอกข้อมูลสินค้าลงคลิปบอร์ดแล้ว!", "success");
-    });
+  if (window.lucide) {
+    lucide.createIcons();
   }
 }
 
-function downloadReceiptTxt(orderId, encodedData) {
-  const content = decodeURIComponent(encodedData);
-  const fullText = `=================================================\n${storeConfig.storeName} - ใบเสร็จ & ข้อมูลสินค้า\n=================================================\nORDER ID: ${orderId}\nวันที่: ${new Date().toLocaleString("th-TH")}\n\n${content}\n\nขอบคุณที่ใช้บริการ 24 ชม. ติดต่อซัพพอร์ต: ${storeConfig.contactLine}`;
-  const blob = new Blob([fullText], { type: "text/plain;charset=utf-8" });
+function closeInstantModal() {
+  const modal = document.getElementById("instant-delivery-modal");
+  if (modal) modal.classList.add("hidden");
+}
+const closeInstantDeliveryModal = closeInstantModal;
+
+function copyDeliveredKey() {
+  const el = document.getElementById("delivered-content");
+  const text = el ? (el.value || el.textContent) : (window.currentOrderDelivery?.content || "");
+
+  if (!text) {
+    showToast("ไม่พบข้อมูลรหัสสินค้า", "warning");
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("คัดลอกรหัสสินค้าลงคลิปบอร์ดแล้ว!", "success");
+  }).catch(() => {
+    if (el) el.select();
+    document.execCommand("copy");
+    showToast("คัดลอกรหัสสินค้าแล้ว!", "success");
+  });
+}
+const copyCredentials = copyDeliveredKey;
+
+function downloadCurrentReceiptTxt() {
+  if (!window.currentOrderDelivery) {
+    showToast("ไม่พบข้อมูลคำสั่งซื้อที่จะดาวน์โหลด", "warning");
+    return;
+  }
+
+  const { orderId, content } = window.currentOrderDelivery;
+  const storeName = window.storeConfig?.storeName || "NYX9 STUDIO";
+  const contact = window.storeConfig?.contactLine || "@nyx9studio";
+
+  const fullReceipt = [
+    "============================================================",
+    `   ${storeName} - DIGITAL RECEIPT & CREDENTIALS`,
+    "============================================================",
+    `ORDER ID  : ${orderId}`,
+    `DATE      : ${new Date().toLocaleString("th-TH")}`,
+    `STATUS    : FULFILLED & VERIFIED (24/7 AUTO)`,
+    "============================================================",
+    "",
+    content,
+    "",
+    "============================================================",
+    "⚠️ คำแนะนำด้านความปลอดภัย:",
+    "• กรุณาเปลี่ยนรหัสผ่านหรือบันทึกข้อมูลเก็บไว้ในที่ปลอดภัยทันที",
+    `• หากพบปัญหา สามารถติดต่อเคลมประกันได้ตลอด 24 ชม. ที่: ${contact}`,
+    "============================================================"
+  ].join("\n");
+
+  const blob = new Blob([fullReceipt], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `RECEIPT-${orderId}.txt`;
+  a.href = url;
+  a.download = `${storeName}-ORDER-${orderId}.txt`;
+  document.body.appendChild(a);
   a.click();
-  showToast("ดาวน์โหลดไฟล์ใบเสร็จแล้ว", "success");
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("ดาวน์โหลดไฟล์ใบเสร็จ .TXT สำเร็จแล้ว!", "success");
 }
 
 // --- TYPE B: Custom Discord Services Order Form Modal ---
