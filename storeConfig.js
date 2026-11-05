@@ -8,49 +8,49 @@
  */
 
 const storeConfig = {
-  // --- ข้อมูลพื้นฐานและแบรนดิ้ง ---
-  storeName: "WICHX × NYX STUDIO",
-  brandShort: "WICHX",
-  tagline: "ศูนย์รวมบริการดิจิทัล Discord, FiveM, สตรีมมิ่ง & ไอที ครบวงจร 24 ชม.",
-  subTagline: "ระบบอัตโนมัติ 100% จัดส่งทันที รับประกันสินค้าทุกชิ้น การันตีมากกว่า 660,000 ออเดอร์",
+  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO) ---
+  storeName: "NYX9 STUDIO",
+  brandShort: "NYX9",
+  tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
+  subTagline: "ศูนย์รวมบริการดิจิทัล Discord, บูสต์เซิร์ฟเวอร์, เควสอัตโนมัติ, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
   logoUrl: "https://api.iconify.design/lucide:zap.svg?color=%2319BAFF",
   faviconUrl: "https://api.iconify.design/lucide:shield-check.svg?color=%2319BAFF",
   
   // --- ช่องทางติดต่อ & ชุมชน ---
-  discordCommunityUrl: "https://discord.gg/your-invite",
-  contactLine: "@yourshop",
-  contactFacebook: "https://facebook.com/yourshop",
-  supportEmail: "support@wichxshop.com",
+  discordCommunityUrl: "https://discord.gg/nyx9studio",
+  contactLine: "@nyx9studio",
+  contactFacebook: "https://facebook.com/nyx9studio",
+  supportEmail: "support@nyxning.shop",
 
-  // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker) ---
+  // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
-    "🔥 FLASH SALE: Discord Nitro Booster 1 เดือน ลดพิเศษเพียง ฿169 เท่านั้น!",
-    "⚡ ระบบตัดยอดอัตโนมัติ 24 ชม. ส่งรหัสทันทีไม่ต้องรอแอดมินตอบ",
-    "🛡️ รับประกันสินค้ายกเมลแท้ มีทีมงานซัพพอร์ตตลอดเวลา",
-    "🪙 ชำระผ่าน Crypto LTC รับโบนัสยอดเงินเพิ่มทันที +5% ทุกบิล!"
+    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "cyan" },
+    { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
+    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
+    { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
   heroBanners: [
     {
       id: "banner-1",
-      badge: "DISCORD NITRO SALE",
-      title: "DISCORD NITRO & SERVER BOOSTS",
-      description: "บูสแท้ 100% ส่งไวใน 1 นาที ไม่ดึงกลับ รับประกันตลอดอายุการใช้งาน",
-      ctaText: "เลือกซื้อเลย",
+      badge: "NYX9 SPECIAL SERVICE",
+      title: "DISCORD NITRO & AUTO QUEST ENGINE",
+      description: "ทำเควสดิสคอร์ดอัตโนมัติ รับของรางวัล Orbs และบูสต์แท้ 100% ไม่ต้องเปิดเกมทิ้งไว้",
+      ctaText: "เลือกซื้อบริการ",
       ctaCategory: "cat-discord-nitro",
       bgGradient: "from-cyan-950/60 via-slate-900/90 to-[#06080C]",
-      accentTag: "ลดสูงสุด 48%"
+      accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
       badge: "GAMING & FIVEM READY",
-      title: "FIVEM ROCKSTAR & STEAM ACCOUNTS",
-      description: "รหัสพร้อมเล่น ปลดแบน HWID สะอาดแท้ 2 ชั้น เปลี่ยนรหัสผ่านได้ทันที",
+      title: "FIVEM ROCKSTAR & STEAM GTA V",
+      description: "รหัสพร้อมเล่น ปลดแบน HWID สะอาดแท้ 2 ชั้น สต็อกแน่นพร้อมส่งทันที",
       ctaText: "ดูรายการไอดี",
       ctaCategory: "cat-gaming-apps",
       bgGradient: "from-blue-950/60 via-slate-900/90 to-[#06080C]",
-      accentTag: "สต็อกแน่น 290+ ไอดี"
+      accentTag: "สต็อกพร้อมส่ง"
     },
     {
       id: "banner-3",
@@ -90,13 +90,13 @@ const storeConfig = {
   // ข้อมูลตั้งค่าบัญชีรับเงิน
   paymentDetails: {
     promptpay: {
-      accountName: "WICHX STORE CO., LTD.",
+      accountName: "NYX9 STUDIO AUTO",
       promptpayNumber: "095-XXX-XXXX",
       minAmount: 10,
       feeRate: 0.0
     },
     truemoney: {
-      accountName: "WICHX WALLET AUTO",
+      accountName: "NYX9 WALLET AUTO",
       feeRate: 0.0,
       hint: "กรอกลิงก์ซองของขวัญ TrueMoney Wallet เพื่อรับเงินเข้าทันที"
     },
@@ -111,7 +111,7 @@ const storeConfig = {
 
   // โค้ดส่วนลดเริ่มต้น (Promo Codes)
   promoCodes: {
-    "WICHX10": { discountPercent: 10, minSpend: 100, label: "ลดทันที 10%" },
+    "NYX9VIP": { discountPercent: 10, minSpend: 100, label: "NYX9 ลดทันที 10%" },
     "NYX50": { discountThb: 50, minSpend: 300, label: "ลด ฿50 เมื่อซื้อครบ ฿300" },
     "CYBERVIP": { discountPercent: 15, minSpend: 500, label: "VIP ลด 15%" }
   }

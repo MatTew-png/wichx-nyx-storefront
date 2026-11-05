@@ -83,17 +83,53 @@ function initWhitelabelTheme() {
 }
 
 // ==============================================================================
-// 2. MARQUEE ANNOUNCEMENT TICKER
+// 2. MARQUEE ANNOUNCEMENT TICKER (HIGH-TECH CAPSULES)
 // ==============================================================================
 function renderMarquee() {
   const container = document.getElementById("marquee-content");
   if (!container) return;
   const list = storeConfig.announcements || [];
-  const text = list.join("   ///   ");
-  // Render duplicate for seamless infinite loop
+
+  const tagColors = {
+    cyan: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
+    emerald: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    blue: "bg-blue-500/15 text-blue-300 border-blue-500/30",
+    amber: "bg-amber-500/15 text-amber-300 border-amber-500/30"
+  };
+
+  const renderItems = () => list.map(item => {
+    if (typeof item === "string") {
+      return `
+        <div class="marquee-capsule text-slate-300">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+          <span>${item}</span>
+        </div>
+        <span class="text-[var(--accent)]/30 text-[9px] font-mono select-none">◆</span>
+      `;
+    }
+
+    const colorClass = tagColors[item.color] || tagColors.cyan;
+
+    return `
+      <div class="marquee-capsule text-slate-300">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-extrabold uppercase border ${colorClass}">
+          ${item.tag}
+        </span>
+        <span class="text-slate-300 font-medium">${item.text}</span>
+        ${item.highlight ? `<span class="font-mono font-bold text-white px-1.5 py-0.5 rounded bg-black/50 text-[var(--accent)] border border-[rgba(25,186,255,0.2)]">${item.highlight}</span>` : ""}
+      </div>
+      <span class="text-[var(--accent)]/30 text-[9px] font-mono select-none">◆</span>
+    `;
+  }).join("");
+
+  // Duplicate for smooth seamless infinite CSS marquee
   container.innerHTML = `
-    <span class="mr-12 font-medium">${text}</span>
-    <span class="mr-12 font-medium">${text}</span>
+    <div class="inline-flex items-center gap-4 pr-4">
+      ${renderItems()}
+    </div>
+    <div class="inline-flex items-center gap-4 pr-4" aria-hidden="true">
+      ${renderItems()}
+    </div>
   `;
 }
 
