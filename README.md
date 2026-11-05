@@ -1,69 +1,59 @@
-# ⚡ WICHX × NYX STUDIO — WHITELABEL DIGITAL STOREFRONT TEMPLATE
-> Commercial-Grade, Action-Driven & Fully Responsive Cyber E-Commerce Architecture
+# ⚡ NYX9 STUDIO — COMMERCIAL WHITELABEL DIGITAL STOREFRONT
+> Commercial-Grade, Action-Driven & Fully Responsive Cyber E-Commerce Architecture  
+> GitHub Repository: [https://github.com/MatTew-png/wichx-nyx-storefront](https://github.com/MatTew-png/wichx-nyx-storefront)
 
-สถาปัตยกรรมเทมเพลตร้านค้าดิจิทัลระดับคอมเมอร์เชียลที่สังเคราะห์จุดแข็งจาก 3 สุดยอดเว็บชอปแถวหน้า:
-- **`xenonhub.pro`**: Cyber Hero, Social Proof Live Order Feed & Telemetry Grid
-- **`melody191.shop`**: Dual-Fulfillment Flow (Instant Key Modal vs Custom Service Forms) & Tri-Gateway Top-Up
-- **`wichxshop.com`**: Multi-Niche Catalog, Stock Badges, Hero Promo Carousel & Crypto LTC (+5% Bonus)
+สถาปัตยกรรมเทมเพลตร้านค้าดิจิทัลระดับโปรดักชัน สังเคราะห์จุดแข็งจาก **`xenonhub.pro`**, **`melody191.shop`** และ **`wichxshop.com`** ยกระดับสโตร์สู่เวอร์ชั่น Cyberpunk Glacier Cyan พร้อมระบบ Serverless API Backend สำหรับการ Deploy สู่ Vercel / Cloudflare ทันที
 
 ---
 
-## 📁 โครงสร้างโปรเจกต์ (Zero-Dependency & 100% Portable)
+## 📁 โครงสร้างโปรเจกต์ (Production Architecture)
 
 ```text
 WebShop/
-├── index.html            # โครงสร้างหลัก สไตล์ Capsule Glass & Cyber Canvas
-├── storeConfig.js        # 🚀 WHITELABEL ENGINE: ไฟล์ปรับแต่งแบรนด์ & ธีมเพียง 1 ไฟล์
-├── productsData.js       # 📦 ฐานข้อมูลสินค้าทั้ง 4 หมวดหมู่ พร้อม SVG Artwork 16:9
-├── app.js                # ⚡ ระบบควบคุม (Cart, Fulfillment, Top-Up, Social Proof, Toast)
-├── styles.css            # 🎨 ระบบสี Glacier Cyan + Obsidian Void และ Micro-Interactions
-├── package.json          # สคริปต์รันเซิร์ฟเวอร์แบบเบาแรง
-└── README.md             # คู่มือการใช้งานและเอกสารสถาปัตยกรรม
+├── .github/workflows/deploy.yml # 🚀 CI/CD Automated Verification
+├── api/                         # ⚡ Serverless API Backend Handlers
+│   ├── verify-slip.js           # ระบบตรวจสอบสลิป PromptPay อัตโนมัติ (Slip Verify)
+│   ├── discord-notify.js        # ระบบแจ้งเตือนคำสั่งซื้อเข้า Discord Webhook
+│   ├── truemoney-redeem.js      # ระบบตรวจรับเงินจากซองของขวัญ TrueMoney
+│   └── crypto-ltc.js            # ระบบตรวจสอบบล็อกเชน Litecoin (LTC)
+├── index.html                   # โครงสร้างหน้าร้าน Capsule Glass & Cyber Canvas
+├── storeConfig.js               # 🚀 WHITELABEL ENGINE: เปลี่ยนแบรนด์ใน 1 ไฟล์
+├── productsData.js              # 📦 แคตตาล็อกสินค้า 4 หมวด พร้อม 16:9 SVG Artwork
+├── app.js                       # 🎮 Frontend Controller (Cart, Modals, Top-Up, Toasts)
+├── styles.css                   # 🎨 Design System, Masked Ticker, Micro-Interactions
+├── vercel.json                  # 🌐 การตั้งค่า Routing & Headers สำหรับ Vercel
+├── .env.example                 # 🔐 ตัวอย่างคีย์ Environment สำหรับขึ้น Production
+└── package.json                 # สคริปต์รันเซิร์ฟเวอร์
 ```
 
 ---
 
-## 🚀 จุดเด่นของสถาปัตยกรรม (Key Architectural Highlights)
+## 🚀 สรุประบบที่ติดตั้งและพร้อมใช้งาน (Deployed Capabilities)
 
-### 1. 1-File Whitelabel Rebranding (`storeConfig.js`)
-แก้ไขเพียงไฟล์เดียวเพื่อเปลี่ยนอัตลักษณ์ของร้านค้าทั้งระบบ:
-- **ชื่อร้าน & สโลแกน**: อัปเดตทุกจุดบนหน้าเว็บอัตโนมัติ (Header, Navbar, Footer, Document Title)
-- **ธีมสี**: ระบบจะแปลงค่า HEX จาก `storeConfig.theme` เข้าสู่ CSS Variables (`--accent`, `--base-bg`, `--card-bg`) ทันที
-- **คอนแทค & ลิงก์โซเชียล**: Discord Community, LINE Official, Email Support
-- **สถิติความน่าเชื่อถือ (Telemetry Grid)**: ผู้ใช้งาน, สินค้าพร้อมส่ง, ออเดอร์สำเร็จ, Uptime
-
-### 2. Dual-Fulfillment System (ระบบจัดส่ง 2 รูปแบบในระบบเดียว)
-- **Instant Credentials Delivery (จัดส่งทันที)**:
-  - ใช้กับสินค้าประเภท Nitro Mailpass, ไอดี FiveM, คีย์ Windows, ไอดีสตรีมมิ่ง
-  - แสดงกล่องข้อมูล `เมล:รหัสผ่าน` หรือคีย์ทันทีหลังตัดยอดเงิน
-  - ปุ่ม **[ คัดลอกข้อมูล ]** แบบคลิกเดียว พร้อมปุ่ม **[ บันทึกไฟล์ .TXT ]** ออกเป็นใบเสร็จอัตโนมัติ
-- **Custom Service Forms (ฟอร์มรับคำขอบริการ)**:
-  - **ปั๊มคนเข้า Discord**: ช่องกรอก Invite Link + แถบเลื่อน (Slider) เลือกจำนวนสมาชิก 100 - 1,000 คน พร้อมคำนวณราคาเรียลไทม์ (฿0.50/คน)
-  - **ยืนยันเบอร์ OTP สด**: เลือกประเทศ (ไทย, สหรัฐ, เวียดนาม, ฟิลิปปินส์) + ปุ่มขอรับเบอร์เสมือน + กล่องจำลองรหัส OTP สด
-  - **ทำตราเควสต์ Discord (Quest Badge)**: ช่องกรอก Discord User ID พร้อมคำแนะนำการเปิด Developer Mode
-  - **YouTube/Spotify Family**: ช่องกรอก Gmail เพื่อรับคำเชิญ
-
-### 3. Tri-Gateway Top-Up Modal (ระบบเติมเงิน 3 ช่องทาง)
-- **Tab 1: PromptPay QR Code**: กำหนดจำนวนเงินเองหรือกดปุ่มลัด (฿50, ฿100, ฿300, ฿500, ฿1,000) แสดง QR Code อัตโนมัติ พร้อมปุ่มจำลองการตรวจยอดและเติมเงินเข้ากระเป๋า
-- **Tab 2: TrueMoney Wallet**: วางลิงก์ซองของขวัญ (`gift.truemoney.com`) ตรวจสอบความถูกต้องและรับเงินเข้ากระเป๋าทันที
-- **Tab 3: Crypto LTC (Litecoin)**: แสดงที่อยู่ LTC Native พร้อมป้ายรับโบนัสฟรี +5% และปุ่มตรวจสอบบล็อกเชน
-
-### 4. Graphic-First & Anti-Slop Thesis
-- **16:9 Artwork**: อาร์ตเวิร์กสไตล์ Cyberpunk ที่สร้างด้วย Vector SVG คมชัดระดับ Retina ไม่ต้องกลัวรูปภาพแตกหรือลิงก์ภายนอกเสีย
-- **Compact Icon Chips**: แทนที่ข้อความยาวเป็นย่อหน้าด้วยชิปข้อมูลกระชับ เช่น `[⚡ ส่งทันที]`, `[🛡️ ประกันเต็ม]`, `[💎 2 บูส]`
-- **Zero Browser Native Alerts**: แจ้งเตือนทุกอย่างผ่าน Custom Cyber Glass Toasts และ Modals
+1. **Top System Feed (Masked Cyber Capsules):**
+   - แถบประกาศด้านบนสุดรูปแบบแคปซูลแก้ว มีป้ายหมวดหมู่แยกสี (`[FLASH SALE]`, `[AUTO 24/7]`, `[VERIFIED]`, `[LTC BONUS]`)
+   - ไฟสัญญาณเรดาร์เขียวกะพริบ `[● SYSTEM FEED]` และสถานะ `24/7 AUTO | PING: 18ms`
+   - เอฟเฟกต์ Gradient Masking ซ้าย-ขวา ตัวหนังสือเลื่อนเข้า-ออกเนียนตา
+2. **Dual-Fulfillment Flow:**
+   - **Instant Credentials Delivery:** กล่องรหัส `เมล:รหัสผ่าน` เด้งทันทีหลังสั่งซื้อ พร้อมปุ่มคัดลอก และปุ่มดาวน์โหลดใบเสร็จ `.txt`
+   - **Custom Service Forms:** ฟอร์มรับข้อมูลเฉพาะบริการ เช่น ปั๊มคนดิสคอร์ด (สไลเดอร์คำนวณราคา), ยืนยันเบอร์ OTP สด (สุ่มเบอร์ + OTP สด), และทำตราเควสต์ Discord
+3. **Tri-Gateway Top-Up Modal:**
+   - PromptPay QR Code แบบไดนามิก + ระบบจำลองตรวจยอด
+   - TrueMoney Wallet รับเงินจากลิงก์ซองของขวัญอัตโนมัติ
+   - Crypto LTC (Litecoin Native) พร้อมโบนัสเงินเพิ่มฟรี +5%
+4. **Production Serverless Backend (`/api`):**
+   - พร้อมรองรับการเชื่อมต่อ API ตรวจสลิปจริง (OpenSlipVerify / EasySlip)
+   - พร้อมส่ง Embed การสั่งซื้อแจ้งเตือนเข้าช่อง Discord Webhook ของร้านค้าทันที
 
 ---
 
-## 🛠️ วิธีการเปิดใช้งาน (Quick Start)
+## 🌐 วิธีนำขึ้น Production (Vercel 1-Click Deployment)
 
-### วิธีที่ 1: ดับเบิลคลิกเปิดใช้งานทันที
-เปิดไฟล์ `index.html` ด้วยเว็บเบราว์เซอร์ใดก็ได้ (Chrome, Edge, Safari, Brave) ใช้งานได้ทันที 100%
-
-### วิธีที่ 2: รันผ่าน Local Server
-```bash
-npm start
-# หรือ
-npx serve -l 3000 .
-```
-แล้วเปิดเบราว์เซอร์ไปที่ `http://localhost:3000`
+โปรเจกต์นี้เชื่อมต่อกับ GitHub Repository เรียบร้อยแล้ว:
+1. เข้าไปที่ [Vercel Dashboard](https://vercel.com/new)
+2. เลือก Repository **`MatTew-png/wichx-nyx-storefront`**
+3. ใส่ค่า Environment Variables จากไฟล์ [`.env.example`](file:///c:/Users/_newgen/Documents/antigravity/WebShop/.env.example):
+   - `DISCORD_WEBHOOK_URL` (ลิงก์ Webhook จาก Discord Server)
+   - `SLIP_VERIFY_API_KEY` (คีย์ตรวจสลิป ถ้ามี)
+   - `TRUEMONEY_PHONE` (เบอร์รับเงิน TrueMoney)
+4. กด **Deploy** เว็บไซต์จะออนไลน์ทันที พร้อมใช้งานระบบ SSL ฟรี และสามารถผูก Custom Domain (เช่น `nyxning.shop`) ได้ทันทีในเมนู Settings > Domains
