@@ -3,12 +3,21 @@
  * 🚀 NYX9 STUDIO — MAIN APPLICATION BOOTSTRAPPER (OOP COORDINATOR)
  * ==============================================================================
  * สถาปัตยกรรม Modular OOP & Component-Based:
- * - js/core/Store.js               -> Reactive State Container
- * - js/services/AuthService.js     -> Discord OAuth & Profiles
- * - js/services/CatalogService.js  -> Live Products & Filters
- * - js/services/PaymentService.js  -> 4-Gateway Engine (PromptPay, TrueMoney, Bank, Card)
- * - js/services/CheckoutService.js -> Atomic Orders & Claims
- * - js/components/*.js             -> Isolated UI Components
+ * - js/core/Store.js                     -> Reactive State Container
+ * - js/services/AuthService.js           -> Discord OAuth & Profiles
+ * - js/services/CatalogService.js        -> Live Products & Filters
+ * - js/services/PaymentService.js        -> 4-Gateway Engine (PromptPay, TrueMoney, Bank, Card)
+ * - js/services/CheckoutService.js       -> Atomic Orders & Claims
+ * - js/services/HistoryService.js        -> Order History & Vault Retrieval
+ * - js/components/Navbar.js              -> Capsule Navigation & User Telemetry
+ * - js/components/HeroSection.js         -> Carousel & Metric Highlights
+ * - js/components/CatalogView.js         -> Filter Pills & Product Cards
+ * - js/components/CartDrawer.js          -> Slide-out Drawer & Promo Code Engine
+ * - js/components/TopUpModal.js          -> 4-Gateway Top-Up Modal
+ * - js/components/HistoryModal.js        -> Past Keys & Receipt Vault Modal
+ * - js/components/DiscordServiceModal.js -> Boost & Nitro Quests Calculator
+ * - js/components/Modals.js              -> Instant Delivery, Custom Order, Claims
+ * - js/components/SocialProof.js         -> Recent Order Notifications Ticker
  * ==============================================================================
  */
 
@@ -21,6 +30,7 @@ class ShopApp {
     this.catalogService = new window.CatalogService(this.store);
     this.paymentService = new window.PaymentService(this.store);
     this.checkoutService = new window.CheckoutService(this.store);
+    this.historyService = new window.HistoryService(this.store);
 
     // Components
     this.navbar = new window.NavbarComponent(this.store);
@@ -28,6 +38,8 @@ class ShopApp {
     this.catalogView = new window.CatalogViewComponent(this.store);
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
+    this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
+    this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
   }
@@ -95,6 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==============================================================================
 // 🔗 BACKWARD-COMPATIBLE GLOBAL BRIDGES (FOR HTML ONCLICK HANDLERS)
 // ==============================================================================
+
+// Top-Up Bridges
 window.openTopUpModal = (amt) => window.Shop.topupModal.open(amt);
 window.closeTopUpModal = () => window.Shop.topupModal.close();
 window.switchTopUpGateway = (tab) => window.Shop.topupModal.switchGateway(tab);
@@ -117,7 +131,7 @@ window.copyBankAccount = () => {
 };
 window.verifyBankTransferSlip = () => window.Shop.topupModal.verifyBankTransfer();
 
-// Card Helpers
+// Card Bridges
 window.setCardAmountPreset = (amt) => {
   const el = document.getElementById("card-topup-amount");
   if (el) el.value = amt;
@@ -142,11 +156,11 @@ window.handleCardHolderInput = (input) => {
 };
 window.processCardPayment = () => window.Shop.topupModal.processCard();
 
-// Auth Helpers
+// Auth Bridges
 window.handleDiscordLogin = () => window.Shop.auth.loginWithDiscord();
 window.handleLogout = () => window.Shop.auth.logout();
 
-// Cart & Checkout Helpers
+// Cart & Checkout Bridges
 window.toggleCartDrawer = () => window.Shop.cartManager.toggle();
 window.applyCouponCode = () => window.Shop.cartManager.applyCoupon();
 window.removeCouponCode = () => window.Shop.cartManager.removeCoupon();
@@ -169,6 +183,59 @@ window.executeCheckout = async () => {
       btn.innerHTML = `<span>ยืนยันการสั่งซื้อทันที</span> <i data-lucide="zap" class="w-4 h-4 fill-current"></i>`;
       if (window.lucide) lucide.createIcons();
     }
+  }
+};
+
+// History & Key Vault Bridges
+window.openHistoryModal = () => window.Shop.historyModal.open();
+window.closeHistoryModal = () => window.Shop.historyModal.close();
+window.handleHistorySearch = (e) => window.Shop.historyModal.filter(e.target.value);
+window.copyHistoryKey = (key) => {
+  window.Shop.historyService.copyToClipboard(key).then(() => {
+    window.UI?.toast("คัดลอกคีย์เรียบร้อยแล้ว!", "success");
+  });
+};
+window.quickClaimOrder = (orderId) => {
+  window.Shop.historyModal.close();
+  window.Shop.modals.openClaim();
+  const input = document.getElementById("claim-order-id");
+  if (input) input.value = orderId;
+};
+
+// Discord Boost & Quests Calculator Bridges
+window.openDiscordServicesModal = (tab) => window.Shop.discordServiceModal.open(tab);
+window.closeDiscordServicesModal = () => window.Shop.discordServiceModal.close();
+window.switchDiscordTab = (tab) => window.Shop.discordServiceModal.setTab(tab);
+window.setBoostPreset = (count) => {
+  window.Shop.discordServiceModal.boostCount = count;
+  window.Shop.discordServiceModal.render();
+};
+window.handleBoostSlider = (e) => {
+  window.Shop.discordServiceModal.boostCount = parseInt(e.target.value, 10);
+  window.Shop.discordServiceModal.render();
+};
+window.setBoostDuration = (dur) => {
+  window.Shop.discordServiceModal.boostDuration = dur;
+  window.Shop.discordServiceModal.render();
+};
+window.handleInviteInput = (e) => {
+  window.Shop.discordServiceModal.inviteLink = e.target.value;
+};
+window.setQuestType = (type) => {
+  window.Shop.discordServiceModal.questType = type;
+  window.Shop.discordServiceModal.render();
+};
+window.handleDiscordTagInput = (e) => {
+  window.Shop.discordServiceModal.discordTag = e.target.value;
+};
+window.addDiscordServiceToCart = () => {
+  try {
+    const item = window.Shop.discordServiceModal.addToCart();
+    window.Shop.discordServiceModal.close();
+    window.UI?.toast(`เพิ่ม "${item.title}" ลงในตะกร้าแล้ว`, "success");
+    window.UI?.confetti();
+  } catch (err) {
+    window.UI?.toast(err.message, "error");
   }
 };
 

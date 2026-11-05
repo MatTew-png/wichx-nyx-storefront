@@ -327,6 +327,44 @@ const SupabaseAdapter = {
       dispensed_items: fallbackDispensed,
       message: "สั่งซื้อสำเร็จ (Local Sandbox Mode)"
     };
+  },
+
+  // 8. ดึงประวัติคำสั่งซื้อของผู้ใช้
+  async getUserOrders(userId) {
+    if (!this.isLive || !this.client) {
+      return null;
+    }
+    try {
+      let query = this.client
+        .from("orders")
+        .select(`
+          id,
+          total_amount,
+          payment_method,
+          status,
+          created_at,
+          order_items (
+            id,
+            product_id,
+            quantity,
+            unit_price,
+            delivered_content,
+            custom_data
+          )
+        `)
+        .order("created_at", { ascending: false });
+
+      if (userId) {
+        query = query.eq("user_id", userId);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.warn("[SUPABASE] Fetch orders failed:", err.message);
+      return null;
+    }
   }
 };
 

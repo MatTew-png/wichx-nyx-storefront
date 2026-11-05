@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "NYX9 Studio Architecture",
+    "output": "architecture-map.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "order-fulfillment",
+        "label": "Order fulfillment flow",
+        "focus": ["browser", "ui-components", "checkout-service", "supabase-rpc", "supabase-db"],
+        "note": "Follow customer checkout from UI trigger through atomic RPC down to Postgres tables."
+      },
+      {
+        "id": "payment-gateways",
+        "label": "4-Gateway payment flow",
+        "focus": ["browser", "ui-components", "payment-service", "supabase-rpc", "supabase-db"],
+        "note": "Trace slip verification and anti-double-spend locking across all 4 payment gateways."
+      },
+      {
+        "id": "auth-and-identity",
+        "label": "Discord OAuth & profile sync",
+        "focus": ["discord-oauth", "auth-service", "app-store", "ui-components"],
+        "note": "Examine OAuth2 identity callback and automatic profile creation via Postgres trigger."
+      }
+    ]
+  },
+  "components": [
+    { "id": "browser", "type": "external", "label": "Customer", "sublabel": "Browser / Mobile", "pos": [40, 260], "size": [130, 60] },
+    { "id": "discord-oauth", "type": "cloud", "label": "Discord Auth", "sublabel": "OAuth 2.0 PKCE", "pos": [40, 110], "size": [130, 60], "tag": "Discord API" },
+    { "id": "ui-components", "type": "frontend", "label": "UI Components", "sublabel": "Navbar, Cart, Modals", "pos": [230, 260], "size": [140, 60] },
+    { "id": "auth-service", "type": "security", "label": "AuthService", "sublabel": "Session & Tokens", "pos": [230, 110], "size": [140, 60] },
+    { "id": "app-store", "type": "frontend", "label": "AppStore", "sublabel": "Pub/Sub State", "pos": [440, 110], "size": [140, 60], "tag": "Reactive" },
+    { "id": "checkout-service", "type": "backend", "label": "CheckoutService", "sublabel": "Atomic Order Engine", "pos": [440, 260], "size": [140, 60] },
+    { "id": "payment-service", "type": "backend", "label": "PaymentService", "sublabel": "4-Gateway Engine", "pos": [230, 410], "size": [140, 60] },
+    { "id": "history-service", "type": "backend", "label": "HistoryService", "sublabel": "Keys Vault Cache", "pos": [440, 410], "size": [140, 60] },
+    { "id": "supabase-rpc", "type": "security", "label": "Supabase RPC", "sublabel": "RLS & Anti-Dupe", "pos": [650, 260], "size": [140, 60], "tag": "Stored Proc" },
+    { "id": "supabase-db", "type": "database", "label": "PostgreSQL", "sublabel": "12 Tables Cluster", "pos": [860, 260], "size": [140, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Browser Client Runtime (Modular OOP)", "wraps": ["ui-components", "auth-service", "app-store", "checkout-service", "payment-service", "history-service"] },
+    { "kind": "security-group", "label": "Supabase Cloud Platform", "wraps": ["supabase-rpc", "supabase-db"] }
+  ],
+  "connections": [
+    { "id": "customer-action", "from": "browser", "to": "ui-components", "label": "DOM events", "variant": "emphasis" },
+    { "id": "discord-callback", "from": "discord-oauth", "to": "auth-service", "label": "OAuth token", "variant": "security" },
+    { "id": "auth-sync-store", "from": "auth-service", "to": "app-store", "label": "sync profile" },
+    { "id": "ui-to-checkout", "from": "ui-components", "to": "checkout-service", "label": "execute" },
+    { "id": "ui-to-payment", "from": "ui-components", "to": "payment-service", "label": "top-up", "fromSide": "bottom", "toSide": "top", "labelAt": [300, 365] },
+    { "id": "checkout-to-history", "from": "checkout-service", "to": "history-service", "label": "store keys", "fromSide": "bottom", "toSide": "top", "labelAt": [510, 365] },
+    { "id": "checkout-to-rpc", "from": "checkout-service", "to": "supabase-rpc", "label": "atomic order" },
+    { "id": "rpc-to-db", "from": "supabase-rpc", "to": "supabase-db", "label": "SQL write", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Client Architecture", "items": ["Modular OOP classes with zero bundler overhead", "Pub/sub reactive AppStore synchronizes all UI elements", "Instant response with optimistic UI updates"] },
+    { "dot": "emerald", "title": "Payments & Fulfillment", "items": ["4 distinct payment gateways with EMVCo QR and 3DS simulation", "Double-spend slip locking table prevents replay attacks", "Atomic PostgreSQL stored procedures dispense inventory keys"] },
+    { "dot": "rose", "title": "Security & Persistence", "items": ["Discord OAuth2 with automated profile creation trigger", "Row-Level Security (RLS) protects order and wallet data", "History service merges cloud receipts with local offline cache"] }
+  ]
+}

@@ -150,8 +150,20 @@
           </div>
         </div>
 
+        <!-- Discord Services (Boost & Quests) Calculator Button -->
+        <button onclick="openDiscordServicesModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 hover:bg-[#5865F2]/25 text-xs text-white font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer" title="คำนวณและสั่งซื้อ Discord Boost & Quests">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#5865F2]"></i>
+          <span class="hidden xl:inline">บริการดิสคอร์ด</span>
+        </button>
+
+        <!-- Order History & Key Vault Button -->
+        <button onclick="openHistoryModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-[var(--accent)] text-xs text-slate-200 transition-all hover:scale-105 active:scale-95 cursor-pointer" title="ประวัติการสั่งซื้อและคลังคีย์">
+          <i data-lucide="history" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
+          <span class="hidden md:inline">ประวัติคีย์</span>
+        </button>
+
         <!-- Cart Button -->
-        <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-[var(--accent)] text-slate-200 transition-all hover:scale-105 active:scale-95" title="ดูตะกร้าสินค้า">
+        <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-[var(--accent)] text-slate-200 transition-all hover:scale-105 active:scale-95 cursor-pointer" title="ดูตะกร้าสินค้า">
           <i data-lucide="shopping-cart" class="w-4 h-4 text-[var(--accent)]"></i>
           <span id="cart-badge-count" class="hidden">0</span>
         </button>
@@ -934,12 +946,15 @@
   <script src="js/services/CatalogService.js"></script>
   <script src="js/services/PaymentService.js"></script>
   <script src="js/services/CheckoutService.js"></script>
+  <script src="js/services/HistoryService.js"></script>
   <script src="js/components/UI.js"></script>
   <script src="js/components/Navbar.js"></script>
   <script src="js/components/HeroSection.js"></script>
   <script src="js/components/CatalogView.js"></script>
   <script src="js/components/CartDrawer.js"></script>
   <script src="js/components/TopUpModal.js"></script>
+  <script src="js/components/HistoryModal.js"></script>
+  <script src="js/components/DiscordServiceModal.js"></script>
   <script src="js/components/Modals.js"></script>
   <script src="js/components/SocialProof.js"></script>
 

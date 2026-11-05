@@ -127,4 +127,9 @@ class Store {
 }
 
 // Global Singleton Instance
+window.Store = Store;
 window.AppStore = new Store();
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = Store;
+}
