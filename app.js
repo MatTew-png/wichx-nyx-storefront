@@ -43,6 +43,7 @@ class ShopApp {
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
+    this.security = window.SecurityEngine ? new window.SecurityEngine(this.store) : null;
   }
 
   async init() {

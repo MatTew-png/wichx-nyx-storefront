@@ -475,6 +475,22 @@
       }
 
       await checkAdminSession();
+
+      // Client Anti-Tamper for Admin Gate
+      document.addEventListener("contextmenu", (e) => {
+        if (currentAdminUser) return;
+        const t = e.target.tagName ? e.target.tagName.toLowerCase() : "";
+        if (t === "input" || t === "textarea") return;
+        e.preventDefault();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (currentAdminUser) return;
+        const k = e.key ? e.key.toLowerCase() : "";
+        if (e.key === "F12" || ((e.ctrlKey || e.metaKey) && (e.shiftKey && (k === "i" || k === "j" || k === "c") || k === "u"))) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
     });
 
     function initSupabase() {

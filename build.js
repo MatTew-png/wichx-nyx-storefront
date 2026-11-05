@@ -6,6 +6,7 @@ const SOURCE_FILES = [
   'storeConfig.js',
   'productsData.js',
   'js/core/Store.js',
+  'js/core/SecurityEngine.js',
   'js/services/AuthService.js',
   'js/services/CatalogService.js',
   'js/services/PaymentService.js',
