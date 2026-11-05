@@ -387,7 +387,7 @@ function renderProductsCatalog(searchQuery = "") {
       </div>
 
       <!-- Products Grid -->
-      <div id="grid-${cat.id}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${isCollapsed ? 'hidden' : ''}">
+      <div id="grid-${cat.id}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${isCollapsed ? 'hidden' : ''}">
         ${filteredProducts.map(p => renderProductCardHTML(p)).join("")}
       </div>
     `;
@@ -427,8 +427,8 @@ function renderProductCardHTML(p) {
 
   return `
     <div class="glass-panel rounded-2xl overflow-hidden tactile-card flex flex-col justify-between border border-[rgba(25,186,255,0.15)]">
-      <!-- 16:9 Artwork Container -->
-      <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
+      <!-- 1:1 Square Base Artwork Container -->
+      <div class="relative w-full aspect-square overflow-hidden bg-slate-950 flex items-center justify-center">
         <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy"/>
         
         <!-- Floating Badges Top -->

@@ -7,12 +7,12 @@
  * ==============================================================================
  */
 
-// ฟังก์ชันสร้าง Artwork SVG สไตล์ Cyberpunk 16:9 คมชัด รองรับเรตินา ไม่ต้องพึ่งพาภาพภายนอก
+// ฟังก์ชันสร้าง Artwork SVG สไตล์ Cyberpunk 1:1 Square (Base 450x450) คมชัด รองรับเรตินา
 function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) {
   const icons = {
     nitro: `<path d="M12 2L4 14h6l-2 8 10-12h-6l4-8z" fill="${primaryColor}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>`,
     boost: `<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m0 0l8.5-8.5a2.12 2.12 0 1 1 3 3L12 15m-3-3v3h3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-    discord: `<rect x="3" y="5" width="18" height="14" rx="4" stroke="${primaryColor}" stroke-width="2" fill="none"/><circle cx="9" cy="12" r="1.5" fill="${primaryColor}"/><circle cx="15" cy="12" r="1.5" fill="${primaryColor}"/>`,
+    discord: `<path d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.2.35-.4.8-.56 1.18a16.8 16.8 0 0 0-5.14 0 9.87 9.87 0 0 0-.57-1.18 18.15 18.15 0 0 0-4.6 1.44A19.12 19.12 0 0 0 .96 17.7a18.43 18.43 0 0 0 5.63 2.87c.46-.62.86-1.28 1.2-1.98a12.16 12.16 0 0 1-1.92-.93c.16-.12.32-.24.47-.37a13.1 13.1 0 0 0 11.32 0c.16.13.31.25.47.37-.62.37-1.26.68-1.92.93.35.7.75 1.36 1.2 1.98 2.02-.62 3.92-1.6 5.63-2.87.5-5.46-1.3-10.22-3.3-12.83zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.4 0-1.33.95-2.4 2.15-2.4 1.21 0 2.17 1.08 2.15 2.4 0 1.32-.95 2.4-2.15 2.4zm7.97 0c-1.18 0-2.15-1.08-2.15-2.4 0-1.33.95-2.4 2.15-2.4 1.21 0 2.17 1.08 2.15 2.4 0 1.32-.94 2.4-2.15 2.4z" fill="${primaryColor}"/>`,
     game: `<rect x="2" y="6" width="20" height="12" rx="3" stroke="${primaryColor}" stroke-width="2" fill="none"/><path d="M6 12h4m-2-2v4m9-2h.01m3 0h.01" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
     stream: `<polygon points="5 3 19 12 5 21 5 3" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="1.5"/>`,
     key: `<path d="M21 2l-2 2m-1.5 1.5L14 9l-3-3L3.5 13.5a5 5 0 1 0 7 7L18 13l2-2 1.5-1.5M16 5l3 3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
@@ -20,48 +20,49 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
   };
 
   const selectedIcon = icons[iconType] || icons.nitro;
+  const safeId = title.replace(/[^a-zA-Z0-9]/g, '');
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450" width="100%" height="100%">
     <defs>
-      <linearGradient id="bg-${title.replace(/[^a-zA-Z0-9]/g, '')}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="bg-${safeId}" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#060911" />
         <stop offset="50%" stop-color="#0B1220" />
         <stop offset="100%" stop-color="#05080E" />
       </linearGradient>
-      <linearGradient id="glow-${title.replace(/[^a-zA-Z0-9]/g, '')}" x1="0%" y1="0%" x2="100%" y2="0%">
+      <linearGradient id="glow-${safeId}" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="${primaryColor}" stop-opacity="0.8"/>
         <stop offset="100%" stop-color="${secondaryColor}" stop-opacity="0.2"/>
       </linearGradient>
-      <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+        <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
       </pattern>
     </defs>
-    <rect width="640" height="360" fill="url(#bg-${title.replace(/[^a-zA-Z0-9]/g, '')})"/>
-    <rect width="640" height="360" fill="url(#grid)"/>
-    <circle cx="320" cy="180" r="130" fill="${primaryColor}" fill-opacity="0.07" filter="blur(40px)"/>
-    <circle cx="500" cy="80" r="90" fill="${secondaryColor}" fill-opacity="0.08" filter="blur(30px)"/>
+    <rect width="450" height="450" fill="url(#bg-${safeId})"/>
+    <rect width="450" height="450" fill="url(#grid)"/>
+    <circle cx="225" cy="210" r="130" fill="${primaryColor}" fill-opacity="0.10" filter="blur(45px)"/>
+    <circle cx="350" cy="90" r="80" fill="${secondaryColor}" fill-opacity="0.08" filter="blur(35px)"/>
     
-    <!-- Cyber Geometric Frame -->
-    <path d="M 20 40 L 40 20 L 600 20 L 620 40 L 620 320 L 600 340 L 40 340 L 20 320 Z" fill="none" stroke="rgba(25, 186, 255, 0.15)" stroke-width="1.5"/>
-    <line x1="40" y1="20" x2="140" y2="20" stroke="${primaryColor}" stroke-width="3"/>
-    <line x1="500" y1="340" x2="600" y2="340" stroke="${secondaryColor}" stroke-width="3"/>
+    <!-- Cyber Geometric Square Frame (1:1 Base) -->
+    <path d="M 24 48 L 48 24 L 402 24 L 426 48 L 426 402 L 402 426 L 48 426 L 24 402 Z" fill="none" stroke="rgba(25, 186, 255, 0.18)" stroke-width="1.5"/>
+    <line x1="48" y1="24" x2="150" y2="24" stroke="${primaryColor}" stroke-width="3"/>
+    <line x1="300" y1="426" x2="402" y2="426" stroke="${secondaryColor}" stroke-width="3"/>
 
     <!-- Center Holo Symbol -->
-    <g transform="translate(288, 85) scale(2.7)">
+    <g transform="translate(165, 125) scale(5)">
       ${selectedIcon}
     </g>
 
     <!-- Typography -->
-    <text x="320" y="250" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="28" letter-spacing="1">
+    <text x="225" y="325" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="22" letter-spacing="0.5">
       ${title.toUpperCase()}
     </text>
-    <text x="320" y="285" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="14" letter-spacing="2">
+    <text x="225" y="358" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="12" letter-spacing="1.5">
       // ${sub.toUpperCase()} //
     </text>
 
     <!-- Top Badge Corner -->
-    <rect x="35" y="32" width="90" height="22" rx="4" fill="rgba(25, 186, 255, 0.15)" stroke="${primaryColor}" stroke-width="1"/>
-    <text x="80" y="47" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700">VERIFIED AUTH</text>
+    <rect x="34" y="32" width="95" height="20" rx="4" fill="rgba(25, 186, 255, 0.15)" stroke="${primaryColor}" stroke-width="1"/>
+    <text x="81" y="46" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700">VERIFIED AUTH</text>
   </svg>`;
 
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
