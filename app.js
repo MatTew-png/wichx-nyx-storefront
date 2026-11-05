@@ -47,24 +47,34 @@ class ShopApp {
   async init() {
     console.info("⚡ [NYX9 STUDIO] Initializing Modular OOP Storefront...");
     
-    // 1. เชื่อมต่อ Supabase
-    if (window.storeConfig?.supabase && window.SupabaseAdapter) {
-      const { url, anonKey } = window.storeConfig.supabase;
-      window.SupabaseAdapter.init(url, anonKey);
-    }
-
-    // 2. เริ่มต้น Services & โหลดข้อมูลสินค้า
-    await this.catalogService.loadCatalog();
-    await this.auth.init();
-
-    // 3. เรนเดอร์ส่วนประกอบ UI
+    // 1. เรนเดอร์ UI ทันทีไม่ต้องรอ Network (Optimistic Instant Rendering)
     this.hero.render();
     this.catalogView.render();
     this.navbar.updateWalletUI();
     this.navbar.updateCartBadge();
     this.renderAcceptedPaymentsFooter();
-    this.socialProof.init();
+    if (window.lucide) lucide.createIcons();
 
+    // 2. เชื่อมต่อ Supabase
+    if (window.storeConfig?.supabase && window.SupabaseAdapter) {
+      const { url, anonKey } = window.storeConfig.supabase;
+      window.SupabaseAdapter.init(url, anonKey);
+    }
+
+    // 3. ซิงค์ข้อมูลสินค้าและเซสชันใน Background อย่างปลอดภัย
+    try {
+      await this.catalogService.loadCatalog();
+    } catch (e) {
+      console.warn("[BACKGROUND SYNC] Catalog fetch error:", e);
+    }
+
+    try {
+      await this.auth.init();
+    } catch (e) {
+      console.warn("[BACKGROUND SYNC] Auth session error:", e);
+    }
+
+    this.socialProof.init();
     if (window.lucide) lucide.createIcons();
     console.info("✅ [NYX9 STUDIO] Storefront Ready!");
   }
@@ -99,10 +109,19 @@ class ShopApp {
 // Global Application Instance
 window.Shop = new ShopApp();
 
-// Boot on DOM Ready
-document.addEventListener("DOMContentLoaded", () => {
-  window.Shop.init();
-});
+// Boot immediately or on DOM Ready (Guaranteed Execution)
+function bootShopApp() {
+  if (window.Shop && !window.Shop._hasBooted) {
+    window.Shop._hasBooted = true;
+    window.Shop.init();
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootShopApp);
+} else {
+  bootShopApp();
+}
 
 // ==============================================================================
 // 🔗 BACKWARD-COMPATIBLE GLOBAL BRIDGES (FOR HTML ONCLICK HANDLERS)

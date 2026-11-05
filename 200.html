@@ -69,14 +69,26 @@
     };
   </script>
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons CDN (Fast Asia Edge via jsDelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => { if (window.lucide) lucide.createIcons(); });
+    } else {
+      if (window.lucide) lucide.createIcons();
+    }
+  </script>
+
+  <!-- Cache Invalidation Directives -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2.1.0" />
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
@@ -218,7 +230,7 @@
 
       <!-- Carousel Indicators Dots -->
       <div id="hero-carousel-dots" class="flex items-center justify-center gap-1.5 mt-3">
-        <!-- Dots rendered via app.js -->
+        <!-- Dots rendered via app.js?v=2.0.1 -->
       </div>
     </section>
 
@@ -282,7 +294,7 @@
           <span class="text-xs font-semibold text-slate-300">ตัวกรองหมวดหมู่:</span>
         </div>
         <div id="category-filter-bar" class="flex flex-wrap items-center gap-2">
-          <!-- Category toggles rendered dynamically via app.js -->
+          <!-- Category toggles rendered dynamically via app.js?v=2.0.1 -->
         </div>
       </div>
     </section>
@@ -291,7 +303,7 @@
          5. MULTI-NICHE PRODUCT CATALOG (DYNAMIC SECTIONS & CARDS)
          ============================================================================== -->
     <div id="catalog-container">
-      <!-- Catalog Sections rendered dynamically via app.js -->
+      <!-- Catalog Sections rendered dynamically via app.js?v=2.0.1 -->
     </div>
 
     <!-- ==============================================================================
@@ -430,7 +442,7 @@
 
       <!-- Drawer Items List -->
       <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 space-y-3">
-        <!-- Cart Items Injected Dynamically via app.js -->
+        <!-- Cart Items Injected Dynamically via app.js?v=2.0.1 -->
       </div>
 
       <!-- Drawer Checkout Footer -->
@@ -635,7 +647,7 @@
             <span id="promptpay-qr-amount-text" class="font-mono font-bold text-[var(--accent)]">฿100.00</span>
           </div>
           <div id="promptpay-qr-display" class="w-44 h-44 mx-auto bg-white p-2.5 rounded-2xl flex items-center justify-center shadow-lg relative border-2 border-slate-800">
-            <!-- Dynamic QR Code rendered by app.js -->
+            <!-- Dynamic QR Code rendered by app.js?v=2.0.1 -->
             <img id="promptpay-qr-img" src="" alt="PromptPay QR Code" class="w-full h-full object-contain" />
           </div>
           <div class="text-xs font-mono font-bold text-white mt-3 flex items-center justify-center gap-1.5">
@@ -924,7 +936,7 @@
        13. SOCIAL PROOF LIVE ORDER TOAST (BOTTOM-LEFT)
        ============================================================================== -->
   <div id="social-proof-feed" class="social-proof-exit">
-    <!-- Cycled via app.js -->
+    <!-- Cycled via app.js?v=2.0.1 -->
   </div>
 
   <!-- ==============================================================================
@@ -934,31 +946,10 @@
     <!-- Toasts pushed via showToast() -->
   </div>
 
-  <!-- Scripts -->
+  <!-- External Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="database/supabaseClient.js"></script>
-  <script src="storeConfig.js"></script>
-  <script src="productsData.js"></script>
 
-  <!-- Modular OOP & Component Engine -->
-  <script src="js/core/Store.js"></script>
-  <script src="js/services/AuthService.js"></script>
-  <script src="js/services/CatalogService.js"></script>
-  <script src="js/services/PaymentService.js"></script>
-  <script src="js/services/CheckoutService.js"></script>
-  <script src="js/services/HistoryService.js"></script>
-  <script src="js/components/UI.js"></script>
-  <script src="js/components/Navbar.js"></script>
-  <script src="js/components/HeroSection.js"></script>
-  <script src="js/components/CatalogView.js"></script>
-  <script src="js/components/CartDrawer.js"></script>
-  <script src="js/components/TopUpModal.js"></script>
-  <script src="js/components/HistoryModal.js"></script>
-  <script src="js/components/DiscordServiceModal.js"></script>
-  <script src="js/components/Modals.js"></script>
-  <script src="js/components/SocialProof.js"></script>
-
-  <!-- Main Bootstrapper -->
-  <script src="app.js"></script>
+  <!-- Unified Storefront Application Engine (Zero Latency Single-Bundle) -->
+  <script src="dist/store.bundle.js?v=2.1.0"></script>
 </body>
 </html>

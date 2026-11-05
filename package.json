@@ -4,6 +4,7 @@
   "description": "High-Action Graphic E-Commerce Storefront Template (XenonHub × Melody191 × WichxShop)",
   "main": "index.html",
   "scripts": {
+    "build": "node build.js",
     "start": "npx serve -l 3000 .",
     "dev": "npx serve -l 3000 ."
   },

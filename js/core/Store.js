@@ -11,15 +11,28 @@ class Store {
   constructor() {
     this.events = {};
     
-    // โหลด State จาก LocalStorage
+    // โหลด State จาก LocalStorage อย่างปลอดภัย (Anti-Crash JSON Parsing)
+    const safeParse = (key, fallback) => {
+      try {
+        const val = typeof localStorage !== "undefined" ? localStorage.getItem(key) : null;
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    };
+
+    const initialCategories = (typeof window !== "undefined" && window.categoriesData) ? window.categoriesData : [];
+    const initialFilters = {};
+    initialCategories.forEach(c => { initialFilters[c.id] = true; });
+
     this.state = {
       user: null,
-      walletBalance: parseFloat(localStorage.getItem("wichx_balance") || "500.00"),
-      cart: JSON.parse(localStorage.getItem("wichx_cart") || "[]"),
-      orderHistory: JSON.parse(localStorage.getItem("wichx_orders") || "[]"),
+      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("wichx_balance") || "500.00") : 500.00,
+      cart: safeParse("wichx_cart", []),
+      orderHistory: safeParse("wichx_orders", []),
       appliedPromo: null,
-      categories: window.categoriesData || [],
-      categoryFilters: {},
+      categories: initialCategories,
+      categoryFilters: initialFilters,
       categoryCollapses: {},
       searchQuery: "",
       activeCarouselIndex: 0
