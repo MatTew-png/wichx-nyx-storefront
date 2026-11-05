@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NYX9 STUDIO • OPERATIONS SUITE (Admin Control Center)</title>
+
+  <!-- Google Fonts & Tailwind CSS CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons & Supabase JS -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="storeConfig.js"></script>
+
+  <style>
+    :root {
+      --accent: #19BAFF;
+      --accent-hover: #38D4FF;
+      --base-bg: #06080C;
+      --card-bg: #0E131D;
+    }
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: var(--base-bg);
+      color: #E2E8F0;
+    }
+    .font-heading { font-family: 'Chakra Petch', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-panel {
+      background: rgba(14, 19, 29, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(25, 186, 255, 0.15);
+    }
+    .glass-panel-glow {
+      box-shadow: 0 0 25px rgba(25, 186, 255, 0.08);
+    }
+    .btn-cyber-primary {
+      background: linear-gradient(135deg, #19BAFF 0%, #0088CC 100%);
+      color: #000000;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .btn-cyber-primary:hover {
+      box-shadow: 0 0 20px rgba(25, 186, 255, 0.45);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#06080C] text-slate-100 flex flex-col">
+
+  <!-- ==============================================================================
+       1. AUTHENTICATION GATE (LOGIN MODAL)
+       ============================================================================== -->
+  <div id="admin-auth-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#06080C]/95 backdrop-blur-xl">
+    <div class="glass-panel glass-panel-glow max-w-md w-full p-8 rounded-3xl border border-[rgba(25,186,255,0.3)] shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-[rgba(25,186,255,0.1)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="shield-alert" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-xl font-heading font-extrabold text-white tracking-wider">NYX9 OPERATIONS SUITE</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-6">กรุณาระบุรหัสผ่าน Master Secret Key เพื่อเข้าถึงระบบแอดมิน</p>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">รหัสผ่านแอดมิน (Admin Master Key):</label>
+          <div class="relative">
+            <input type="password" id="admin-secret-input" placeholder="ป้อน Master Admin Secret..." required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-white">
+              <i data-lucide="eye" id="eye-icon" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-error-msg" class="hidden text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200 flex items-center gap-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 shrink-0"></i>
+          <span id="auth-error-text">รหัสผ่านไม่ถูกต้อง</span>
+        </div>
+
+        <button type="submit" id="btn-admin-login" class="btn-cyber-primary w-full py-3 rounded-xl text-xs font-heading font-extrabold flex items-center justify-center gap-2">
+          <i data-lucide="lock" class="w-4 h-4"></i>
+          <span>เข้าสู่ระบบปฏิบัติการ (VERIFY ACCESS)</span>
+        </button>
+
+        <div class="text-center pt-2">
+          <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+            ← กลับสู่หน้าร้านค้าหลัก (Storefront)
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==============================================================================
+       2. MAIN OPERATIONS DASHBOARD (AUTHENTICATED)
+       ============================================================================== -->
+  <div id="admin-dashboard-container" class="hidden flex-1 flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800/80 bg-[#0E131D]/90 backdrop-blur-md sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[rgba(25,186,255,0.15)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center">
+            <i data-lucide="terminal" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-heading font-extrabold text-white flex items-center gap-2">
+              <span>NYX9 OPERATIONS SUITE</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">v2.0 LIVE</span>
+            </h1>
+            <p class="text-[11px] text-slate-400">ระบบศูนย์กลางจัดการสต็อก คำสั่งซื้อ และการแจ้งเตือน 24 ชม.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>POSTGRES LIVE</span>
+          </span>
+          <button onclick="loadDashboardData()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white" title="รีเฟรชข้อมูล">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
+          <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[var(--accent)] text-xs text-white flex items-center gap-1.5 transition-all">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>หน้าร้านค้า</span>
+          </a>
+          <button onclick="handleAdminLogout()" class="px-3.5 py-1.5 rounded-xl bg-red-950/40 border border-red-500/30 hover:bg-red-900/40 text-xs text-red-300 flex items-center gap-1.5 transition-all">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>ออกจากระบบ</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full space-y-6 flex-1">
+
+      <!-- 4-METRIC TELEMETRY GRID -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 mb-2">
+            <span class="text-xs font-semibold">ยอดขายคำสั่งซื้อรวม</span>
+            <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div id="metric-revenue" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
+          <div class="text-[10px] text-slate-500 mt-1">จากคำสั่งซื้อที่จ่ายสำเร็จทั้งหมด</div>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 mb-2">
+            <span class="text-xs font-semibold">ออเดอร์ที่จัดส่งแล้ว</span>
+            <i data-lucide="package-check" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div id="metric-orders" class="text-2xl font-heading font-extrabold text-white">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">เบิกจ่ายคีย์สำเร็จ 100%</div>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 mb-2">
+            <span class="text-xs font-semibold">คีย์พร้อมขายในคลัง</span>
+            <i data-lucide="database" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div id="metric-stock" class="text-2xl font-heading font-extrabold text-white">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">ยังไม่ถูกขาย (Unsold)</div>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 mb-2">
+            <span class="text-xs font-semibold">ยอดเติมเงินเข้ากระเป๋า</span>
+            <i data-lucide="wallet" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div id="metric-topups" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
+          <div class="text-[10px] text-slate-500 mt-1">PromptPay + TrueMoney</div>
+        </div>
+      </div>
+
+      <!-- OPERATIONS TABS -->
+      <div class="flex border-b border-slate-800 space-x-2">
+        <button onclick="switchAdminTab('stock')" id="tab-btn-stock" class="px-4 py-2.5 text-xs font-bold font-heading border-b-2 border-[var(--accent)] text-[var(--accent)] flex items-center gap-2">
+          <i data-lucide="boxes" class="w-4 h-4"></i>
+          <span>จัดการสต็อก & เติมคีย์ (Inventory)</span>
+        </button>
+        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+          <span>รายการคำสั่งซื้อ (Orders)</span>
+        </button>
+        <button onclick="switchAdminTab('topups')" id="tab-btn-topups" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2">
+          <i data-lucide="receipt" class="w-4 h-4"></i>
+          <span>ประวัติเติมเงิน (Topups)</span>
+        </button>
+        <button onclick="switchAdminTab('claims')" id="tab-btn-claims" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2">
+          <i data-lucide="shield-question" class="w-4 h-4"></i>
+          <span>เคลมประกัน (Warranty)</span>
+          <span id="badge-pending-claims" class="hidden px-1.5 py-0.2 text-[9px] rounded-full bg-red-500 text-black font-extrabold">0</span>
+        </button>
+        <button onclick="switchAdminTab('discord')" id="tab-btn-discord" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2">
+          <i data-lucide="bell-ring" class="w-4 h-4"></i>
+          <span>Discord Webhook</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: STOCK & BULK RESTOCK -->
+      <div id="tab-pane-stock" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Product Stock Status Table -->
+          <div class="lg:col-span-2 glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>สถานะสต็อกสินค้าปัจจุบัน</span>
+              </h3>
+              <span class="text-xs text-slate-400">นับจากตาราง <code class="text-cyan-400">inventory_keys</code></span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400">
+                    <th class="py-2.5 px-3">ชื่อสินค้า</th>
+                    <th class="py-2.5 px-3">ราคา</th>
+                    <th class="py-2.5 px-3 text-center">คงเหลือ (พร้อมขาย)</th>
+                    <th class="py-2.5 px-3 text-center">ขายแล้ว</th>
+                    <th class="py-2.5 px-3 text-right">สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody id="stock-table-body" class="divide-y divide-slate-800/60">
+                  <tr>
+                    <td colspan="5" class="py-4 text-center text-slate-500">กำลังโหลดข้อมูลสต็อก...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Bulk Restock Panel -->
+          <div class="glass-panel p-5 rounded-3xl border border-[rgba(25,186,255,0.25)] space-y-4">
+            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-400"></i>
+              <span>เติมสต็อกด่วน (Bulk Restock)</span>
+            </h3>
+
+            <form onsubmit="handleBulkRestock(event)" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">เลือกสินค้าที่จะเติม:</label>
+                <select id="restock-product-select" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">
+                  <span>วางข้อมูลคีย์ / ไอดี:</span>
+                  <span class="text-[10px] text-slate-400 font-normal">(1 บรรทัด = 1 คีย์)</span>
+                </label>
+                <textarea id="restock-keys-input" rows="6" placeholder="mailpass_example_1:pass123&#10;mailpass_example_2:pass456&#10;discord_gift_link_https://..." required class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-300 focus:outline-none focus:border-[var(--accent)]"></textarea>
+              </div>
+
+              <div id="restock-feedback" class="hidden text-xs p-3 rounded-xl"></div>
+
+              <button type="submit" id="btn-submit-restock" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-heading font-extrabold flex items-center justify-center gap-2">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                <span>บันทึกคีย์เข้าคลังทันที</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: ORDERS EXPLORER -->
+      <div id="tab-pane-orders" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4 text-[var(--accent)]"></i>
+            <span>ประวัติคำสั่งซื้อล่าสุด (Orders Explorer)</span>
+          </h3>
+          <span class="text-xs text-slate-400">แสดง 10 รายการล่าสุดจากฐานข้อมูลจริง</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2.5 px-3">Order ID</th>
+                <th class="py-2.5 px-3">ยอดเงินสุทธิ</th>
+                <th class="py-2.5 px-3">ช่องทาง</th>
+                <th class="py-2.5 px-3">วันที่ / เวลา</th>
+                <th class="py-2.5 px-3 text-right">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="5" class="py-4 text-center text-slate-500">กำลังโหลดรายการออเดอร์...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: TOPUPS EXPLORER -->
+      <div id="tab-pane-topups" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+            <span>ประวัติการทำรายการเติมเงิน (Top-Up Logs)</span>
+          </h3>
+          <span class="text-xs text-slate-400">บันทึกป้องกันสลิปซ้ำ (Anti-Double-Spend)</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2.5 px-3">ช่องทาง (Gateway)</th>
+                <th class="py-2.5 px-3">ยอดเติม (บาท)</th>
+                <th class="py-2.5 px-3">รหัสอ้างอิง (TransRef)</th>
+                <th class="py-2.5 px-3">วันที่ / เวลา</th>
+                <th class="py-2.5 px-3 text-right">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="topups-table-body" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="5" class="py-4 text-center text-slate-500">กำลังโหลดรายการเติมเงิน...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: WARRANTY CLAIMS -->
+      <div id="tab-pane-claims" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-red-400"></i>
+            <span>คำร้องเคลมประกันสินค้า (Warranty Tickets)</span>
+          </h3>
+          <span class="text-xs text-slate-400">การดูแลหลังการขาย 24 ชั่วโมง</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2.5 px-3">รหัสออเดอร์</th>
+                <th class="py-2.5 px-3">เหตุผล / ปัญหาที่แจ้ง</th>
+                <th class="py-2.5 px-3">วันที่ยื่นเรื่อง</th>
+                <th class="py-2.5 px-3 text-center">สถานะ</th>
+                <th class="py-2.5 px-3 text-right">ดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody id="claims-table-body" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="5" class="py-4 text-center text-slate-500">ไม่มีคำร้องเคลมที่รอดำเนินการ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: DISCORD WEBHOOK SETTINGS & TESTER -->
+      <div id="tab-pane-discord" class="hidden glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+              <i data-lucide="send" class="w-4 h-4 text-[var(--accent)]"></i>
+              <span>ตั้งค่าและทดสอบ Discord Webhook 24 ชม.</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">ระบบจะส่งข้อความแจ้งเตือนอัตโนมัติเข้าสู่ Channel Discord ของคุณ</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-400 border border-purple-500/30">Rich Embed</span>
+        </div>
+
+        <div class="space-y-4 max-w-2xl">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord Webhook URL:</label>
+            <input type="url" id="discord-webhook-input" placeholder="https://discord.com/api/webhooks/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+            <p class="text-[11px] text-slate-500 mt-1">สามารถสร้าง Webhook ได้ใน Discord: Edit Channel -> Integrations -> Webhooks</p>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="saveDiscordWebhook()" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span>บันทึก Webhook URL</span>
+            </button>
+            <button onclick="testDiscordWebhook()" id="btn-test-webhook" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white font-bold flex items-center gap-2 transition-all">
+              <i data-lucide="bell" class="w-4 h-4 text-yellow-400"></i>
+              <span>ยิงทดสอบข้อความเข้า Discord ทันที</span>
+            </button>
+          </div>
+
+          <div id="discord-test-feedback" class="hidden text-xs p-3 rounded-xl"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Operations Script Engine -->
+  <script>
+    let currentAdminSecret = "";
+    let supabaseClient = null;
+
+    // 1. Initial Authentication Check
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      initSupabase();
+
+      const savedSecret = sessionStorage.getItem("nyx9_admin_token");
+      if (savedSecret) {
+        currentAdminSecret = savedSecret;
+        verifyAndLoad(savedSecret);
+      }
+    });
+
+    function initSupabase() {
+      if (window.supabase && window.storeConfig?.supabase) {
+        supabaseClient = window.supabase.createClient(
+          window.storeConfig.supabase.url,
+          window.storeConfig.supabase.anonKey
+        );
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById("admin-secret-input");
+      const icon = document.getElementById("eye-icon");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.setAttribute("data-lucide", "eye-off");
+      } else {
+        input.type = "password";
+        icon.setAttribute("data-lucide", "eye");
+      }
+      lucide.createIcons();
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById("admin-secret-input");
+      const secret = input.value.trim();
+      const btn = document.getElementById("btn-admin-login");
+      const errorDiv = document.getElementById("auth-error-msg");
+      const errorText = document.getElementById("auth-error-text");
+
+      if (!secret) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังตรวจสอบสิทธิ์...</span>`;
+      lucide.createIcons();
+
+      errorDiv.classList.add("hidden");
+
+      try {
+        if (!supabaseClient) initSupabase();
+
+        const { data, error } = await supabaseClient.rpc("admin_get_metrics", {
+          p_admin_secret: secret
+        });
+
+        if (error || !data || !data.success) {
+          errorText.textContent = data?.message || "รหัสผ่านแอดมินไม่ถูกต้อง (Access Denied)";
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        // เข้าสู่ระบบสำเร็จ
+        currentAdminSecret = secret;
+        sessionStorage.setItem("nyx9_admin_token", secret);
+        document.getElementById("admin-auth-overlay").classList.add("hidden");
+        document.getElementById("admin-dashboard-container").classList.remove("hidden");
+
+        renderDashboard(data);
+      } catch (err) {
+        errorText.textContent = err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล";
+        errorDiv.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>เข้าสู่ระบบปฏิบัติการ (VERIFY ACCESS)</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    function handleAdminLogout() {
+      sessionStorage.removeItem("nyx9_admin_token");
+      currentAdminSecret = "";
+      document.getElementById("admin-dashboard-container").classList.add("hidden");
+      document.getElementById("admin-auth-overlay").classList.remove("hidden");
+      document.getElementById("admin-secret-input").value = "";
+    }
+
+    async function verifyAndLoad(secret) {
+      try {
+        if (!supabaseClient) initSupabase();
+        const { data } = await supabaseClient.rpc("admin_get_metrics", { p_admin_secret: secret });
+        if (data && data.success) {
+          document.getElementById("admin-auth-overlay").classList.add("hidden");
+          document.getElementById("admin-dashboard-container").classList.remove("hidden");
+          renderDashboard(data);
+        } else {
+          sessionStorage.removeItem("nyx9_admin_token");
+        }
+      } catch (e) {
+        console.warn("Auto-login failed:", e);
+      }
+    }
+
+    async function loadDashboardData() {
+      if (!currentAdminSecret) return;
+      try {
+        const { data, error } = await supabaseClient.rpc("admin_get_metrics", {
+          p_admin_secret: currentAdminSecret
+        });
+        if (data && data.success) {
+          renderDashboard(data);
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard:", err);
+      }
+    }
+
+    function renderDashboard(data) {
+      const { metrics, stock_by_product, recent_orders, recent_topups, warranty_claims } = data;
+
+      // Metrics
+      document.getElementById("metric-revenue").textContent = `฿${parseFloat(metrics.total_revenue || 0).toFixed(2)}`;
+      document.getElementById("metric-orders").textContent = `${metrics.total_orders || 0} รายการ`;
+      document.getElementById("metric-stock").textContent = `${metrics.total_unsold_stock || 0} ชิ้น`;
+      document.getElementById("metric-topups").textContent = `฿${parseFloat(metrics.total_topups || 0).toFixed(2)}`;
+
+      // Stock Table & Select Dropdown
+      const stockTable = document.getElementById("stock-table-body");
+      const restockSelect = document.getElementById("restock-product-select");
+      stockTable.innerHTML = "";
+      restockSelect.innerHTML = "";
+
+      (stock_by_product || []).forEach(prod => {
+        const isLow = prod.in_stock <= 1;
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-900/50";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-semibold text-white">${prod.title}</td>
+          <td class="py-2.5 px-3 font-mono text-slate-300">฿${parseFloat(prod.price).toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-center font-mono font-bold ${isLow ? 'text-red-400' : 'text-emerald-400'}">${prod.in_stock} ชิ้น</td>
+          <td class="py-2.5 px-3 text-center font-mono text-slate-400">${prod.sold_count} ชิ้น</td>
+          <td class="py-2.5 px-3 text-right">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${prod.in_stock === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : (isLow ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30')}">
+              ${prod.in_stock === 0 ? 'หมด (OUT)' : (isLow ? 'ใกล้หมด' : 'พร้อมขาย')}
+            </span>
+          </td>
+        `;
+        stockTable.appendChild(tr);
+
+        // Option
+        const opt = document.createElement("option");
+        opt.value = prod.product_id;
+        opt.textContent = `${prod.title} (คงเหลือ: ${prod.in_stock})`;
+        restockSelect.appendChild(opt);
+      });
+
+      // Orders Table
+      const ordersTable = document.getElementById("orders-table-body");
+      ordersTable.innerHTML = "";
+      if (!recent_orders || recent_orders.length === 0) {
+        ordersTable.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">ยังไม่มีคำสั่งซื้อในระบบ</td></tr>`;
+      } else {
+        recent_orders.forEach(ord => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-900/50";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-mono font-bold text-[var(--accent)]">${ord.id}</td>
+            <td class="py-2.5 px-3 font-mono text-emerald-300 font-bold">฿${parseFloat(ord.total_amount).toFixed(2)}</td>
+            <td class="py-2.5 px-3 capitalize text-slate-300">${ord.payment_method || 'wallet'}</td>
+            <td class="py-2.5 px-3 text-slate-400">${new Date(ord.created_at).toLocaleString("th-TH")}</td>
+            <td class="py-2.5 px-3 text-right">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                ${ord.status}
+              </span>
+            </td>
+          `;
+          ordersTable.appendChild(tr);
+        });
+      }
+
+      // Topups Table
+      const topupsTable = document.getElementById("topups-table-body");
+      topupsTable.innerHTML = "";
+      if (!recent_topups || recent_topups.length === 0) {
+        topupsTable.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">ยังไม่มีประวัติเติมเงิน</td></tr>`;
+      } else {
+        recent_topups.forEach(top => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-900/50";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-semibold text-white flex items-center gap-1.5">
+              <span>${top.gateway === 'truemoney' ? '🧧 TrueMoney' : '💸 PromptPay'}</span>
+            </td>
+            <td class="py-2.5 px-3 font-mono text-emerald-300 font-bold">฿${parseFloat(top.amount).toFixed(2)}</td>
+            <td class="py-2.5 px-3 font-mono text-slate-400 text-[11px]">${top.trans_ref || 'N/A'}</td>
+            <td class="py-2.5 px-3 text-slate-400">${new Date(top.created_at).toLocaleString("th-TH")}</td>
+            <td class="py-2.5 px-3 text-right">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                ${top.status}
+              </span>
+            </td>
+          `;
+          topupsTable.appendChild(tr);
+        });
+      }
+
+      // Claims Table
+      const claimsTable = document.getElementById("claims-table-body");
+      const claimsBadge = document.getElementById("badge-pending-claims");
+      claimsTable.innerHTML = "";
+      const pendingCount = (warranty_claims || []).filter(c => c.status === 'PENDING').length;
+
+      if (pendingCount > 0) {
+        claimsBadge.textContent = pendingCount;
+        claimsBadge.classList.remove("hidden");
+      } else {
+        claimsBadge.classList.add("hidden");
+      }
+
+      if (!warranty_claims || warranty_claims.length === 0) {
+        claimsTable.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">ไม่มีประวัติคำร้องเคลมสินค้า</td></tr>`;
+      } else {
+        warranty_claims.forEach(clm => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-900/50";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-mono text-cyan-300">${clm.order_id || 'N/A'}</td>
+            <td class="py-2.5 px-3 text-slate-300">${clm.reason || 'ไม่ได้ระบุ'}</td>
+            <td class="py-2.5 px-3 text-slate-400">${new Date(clm.created_at).toLocaleString("th-TH")}</td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${clm.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400'}">
+                ${clm.status}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              ${clm.status === 'PENDING' ? `
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="resolveClaim('${clm.id}', 'APPROVED')" class="px-2 py-1 rounded bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-[11px] font-bold">อนุมัติ</button>
+                  <button onclick="resolveClaim('${clm.id}', 'REJECTED')" class="px-2 py-1 rounded bg-red-600/30 hover:bg-red-600/50 text-red-300 text-[11px]">ปฏิเสธ</button>
+                </div>
+              ` : `<span class="text-slate-500 text-[11px]">ดำเนินการแล้ว</span>`}
+            </td>
+          `;
+          claimsTable.appendChild(tr);
+        });
+      }
+
+      // Load saved webhook
+      const savedWebhook = localStorage.getItem("nyx9_discord_webhook");
+      if (savedWebhook) {
+        document.getElementById("discord-webhook-input").value = savedWebhook;
+      }
+
+      lucide.createIcons();
+    }
+
+    function switchAdminTab(tabKey) {
+      const tabs = ["stock", "orders", "topups", "claims", "discord"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const pane = document.getElementById(`tab-pane-${t}`);
+        if (t === tabKey) {
+          if (btn) btn.className = "px-4 py-2.5 text-xs font-bold font-heading border-b-2 border-[var(--accent)] text-[var(--accent)] flex items-center gap-2";
+          if (pane) pane.classList.remove("hidden");
+        } else {
+          if (btn) btn.className = "px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2";
+          if (pane) pane.classList.add("hidden");
+        }
+      });
+      lucide.createIcons();
+    }
+
+    async function handleBulkRestock(e) {
+      e.preventDefault();
+      const prodSelect = document.getElementById("restock-product-select");
+      const textarea = document.getElementById("restock-keys-input");
+      const feedback = document.getElementById("restock-feedback");
+      const btn = document.getElementById("btn-submit-restock");
+
+      const productId = prodSelect.value;
+      const rawText = textarea.value.trim();
+      if (!rawText) return;
+
+      const keysArray = rawText.split("\n").map(k => k.trim()).filter(k => k.length > 0);
+      if (keysArray.length === 0) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังบันทึกคีย์...</span>`;
+      lucide.createIcons();
+
+      try {
+        const { data, error } = await supabaseClient.rpc("admin_bulk_restock", {
+          p_admin_secret: currentAdminSecret,
+          p_product_id: productId,
+          p_keys: keysArray
+        });
+
+        if (error || !data || !data.success) {
+          feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+          feedback.textContent = data?.message || error?.message || "เติมสต็อกไม่สำเร็จ";
+          feedback.classList.remove("hidden");
+          return;
+        }
+
+        feedback.className = "text-xs p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
+        feedback.textContent = `✅ ${data.message}`;
+        feedback.classList.remove("hidden");
+        textarea.value = "";
+
+        // Reload data
+        await loadDashboardData();
+
+        // Optional Discord Alert
+        const webhook = localStorage.getItem("nyx9_discord_webhook");
+        if (webhook) {
+          fetch("/api/discord-notify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "ADMIN_RESTOCK",
+              productId,
+              restockCount: keysArray.length,
+              customWebhookUrl: webhook
+            })
+          }).catch(console.warn);
+        }
+
+      } catch (err) {
+        feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ";
+        feedback.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> <span>บันทึกคีย์เข้าคลังทันที</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    async function resolveClaim(claimId, status) {
+      if (!confirm(`ยืนยันการเปลี่ยนสถานะการเคลมเป็น "${status}"?`)) return;
+      try {
+        const { data } = await supabaseClient.rpc("admin_resolve_claim", {
+          p_admin_secret: currentAdminSecret,
+          p_claim_id: claimId,
+          p_status: status,
+          p_admin_notes: "ดำเนินการโดยแอดมินผ่าน Operations Suite"
+        });
+        if (data && data.success) {
+          await loadDashboardData();
+        }
+      } catch (err) {
+        alert("เกิดข้อผิดพลาด: " + err.message);
+      }
+    }
+
+    function saveDiscordWebhook() {
+      const input = document.getElementById("discord-webhook-input");
+      const url = input.value.trim();
+      const feedback = document.getElementById("discord-test-feedback");
+
+      if (url && !url.startsWith("http")) {
+        feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = "รูปแบบ Discord Webhook URL ไม่ถูกต้อง (ต้องขึ้นต้นด้วย https://)";
+        feedback.classList.remove("hidden");
+        return;
+      }
+
+      localStorage.setItem("nyx9_discord_webhook", url);
+      feedback.className = "text-xs p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
+      feedback.textContent = "✅ บันทึก Discord Webhook URL สำเร็จแล้ว!";
+      feedback.classList.remove("hidden");
+    }
+
+    async function testDiscordWebhook() {
+      const input = document.getElementById("discord-webhook-input");
+      const url = input.value.trim() || localStorage.getItem("nyx9_discord_webhook");
+      const btn = document.getElementById("btn-test-webhook");
+      const feedback = document.getElementById("discord-test-feedback");
+
+      if (!url || !url.startsWith("http")) {
+        feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = "กรุณาระบุ Discord Webhook URL ให้ถูกต้องก่อนทดสอบ";
+        feedback.classList.remove("hidden");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังส่งข้อความ...</span>`;
+      lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/discord-notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "TEST_PING",
+            customWebhookUrl: url
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          feedback.className = "text-xs p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
+          feedback.textContent = "🎉 ยิงข้อความทดสอบสำเร็จ! ตรวจสอบที่ Discord Channel ของคุณได้ทันที";
+        } else {
+          feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+          feedback.textContent = data.message || "Discord ปฏิเสธการส่ง (ตรวจสอบความถูกต้องของ Webhook URL)";
+        }
+        feedback.classList.remove("hidden");
+      } catch (err) {
+        feedback.className = "text-xs p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = "เกิดข้อผิดพลาด: " + err.message;
+        feedback.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="bell" class="w-4 h-4 text-yellow-400"></i> <span>ยิงทดสอบข้อความเข้า Discord ทันที</span>`;
+        lucide.createIcons();
+      }
+    }
+  </script>
+</body>
+</html>

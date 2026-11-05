@@ -1631,7 +1631,7 @@ function closeClaimModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-function submitClaimTicket() {
+async function submitClaimTicket() {
   const orderId = document.getElementById("claim-order-id")?.value.trim();
   const reason = document.getElementById("claim-reason")?.value;
   const desc = document.getElementById("claim-desc")?.value.trim();
@@ -1641,8 +1641,37 @@ function submitClaimTicket() {
     return;
   }
 
-  closeClaimModal();
-  showToast(`ส่งคำร้องเคลมสำหรับ ${orderId} แล้ว ทีมงานจะติดต่อกลับผ่าน Discord`, "success");
+  const fullReason = `${reason || 'ปัญหาทั่วไป'}: ${desc}`;
+
+  try {
+    if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+      await window.SupabaseAdapter.submitWarrantyClaim(orderId, fullReason);
+    }
+
+    // ส่งแจ้งเตือน Discord Webhook เข้าห้องแอดมิน
+    const webhook = localStorage.getItem("nyx9_discord_webhook");
+    fetch("/api/discord-notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "WARRANTY_CLAIM",
+        orderId,
+        claimReason: fullReason,
+        customWebhookUrl: webhook || undefined
+      })
+    }).catch(console.warn);
+
+    closeClaimModal();
+    showToast(`ยื่นเรื่องเคลมสำหรับคำสั่งซื้อ ${orderId} สำเร็จ! เจ้าหน้าที่จะตรวจสอบให้ตลอด 24 ชม.`, "success");
+
+    const orderInput = document.getElementById("claim-order-id");
+    const descInput = document.getElementById("claim-desc");
+    if (orderInput) orderInput.value = "";
+    if (descInput) descInput.value = "";
+  } catch (err) {
+    console.error("Failed to submit claim:", err);
+    showToast("เกิดข้อผิดพลาดในการยื่นเรื่องเคลม", "error");
+  }
 }
 
 // ==============================================================================
