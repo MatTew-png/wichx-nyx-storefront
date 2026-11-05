@@ -46,9 +46,7 @@ const storeConfig = {
       ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
       ctaCategory: "cat-discord-nitro",
       bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "ระบบออโต้ 24/7",
-      artType: "discord",
-      imageUrl: ""
+      accentTag: "ระบบออโต้ 24/7"
     },
     {
       id: "banner-2",
@@ -58,9 +56,7 @@ const storeConfig = {
       ctaText: "ดูรายการไอดี FiveM",
       ctaCategory: "cat-gaming-apps",
       bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "ประกันไอดีสะอาด",
-      artType: "fivem",
-      imageUrl: ""
+      accentTag: "ประกันไอดีสะอาด"
     },
     {
       id: "banner-3",
@@ -70,9 +66,7 @@ const storeConfig = {
       ctaText: "เติมเงินเข้ากระเป๋า",
       ctaAction: "openTopUp",
       bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "เติมเงิน 24 ชม.",
-      artType: "payment",
-      imageUrl: ""
+      accentTag: "เติมเงิน 24 ชม."
     }
   ],
 
