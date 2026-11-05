@@ -31,7 +31,7 @@ html, body {
   background-color: var(--base-bg, #06080C);
   color: #E2E8F0;
   font-family: 'IBM Plex Sans Thai', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   min-height: 100vh;
 }

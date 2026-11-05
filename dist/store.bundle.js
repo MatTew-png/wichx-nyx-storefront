@@ -2058,15 +2058,15 @@ class CatalogViewComponent {
 
     let html = `
       <!-- Left: Ghost Tabs Rail (Frameless & Breathable) -->
-      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1 scroll-smooth flex-nowrap">
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth flex-nowrap">
         <!-- ALL TAB -->
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" 
-          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
-            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
-          <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-white'}"></i>
+          class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-white'}"></i>
           <span>ทั้งหมด</span>
-          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${activeCategory === 'all' ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${totalCount}</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${activeCategory === 'all' ? 'bg-[#05080E]/20 text-[#05080E]' : 'bg-white/[0.04] text-slate-400 group-hover:text-slate-200'}">${totalCount}</span>
         </button>
     `;
 
@@ -2077,12 +2077,12 @@ class CatalogViewComponent {
 
       html += `
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" 
-          class="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold' 
-            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
-          <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-500 group-hover:text-[var(--accent)]'}"></i>
+          class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
+            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
+          <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-[var(--accent)]'}"></i>
           <span>${cat.name}</span>
-          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${isActive ? 'bg-[#05080E]/20 text-[#05080E]' : 'text-slate-500 group-hover:text-slate-300'}">${count}</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono-val font-bold ${isActive ? 'bg-[#05080E]/20 text-[#05080E]' : 'bg-white/[0.04] text-slate-400 group-hover:text-slate-200'}">${count}</span>
         </button>
       `;
     });
@@ -2096,8 +2096,8 @@ class CatalogViewComponent {
         <button onclick="window.Shop?.catalogService?.toggleInStockOnly()" 
           title="กรองเฉพาะสินค้าที่มีของพร้อมจัดส่ง"
           class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer select-none active:scale-95 ${inStockOnly 
-            ? 'bg-emerald-500/15 text-emerald-300' 
-            : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}">
+            ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300' 
+            : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
           <span class="relative flex h-2 w-2">
             ${inStockOnly ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
             <span class="relative inline-flex rounded-full h-2 w-2 ${inStockOnly ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-slate-600'}"></span>
@@ -2111,7 +2111,7 @@ class CatalogViewComponent {
             <i data-lucide="arrow-down-up" class="w-3.5 h-3.5 text-slate-400"></i>
           </div>
           <select onchange="window.Shop?.catalogService?.setSortOrder(this.value)" 
-            class="pl-7 pr-7 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-xs text-slate-300 hover:text-white font-semibold focus:outline-none cursor-pointer transition-colors appearance-none">
+            class="pl-7 pr-7 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/[0.12] text-xs text-slate-300 hover:text-white font-semibold focus:outline-none cursor-pointer transition-colors appearance-none">
             <option value="popular" class="bg-[#0C111A] text-white" ${sortOrder === 'popular' ? 'selected' : ''}>ยอดนิยม</option>
             <option value="price_asc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_asc' ? 'selected' : ''}>ราคา: ต่ำ → สูง</option>
             <option value="price_desc" class="bg-[#0C111A] text-white" ${sortOrder === 'price_desc' ? 'selected' : ''}>ราคา: สูง → ต่ำ</option>
