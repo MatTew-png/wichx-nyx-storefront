@@ -1,0 +1,30 @@
+name: Production Build & Syntax Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Verify JavaScript Syntax
+      run: |
+        node -e "require('./storeConfig.js'); console.log('storeConfig.js OK');"
+        node -e "require('./productsData.js'); console.log('productsData.js OK');"
+        node -e "const fs = require('fs'); new Function(fs.readFileSync('./app.js', 'utf8')); console.log('app.js OK');"
+        node -e "require('./api/verify-slip.js'); console.log('verify-slip.js OK');"
+        node -e "require('./api/discord-notify.js'); console.log('discord-notify.js OK');"
+        node -e "require('./api/truemoney-redeem.js'); console.log('truemoney-redeem.js OK');"
+        node -e "require('./api/crypto-ltc.js'); console.log('crypto-ltc.js OK');"
