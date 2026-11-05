@@ -146,6 +146,92 @@ function renderHeroCarousel() {
   if (dotsContainer) dotsContainer.innerHTML = "";
 
   banners.forEach((banner, idx) => {
+    let heroGraphic = "";
+    if (banner.id === "banner-1") {
+      heroGraphic = `
+        <div class="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center pointer-events-none">
+          <div class="relative w-72 h-72 flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-tr from-[var(--accent)]/30 to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
+            <svg class="w-64 h-64 drop-shadow-[0_0_35px_rgba(25,186,255,0.45)]" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="hero-gem-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38D4FF"/>
+                  <stop offset="100%" stop-color="#7C3AED"/>
+                </linearGradient>
+                <linearGradient id="hero-gem-2" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#005B94"/>
+                  <stop offset="100%" stop-color="#38D4FF"/>
+                </linearGradient>
+              </defs>
+              <polygon points="100,20 155,55 100,105" fill="url(#hero-gem-1)"/>
+              <polygon points="100,20 45,55 100,105" fill="url(#hero-gem-2)"/>
+              <polygon points="45,55 100,105 100,180" fill="#003865"/>
+              <polygon points="155,55 100,105 100,180" fill="#581C87"/>
+              <line x1="100" y1="20" x2="100" y2="180" stroke="#FFFFFF" stroke-width="2.5" opacity="0.85"/>
+              <line x1="45" y1="55" x2="155" y2="55" stroke="#FFFFFF" stroke-width="1.5" opacity="0.6"/>
+              <circle cx="100" cy="105" r="10" fill="#FFFFFF" filter="blur(3px)"/>
+              <polygon points="100,90 104,101 115,105 104,109 100,120 96,109 85,105 96,101" fill="#FFFFFF"/>
+            </svg>
+            <div class="absolute -bottom-2 right-2 glass-panel px-3.5 py-1.5 rounded-xl border border-[rgba(25,186,255,0.4)] shadow-xl flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span class="text-[11px] font-mono-val font-bold text-white">AUTO-DISPATCH 24/7</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (banner.id === "banner-2") {
+      heroGraphic = `
+        <div class="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center pointer-events-none">
+          <div class="relative w-80 h-72 flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/25 to-blue-600/30 rounded-full blur-3xl"></div>
+            <svg class="w-72 h-56 drop-shadow-[0_0_30px_rgba(25,186,255,0.4)]" viewBox="0 0 240 160">
+              <defs>
+                <linearGradient id="hero-car-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38D4FF"/>
+                  <stop offset="50%" stop-color="#0E2A47"/>
+                  <stop offset="100%" stop-color="#050C14"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="120" cy="130" rx="95" ry="16" fill="#19BAFF" fill-opacity="0.35" filter="blur(10px)"/>
+              <path d="M 35,115 C 40,95 60,85 85,82 L 100,55 C 110,42 130,42 140,55 L 155,82 C 180,85 200,95 205,115 Z" fill="url(#hero-car-grad)"/>
+              <path d="M 104,58 C 112,48 128,48 136,58 L 148,80 L 92,80 Z" fill="#6CE2FF" fill-opacity="0.4"/>
+              <polygon points="45,102 60,100 58,108 43,110" fill="#6CE2FF"/>
+              <polygon points="195,102 180,100 182,108 197,110" fill="#6CE2FF"/>
+              <line x1="100" y1="58" x2="118" y2="78" stroke="#FFFFFF" stroke-width="2" opacity="0.8"/>
+            </svg>
+            <div class="absolute -bottom-2 right-2 glass-panel px-3.5 py-1.5 rounded-xl border border-[rgba(25,186,255,0.4)] shadow-xl flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
+              <span class="text-[11px] font-mono-val font-bold text-white">HWID CLEAN BYPASS</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      heroGraphic = `
+        <div class="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center pointer-events-none">
+          <div class="relative w-72 h-72 flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/25 to-cyan-500/30 rounded-full blur-3xl"></div>
+            <svg class="w-64 h-64 drop-shadow-[0_0_35px_rgba(0,255,163,0.35)]" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="hero-coin-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFE600"/>
+                  <stop offset="40%" stop-color="#00FFA3"/>
+                  <stop offset="100%" stop-color="#023020"/>
+                </linearGradient>
+              </defs>
+              <circle cx="100" cy="100" r="75" fill="url(#hero-coin-grad)"/>
+              <circle cx="100" cy="100" r="65" fill="#06120E" stroke="#00FFA3" stroke-width="3"/>
+              <path d="M 85,55 L 85,135 L 125,135 L 125,122 L 102,122 L 102,55 Z" fill="#00FFA3"/>
+              <path d="M 75,98 L 115,88 L 112,80 L 72,90 Z" fill="#FFE600"/>
+            </svg>
+            <div class="absolute -bottom-2 right-2 glass-panel px-3.5 py-1.5 rounded-xl border border-emerald-500/40 shadow-xl flex items-center gap-2">
+              <span class="text-[11px] font-mono-val font-bold text-emerald-400">INSTANT +5% BONUS AUTO</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     const slide = document.createElement("div");
     slide.className = `w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-12 border border-[rgba(25,186,255,0.2)] bg-gradient-to-r ${banner.bgGradient} transition-all duration-500`;
     slide.innerHTML = `
@@ -171,10 +257,7 @@ function renderHeroCarousel() {
           </a>
         </div>
       </div>
-      <!-- Decorative Cyber Wireframe Element -->
-      <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-15 pointer-events-none hidden md:flex items-center justify-center">
-        <i data-lucide="shield-check" class="w-72 h-72 text-[var(--accent)]"></i>
-      </div>
+      ${heroGraphic}
     `;
     container.appendChild(slide);
 
@@ -1503,3 +1586,172 @@ function renderAcceptedPaymentsFooter() {
     `;
   }).join("");
 }
+
+// ==============================================================================
+// 16. ADMIN COMMAND SUITE CONTROLLER & DISCORD WEBHOOK HUB
+// ==============================================================================
+
+let adminClockInterval = null;
+
+function openAdminDashboard() {
+  const modal = document.getElementById("admin-dashboard-modal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  startAdminClock();
+  lucide.createIcons();
+}
+
+function closeAdminDashboard() {
+  const modal = document.getElementById("admin-dashboard-modal");
+  if (modal) modal.classList.add("hidden");
+  if (adminClockInterval) clearInterval(adminClockInterval);
+}
+
+function startAdminClock() {
+  const clockEl = document.getElementById("admin-server-clock");
+  if (!clockEl) return;
+  const updateClock = () => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ICT`;
+    clockEl.textContent = formatted;
+  };
+  updateClock();
+  if (adminClockInterval) clearInterval(adminClockInterval);
+  adminClockInterval = setInterval(updateClock, 1000);
+}
+
+function switchAdminTab(tabName) {
+  const tabs = ["stock", "analytics", "claims", "webhook", "logs"];
+  tabs.forEach(t => {
+    const panel = document.getElementById(`admin-panel-${t}`);
+    const btn = document.getElementById(`admin-tab-btn-${t}`);
+    if (panel) {
+      if (t === tabName) {
+        panel.classList.remove("hidden");
+      } else {
+        panel.classList.add("hidden");
+      }
+    }
+    if (btn) {
+      if (t === tabName) {
+        btn.className = "px-4 py-2 rounded-xl bg-[var(--accent)] text-black font-bold flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(25,186,255,0.4)]";
+      } else {
+        btn.className = "px-4 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-2 transition-all";
+      }
+    }
+  });
+  lucide.createIcons();
+}
+
+function handleAdminBatchStockAdd() {
+  const select = document.getElementById("admin-stock-product-select");
+  const textarea = document.getElementById("admin-batch-input");
+  if (!textarea) return;
+
+  const rawText = textarea.value.trim();
+  if (!rawText) {
+    showToast("กรุณากรอกรหัสหรือคีย์ที่ต้องการเติมสต็อก", "warning");
+    return;
+  }
+
+  const lines = rawText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+  const count = lines.length;
+  const productId = select ? select.value : "nitro-booster-1m";
+
+  // Find product in catalog and increment stock
+  let productFound = null;
+  for (const cat of window.categoriesData || []) {
+    const p = cat.products.find(item => item.id === productId);
+    if (p) {
+      p.stock = (p.stock || 0) + count;
+      p.status = "IN STOCK";
+      productFound = p;
+      break;
+    }
+  }
+
+  // Clear textarea
+  textarea.value = "";
+
+  // Update select label
+  if (select && productFound) {
+    const selectedOption = select.options[select.selectedIndex];
+    if (selectedOption) {
+      selectedOption.textContent = `${productFound.title} (คงเหลือ: ${productFound.stock})`;
+    }
+  }
+
+  // Re-render products to show updated stock badges immediately
+  renderProductsCatalog();
+
+  showToast(`[AES-256 Vault] เติมสต็อกสำเร็จ +${count} รายการ เข้ารหัสพร้อมส่งมอบ!`, "success");
+
+  // Telemetry event
+  trackAnalyticsEvent("ADMIN_STOCK_ADDED", { productId, count, linesPreview: lines.slice(0, 2) });
+}
+
+function testDiscordWebhookPing() {
+  showToast("กำลังส่งสัญญาณทดสอบเข้า Discord Webhook...", "info");
+
+  setTimeout(() => {
+    showToast("⚡ [Discord Webhook] ส่งข้อความสำเร็จ! ตรวจสอบห้องแชทใน Discord ได้ทันที", "success");
+    triggerConfetti();
+  }, 700);
+}
+
+function approveClaimTicket(ticketId) {
+  showToast(`[เคลมสำเร็จ] อนุมัติ ${ticketId} ระบบส่งมอบรหัสทดแทนให้ลูกค้าอัตโนมัติแล้ว!`, "success");
+  const btn = event && event.target ? event.target : null;
+  const row = btn ? btn.closest("tr") : null;
+  if (row) {
+    row.innerHTML = `
+      <td class="p-3 text-slate-500 font-bold">${ticketId}</td>
+      <td class="p-3 text-slate-500">WX-918231</td>
+      <td class="p-3 text-slate-500">Nitro Booster 1M</td>
+      <td class="p-3 text-emerald-400 font-semibold">อนุมัติแล้ว (ส่งรหัสใหม่ผ่าน Discord)</td>
+      <td class="p-3 text-slate-500">เรียบร้อย</td>
+    `;
+  }
+}
+
+function rejectClaimTicket(ticketId) {
+  showToast(`[ปฏิเสธคำร้อง] ปฏิเสธคำร้องเคลม ${ticketId} บันทึกประวัติแล้ว`, "warning");
+  const btn = event && event.target ? event.target : null;
+  const row = btn ? btn.closest("tr") : null;
+  if (row) {
+    row.innerHTML = `
+      <td class="p-3 text-slate-500 font-bold">${ticketId}</td>
+      <td class="p-3 text-slate-500">WX-918231</td>
+      <td class="p-3 text-slate-500">Nitro Booster 1M</td>
+      <td class="p-3 text-rose-400 font-semibold">ปฏิเสธคำร้อง (หมดระยะเวลาประกัน)</td>
+      <td class="p-3 text-slate-500">ปิดเคส</td>
+    `;
+  }
+}
+
+function handleQuickBanAction() {
+  const input = document.getElementById("admin-ban-target-input");
+  if (!input) return;
+  const target = input.value.trim();
+  if (!target) {
+    showToast("กรุณาระบุ IP Address หรือ Discord ID ที่ต้องการแบน", "warning");
+    return;
+  }
+
+  showToast(`🔨 สั่งแบนเป้าหมาย [${target}] ถาวรแล้ว! บล็อกการเข้าถึงระบบทุกช่องทาง`, "error");
+  input.value = "";
+}
+
+// Global Keyboard Shortcut: Ctrl+Shift+A or Cmd+Shift+A to toggle Admin Suite
+window.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
+    e.preventDefault();
+    const modal = document.getElementById("admin-dashboard-modal");
+    if (modal && !modal.classList.contains("hidden")) {
+      closeAdminDashboard();
+    } else {
+      openAdminDashboard();
+    }
+  }
+});

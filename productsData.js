@@ -1,67 +1,306 @@
 /**
  * ==============================================================================
- * 📦 COMMERCIAL MULTI-NICHE CATALOG DATA
+ * 📦 COMMERCIAL MULTI-NICHE CATALOG DATA (3D GLOSSY HOLOGRAPHIC EDITION)
  * ==============================================================================
- * ข้อมูลสินค้าครอบคลุมทุกหมวดตามสเปก พร้อมระบบ Dual-Fulfillment
- * (Instant Delivery / Custom Order Form) และ SVG Artwork อัตราส่วน 16:9
+ * ออกแบบใหม่ทั้งหมดด้วยเวกเตอร์ SVG สไตล์ 3D Glossy Holographic Render
+ * ไร้กล่องดำด้าน ไร้ไอคอนเส้นจิ๋ว มีมิติความลึก (Depth), แสงตกกระทบ (Specular Light),
+ * และอนุภาคแสงเรืองรอง (Volumetric Glow) ระดับสตูดิโอเกมชั้นนำ
  * ==============================================================================
  */
 
-// ฟังก์ชันสร้าง Artwork SVG สไตล์ Cyberpunk 16:9 คมชัด รองรับเรตินา ไม่ต้องพึ่งพาภาพภายนอก
-function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) {
-  const icons = {
-    nitro: `<path d="M12 2L4 14h6l-2 8 10-12h-6l4-8z" fill="${primaryColor}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>`,
-    boost: `<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m0 0l8.5-8.5a2.12 2.12 0 1 1 3 3L12 15m-3-3v3h3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-    discord: `<rect x="3" y="5" width="18" height="14" rx="4" stroke="${primaryColor}" stroke-width="2" fill="none"/><circle cx="9" cy="12" r="1.5" fill="${primaryColor}"/><circle cx="15" cy="12" r="1.5" fill="${primaryColor}"/>`,
-    game: `<rect x="2" y="6" width="20" height="12" rx="3" stroke="${primaryColor}" stroke-width="2" fill="none"/><path d="M6 12h4m-2-2v4m9-2h.01m3 0h.01" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
-    stream: `<polygon points="5 3 19 12 5 21 5 3" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="1.5"/>`,
-    key: `<path d="M21 2l-2 2m-1.5 1.5L14 9l-3-3L3.5 13.5a5 5 0 1 0 7 7L18 13l2-2 1.5-1.5M16 5l3 3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
-    ai: `<path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" stroke="${primaryColor}" stroke-width="2"/>`
+// ฟังก์ชันสร้าง Artwork สไตล์ 3D Glossy Hologram 16:9 (Zero Plain Black Boxes)
+function createModern3DArtwork(type, title, sub, primaryNeon, secondaryNeon, tertiaryGlow) {
+  const artworkIllustrations = {
+    // 1. DISCORD NITRO: เพชร 3D คริสตัลสีม่วง-ฟ้าคราม ลอยหมุน มีการหักเหของแสงและประกายดาว
+    nitro: `
+      <!-- Volumetric Backlight -->
+      <circle cx="320" cy="180" r="140" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(50px)"/>
+      <circle cx="380" cy="140" r="90" fill="${secondaryNeon}" fill-opacity="0.3" filter="blur(40px)"/>
+      
+      <!-- 3D Holographic Discord Gem (Isometric Facets) -->
+      <g transform="translate(320, 150) scale(1.15)">
+        <!-- Drop Shadow on ground -->
+        <ellipse cx="0" cy="95" rx="75" ry="18" fill="#000000" fill-opacity="0.6" filter="blur(8px)"/>
+        
+        <!-- Gem Back Facets -->
+        <polygon points="0,-75 65,-25 0,75" fill="${secondaryNeon}" fill-opacity="0.5"/>
+        <polygon points="0,-75 -65,-25 0,75" fill="${primaryNeon}" fill-opacity="0.4"/>
+        
+        <!-- Gem Front 3D Facets with Glossy Gradients -->
+        <polygon points="0,-75 65,-25 0,-10" fill="url(#gem-facet-1)"/>
+        <polygon points="0,-75 -65,-25 0,-10" fill="url(#gem-facet-2)"/>
+        <polygon points="-65,-25 0,-10 0,75" fill="url(#gem-facet-3)"/>
+        <polygon points="65,-25 0,-10 0,75" fill="url(#gem-facet-4)"/>
+
+        <!-- Center 3D Specular Ridge & Star Flare -->
+        <line x1="0" y1="-75" x2="0" y2="75" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+        <line x1="-65" y1="-25" x2="65" y2="-25" stroke="#FFFFFF" stroke-width="1.5" opacity="0.6"/>
+        
+        <!-- Glowing Crystal Center Shield -->
+        <circle cx="0" cy="-10" r="12" fill="#FFFFFF" filter="blur(2px)"/>
+        <polygon points="0,-28 6,-14 20,-10 6,-6 0,8 -6,-6 -20,-10 -6,-14" fill="#FFFFFF"/>
+        
+        <!-- Floating Cyber Sparks -->
+        <circle cx="-50" cy="-45" r="3" fill="#6CE2FF" filter="blur(1px)"/>
+        <circle cx="60" cy="20" r="2.5" fill="#FFFFFF"/>
+        <circle cx="45" cy="-55" r="4" fill="${secondaryNeon}" filter="blur(1.5px)"/>
+      </g>
+    `,
+
+    // 2. SERVER BOOST: จรวด 3D บูสเตอร์ไฮเทค พุ่งทะลุวงแหวนโฮโลแกรม
+    boost: `
+      <circle cx="320" cy="180" r="130" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(45px)"/>
+      <g transform="translate(320, 160) scale(1.1)">
+        <!-- Holographic Warp Rings -->
+        <ellipse cx="0" cy="40" rx="90" ry="24" fill="none" stroke="${primaryNeon}" stroke-width="2.5" opacity="0.4" stroke-dasharray="6,6"/>
+        <ellipse cx="0" cy="70" rx="120" ry="30" fill="none" stroke="${secondaryNeon}" stroke-width="1.5" opacity="0.25"/>
+        
+        <!-- 3D Rocket Body -->
+        <path d="M 0,-85 C 22,-50 35,0 35,50 L -35,50 C -35,0 -22,-50 0,-85 Z" fill="url(#metallic-body)"/>
+        <path d="M 0,-85 C 10,-50 15,0 15,50 L -15,50 C -15,0 -10,-50 0,-85 Z" fill="#FFFFFF" opacity="0.25"/>
+        
+        <!-- Wings -->
+        <path d="M -35,20 L -65,55 L -35,45 Z" fill="${primaryNeon}"/>
+        <path d="M 35,20 L 65,55 L 35,45 Z" fill="${secondaryNeon}"/>
+        
+        <!-- Porthole Window with Glowing Core -->
+        <circle cx="0" cy="-15" r="16" fill="#0E131D" stroke="#6CE2FF" stroke-width="3"/>
+        <circle cx="0" cy="-15" r="9" fill="#19BAFF"/>
+        
+        <!-- Jet Flame Plasma -->
+        <polygon points="0,50 -18,50 0,95" fill="#FF7B00" opacity="0.9"/>
+        <polygon points="0,50 18,50 0,95" fill="#FFB700" opacity="0.9"/>
+        <polygon points="0,50 8,50 0,80" fill="#FFFFFF"/>
+      </g>
+    `,
+
+    // 3. FIVEM / GTA V: รถสปอร์ตซูเปอร์คาร์ 3D ลอยตัว พร้อมไฟหน้าเลเซอร์นีออน
+    car: `
+      <circle cx="320" cy="180" r="140" fill="${primaryNeon}" fill-opacity="0.2" filter="blur(50px)"/>
+      <g transform="translate(320, 160) scale(1.15)">
+        <!-- Ground Neon Underglow -->
+        <ellipse cx="0" cy="65" rx="110" ry="20" fill="${primaryNeon}" fill-opacity="0.4" filter="blur(12px)"/>
+        
+        <!-- 3D Supercar Silhouette & Glass Canopy -->
+        <path d="M -85,45 C -80,25 -60,15 -35,12 L -20,-15 C -10,-28 10,-28 20,-15 L 35,12 C 60,15 80,25 85,45 Z" fill="url(#car-body-grad)"/>
+        
+        <!-- Windshield Reflection -->
+        <path d="M -16,-12 C -8,-22 8,-22 16,-12 L 28,10 L -28,10 Z" fill="#6CE2FF" fill-opacity="0.45"/>
+        <line x1="-12" y1="-8" x2="6" y2="8" stroke="#FFFFFF" stroke-width="2" opacity="0.8"/>
+        
+        <!-- Twin Laser Headlights -->
+        <polygon points="-75,32 -60,30 -62,38 -77,40" fill="#6CE2FF"/>
+        <polygon points="75,32 60,30 62,38 77,40" fill="#6CE2FF"/>
+        
+        <!-- Light Beams Projecting Forward -->
+        <polygon points="-75,35 -140,80 -60,75" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(6px)"/>
+        <polygon points="75,35 140,80 60,75" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(6px)"/>
+        
+        <!-- Center Cyber Emblem Badge -->
+        <rect x="-18" y="22" width="36" height="14" rx="4" fill="#0E131D" stroke="#6CE2FF" stroke-width="1.5"/>
+        <text x="0" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk'" font-size="8" font-weight="800">FIVEM</text>
+      </g>
+    `,
+
+    // 4. STEAM & GAMING KEYS: คอนโทรลเลอร์ 3D เมทัลลิก ผสมเหรียญคริปโตเกมมิ่ง
+    controller: `
+      <circle cx="320" cy="180" r="130" fill="${secondaryNeon}" fill-opacity="0.25" filter="blur(45px)"/>
+      <g transform="translate(320, 160) scale(1.1)">
+        <!-- Ambient Shadow -->
+        <ellipse cx="0" cy="65" rx="85" ry="18" fill="#000000" fill-opacity="0.5" filter="blur(8px)"/>
+        
+        <!-- Gamepad Base Squircles -->
+        <path d="M -70,-20 C -70,-45 -40,-45 -25,-30 L 25,-30 C 40,-45 70,-45 70,-20 C 70,25 55,55 35,55 C 20,55 15,35 0,35 C -15,35 -20,55 -35,55 C -55,55 -70,25 -70,-20 Z" fill="url(#gamepad-grad)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        
+        <!-- D-Pad Left -->
+        <rect x="-48" y="-12" width="16" height="6" rx="2" fill="#0E131D"/>
+        <rect x="-43" y="-17" width="6" height="16" rx="2" fill="#0E131D"/>
+        <circle cx="-40" cy="-9" r="2" fill="${primaryNeon}"/>
+
+        <!-- ABXY Buttons Right (Glossy Neon Dots) -->
+        <circle cx="35" cy="-9" r="4.5" fill="#FF0055" filter="drop-shadow(0 0 4px #FF0055)"/>
+        <circle cx="45" cy="-19" r="4.5" fill="#00FF66" filter="drop-shadow(0 0 4px #00FF66)"/>
+        <circle cx="45" cy="1" r="4.5" fill="#FFBB00" filter="drop-shadow(0 0 4px #FFBB00)"/>
+        <circle cx="55" cy="-9" r="4.5" fill="#00AAFF" filter="drop-shadow(0 0 4px #00AAFF)"/>
+
+        <!-- Center Glowing Steam Orb -->
+        <circle cx="0" cy="-5" r="14" fill="#0A0E17" stroke="${primaryNeon}" stroke-width="2"/>
+        <circle cx="0" cy="-5" r="6" fill="#6CE2FF" filter="blur(1px)"/>
+      </g>
+    `,
+
+    // 5. STREAMING (NETFLIX / YOUTUBE): หน้าจอกระจก 3D Floating Glass Screen มุมเอียง มีแสง Lens Flare
+    streaming: `
+      <circle cx="320" cy="180" r="140" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(50px)"/>
+      <g transform="translate(320, 160) scale(1.15)">
+        <!-- 3D Floating Curved Screen -->
+        <rect x="-80" y="-48" width="160" height="96" rx="14" fill="url(#screen-glass-grad)" stroke="rgba(255, 255, 255, 0.25)" stroke-width="1.5"/>
+        
+        <!-- Inner Specular Glint -->
+        <path d="M -75,-44 L 40,-44 L -40,44 L -75,44 Z" fill="#FFFFFF" fill-opacity="0.08"/>
+        
+        <!-- Center Giant Play Triangle with Neon Flare -->
+        <polygon points="-12,-24 24,0 -12,24" fill="url(#play-btn-grad)" filter="drop-shadow(0 0 16px ${primaryNeon})"/>
+        
+        <!-- 4K Ultra HD Badge -->
+        <rect x="-65" y="24" width="34" height="14" rx="4" fill="rgba(0,0,0,0.6)" stroke="${primaryNeon}" stroke-width="1"/>
+        <text x="-48" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk'" font-size="7" font-weight="800">4K UHD</text>
+        
+        <!-- Floating Audio Waves -->
+        <rect x="45" y="26" width="3" height="10" rx="1.5" fill="${secondaryNeon}"/>
+        <rect x="52" y="22" width="3" height="15" rx="1.5" fill="${primaryNeon}"/>
+        <rect x="59" y="28" width="3" height="8" rx="1.5" fill="${secondaryNeon}"/>
+      </g>
+    `,
+
+    // 6. OTP & PHONE VERIFY: ซิมการ์ด 3D ทองคำลอย มีคลื่นสัญญาณเรดาร์กระจาย
+    otp: `
+      <circle cx="320" cy="180" r="130" fill="${primaryNeon}" fill-opacity="0.25" filter="blur(45px)"/>
+      <g transform="translate(320, 160) scale(1.15)">
+        <!-- Pulsing Signal Waves -->
+        <circle cx="0" cy="0" r="70" fill="none" stroke="${primaryNeon}" stroke-width="1.5" opacity="0.2" stroke-dasharray="4,4"/>
+        <circle cx="0" cy="0" r="95" fill="none" stroke="${secondaryNeon}" stroke-width="1" opacity="0.15"/>
+
+        <!-- 3D Microchip SIM Card Body -->
+        <path d="M -45,-55 L 25,-55 L 45,-35 L 45,55 L -45,55 Z" fill="url(#sim-card-grad)" stroke="#6CE2FF" stroke-width="2"/>
+        
+        <!-- Gold Contact Grid -->
+        <rect x="-28" y="-30" width="56" height="60" rx="6" fill="#F59E0B" fill-opacity="0.9"/>
+        <rect x="-22" y="-24" width="20" height="22" rx="3" fill="#D97706"/>
+        <rect x="2" y="-24" width="20" height="22" rx="3" fill="#D97706"/>
+        <rect x="-22" y="2" width="20" height="22" rx="3" fill="#D97706"/>
+        <rect x="2" y="2" width="20" height="22" rx="3" fill="#D97706"/>
+
+        <!-- Dynamic OTP Floating Pill Badge -->
+        <g transform="translate(0, 48)">
+          <rect x="-42" y="-10" width="84" height="20" rx="10" fill="#060911" stroke="${primaryNeon}" stroke-width="1.5"/>
+          <text x="0" y="4" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono'" font-size="10" font-weight="800" letter-spacing="2">OTP 24/7</text>
+        </g>
+      </g>
+    `,
+
+    // 7. DISCORD QUEST: โล่เกียรติยศ 3D Trophy ตราเควสต์สีรุ้งนีออน
+    quest: `
+      <circle cx="320" cy="180" r="140" fill="${primaryNeon}" fill-opacity="0.3" filter="blur(50px)"/>
+      <g transform="translate(320, 155) scale(1.15)">
+        <!-- 3D Prismatic Crest Shield -->
+        <path d="M 0,-70 L 55,-35 C 55,25 30,65 0,80 C -30,65 -55,25 -55,-35 Z" fill="url(#shield-grad)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+        
+        <!-- Inner Glowing Crest -->
+        <path d="M 0,-56 L 42,-28 C 42,20 22,50 0,64 C -22,50 -42,20 -42,-28 Z" fill="#0A0E17"/>
+        
+        <!-- Golden Star of Achievement -->
+        <polygon points="0,-25 7,-6 26,-6 10,6 16,24 0,13 -16,24 -10,6 -26,-6 -7,-6" fill="url(#gold-star-grad)" filter="drop-shadow(0 0 10px #F59E0B)"/>
+        
+        <!-- Laurel Leaves Accent -->
+        <circle cx="-30" cy="5" r="4" fill="${secondaryNeon}"/>
+        <circle cx="30" cy="5" r="4" fill="${secondaryNeon}"/>
+      </g>
+    `
   };
 
-  const selectedIcon = icons[iconType] || icons.nitro;
+  const selectedIllustration = artworkIllustrations[type] || artworkIllustrations.nitro;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
     <defs>
-      <linearGradient id="bg-${title.replace(/[^a-zA-Z0-9]/g, '')}" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#060911" />
-        <stop offset="50%" stop-color="#0B1220" />
-        <stop offset="100%" stop-color="#05080E" />
+      <!-- Background Ambient Canvas -->
+      <linearGradient id="bg-canvas" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#05080E" />
+        <stop offset="50%" stop-color="#0A101C" />
+        <stop offset="100%" stop-color="#04060A" />
       </linearGradient>
-      <linearGradient id="glow-${title.replace(/[^a-zA-Z0-9]/g, '')}" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="${primaryColor}" stop-opacity="0.8"/>
-        <stop offset="100%" stop-color="${secondaryColor}" stop-opacity="0.2"/>
+
+      <!-- Shimmer Gradients for 3D Assets -->
+      <linearGradient id="gem-facet-1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+        <stop offset="60%" stop-color="${primaryNeon}"/>
+        <stop offset="100%" stop-color="#005B8A"/>
       </linearGradient>
-      <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <linearGradient id="gem-facet-2" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${secondaryNeon}"/>
+        <stop offset="100%" stop-color="#3B0764"/>
+      </linearGradient>
+      <linearGradient id="gem-facet-3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E1B4B"/>
+        <stop offset="100%" stop-color="${secondaryNeon}"/>
+      </linearGradient>
+      <linearGradient id="gem-facet-4" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0F172A"/>
+        <stop offset="100%" stop-color="${primaryNeon}"/>
+      </linearGradient>
+
+      <linearGradient id="car-body-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0E1726"/>
+        <stop offset="50%" stop-color="${primaryNeon}"/>
+        <stop offset="100%" stop-color="#0E1726"/>
+      </linearGradient>
+
+      <linearGradient id="metallic-body" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E2E8F0"/>
+        <stop offset="50%" stop-color="#94A3B8"/>
+        <stop offset="100%" stop-color="#334155"/>
+      </linearGradient>
+
+      <linearGradient id="gamepad-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E293B"/>
+        <stop offset="100%" stop-color="#0F172A"/>
+      </linearGradient>
+
+      <linearGradient id="screen-glass-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E11D48"/>
+        <stop offset="100%" stop-color="#0284C7"/>
+      </linearGradient>
+
+      <linearGradient id="play-btn-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFFFFF"/>
+        <stop offset="100%" stop-color="#E2E8F0"/>
+      </linearGradient>
+
+      <linearGradient id="sim-card-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E293B"/>
+        <stop offset="100%" stop-color="#0F172A"/>
+      </linearGradient>
+
+      <linearGradient id="shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8B5CF6"/>
+        <stop offset="100%" stop-color="#3B82F6"/>
+      </linearGradient>
+
+      <linearGradient id="gold-star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FDE047"/>
+        <stop offset="100%" stop-color="#D97706"/>
+      </linearGradient>
+
+      <!-- Modern Cyber Perspective Grid (Smooth, not harsh) -->
+      <pattern id="cyber-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(25, 186, 255, 0.04)" stroke-width="1"/>
       </pattern>
     </defs>
-    <rect width="640" height="360" fill="url(#bg-${title.replace(/[^a-zA-Z0-9]/g, '')})"/>
-    <rect width="640" height="360" fill="url(#grid)"/>
-    <circle cx="320" cy="180" r="130" fill="${primaryColor}" fill-opacity="0.07" filter="blur(40px)"/>
-    <circle cx="500" cy="80" r="90" fill="${secondaryColor}" fill-opacity="0.08" filter="blur(30px)"/>
-    
-    <!-- Cyber Geometric Frame -->
-    <path d="M 20 40 L 40 20 L 600 20 L 620 40 L 620 320 L 600 340 L 40 340 L 20 320 Z" fill="none" stroke="rgba(25, 186, 255, 0.15)" stroke-width="1.5"/>
-    <line x1="40" y1="20" x2="140" y2="20" stroke="${primaryColor}" stroke-width="3"/>
-    <line x1="500" y1="340" x2="600" y2="340" stroke="${secondaryColor}" stroke-width="3"/>
 
-    <!-- Center Holo Symbol -->
-    <g transform="translate(288, 85) scale(2.7)">
-      ${selectedIcon}
-    </g>
+    <!-- Canvas Base -->
+    <rect width="640" height="360" fill="url(#bg-canvas)"/>
+    <rect width="640" height="360" fill="url(#cyber-grid)"/>
 
-    <!-- Typography -->
-    <text x="320" y="250" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="28" letter-spacing="1">
+    <!-- Vignette & Edge Glow -->
+    <ellipse cx="320" cy="360" rx="280" ry="80" fill="${primaryNeon}" fill-opacity="0.12" filter="blur(40px)"/>
+
+    <!-- 3D Center Artwork Component -->
+    ${selectedIllustration}
+
+    <!-- Bottom Vignette Gradient to blend smoothly with Card Body -->
+    <rect y="270" width="640" height="90" fill="url(#bottom-fade)"/>
+    <linearGradient id="bottom-fade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E131D" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0E131D" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <!-- Sleek 3D Title Overlay at Bottom of Artwork -->
+    <text x="320" y="325" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="800" font-size="20" letter-spacing="1">
       ${title.toUpperCase()}
     </text>
-    <text x="320" y="285" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="14" letter-spacing="2">
+    <text x="320" y="345" text-anchor="middle" fill="${primaryNeon}" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="11" letter-spacing="2">
       // ${sub.toUpperCase()} //
     </text>
-
-    <!-- Top Badge Corner -->
-    <rect x="35" y="32" width="90" height="22" rx="4" fill="rgba(25, 186, 255, 0.15)" stroke="${primaryColor}" stroke-width="1"/>
-    <text x="80" y="47" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700">VERIFIED AUTH</text>
   </svg>`;
 
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
@@ -88,8 +327,8 @@ const categoriesData = [
         discountPercent: 32,
         chips: ["⚡ ส่งทันที", "🛡️ ประกันเต็ม", "💎 2 บูส"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro Booster", "1 Month Mailpass", "nitro", "#19BAFF", "#38D4FF"),
-        sampleDelivery: "nitro_user_vip99@wichx.vip:PassNitro!2026",
+        imageUrl: createModern3DArtwork("nitro", "Nitro Booster 1M", "Full Warranty 2 Boosts", "#19BAFF", "#8B5CF6", "#6CE2FF"),
+        sampleDelivery: "nitro_user_vip99@nyx9.shop:PassNitro!2026",
         warrantyDays: 30
       },
       {
@@ -103,7 +342,7 @@ const categoriesData = [
         discountPercent: 48,
         chips: ["👑 ยกเมลแท้", "💎 2 บูส", "🔑 เปลี่ยนรหัสได้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro 3 Months", "Full Email Transfer", "nitro", "#38D4FF", "#00FFA3"),
+        imageUrl: createModern3DArtwork("nitro", "Nitro 3 Months", "Full Email Transfer", "#38D4FF", "#10B981", "#6CE2FF"),
         sampleDelivery: "discord_3m_fresh@rambler.ru:RamblerP@ss2026 | Mailpass: Ok",
         warrantyDays: 90
       },
@@ -118,7 +357,7 @@ const categoriesData = [
         discountPercent: 44,
         chips: ["🚀 2 บูสแท้", "⚡ ใน 1 นาที"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: createCyberArtwork("Server Boost", "1 Month x2 Boosts", "boost", "#19BAFF", "#7928CA"),
+        imageUrl: createModern3DArtwork("boost", "Server Boost 1M", "Instant 2x Boosts", "#19BAFF", "#EC4899", "#38D4FF"),
         instructions: "กรอกลิงก์เซิร์ฟเวอร์ Discord ที่ต้องการให้บอทเข้าไปบูส (ต้องไม่หมดอายุ)"
       },
       {
@@ -132,7 +371,7 @@ const categoriesData = [
         discountPercent: 44,
         chips: ["⏳ 90 วันเต็ม", "🔥 ยอดนิยม"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: createCyberArtwork("Server Boost 90D", "3 Months x2 Boosts", "boost", "#FF0080", "#19BAFF"),
+        imageUrl: createModern3DArtwork("boost", "Server Boost 90D", "Full 90 Days Warranty", "#FF0080", "#19BAFF", "#FFB700"),
         instructions: "ระบบจะดำเนินการส่งบูสเข้าเซิร์ฟเวอร์ภายใน 1-5 นาทีหลังชำระเงิน"
       },
       {
@@ -146,7 +385,7 @@ const categoriesData = [
         discountPercent: 58,
         chips: ["🎁 กิฟต์ลิงก์", "✨ ไอดีใหม่"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro Promo Link", "3 Months Promo Xbox", "nitro", "#10B981", "#19BAFF"),
+        imageUrl: createModern3DArtwork("nitro", "Nitro Promo Link", "Instant Gift Link", "#10B981", "#19BAFF", "#38D4FF"),
         sampleDelivery: "https://discord.com/billing/promotions/xbox-game-pass-promo-key-83749204812",
         warrantyDays: 14
       },
@@ -161,8 +400,8 @@ const categoriesData = [
         discountPercent: 47,
         chips: ["♾️ ถาวร", "🎨 ของแต่งแท้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Avatar Deco", "Permanent Nameplates", "nitro", "#F59E0B", "#EF4444"),
-        sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-WICHX",
+        imageUrl: createModern3DArtwork("quest", "Profile Deco", "Permanent Nameplates", "#F59E0B", "#19BAFF", "#EC4899"),
+        sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-NYX9",
         warrantyDays: 365
       }
     ]
@@ -180,7 +419,7 @@ const categoriesData = [
         id: "service-discord-members",
         title: "ปั๊มคนเข้า Discord (มีโปรไฟล์จริง)",
         category: "cat-discord-services",
-        price: 0.50, // ราคาต่อคน
+        price: 0.50,
         unit: "คน",
         minQuantity: 100,
         maxQuantity: 1000,
@@ -190,7 +429,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["👥 มีรูปโปรไฟล์", "⚡ เริ่มใน 5 นาที"],
         fulfillmentType: "custom_discord_members",
-        imageUrl: createCyberArtwork("Member Booster", "Real Avatars 24/7", "discord", "#19BAFF", "#3B82F6"),
+        imageUrl: createModern3DArtwork("boost", "Discord Members", "Real Avatars 24/7", "#19BAFF", "#3B82F6", "#6CE2FF"),
         instructions: "ระบบปั๊มเมมเบอร์อัตโนมัติ กรอกลิงก์ Discord Invite และเลือกจำนวนสมาชิกที่ต้องการ"
       },
       {
@@ -203,7 +442,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["📱 เบอร์ไทย/นอก", "⏱️ ส่งรหัสใน 30 วิ"],
         fulfillmentType: "custom_phone_otp",
-        imageUrl: createCyberArtwork("Phone OTP Verify", "Instant SMS Code", "key", "#10B981", "#38D4FF"),
+        imageUrl: createModern3DArtwork("otp", "Phone OTP Verify", "Instant SMS Code", "#10B981", "#38D4FF", "#F59E0B"),
         instructions: "เลือกประเทศเพื่อขอรับเบอร์เสมือน และรอรับรหัส OTP สดได้ทันทีที่หน้าจอ"
       },
       {
@@ -216,7 +455,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["🏅 รับตราทันที", "🎮 ไม่ต้องเปิดเกม"],
         fulfillmentType: "custom_quest_badge",
-        imageUrl: createCyberArtwork("Quest Badge", "Discord Mission Auto", "boost", "#8B5CF6", "#19BAFF"),
+        imageUrl: createModern3DArtwork("quest", "Quest Badge Auto", "No Game Open Needed", "#8B5CF6", "#19BAFF", "#F59E0B"),
         instructions: "กรอก Discord User ID เพื่อให้ระบบออโต้ส่งตราเควสต์เข้าโปรไฟล์ของคุณ"
       },
       {
@@ -229,8 +468,8 @@ const categoriesData = [
         status: "STOCK",
         chips: ["🛡️ พร้อมใช้งาน", "🤖 ไม่ติดบอท"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Discord Age 1M+", "Aged Clean Account", "discord", "#6366F1", "#19BAFF"),
-        sampleDelivery: "acc_aged30d_8812@wichxmail.com:SuperP@ss7721 | Token: MTA4...",
+        imageUrl: createModern3DArtwork("nitro", "Discord Aged 1M+", "Clean Clean Account", "#6366F1", "#19BAFF", "#38D4FF"),
+        sampleDelivery: "acc_aged30d_8812@nyx9mail.com:SuperP@ss7721 | Token: MTA4...",
         warrantyDays: 7
       },
       {
@@ -243,7 +482,7 @@ const categoriesData = [
         status: "HOT",
         chips: ["🏛️ ปีเก่าหายาก", "👑 ยกเมลหลัก"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Discord Vintage", "Rare 2016-2018 ID", "discord", "#F59E0B", "#E11D48"),
+        imageUrl: createModern3DArtwork("quest", "Discord Vintage", "Rare 2016-2018 Legacy", "#F59E0B", "#E11D48", "#19BAFF"),
         sampleDelivery: "og_discord_2016_legacy@rambler.ru:VintagePass2016! | Full Access",
         warrantyDays: 30
       }
@@ -254,7 +493,7 @@ const categoriesData = [
     name: "GAMING ACCOUNTS & STREAMING APPS",
     subName: "ไอดีเกม FiveM, Steam GTAV, แอปพรีเมียม & AI Tools",
     icon: "gamepad-2",
-    badge: "WICHX SPECIALS",
+    badge: "NYX9 SPECIALS",
     visible: true,
     collapsed: false,
     products: [
@@ -269,7 +508,7 @@ const categoriesData = [
         discountPercent: 60,
         chips: ["🚗 FiveM", "⚡ ส่งทันที"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("FiveM Clean", "Rockstar 2-Step Auth", "game", "#19BAFF", "#EC4899"),
+        imageUrl: createModern3DArtwork("car", "FiveM Rockstar Clean", "2-Step HWID Clean", "#19BAFF", "#EC4899", "#6CE2FF"),
         sampleDelivery: "rockstar_fivem_clean991@firstmail.ltd:FiveMPassword2026",
         warrantyDays: 7
       },
@@ -284,7 +523,7 @@ const categoriesData = [
         discountPercent: 43,
         chips: ["🎮 Steam แท้", "🔑 ยกไอดี"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Steam GTA V", "Unlinked Clean Account", "game", "#3B82F6", "#06B6D4"),
+        imageUrl: createModern3DArtwork("controller", "Steam GTA V Unlinked", "Original License Key", "#3B82F6", "#06B6D4", "#38D4FF"),
         sampleDelivery: "steam_gta5_fresh_id771:SteamMasterPass2026 | Email: steam_mail_gta@outlook.com:EmailPass2026",
         warrantyDays: 30
       },
@@ -299,8 +538,8 @@ const categoriesData = [
         discountPercent: 35,
         chips: ["🎬 จอส่วนตัว", "🛡️ ประกัน 30 วัน"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Netflix UHD", "30 Days Private Screen", "stream", "#E50914", "#19BAFF"),
-        sampleDelivery: "netflix_vip_uhd291@wichxstream.com:NfPass4K!2026 | PIN: 1984 | Profile: 1",
+        imageUrl: createModern3DArtwork("streaming", "Netflix 4K UHD", "Private Screen 30 Days", "#E50914", "#19BAFF", "#FF7B00"),
+        sampleDelivery: "netflix_vip_uhd291@nyx9stream.com:NfPass4K!2026 | PIN: 1984 | Profile: 1",
         warrantyDays: 30
       },
       {
@@ -314,7 +553,7 @@ const categoriesData = [
         discountPercent: 45,
         chips: ["🎵 ไร้โฆษณา", "⚡ อนุมัติไว"],
         fulfillmentType: "custom_email_invite",
-        imageUrl: createCyberArtwork("YouTube Premium", "Ad-Free Background Play", "stream", "#FF0000", "#38D4FF"),
+        imageUrl: createModern3DArtwork("streaming", "YouTube Premium", "Ad-Free Background Play", "#FF0000", "#38D4FF", "#FFB700"),
         instructions: "กรอก Gmail ของคุณเพื่อรับลิงก์คำเชิญเข้าร่วมครอบครัวพรีเมียม (ไม่จำเป็นต้องให้รหัสผ่าน)"
       },
       {
@@ -327,7 +566,7 @@ const categoriesData = [
         status: "PRE-ORDER",
         chips: ["💻 AI Tool", "⏳ พรีออเดอร์"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Cursor Pro AI", "Claude 3.7 & GPT-4o", "ai", "#00FFA3", "#19BAFF"),
+        imageUrl: createModern3DArtwork("controller", "Cursor Pro AI", "Claude 3.7 & GPT-4o", "#00FFA3", "#19BAFF", "#8B5CF6"),
         sampleDelivery: "PREORDER-CONFIRMED: ระบบจะจัดส่งรหัสคีย์เข้าอีเมลของคุณภายใน 24 ชม.",
         warrantyDays: 30
       },
@@ -341,7 +580,7 @@ const categoriesData = [
         status: "OUT OF STOCK",
         chips: ["❌ หมดชั่วคราว", "🔄 รอเติมของ"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Out of Stock", "Item Unavailable", "key", "#6B7280", "#374151"),
+        imageUrl: createModern3DArtwork("otp", "Out of Stock", "Item Unavailable", "#64748B", "#334155", "#1E293B"),
         sampleDelivery: ""
       }
     ]
@@ -366,7 +605,7 @@ const categoriesData = [
         discountPercent: 73,
         chips: ["🔑 คีย์แท้", "♾️ ถาวร", "🛡️ ย้ายเครื่องได้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Windows 11 Pro", "Original Retail License", "key", "#0078D4", "#19BAFF"),
+        imageUrl: createModern3DArtwork("controller", "Windows 11 Pro", "Original Retail License", "#0078D4", "#19BAFF", "#38D4FF"),
         sampleDelivery: "W269N-WFGWX-YVC9B-4J6C9-T83GX",
         warrantyDays: 365
       },
@@ -381,7 +620,7 @@ const categoriesData = [
         discountPercent: 50,
         chips: ["🎧 เมลเดิม", "⚡ ต่ออายุได้"],
         fulfillmentType: "custom_email_invite",
-        imageUrl: createCyberArtwork("Spotify 3M", "Original Family Plan", "stream", "#1DB954", "#19BAFF"),
+        imageUrl: createModern3DArtwork("streaming", "Spotify 3M Plan", "Original Family Invite", "#1DB954", "#19BAFF", "#10B981"),
         instructions: "กรอกอีเมล Spotify เพื่อรับลิงก์ Family Invite เข้าใช้งานทันที"
       }
     ]
