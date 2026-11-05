@@ -86,37 +86,9 @@
 <body class="cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
   <!-- ==============================================================================
-       1. MARQUEE ANNOUNCEMENT TICKER (TOP BROADCAST)
+       1. FLOATING CAPSULE NAVBAR
        ============================================================================== -->
-  <div class="sticky top-0 z-50 w-full bg-[#070B13]/90 backdrop-blur-md border-b border-[rgba(25,186,255,0.18)] py-2 px-3 md:px-6 text-xs flex items-center justify-between gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-    <!-- Live Status Pill Left -->
-    <div class="flex-shrink-0 flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(25,186,255,0.1)] border border-[rgba(25,186,255,0.25)] text-[var(--accent)] font-mono text-[11px] font-bold shadow-[0_0_12px_rgba(25,186,255,0.2)]">
-      <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-      </span>
-      <span class="tracking-wider">SYSTEM FEED</span>
-    </div>
-
-    <!-- Smooth Masked Marquee Track -->
-    <div class="overflow-hidden flex-1 relative flex items-center marquee-mask">
-      <div id="marquee-content" class="animate-marquee font-sans text-xs">
-        <!-- Structured Capsules Injected Dynamically -->
-      </div>
-    </div>
-
-    <!-- Quick Status Right (Desktop) -->
-    <div class="hidden lg:flex items-center gap-2 text-[11px] font-mono text-slate-400 flex-shrink-0 border-l border-slate-800/80 pl-3">
-      <span class="text-emerald-400 font-bold">● 24/7 AUTO</span>
-      <span class="text-slate-600">|</span>
-      <span class="text-slate-400">PING: 18ms</span>
-    </div>
-  </div>
-
-  <!-- ==============================================================================
-       2. FLOATING CAPSULE NAVBAR
-       ============================================================================== -->
-  <header class="sticky top-9 z-40 px-4 md:px-8 py-3 max-w-7xl mx-auto w-full">
+  <header class="sticky top-3 z-40 px-4 md:px-8 py-3 max-w-7xl mx-auto w-full">
     <nav class="glass-capsule rounded-2xl px-4 md:px-6 py-3 flex items-center justify-between gap-4">
       <!-- Store Branding -->
       <a href="#" class="flex items-center gap-3 group">
