@@ -408,6 +408,12 @@ const storeConfig = {
     anonKey: "sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u"
   },
 
+  // --- สิทธิ์ผู้ดูแลระบบหลังบ้าน (Admin Whitelist: เฉพาะ 2 Discord IDs นี้เท่านั้น) ---
+  adminDiscordIds: [
+    "483398326159671326",
+    "422611554475835394"
+  ],
+
   // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
@@ -1124,6 +1130,21 @@ class AuthService {
   }
 
   async init() {
+    // ดักจับและแจ้งเตือน Error จาก OAuth Redirect ถ้ามี
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const errorDesc = urlParams.get("error_description") || hashParams.get("error_description") || urlParams.get("error") || hashParams.get("error");
+      if (errorDesc) {
+        console.warn("[AUTH OAUTH ERROR]", errorDesc);
+        const cleanMsg = decodeURIComponent(errorDesc).replace(/\+/g, " ");
+        setTimeout(() => {
+          window.UI?.toast(`เข้าสู่ระบบไม่สำเร็จ: ${cleanMsg}`, "error");
+        }, 300);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
     if (!window.SupabaseAdapter || !window.SupabaseAdapter.isLive) return;
 
     // 1. ตรวจสอบ Session เดิม
@@ -1150,12 +1171,17 @@ class AuthService {
 
   async applyUserSession(user) {
     const meta = user.user_metadata || {};
+    const discordId = String(meta.provider_id || meta.sub || "");
+    const adminIds = (window.storeConfig && window.storeConfig.adminDiscordIds) || ["483398326159671326", "422611554475835394"];
+    const isAdmin = adminIds.includes(discordId);
+
     const userData = {
       id: user.id,
       email: user.email,
-      discordId: meta.provider_id || meta.sub || null,
+      discordId: discordId,
       username: meta.custom_claims?.global_name || meta.full_name || meta.user_name || meta.name || user.email?.split("@")[0] || "Member",
-      avatarUrl: meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`
+      avatarUrl: meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`,
+      role: isAdmin ? "admin" : "customer"
     };
 
     // ดึงยอดเงินจริงจากตาราง profiles
@@ -1164,6 +1190,7 @@ class AuthService {
       if (profile) {
         if (profile.username) userData.username = profile.username;
         if (profile.avatar_url) userData.avatarUrl = profile.avatar_url;
+        if (profile.role) userData.role = profile.role;
         this.store.setWalletBalance(parseFloat(profile.balance || 0));
       }
     } catch (err) {
@@ -1847,6 +1874,10 @@ class NavbarComponent {
     const profileBadge = document.getElementById("user-profile-badge");
     const avatarImg = document.getElementById("user-avatar-img");
     const nameEl = document.getElementById("user-display-name");
+    const adminLink = document.getElementById("nav-admin-link");
+
+    const adminIds = (window.storeConfig && window.storeConfig.adminDiscordIds) || ["483398326159671326", "422611554475835394"];
+    const isAdmin = user && (user.role === "admin" || adminIds.includes(String(user.discordId)));
 
     if (user) {
       if (loginBtn) loginBtn.classList.add("hidden");
@@ -1856,11 +1887,26 @@ class NavbarComponent {
       }
       if (avatarImg) avatarImg.src = user.avatarUrl;
       if (nameEl) nameEl.textContent = user.username;
+
+      // แสดงปุ่มเข้าหลังบ้านเฉพาะแอดมิน 2 ไอดี
+      if (adminLink) {
+        if (isAdmin) {
+          adminLink.classList.remove("hidden");
+          adminLink.classList.add("inline-flex");
+        } else {
+          adminLink.classList.add("hidden");
+          adminLink.classList.remove("inline-flex");
+        }
+      }
     } else {
       if (loginBtn) loginBtn.classList.remove("hidden");
       if (profileBadge) {
         profileBadge.classList.add("hidden");
         profileBadge.classList.remove("flex");
+      }
+      if (adminLink) {
+        adminLink.classList.add("hidden");
+        adminLink.classList.remove("inline-flex");
       }
     }
 

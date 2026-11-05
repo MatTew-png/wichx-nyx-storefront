@@ -31,6 +31,10 @@ class NavbarComponent {
     const profileBadge = document.getElementById("user-profile-badge");
     const avatarImg = document.getElementById("user-avatar-img");
     const nameEl = document.getElementById("user-display-name");
+    const adminLink = document.getElementById("nav-admin-link");
+
+    const adminIds = (window.storeConfig && window.storeConfig.adminDiscordIds) || ["483398326159671326", "422611554475835394"];
+    const isAdmin = user && (user.role === "admin" || adminIds.includes(String(user.discordId)));
 
     if (user) {
       if (loginBtn) loginBtn.classList.add("hidden");
@@ -40,11 +44,26 @@ class NavbarComponent {
       }
       if (avatarImg) avatarImg.src = user.avatarUrl;
       if (nameEl) nameEl.textContent = user.username;
+
+      // แสดงปุ่มเข้าหลังบ้านเฉพาะแอดมิน 2 ไอดี
+      if (adminLink) {
+        if (isAdmin) {
+          adminLink.classList.remove("hidden");
+          adminLink.classList.add("inline-flex");
+        } else {
+          adminLink.classList.add("hidden");
+          adminLink.classList.remove("inline-flex");
+        }
+      }
     } else {
       if (loginBtn) loginBtn.classList.remove("hidden");
       if (profileBadge) {
         profileBadge.classList.add("hidden");
         profileBadge.classList.remove("flex");
+      }
+      if (adminLink) {
+        adminLink.classList.add("hidden");
+        adminLink.classList.remove("inline-flex");
       }
     }
 

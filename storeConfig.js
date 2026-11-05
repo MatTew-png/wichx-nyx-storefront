@@ -14,6 +14,12 @@ const storeConfig = {
     anonKey: "sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u"
   },
 
+  // --- สิทธิ์ผู้ดูแลระบบหลังบ้าน (Admin Whitelist: เฉพาะ 2 Discord IDs นี้เท่านั้น) ---
+  adminDiscordIds: [
+    "483398326159671326",
+    "422611554475835394"
+  ],
+
   // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
