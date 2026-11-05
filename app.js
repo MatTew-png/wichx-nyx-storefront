@@ -49,6 +49,10 @@ async function initSupabaseIntegration() {
     const { url, anonKey } = window.storeConfig.supabase;
     if (url && anonKey) {
       window.SupabaseAdapter.init(url, anonKey);
+      
+      // ติดตั้งระบบติดตามการล็อกอิน Discord (Supabase Auth Listener)
+      initAuthStateListener();
+
       const liveCats = await window.SupabaseAdapter.getProducts();
       if (liveCats && liveCats.length > 0) {
         window.categoriesData = liveCats;
@@ -58,6 +62,110 @@ async function initSupabaseIntegration() {
       }
     }
   }
+}
+
+// --- DISCORD AUTHENTICATION CONTROLLER ---
+async function initAuthStateListener() {
+  if (!window.SupabaseAdapter || !window.SupabaseAdapter.isLive) return;
+
+  // 1. ตรวจสอบ Session ที่มีอยู่เดิม
+  const session = await window.SupabaseAdapter.getSession();
+  if (session && session.user) {
+    await applyUserSession(session.user);
+  } else {
+    applyGuestSession();
+  }
+
+  // 2. ดักฟัง Event การเข้าสู่ระบบ / ออกจากระบบ
+  window.SupabaseAdapter.onAuthStateChange(async (event, session) => {
+    if (session && session.user) {
+      await applyUserSession(session.user);
+      if (event === "SIGNED_IN") {
+        showToast(`ยินดีต้อนรับ ${AppState.user?.username || 'Discord Member'} เข้าสู่ระบบ!`, "success");
+      }
+    } else if (event === "SIGNED_OUT") {
+      applyGuestSession();
+      showToast("ออกจากระบบเรียบร้อยแล้ว", "info");
+    }
+  });
+}
+
+async function applyUserSession(user) {
+  const meta = user.user_metadata || {};
+  AppState.user = {
+    id: user.id,
+    email: user.email,
+    discordId: meta.provider_id || meta.sub || null,
+    username: meta.custom_claims?.global_name || meta.full_name || meta.user_name || meta.name || user.email?.split("@")[0] || "Member",
+    avatarUrl: meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`
+  };
+
+  // ดึงข้อมูลยอดเงินและโปรไฟล์จริงจากตาราง profiles ใน Supabase
+  try {
+    const profile = await window.SupabaseAdapter.getUserProfile(user.id);
+    if (profile) {
+      if (profile.username) AppState.user.username = profile.username;
+      if (profile.avatar_url) AppState.user.avatarUrl = profile.avatar_url;
+      AppState.walletBalance = parseFloat(profile.balance || 0);
+    }
+  } catch (err) {
+    console.warn("[AUTH] Sync profile balance warning:", err.message);
+  }
+
+  updateAuthUI();
+  updateWalletUI();
+}
+
+function applyGuestSession() {
+  AppState.user = null;
+  AppState.walletBalance = parseFloat(localStorage.getItem("wichx_balance") || "500.00");
+  updateAuthUI();
+  updateWalletUI();
+}
+
+function updateAuthUI() {
+  const loginBtn = document.getElementById("btn-discord-login");
+  const profileBadge = document.getElementById("user-profile-badge");
+  const avatarImg = document.getElementById("user-avatar-img");
+  const nameEl = document.getElementById("user-display-name");
+
+  if (AppState.user) {
+    if (loginBtn) loginBtn.classList.add("hidden");
+    if (profileBadge) {
+      profileBadge.classList.remove("hidden");
+      profileBadge.classList.add("flex");
+    }
+    if (avatarImg) avatarImg.src = AppState.user.avatarUrl;
+    if (nameEl) nameEl.textContent = AppState.user.username;
+  } else {
+    if (loginBtn) loginBtn.classList.remove("hidden");
+    if (profileBadge) {
+      profileBadge.classList.add("hidden");
+      profileBadge.classList.remove("flex");
+    }
+  }
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+async function handleDiscordLogin() {
+  if (!window.SupabaseAdapter || !window.SupabaseAdapter.isLive) {
+    showToast("ระบบยังไม่ได้เชื่อมต่อกับ Supabase", "error");
+    return;
+  }
+  showToast("กำลังเปลี่ยนเส้นทางไปหน้าล็อกอิน Discord...", "info");
+  try {
+    await window.SupabaseAdapter.loginWithDiscord();
+  } catch (err) {
+    showToast(`เกิดข้อผิดพลาด: ${err.message}`, "error");
+  }
+}
+
+async function handleLogout() {
+  if (!window.SupabaseAdapter) return;
+  await window.SupabaseAdapter.logout();
 }
 
 // ==============================================================================
@@ -1223,6 +1331,8 @@ function submitCustomServiceOrder(productId) {
 function updateWalletUI() {
   const el = document.getElementById("user-wallet-balance");
   if (el) el.textContent = `฿${AppState.walletBalance.toFixed(2)}`;
+  const cartBal = document.getElementById("cart-wallet-balance");
+  if (cartBal) cartBal.textContent = `฿${AppState.walletBalance.toFixed(2)}`;
 }
 
 // EMVCo QR Payload Generator สำหรับ PromptPay แท้ 100%

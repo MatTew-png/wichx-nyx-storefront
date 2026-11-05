@@ -24,6 +24,65 @@ const SupabaseAdapter = {
     }
   },
 
+  // --- DISCORD OAUTH & SUPABASE AUTH SUITE ---
+  async loginWithDiscord() {
+    if (!this.isLive || !this.client) {
+      alert("ระบบเชื่อมต่อฐานข้อมูลยังไม่พร้อมใช้งาน");
+      return;
+    }
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { data, error } = await this.client.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo: redirectTo
+      }
+    });
+    if (error) {
+      console.error("[SUPABASE AUTH] Discord login failed:", error.message);
+      throw error;
+    }
+    return data;
+  },
+
+  async logout() {
+    if (!this.isLive || !this.client) return;
+    const { error } = await this.client.auth.signOut();
+    if (error) console.error("[SUPABASE AUTH] Logout error:", error.message);
+  },
+
+  async getSession() {
+    if (!this.isLive || !this.client) return null;
+    try {
+      const { data: { session } } = await this.client.auth.getSession();
+      return session;
+    } catch (e) {
+      return null;
+    }
+  },
+
+  onAuthStateChange(callback) {
+    if (!this.isLive || !this.client) return null;
+    return this.client.auth.onAuthStateChange((event, session) => {
+      callback(event, session);
+    });
+  },
+
+  async getUserProfile(userId) {
+    if (!this.isLive || !this.client || !userId) return null;
+    try {
+      const { data, error } = await this.client
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (e) {
+      console.warn("[SUPABASE] Fetch profile failed:", e.message);
+      return null;
+    }
+  },
+
   // 1. ดึงรายการสินค้าและคำนวณจำนวนสต็อกจริงที่ยังไม่ถูกขาย (is_sold = false)
   async getProducts() {
     if (!this.isLive || !this.client) {

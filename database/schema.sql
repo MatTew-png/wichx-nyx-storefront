@@ -734,3 +734,60 @@ GRANT EXECUTE ON FUNCTION public.execute_order_checkout(TEXT, JSONB, NUMERIC, UU
 GRANT EXECUTE ON FUNCTION public.admin_get_metrics(TEXT) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_bulk_restock(TEXT, TEXT, TEXT[]) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_resolve_claim(TEXT, UUID, TEXT, TEXT) TO anon, authenticated, service_role;
+
+
+-- ==============================================================================
+-- 🔐 SUPABASE AUTH HOOK & DISCORD USER SYNCHRONIZATION
+-- ==============================================================================
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_discord_id TEXT;
+  v_username TEXT;
+  v_avatar_url TEXT;
+BEGIN
+  v_discord_id := COALESCE(
+    NEW.raw_user_meta_data->>'provider_id',
+    NEW.raw_user_meta_data->>'sub'
+  );
+  v_username := COALESCE(
+    NEW.raw_user_meta_data->>'custom_claims'->>'global_name',
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'user_name',
+    NEW.raw_user_meta_data->>'name',
+    split_part(NEW.email, '@', 1),
+    'Discord Member'
+  );
+  v_avatar_url := COALESCE(
+    NEW.raw_user_meta_data->>'avatar_url',
+    NEW.raw_user_meta_data->>'picture'
+  );
+
+  INSERT INTO public.profiles (id, discord_id, username, avatar_url, balance, role)
+  VALUES (
+    NEW.id,
+    v_discord_id,
+    v_username,
+    v_avatar_url,
+    0.00,
+    'customer'
+  )
+  ON CONFLICT (id) DO UPDATE
+  SET
+    discord_id = COALESCE(EXCLUDED.discord_id, public.profiles.discord_id),
+    username = COALESCE(EXCLUDED.username, public.profiles.username),
+    avatar_url = COALESCE(EXCLUDED.avatar_url, public.profiles.avatar_url),
+    updated_at = NOW();
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT OR UPDATE ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
