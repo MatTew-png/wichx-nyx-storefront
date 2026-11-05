@@ -145,8 +145,6 @@ function renderHeroCarousel() {
   if (dotsContainer) dotsContainer.innerHTML = "";
 
   banners.forEach((banner, idx) => {
-    const watermarkIcon = banner.id === "banner-2" ? "gamepad-2" : banner.id === "banner-3" ? "coins" : "shield-check";
-
     const slide = document.createElement("div");
     slide.className = `w-full flex-shrink-0 relative rounded-2xl overflow-hidden p-6 md:p-12 border border-[rgba(25,186,255,0.2)] bg-gradient-to-r ${banner.bgGradient} transition-all duration-500`;
     slide.innerHTML = `
@@ -172,9 +170,9 @@ function renderHeroCarousel() {
           </a>
         </div>
       </div>
-      <!-- Decorative Cyber Wireframe Watermark -->
+      <!-- Decorative Cyber Wireframe Element -->
       <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-15 pointer-events-none hidden md:flex items-center justify-center">
-        <i data-lucide="${watermarkIcon}" class="w-72 h-72 text-[var(--accent)]"></i>
+        <i data-lucide="shield-check" class="w-72 h-72 text-[var(--accent)]"></i>
       </div>
     `;
     container.appendChild(slide);
@@ -1504,172 +1502,3 @@ function renderAcceptedPaymentsFooter() {
     `;
   }).join("");
 }
-
-// ==============================================================================
-// 16. ADMIN COMMAND SUITE CONTROLLER & DISCORD WEBHOOK HUB
-// ==============================================================================
-
-let adminClockInterval = null;
-
-function openAdminDashboard() {
-  const modal = document.getElementById("admin-dashboard-modal");
-  if (!modal) return;
-  modal.classList.remove("hidden");
-  startAdminClock();
-  lucide.createIcons();
-}
-
-function closeAdminDashboard() {
-  const modal = document.getElementById("admin-dashboard-modal");
-  if (modal) modal.classList.add("hidden");
-  if (adminClockInterval) clearInterval(adminClockInterval);
-}
-
-function startAdminClock() {
-  const clockEl = document.getElementById("admin-server-clock");
-  if (!clockEl) return;
-  const updateClock = () => {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ICT`;
-    clockEl.textContent = formatted;
-  };
-  updateClock();
-  if (adminClockInterval) clearInterval(adminClockInterval);
-  adminClockInterval = setInterval(updateClock, 1000);
-}
-
-function switchAdminTab(tabName) {
-  const tabs = ["stock", "analytics", "claims", "webhook", "logs"];
-  tabs.forEach(t => {
-    const panel = document.getElementById(`admin-panel-${t}`);
-    const btn = document.getElementById(`admin-tab-btn-${t}`);
-    if (panel) {
-      if (t === tabName) {
-        panel.classList.remove("hidden");
-      } else {
-        panel.classList.add("hidden");
-      }
-    }
-    if (btn) {
-      if (t === tabName) {
-        btn.className = "px-4 py-2 rounded-xl bg-[var(--accent)] text-black font-bold flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(25,186,255,0.4)]";
-      } else {
-        btn.className = "px-4 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-2 transition-all";
-      }
-    }
-  });
-  lucide.createIcons();
-}
-
-function handleAdminBatchStockAdd() {
-  const select = document.getElementById("admin-stock-product-select");
-  const textarea = document.getElementById("admin-batch-input");
-  if (!textarea) return;
-
-  const rawText = textarea.value.trim();
-  if (!rawText) {
-    showToast("กรุณากรอกรหัสหรือคีย์ที่ต้องการเติมสต็อก", "warning");
-    return;
-  }
-
-  const lines = rawText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-  const count = lines.length;
-  const productId = select ? select.value : "nitro-booster-1m";
-
-  // Find product in catalog and increment stock
-  let productFound = null;
-  for (const cat of window.categoriesData || []) {
-    const p = cat.products.find(item => item.id === productId);
-    if (p) {
-      p.stock = (p.stock || 0) + count;
-      p.status = "IN STOCK";
-      productFound = p;
-      break;
-    }
-  }
-
-  // Clear textarea
-  textarea.value = "";
-
-  // Update select label
-  if (select && productFound) {
-    const selectedOption = select.options[select.selectedIndex];
-    if (selectedOption) {
-      selectedOption.textContent = `${productFound.title} (คงเหลือ: ${productFound.stock})`;
-    }
-  }
-
-  // Re-render products to show updated stock badges immediately
-  renderProductsCatalog();
-
-  showToast(`[AES-256 Vault] เติมสต็อกสำเร็จ +${count} รายการ เข้ารหัสพร้อมส่งมอบ!`, "success");
-
-  // Telemetry event
-  trackAnalyticsEvent("ADMIN_STOCK_ADDED", { productId, count, linesPreview: lines.slice(0, 2) });
-}
-
-function testDiscordWebhookPing() {
-  showToast("กำลังส่งสัญญาณทดสอบเข้า Discord Webhook...", "info");
-
-  setTimeout(() => {
-    showToast("⚡ [Discord Webhook] ส่งข้อความสำเร็จ! ตรวจสอบห้องแชทใน Discord ได้ทันที", "success");
-    triggerConfetti();
-  }, 700);
-}
-
-function approveClaimTicket(ticketId) {
-  showToast(`[เคลมสำเร็จ] อนุมัติ ${ticketId} ระบบส่งมอบรหัสทดแทนให้ลูกค้าอัตโนมัติแล้ว!`, "success");
-  const btn = event && event.target ? event.target : null;
-  const row = btn ? btn.closest("tr") : null;
-  if (row) {
-    row.innerHTML = `
-      <td class="p-3 text-slate-500 font-bold">${ticketId}</td>
-      <td class="p-3 text-slate-500">WX-918231</td>
-      <td class="p-3 text-slate-500">Nitro Booster 1M</td>
-      <td class="p-3 text-emerald-400 font-semibold">อนุมัติแล้ว (ส่งรหัสใหม่ผ่าน Discord)</td>
-      <td class="p-3 text-slate-500">เรียบร้อย</td>
-    `;
-  }
-}
-
-function rejectClaimTicket(ticketId) {
-  showToast(`[ปฏิเสธคำร้อง] ปฏิเสธคำร้องเคลม ${ticketId} บันทึกประวัติแล้ว`, "warning");
-  const btn = event && event.target ? event.target : null;
-  const row = btn ? btn.closest("tr") : null;
-  if (row) {
-    row.innerHTML = `
-      <td class="p-3 text-slate-500 font-bold">${ticketId}</td>
-      <td class="p-3 text-slate-500">WX-918231</td>
-      <td class="p-3 text-slate-500">Nitro Booster 1M</td>
-      <td class="p-3 text-rose-400 font-semibold">ปฏิเสธคำร้อง (หมดระยะเวลาประกัน)</td>
-      <td class="p-3 text-slate-500">ปิดเคส</td>
-    `;
-  }
-}
-
-function handleQuickBanAction() {
-  const input = document.getElementById("admin-ban-target-input");
-  if (!input) return;
-  const target = input.value.trim();
-  if (!target) {
-    showToast("กรุณาระบุ IP Address หรือ Discord ID ที่ต้องการแบน", "warning");
-    return;
-  }
-
-  showToast(`🔨 สั่งแบนเป้าหมาย [${target}] ถาวรแล้ว! บล็อกการเข้าถึงระบบทุกช่องทาง`, "error");
-  input.value = "";
-}
-
-// Global Keyboard Shortcut: Ctrl+Shift+A or Cmd+Shift+A to toggle Admin Suite
-window.addEventListener("keydown", (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
-    e.preventDefault();
-    const modal = document.getElementById("admin-dashboard-modal");
-    if (modal && !modal.classList.contains("hidden")) {
-      closeAdminDashboard();
-    } else {
-      openAdminDashboard();
-    }
-  }
-});
