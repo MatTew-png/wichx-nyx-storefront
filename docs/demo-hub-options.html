@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตัวอย่างเดโม่หน้าร้าน & Footer 3 แบบ (4-in-1 Discord Hub)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Prompt"', 'sans-serif'],
+            heading: ['"Plus Jakarta Sans"', '"Prompt"', 'sans-serif']
+          },
+          colors: {
+            cyan: { 400: '#00F2FF', 500: '#00D0DC' },
+            gunmetal: '#070A0F',
+            surface: '#0C111A'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070A0F;
+      color: #E2E8F0;
+      font-family: 'Prompt', sans-serif;
+    }
+    .neon-border {
+      border: 1px solid rgba(0, 242, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 242, 255, 0.08);
+    }
+    .neon-border-active {
+      border: 1px solid rgba(0, 242, 255, 0.6);
+      box-shadow: 0 0 25px rgba(0, 242, 255, 0.25);
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Top Bar Header -->
+    <header class="text-center space-y-3 pt-4 pb-6 border-b border-white/10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold">
+        <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+        <span>ระบบมัลติฮับ 4 ร้าน DISCORD ในเว็บเดียว (4-IN-1 HUB)</span>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">
+        เลือกสไตล์ Footer & โครงสร้างหน้าร้านที่ชอบ
+      </h1>
+      <p class="text-sm text-slate-400 max-w-2xl mx-auto">
+        คลิกเลือกดูตัวอย่างเดโม่จริงทั้ง 3 แบบด้านล่าง เพื่อให้เจ้าของร้านเห็นภาพว่า เมื่อเปิดร้านที่ 1 ก่อน แล้วเตรียมช่องสำหรับอีก 3 ร้านในอนาคต หน้าตาจะออกมาเป็นแบบไหน
+      </p>
+
+      <!-- Tab Switcher Controls -->
+      <div class="flex flex-wrap justify-center gap-3 pt-4">
+        <button onclick="switchTab('option1')" id="btn-option1" class="px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-2 bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/20">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span>แบบที่ 1: ร้านหลักนำเดี่ยว + เครือข่าย (แนะนำ)</span>
+        </button>
+        <button onclick="switchTab('option2')" id="btn-option2" class="px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300">
+          <i data-lucide="network" class="w-4 h-4"></i>
+          <span>แบบที่ 2: รวม 4 ค่ายพันธมิตร (Multi-Hub)</span>
+        </button>
+        <button onclick="switchTab('option3')" id="btn-option3" class="px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300">
+          <i data-lucide="store" class="w-4 h-4"></i>
+          <span>แบบที่ 3: ห้างสรรพสินค้า (แยกแผนกตามร้าน)</span>
+        </button>
+      </div>
+    </header>
+
+
+    <!-- =========================================================================
+         DEMO 1: FLAGSHIP STORE + NETWORK (RECOMMENDED)
+         ========================================================================= -->
+    <section id="option1" class="space-y-4">
+      <div class="bg-cyan-500/10 border border-cyan-500/30 p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            จุดเด่นของแบบที่ 1: "ร้านหลักนำเดี่ยว + โซนร้านในเครือ"
+          </div>
+          <div class="text-white font-bold text-base mt-1">ชัดเจนที่สุด ลูกค้าไม่สับสน ร้านที่ 1 ดูเป็นทางการและน่าเชื่อถือสูง</div>
+          <div class="text-xs text-slate-400 mt-0.5">หน้าร้านหลักชูชื่อร้านที่ 1 เต็มที่ ส่วน Footer จะมีช่อง Discord ร้านที่ 1 เปิดใช้งาน และมีสล็อตสำหรับอีก 3 ร้านเขียนว่า [เร็วๆ นี้] รองรับไว้</div>
+        </div>
+        <span class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold shrink-0">
+          เหมาะสุดสำหรับช่วงเปิดตัวร้านแรก
+        </span>
+      </div>
+
+      <!-- Preview Box -->
+      <div class="rounded-2xl border border-white/10 bg-[#06090F] p-6 space-y-6">
+        <div class="text-xs font-mono text-slate-500 border-b border-white/5 pb-2 flex items-center justify-between">
+          <span>// ตัวอย่าง FOOTER แบบที่ 1 (PREVIEW)</span>
+          <span class="text-cyan-400">STATUS: READY TO DEPLOY</span>
+        </div>
+
+        <!-- Simulated Footer Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs text-slate-400">
+          
+          <!-- Col 1 -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-extrabold text-sm">
+                N9
+              </div>
+              <div>
+                <div class="text-white font-bold text-sm">NYX9 STUDIO</div>
+                <div class="text-[10px] text-emerald-400 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  ระบบออโต้ 24/7 ONLINE
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] leading-relaxed">
+              ศูนย์รวมบริการดิจิทัล Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM และแอปพรีเมียม สั่งซื้อและรับของได้ทันทีตลอด 24 ชั่วโมง
+            </p>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-slate-300">660,000+ ออเดอร์</span>
+              <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-emerald-400">ประกันแท้ 100%</span>
+            </div>
+          </div>
+
+          <!-- Col 2 -->
+          <div class="space-y-2.5">
+            <div class="text-white font-bold text-xs flex items-center gap-1.5">
+              <i data-lucide="credit-card" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>การชำระเงินที่รองรับ</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-white flex items-center gap-1.5">
+                <i data-lucide="qr-code" class="w-3 h-3 text-cyan-400"></i>
+                <span>PromptPay QR</span>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-white flex items-center gap-1.5">
+                <i data-lucide="wallet" class="w-3 h-3 text-amber-400"></i>
+                <span>TrueMoney</span>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-white flex items-center gap-1.5">
+                <i data-lucide="landmark" class="w-3 h-3 text-emerald-400"></i>
+                <span>โอนธนาคาร</span>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-white flex items-center gap-1.5">
+                <i data-lucide="coins" class="w-3 h-3 text-cyan-400"></i>
+                <span>Crypto LTC</span>
+              </div>
+            </div>
+            <div class="text-[10px] text-slate-500">* ฟรีค่าธรรมเนียม 0% ทุกช่องทาง</div>
+          </div>
+
+          <!-- Col 3 -->
+          <div class="space-y-2.5">
+            <div class="text-white font-bold text-xs flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>มาตรฐานความปลอดภัย</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="p-2 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                <div>
+                  <div class="text-[11px] font-bold text-white">รับประกันสินค้าแท้ 100%</div>
+                  <div class="text-[9px] text-slate-400">มีปัญหาเคลมใหม่ได้ทันทีในระบบ</div>
+                </div>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center gap-2">
+                <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+                <div>
+                  <div class="text-[11px] font-bold text-white">จัดส่งออโต้ตลอด 24 ชม.</div>
+                  <div class="text-[9px] text-slate-400">ไม่ต้องรอแอดมินตอบ รับของใน 1 นาที</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 4: THE 4 DISCORD STORES SLOT -->
+          <div class="space-y-2.5">
+            <div class="text-white font-bold text-xs flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="messages-square" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>เครือข่าย DISCORD ชุมชน</span>
+              </div>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">4 SHOPS</span>
+            </div>
+
+            <!-- Active Store 1 -->
+            <a href="#" class="p-2.5 rounded-xl bg-[#5865F2]/15 hover:bg-[#5865F2]/25 border border-[#5865F2]/40 flex items-center justify-between transition-all group">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-[#5865F2] text-white flex items-center justify-center font-bold text-xs">
+                  1
+                </div>
+                <div>
+                  <div class="text-[11px] font-bold text-white group-hover:text-cyan-400 transition-colors">
+                    ร้านที่ 1: NYX9 STUDIO (หลัก)
+                  </div>
+                  <div class="text-[9px] text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>เปิดบริการ • ชุมชน 45,000+ สมาชิก</span>
+                  </div>
+                </div>
+              </div>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-white"></i>
+            </a>
+
+            <!-- Reserved Slots for Stores 2, 3, 4 -->
+            <div class="grid grid-cols-3 gap-1.5">
+              <div class="p-2 rounded-lg bg-white/[0.02] border border-dashed border-white/10 text-center">
+                <div class="text-[10px] font-bold text-slate-400">ร้านที่ 2</div>
+                <div class="text-[8px] text-amber-400/80">เร็วๆ นี้</div>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.02] border border-dashed border-white/10 text-center">
+                <div class="text-[10px] font-bold text-slate-400">ร้านที่ 3</div>
+                <div class="text-[8px] text-amber-400/80">เร็วๆ นี้</div>
+              </div>
+              <div class="p-2 rounded-lg bg-white/[0.02] border border-dashed border-white/10 text-center">
+                <div class="text-[10px] font-bold text-slate-400">ร้านที่ 4</div>
+                <div class="text-[8px] text-amber-400/80">เร็วๆ นี้</div>
+              </div>
+            </div>
+
+            <!-- Contact Other -->
+            <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1">
+              <span>LINE: <strong class="text-white">@nyx9studio</strong></span>
+              <span>Facebook / Email</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Copyright -->
+        <div class="pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+          <div>&copy; 2026 NYX9 STUDIO & Partners. All Rights Reserved.</div>
+          <div class="flex items-center gap-3 text-slate-400">
+            <a href="#" class="hover:text-white">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white">Terms of Service</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white">Staff Admin</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         DEMO 2: ALL-IN-ONE MULTI-DISCORD HUB
+         ========================================================================= -->
+    <section id="option2" class="space-y-4 hidden">
+      <div class="bg-indigo-500/10 border border-indigo-500/30 p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            จุดเด่นของแบบที่ 2: "ศูนย์รวม 4 ค่ายพันธมิตร (Multi-Hub Portal)"
+          </div>
+          <div class="text-white font-bold text-base mt-1">ตั้งตัวเป็นเว็บศูนย์กลาง มีแท็บสลับร้าน หรือแสดง 4 ค่ายชัดเจน</div>
+          <div class="text-xs text-slate-400 mt-0.5">เหมาะมากเมื่อต้องการให้ 4 ร้านมีสถานะเท่าเทียมกันในฐานะเครือข่ายพันธมิตร (Alliance Network)</div>
+        </div>
+        <span class="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-xs font-bold shrink-0">
+          สำหรับโมเดลเครือข่ายสหภาพ
+        </span>
+      </div>
+
+      <!-- Preview Box -->
+      <div class="rounded-2xl border border-white/10 bg-[#06090F] p-6 space-y-6">
+        <div class="text-xs font-mono text-slate-500 border-b border-white/5 pb-2 flex items-center justify-between">
+          <span>// ตัวอย่าง FOOTER แบบที่ 2 (PREVIEW)</span>
+          <span class="text-indigo-400">4-ALLIANCE MATRIX</span>
+        </div>
+
+        <!-- 4-Box Discord Matrix Banner in Footer -->
+        <div>
+          <div class="text-xs font-bold text-white mb-3 flex items-center gap-2">
+            <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+            <span>4 DISCORD SERVERS IN OUR NETWORK (ศูนย์รวมคอมมูนิตี้ในเครือ)</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            
+            <!-- Store 1 (Online) -->
+            <div class="p-3 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/40 space-y-2 relative overflow-hidden">
+              <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[8px] bg-emerald-500/20 text-emerald-400 font-bold">
+                ONLINE
+              </div>
+              <div class="w-7 h-7 rounded-lg bg-[#5865F2] flex items-center justify-center text-white font-bold text-xs">
+                #1
+              </div>
+              <div>
+                <div class="text-white font-bold text-xs">ร้านที่ 1: NYX9 STUDIO</div>
+                <div class="text-[10px] text-slate-400">Nitro, บูสต์ & เกมมิ่ง</div>
+              </div>
+              <a href="#" class="block text-center py-1 rounded bg-[#5865F2] hover:bg-[#4752C4] text-white text-[10px] font-bold transition-all">
+                เข้าสู่ Discord ร้านที่ 1
+              </a>
+            </div>
+
+            <!-- Store 2 (Standby) -->
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-dashed border-white/10 space-y-2 opacity-60">
+              <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-slate-400 font-bold text-xs">
+                #2
+              </div>
+              <div>
+                <div class="text-slate-300 font-bold text-xs">ร้านที่ 2 (เตรียมเชื่อมต่อ)</div>
+                <div class="text-[10px] text-slate-500">พร้อมเปิดตัวเร็วๆ นี้</div>
+              </div>
+              <div class="py-1 rounded bg-white/5 text-slate-500 text-[10px] text-center font-bold">
+                COMMING SOON
+              </div>
+            </div>
+
+            <!-- Store 3 (Standby) -->
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-dashed border-white/10 space-y-2 opacity-60">
+              <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-slate-400 font-bold text-xs">
+                #3
+              </div>
+              <div>
+                <div class="text-slate-300 font-bold text-xs">ร้านที่ 3 (เตรียมเชื่อมต่อ)</div>
+                <div class="text-[10px] text-slate-500">พร้อมเปิดตัวเร็วๆ นี้</div>
+              </div>
+              <div class="py-1 rounded bg-white/5 text-slate-500 text-[10px] text-center font-bold">
+                COMMING SOON
+              </div>
+            </div>
+
+            <!-- Store 4 (Standby) -->
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-dashed border-white/10 space-y-2 opacity-60">
+              <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-slate-400 font-bold text-xs">
+                #4
+              </div>
+              <div>
+                <div class="text-slate-300 font-bold text-xs">ร้านที่ 4 (เตรียมเชื่อมต่อ)</div>
+                <div class="text-[10px] text-slate-500">พร้อมเปิดตัวเร็วๆ นี้</div>
+              </div>
+              <div class="py-1 rounded bg-white/5 text-slate-500 text-[10px] text-center font-bold">
+                COMMING SOON
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+          <div>&copy; 2026 THE 4-DISCORD ALLIANCE HUB. All Rights Reserved.</div>
+          <div class="text-slate-400">ระบบตัดสต็อกกลางและแจ้งเตือนอัตโนมัติ 24 ชม.</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         DEMO 3: DEPARTMENT STORE / UNIFIED CATALOG
+         ========================================================================= -->
+    <section id="option3" class="space-y-4 hidden">
+      <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            จุดเด่นของแบบที่ 3: "ห้างสรรพสินค้า (แยกแผนกตามร้าน)"
+          </div>
+          <div class="text-white font-bold text-base mt-1">รวมสินค้าลงตะกร้าเดียวกัน แต่มีป้ายบอกว่าสินค้าชิ้นไหนส่งโดยร้านไหน</div>
+          <div class="text-xs text-slate-400 mt-0.5">ใน Footer จะมีช่องแจ้งเคลมสินค้าแยกตาม Discord ของแต่ละร้าน เพื่อความสะดวกรวดเร็ว</div>
+        </div>
+        <span class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold shrink-0">
+          สำหรับร้านที่สินค้าไม่ซ้ำกัน
+        </span>
+      </div>
+
+      <!-- Preview Box -->
+      <div class="rounded-2xl border border-white/10 bg-[#06090F] p-6 space-y-6">
+        <div class="text-xs font-mono text-slate-500 border-b border-white/5 pb-2 flex items-center justify-between">
+          <span>// ตัวอย่าง FOOTER แบบที่ 3 (PREVIEW)</span>
+          <span class="text-amber-400">DEPARTMENT STOREFRONT</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-400">
+          <div class="space-y-2">
+            <div class="text-white font-bold text-sm">บริการ 4 แผนกในเว็บเดียว</div>
+            <p class="text-[11px] leading-relaxed">
+              รวมสินค้าจากผู้เชี่ยวชาญ 4 ด้าน: ไนโตรแท้, บริการ FiveM, แอปสตรีมมิ่ง และซอฟต์แวร์ลิขสิทธิ์ ลูกค้าชำระเงินในบิลเดียวได้ทันที
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-white font-bold text-xs">ศูนย์บริการลูกค้า & เคลมสินค้า</div>
+            <div class="space-y-1.5 text-[11px]">
+              <div class="flex items-center justify-between p-1.5 rounded bg-white/5">
+                <span class="text-white">• แผนกไนโตร & บูสต์:</span>
+                <span class="text-cyan-400 font-bold">Discord ร้านที่ 1 (Active)</span>
+              </div>
+              <div class="flex items-center justify-between p-1.5 rounded bg-white/[0.02]">
+                <span class="text-slate-400">• แผนก FiveM & ไอดี:</span>
+                <span class="text-slate-500">เตรียมเชื่อมต่อร้าน 2</span>
+              </div>
+              <div class="flex items-center justify-between p-1.5 rounded bg-white/[0.02]">
+                <span class="text-slate-400">• แผนกสตรีมมิ่ง & แอป:</span>
+                <span class="text-slate-500">เตรียมเชื่อมต่อร้าน 3</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-white font-bold text-xs">ช่องทางติดต่อกลาง</div>
+            <div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[11px]">
+              <div class="text-white font-bold">ฝ่ายประสานงานกลาง 24 ชม.</div>
+              <div class="text-slate-400 text-[10px]">LINE Official: @nyx9studio</div>
+              <div class="text-slate-400 text-[10px]">Email: support@nyxning.shop</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+          <div>&copy; 2026 UNIFIED DIGITAL STOREFRONT. 4-STORES SYNDICATE.</div>
+          <div class="text-amber-400">ONE-CHECKOUT DUAL FULFILLMENT</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      ['option1', 'option2', 'option3'].forEach(id => {
+        const el = document.getElementById(id);
+        const btn = document.getElementById('btn-' + id);
+        if (id === tabId) {
+          el.classList.remove('hidden');
+          btn.className = "px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-2 bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/20";
+        } else {
+          el.classList.add('hidden');
+          btn.className = "px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300";
+        }
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

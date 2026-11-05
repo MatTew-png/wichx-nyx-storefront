@@ -20,15 +20,55 @@ const storeConfig = {
     "422611554475835394"
   ],
 
-  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO) ---
+  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & 4-DISCORD ALLIANCE HUB) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
   tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
-  subTagline: "ศูนย์รวมบริการดิจิทัล Discord, บูสต์เซิร์ฟเวอร์, เควสอัตโนมัติ, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
+  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่าย 4 ร้านค้า Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
   logoUrl: "assets/logo.png",
   faviconUrl: "assets/logo.png",
   
-  // --- ช่องทางติดต่อ & ชุมชน ---
+  // --- เครือข่าย 4 ร้านค้า DISCORD (MULTI-HUB ALLIANCE) ---
+  discordStores: [
+    {
+      id: "shop_1",
+      name: "ร้านที่ 1: NYX9 STUDIO (หลัก)",
+      active: true,
+      inviteUrl: "https://discord.gg/nyx9studio",
+      badge: "ONLINE",
+      description: "Nitro, บูสต์เซิร์ฟเวอร์ & FiveM",
+      memberCount: "45,000+"
+    },
+    {
+      id: "shop_2",
+      name: "ร้านที่ 2 (เครือข่ายพันธมิตร)",
+      active: false,
+      inviteUrl: "#",
+      badge: "COMING SOON",
+      description: "พร้อมเปิดตัวเร็วๆ นี้",
+      memberCount: "-"
+    },
+    {
+      id: "shop_3",
+      name: "ร้านที่ 3 (เครือข่ายพันธมิตร)",
+      active: false,
+      inviteUrl: "#",
+      badge: "COMING SOON",
+      description: "พร้อมเปิดตัวเร็วๆ นี้",
+      memberCount: "-"
+    },
+    {
+      id: "shop_4",
+      name: "ร้านที่ 4 (เครือข่ายพันธมิตร)",
+      active: false,
+      inviteUrl: "#",
+      badge: "COMING SOON",
+      description: "พร้อมเปิดตัวเร็วๆ นี้",
+      memberCount: "-"
+    }
+  ],
+
+  // --- ช่องทางติดต่อ & ชุมชนหลัก ---
   discordCommunityUrl: "https://discord.gg/nyx9studio",
   contactLine: "@nyx9studio",
   contactFacebook: "https://facebook.com/nyx9studio",
