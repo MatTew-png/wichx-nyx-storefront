@@ -41,7 +41,24 @@ document.addEventListener("DOMContentLoaded", () => {
   updateWalletUI();
   initSocialProofFeed();
   lucide.createIcons();
+  initSupabaseIntegration();
 });
+
+async function initSupabaseIntegration() {
+  if (window.storeConfig && window.storeConfig.supabase && window.SupabaseAdapter) {
+    const { url, anonKey } = window.storeConfig.supabase;
+    if (url && anonKey) {
+      window.SupabaseAdapter.init(url, anonKey);
+      const liveCats = await window.SupabaseAdapter.getProducts();
+      if (liveCats && liveCats.length > 0) {
+        window.categoriesData = liveCats;
+        initCategoryState();
+        renderCategoryFilterBar();
+        renderProductsCatalog();
+      }
+    }
+  }
+}
 
 // ==============================================================================
 // 1. WHITELABEL REBRANDING & THEME ENGINE

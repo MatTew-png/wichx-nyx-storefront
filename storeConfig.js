@@ -8,6 +8,12 @@
  */
 
 const storeConfig = {
+  // --- 🐘 SUPABASE POSTGRESQL PRODUCTION CONNECTION ---
+  supabase: {
+    url: "",      // เช่น "https://xxxx.supabase.co"
+    anonKey: ""  // Public Anon Key จากหน้า Project Settings -> API
+  },
+
   // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
