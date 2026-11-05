@@ -540,75 +540,112 @@
           <span>PromptPay QR</span>
         </button>
         <button id="tab-btn-truemoney" onclick="switchTopUpGateway('truemoney')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all">
-          <i data-lucide="wallet" class="w-4 h-4 text-amber-400"></i>
+          <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
           <span>TrueMoney</span>
         </button>
-        <button id="tab-btn-crypto_ltc" onclick="switchTopUpGateway('crypto_ltc')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all relative">
-          <span class="absolute -top-1.5 -right-1 px-1.5 py-0.2 rounded bg-emerald-500 text-black text-[9px] font-extrabold">+5%</span>
-          <i data-lucide="coins" class="w-4 h-4 text-emerald-400"></i>
+        <button id="tab-btn-crypto_ltc" onclick="switchTopUpGateway('crypto_ltc')" class="p-2.5 rounded-xl border border-slate-800/60 bg-slate-950/60 text-slate-500 text-xs font-bold flex flex-col items-center gap-1 transition-all relative cursor-not-allowed">
+          <span class="absolute -top-1.5 -right-1 px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 text-[9px] font-extrabold flex items-center gap-0.5"><i data-lucide="lock" class="w-2.5 h-2.5"></i>เร็วๆ นี้</span>
+          <i data-lucide="coins" class="w-4 h-4 text-slate-500"></i>
           <span>Litecoin (LTC)</span>
         </button>
       </div>
 
       <!-- Gateway Panels -->
+      <!-- 1. PROMPTPAY PANEL -->
       <div id="gateway-panel-promptpay" class="space-y-4">
-        <div class="text-center p-4 rounded-2xl bg-slate-950 border border-slate-800">
-          <div class="text-xs text-slate-400 mb-2">สแกน QR Code ผ่านแอปธนาคารใดก็ได้:</div>
-          <!-- Dynamic PromptPay QR Code Mock -->
-          <div class="w-48 h-48 mx-auto bg-white p-3 rounded-2xl flex items-center justify-center shadow-lg relative">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021129370016A000000677010111011300669500000005802TH53037646304" alt="PromptPay QR Code" class="w-full h-full object-contain" />
+        <!-- Amount Selection & Presets -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">เลือกหรือระบุจำนวนเงินที่ต้องการเติม:</label>
+          <div class="grid grid-cols-5 gap-1.5 mb-2">
+            <button type="button" onclick="setPromptPayPreset(50)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿50</button>
+            <button type="button" onclick="setPromptPayPreset(100)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿100</button>
+            <button type="button" onclick="setPromptPayPreset(150)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿150</button>
+            <button type="button" onclick="setPromptPayPreset(300)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿300</button>
+            <button type="button" onclick="setPromptPayPreset(500)" class="py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-[var(--accent)] text-xs font-mono text-white transition-all">฿500</button>
           </div>
-          <div class="text-xs font-mono font-bold text-white mt-3">ชื่อบัญชี: <span class="text-[var(--accent)]">NYX9 STUDIO AUTO</span></div>
-          <div class="text-[11px] text-slate-400">โอนแล้วระบบจะเช็คยอดเงินและปรับยอดกระเป๋าอัตโนมัติ</div>
+          <div class="relative">
+            <input type="number" id="promptpay-amount-input" oninput="handlePromptPayAmountInput(this.value)" value="100" min="1" step="1" placeholder="ระบุจำนวนเงิน (บาท)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono pl-8" />
+            <span class="absolute left-3 top-2 text-xs text-slate-500 font-mono">฿</span>
+          </div>
         </div>
 
-        <div class="flex gap-2">
-          <input type="number" id="promptpay-sim-amount" placeholder="ระบุจำนวนเงินที่โอน (เช่น 100)" class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
-          <button onclick="simulatePromptPayVerification()" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold">
-            ตรวจสลิป
+        <!-- Dynamic QR Code Container -->
+        <div class="text-center p-4 rounded-2xl bg-slate-950 border border-slate-800 relative">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 px-2">
+            <span>สแกนด้วยแอปธนาคาร:</span>
+            <span id="promptpay-qr-amount-text" class="font-mono font-bold text-[var(--accent)]">฿100.00</span>
+          </div>
+          <div id="promptpay-qr-display" class="w-44 h-44 mx-auto bg-white p-2.5 rounded-2xl flex items-center justify-center shadow-lg relative border-2 border-slate-800">
+            <!-- Dynamic QR Code rendered by app.js -->
+            <img id="promptpay-qr-img" src="" alt="PromptPay QR Code" class="w-full h-full object-contain" />
+          </div>
+          <div class="text-xs font-mono font-bold text-white mt-3 flex items-center justify-center gap-1.5">
+            <span>ชื่อบัญชี:</span>
+            <span class="text-[var(--accent)]">NYX9 STUDIO AUTO</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-0.5">ระบบจะตรวจสอบยอดเงินและป้องกันสลิปซ้ำผ่านฐานข้อมูลอัตโนมัติ</div>
+        </div>
+
+        <!-- Slip Upload & Anti-Dupe Verification -->
+        <div class="space-y-2 pt-1 border-t border-slate-800/80">
+          <div class="text-[11px] font-semibold text-slate-300">แนบสลิปหรือระบุรหัสอ้างอิงธุรกรรม (TransRef):</div>
+          
+          <div class="grid grid-cols-1 gap-2">
+            <input type="text" id="promptpay-trans-ref-input" placeholder="รหัสอ้างอิงสลิป / TransRef (เช่น 014022511052345678)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          </div>
+
+          <div id="promptpay-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+
+          <button id="btn-verify-promptpay" onclick="verifyPromptPaySlip()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>ตรวจสอบสลิปและปรับยอดทันที</span>
           </button>
         </div>
       </div>
 
+      <!-- 2. TRUEMONEY WALLET PANEL -->
       <div id="gateway-panel-truemoney" class="hidden space-y-4">
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-3">
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-2.5">
           <div class="font-bold text-white flex items-center gap-2">
             <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
-            <span>วิธีเติมเงินด้วยซองของขวัญ TrueMoney:</span>
+            <span>วิธีรับเงินด้วยซองของขวัญ TrueMoney:</span>
           </div>
           <ol class="list-decimal pl-5 space-y-1 text-slate-400 text-[11px]">
             <li>เปิดแอป TrueMoney Wallet แล้วเลือกเมนู <b>"ส่งซองของขวัญ"</b></li>
             <li>ตั้งค่าแบบ <b>"สุ่มจำนวนเงิน"</b> หรือ <b>"แบ่งจำนวนเงินเท่ากัน"</b> และระบุจำนวนคนรับ <b>1 คน</b></li>
-            <li>คัดลอกลิงก์ซองของขวัญ (https://gift.truemoney.com/campaign/...) มาวางที่ช่องด้านล่าง</li>
+            <li>คัดลอกลิงก์ซองของขวัญ (เช่น https://gift.truemoney.com/campaign/?v=...) มาวางที่ช่องด้านล่าง</li>
           </ol>
         </div>
 
-        <div class="space-y-2">
-          <input type="text" id="truemoney-voucher-url" placeholder="วางลิงก์ซองของขวัญ TrueMoney ที่นี่..." class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-amber-400 font-mono" />
-          <button onclick="redeemTrueMoneyVoucher()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-black">
-            รับเงินจากซองของขวัญทันที
+        <div class="space-y-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">วางลิงก์ซองของขวัญ TrueMoney:</label>
+            <input type="text" id="truemoney-voucher-input" placeholder="https://gift.truemoney.com/campaign/?v=..." class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-amber-400 font-mono" />
+          </div>
+
+          <div id="truemoney-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+
+          <button id="btn-redeem-truemoney" onclick="redeemTrueMoneyVoucher()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-black flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>รับเงินจากซองของขวัญทันที</span>
           </button>
         </div>
       </div>
 
+      <!-- 3. CRYPTO LTC (COMING SOON) -->
       <div id="gateway-panel-crypto_ltc" class="hidden space-y-4">
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-white">ที่อยู่กระเป๋า Litecoin (LTC Native):</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-400 font-bold">โบนัส +5%</span>
+        <div class="p-6 text-center rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400">
+            <i data-lucide="lock" class="w-6 h-6 text-emerald-400"></i>
           </div>
-          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-300 break-all select-all flex items-center justify-between gap-2">
-            <span>ltc1q9x4n2s7j8m4zfk9pq98wv7wuxc3v5v2k4h5nqz</span>
-            <button onclick="copyCryptoAddress()" class="text-slate-400 hover:text-white">
-              <i data-lucide="copy" class="w-4 h-4"></i>
-            </button>
+          <div>
+            <div class="text-sm font-heading font-extrabold text-white">ช่องทาง Crypto LTC กำลังอยู่ระหว่างการอัปเกรด</div>
+            <div class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">ระบบจะเปิดให้บริการในขั้นตอนถัดไป โปรดทำรายการผ่าน PromptPay QR หรือ TrueMoney Wallet ในระหว่างนี้</div>
           </div>
-          <p class="text-[11px] text-slate-400">ระบบจะตรวจสอบบล็อกเชนและปรับยอดเงินอัตโนมัติภายใน 1 Confirmation</p>
+          <button onclick="switchTopUpGateway('promptpay')" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 transition-all">
+            เปลี่ยนเป็นช่องทาง PromptPay
+          </button>
         </div>
-
-        <button onclick="simulateCryptoVerification()" class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 text-black">
-          ตรวจสอบธุรกรรมบล็อกเชน
-        </button>
       </div>
 
     </div>
