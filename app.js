@@ -1433,7 +1433,43 @@ function showToast(message, type = "info") {
 }
 
 // ==============================================================================
-// 14. UTILITIES & CELEBRATION CONFETTI
+// 14. PRIVACY-FRIENDLY ANALYTICS & TELEMETRY TRACKER
+// ==============================================================================
+function trackAnalyticsEvent(eventName, eventData = {}) {
+  const payload = {
+    event: eventName,
+    timestamp: new Date().toISOString(),
+    path: window.location.pathname,
+    data: eventData
+  };
+
+  // 1. Console stream in development
+  console.info(`[TELEMETRY] ${eventName}:`, eventData);
+
+  // 2. Google Analytics (gtag) or Cloudflare Web Analytics if present
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, eventData);
+  }
+
+  // 3. Dispatch to Server Audit Logs if purchase or topup
+  if (["PURCHASE_SUCCESS", "TOPUP_SUCCESS", "CLAIM_SUBMITTED"].includes(eventName)) {
+    try {
+      fetch("/api/discord-notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: eventName,
+          orderId: eventData.orderId || null,
+          total: eventData.total || 0,
+          items: eventData.items || []
+        })
+      }).catch(() => {});
+    } catch (e) {}
+  }
+}
+
+// ==============================================================================
+// 15. UTILITIES & CELEBRATION CONFETTI
 // ==============================================================================
 function triggerConfetti() {
   if (typeof confetti === "function") {
