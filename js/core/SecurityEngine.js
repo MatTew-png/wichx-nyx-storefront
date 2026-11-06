@@ -39,14 +39,9 @@ class SecurityEngine {
     return user.role === "admin" || adminWhitelist.includes(String(user.discordId));
   }
 
-  triggerSecurityAlert(msg = "ระบบรักษาความปลอดภัย: ไม่อนุญาตให้ตรวจสอบโค้ดหรือคลิกขวา") {
-    const now = Date.now();
-    if (now - this.lastToastTime < 2000) return;
-    this.lastToastTime = now;
-
-    if (window.UI && typeof window.UI.toast === "function") {
-      window.UI.toast(`🛡️ ${msg}`, "warning");
-    }
+  triggerSecurityAlert(msg = "") {
+    // Silent Mode: ไม่แสดง Toast แจ้งเตือนตามคำขอของผู้ใช้ (ทำงานแบบเงียบ ไม่รบกวนหน้าจอ)
+    return;
   }
 
   initAntiFrame() {
@@ -75,7 +70,6 @@ class SecurityEngine {
 
       e.preventDefault();
       e.stopPropagation();
-      this.triggerSecurityAlert("คลิกขวาถูกจำกัดสิทธิ์ (Right-Click Disabled)");
       return false;
     };
 
@@ -111,7 +105,6 @@ class SecurityEngine {
       if (e.key === "F12" || e.keyCode === 123) {
         e.preventDefault();
         e.stopPropagation();
-        this.triggerSecurityAlert("ปุ่ม F12 (Inspect) ถูกระงับการใช้งาน");
         return;
       }
 
@@ -119,7 +112,6 @@ class SecurityEngine {
       if (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) {
         e.preventDefault();
         e.stopPropagation();
-        this.triggerSecurityAlert("ไม่อนุญาตให้เปิด Developer Console");
         return;
       }
 
@@ -127,7 +119,6 @@ class SecurityEngine {
       if (isCtrlOrMeta && key === "u") {
         e.preventDefault();
         e.stopPropagation();
-        this.triggerSecurityAlert("ไม่อนุญาตให้เปิดดู Source Code (Ctrl+U)");
         return;
       }
 
