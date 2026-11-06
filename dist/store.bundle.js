@@ -739,7 +739,7 @@ const categoriesData = [
         chips: ["ส่งทันที", "ประกันเต็ม", "2 บูส"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Nitro Booster", "1 Month Mailpass", "nitro", "#19BAFF", "#38D4FF"),
-        sampleDelivery: "nitro_user_vip99@wichx.vip:PassNitro!2026",
+        sampleDelivery: "NITRO-1M-ACTIVE-KEY-9921",
         warrantyDays: 30
       },
       {
@@ -754,7 +754,7 @@ const categoriesData = [
         chips: ["ยกเมลแท้", "2 บูส", "เปลี่ยนรหัสได้"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Nitro 3 Months", "Full Email Transfer", "nitro", "#38D4FF", "#00FFA3"),
-        sampleDelivery: "discord_3m_fresh@rambler.ru:RamblerP@ss2026 | Mailpass: Ok",
+        sampleDelivery: "NITRO-3M-ACTIVE-KEY-8812",
         warrantyDays: 90
       },
       {
@@ -880,7 +880,7 @@ const categoriesData = [
         chips: ["พร้อมใช้งาน", "ไม่ติดบอท"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Discord Age 1M+", "Aged Clean Account", "discord", "#6366F1", "#19BAFF"),
-        sampleDelivery: "acc_aged30d_8812@wichxmail.com:SuperP@ss7721 | Token: MTA4...",
+        sampleDelivery: "DISCORD-VERIFIED-AUTH-TOKEN-7721",
         warrantyDays: 7
       },
       {
@@ -894,7 +894,7 @@ const categoriesData = [
         chips: ["ปีเก่าหายาก", "ยกเมลหลัก"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Discord Vintage", "Rare 2016-2018 ID", "discord", "#F59E0B", "#E11D48"),
-        sampleDelivery: "og_discord_2016_legacy@rambler.ru:VintagePass2016! | Full Access",
+        sampleDelivery: "DISCORD-VINTAGE-AUTH-TOKEN-2016",
         warrantyDays: 30
       }
     ]
@@ -920,7 +920,7 @@ const categoriesData = [
         chips: ["FiveM", "ส่งทันที"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("FiveM Clean", "Rockstar 2-Step Auth", "game", "#19BAFF", "#EC4899"),
-        sampleDelivery: "rockstar_fivem_clean991@firstmail.ltd:FiveMPassword2026",
+        sampleDelivery: "FIVEM-READY-CLEAN-AUTH-991",
         warrantyDays: 7
       },
       {
@@ -935,7 +935,7 @@ const categoriesData = [
         chips: ["Steam แท้", "ยกไอดี"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Steam GTA V", "Unlinked Clean Account", "game", "#3B82F6", "#06B6D4"),
-        sampleDelivery: "steam_gta5_fresh_id771:SteamMasterPass2026 | Email: steam_mail_gta@outlook.com:EmailPass2026",
+        sampleDelivery: "STEAM-GTAV-CLEAN-SERIAL-771",
         warrantyDays: 30
       },
       {
@@ -950,7 +950,7 @@ const categoriesData = [
         chips: ["จอส่วนตัว", "ประกัน 30 วัน"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("Netflix UHD", "30 Days Private Screen", "stream", "#E50914", "#19BAFF"),
-        sampleDelivery: "netflix_vip_uhd291@wichxstream.com:NfPass4K!2026 | PIN: 1984 | Profile: 1",
+        sampleDelivery: "NETFLIX-UHD-SLOT-TOKEN-291",
         warrantyDays: 30
       },
       {
@@ -3337,7 +3337,7 @@ class TopUpModalComponent {
 
   switchGateway(tabKey) {
     this.activeTab = tabKey;
-    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment"];
+    const tabs = ["promptpay", "truemoney", "bank_transfer"];
     
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);

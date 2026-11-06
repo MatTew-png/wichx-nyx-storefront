@@ -550,7 +550,7 @@
           <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-70"></div>
 
           <!-- Segmented Gateway Tab Track (100% Equal Heights & Alignment) -->
-          <div class="bg-[#05080E] p-1.5 rounded-2xl border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-6 shadow-inner">
+          <div class="bg-[#05080E] p-1.5 rounded-2xl border border-white/[0.08] grid grid-cols-3 gap-1.5 mb-6 shadow-inner">
             <button id="tab-btn-promptpay" onclick="switchTopUpGateway('promptpay')" class="topup-tab-btn active h-12 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-400/40 shadow-[0_0_15px_rgba(0,242,255,0.15)] ring-1 ring-cyan-400/50">
               <i data-lucide="qr-code" class="w-4 h-4 text-cyan-400"></i>
               <span>พร้อมเพย์</span>
@@ -562,10 +562,6 @@
             <button id="tab-btn-bank_transfer" onclick="switchTopUpGateway('bank_transfer')" class="topup-tab-btn h-12 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent">
               <i data-lucide="landmark" class="w-4 h-4 text-emerald-400"></i>
               <span>ธนาคาร</span>
-            </button>
-            <button id="tab-btn-card_payment" onclick="switchTopUpGateway('card_payment')" class="topup-tab-btn h-12 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent">
-              <i data-lucide="credit-card" class="w-4 h-4 text-indigo-400"></i>
-              <span>บัตรเครดิต</span>
             </button>
           </div>
 
@@ -738,94 +734,7 @@
             </div>
           </div>
 
-          <!-- PANEL 4: CARD PAYMENT -->
-          <div id="gateway-panel-card_payment" class="hidden space-y-4">
-            <div class="p-4 rounded-2xl bg-gradient-to-tr from-[#0F1422] via-[#141C30] to-[#0A0E18] border border-cyan-500/25 text-white relative shadow-xl overflow-hidden">
-              <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-5 rounded bg-amber-400/80 border border-amber-300/60 flex items-center justify-center shadow-inner">
-                    <div class="w-3.5 h-2.5 border border-amber-800/40 rounded-sm"></div>
-                  </div>
-                  <i data-lucide="wifi" class="w-3.5 h-3.5 text-slate-400 rotate-90"></i>
-                </div>
-                <span class="text-xs font-mono font-extrabold italic tracking-wider text-cyan-400">VISA / MC</span>
-              </div>
 
-              <div class="mb-2.5">
-                <div class="text-[9px] text-slate-400 font-mono">CARD NUMBER</div>
-                <div id="preview-card-number" class="text-base font-mono font-bold tracking-widest text-slate-100">•••• •••• •••• ••••</div>
-              </div>
-
-              <div class="flex items-center justify-between text-xs font-mono">
-                <div>
-                  <div class="text-[9px] text-slate-400">CARDHOLDER</div>
-                  <div id="preview-card-name" class="font-bold truncate max-w-[150px] uppercase text-cyan-200 text-[11px]">YOUR NAME</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-[9px] text-slate-400">EXPIRES</div>
-                  <div id="preview-card-expiry" class="font-bold text-slate-200 text-[11px]">MM/YY</div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">เลือกจำนวนเงิน:</label>
-              <div class="grid grid-cols-4 gap-1.5 mb-2">
-                <button type="button" onclick="setCardAmountPreset(100)" class="h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono font-bold text-white transition-all cursor-pointer">฿100</button>
-                <button type="button" onclick="setCardAmountPreset(300)" class="h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono font-bold text-white transition-all cursor-pointer">฿300</button>
-                <button type="button" onclick="setCardAmountPreset(500)" class="h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono font-bold text-white transition-all cursor-pointer">฿500</button>
-                <button type="button" onclick="setCardAmountPreset(1000)" class="h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono font-bold text-white transition-all cursor-pointer">฿1,000</button>
-              </div>
-              <div class="relative">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-cyan-400 font-mono font-bold">฿</span>
-                <input type="number" id="card-topup-amount" value="300" min="50" step="1" class="w-full h-11 pl-9 pr-4 rounded-xl bg-[#060910] border border-white/[0.08] text-white font-mono text-sm font-bold focus:outline-none focus:border-cyan-400" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">หมายเลขบัตร (16 หลัก):</label>
-              <div class="relative">
-                <input type="text" id="card-number-input" oninput="handleCardNumberInput(this)" maxlength="19" placeholder="4111 2222 3333 4444" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] text-white font-mono text-xs focus:outline-none focus:border-cyan-400" />
-                <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 absolute right-3.5 top-1/2 -translate-y-1/2"></i>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">วันหมดอายุ (MM/YY):</label>
-                <input type="text" id="card-expiry-input" oninput="handleCardExpiryInput(this)" maxlength="5" placeholder="12/28" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] text-white font-mono text-xs focus:outline-none focus:border-cyan-400" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">รหัส CVV / CVC:</label>
-                <input type="password" id="card-cvv-input" maxlength="4" placeholder="123" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] text-white font-mono text-xs focus:outline-none focus:border-cyan-400" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">ชื่อบนบัตร (ภาษาอังกฤษ):</label>
-              <input type="text" id="card-holder-input" oninput="handleCardHolderInput(this)" placeholder="SOMCHAI DEE" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] text-white text-xs uppercase focus:outline-none focus:border-cyan-400" />
-            </div>
-
-            <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#060910] border border-white/[0.06] cursor-pointer hover:border-cyan-500/40 transition-all">
-              <input type="checkbox" id="card-bind-toggle" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0" />
-              <div class="text-[11px] text-slate-300">
-                <span class="font-bold text-white">บันทึกข้อมูลบัตรไว้ใช้ครั้งถัดไป (1-Click Binding)</span>
-                <div class="text-[10px] text-slate-500">เข้ารหัส Tokenized 256-Bit ปลอดภัยตามมาตรฐานสากล</div>
-              </div>
-            </label>
-
-            <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-white/[0.06]">
-              <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i> 3D Secure 2.0</span>
-              <span class="flex items-center gap-1"><i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i> PCI-DSS Level 1</span>
-              <span>ค่าธรรมเนียม 0%</span>
-            </div>
-
-            <div id="card-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
-            <button id="btn-pay-card" onclick="processCardPayment()" class="btn-cyber-primary w-full h-11 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
-              <i data-lucide="lock" class="w-4 h-4"></i>
-              <span>ชำระเงินปลอดภัยผ่าน 3D Secure</span>
-            </button>
-          </div>
 
         </div>
 

@@ -65,7 +65,7 @@ class TopUpModalComponent {
 
   switchGateway(tabKey) {
     this.activeTab = tabKey;
-    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment"];
+    const tabs = ["promptpay", "truemoney", "bank_transfer"];
     
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
