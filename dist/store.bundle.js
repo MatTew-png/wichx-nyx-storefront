@@ -580,24 +580,26 @@ const storeConfig = {
   paymentDetails: {
     promptpay: {
       accountName: "NYX9 STUDIO AUTO",
-      promptpayNumber: "095-123-4567",
+      promptpayNumber: "1459901184414",
       minAmount: 10,
       feeRate: 0.0
     },
     truemoney: {
       accountName: "NYX9 WALLET AUTO",
-      phoneNumber: "098-765-4321",
+      phoneNumber: "0838286508",
       feeRate: 0.0,
       hint: "กรอกลิงก์ซองของขวัญ หรือโอนผ่านเบอร์ TrueMoney Wallet เพื่อรับเงินเข้าทันที"
     },
     bank_transfer: {
-      bankName: "ธนาคารกสิกรไทย (K-Bank)",
-      bankCode: "KBANK",
-      accountNumber: "142-8-91234-5",
-      accountName: "NYX9 STUDIO BY MATTEW",
-      branch: "สาขาสยามพารากอน",
-      color: "#138f2d",
-      icon: "landmark"
+      bankName: "ธนาคารกรุงไทย (Krungthai Bank)",
+      bankCode: "KTB",
+      accountNumber: "4140810122",
+      formattedAccountNumber: "414-0-81012-2",
+      accountName: "NYX9 STUDIO (กรุงไทย)",
+      branch: "สาขาหลัก",
+      color: "#00A3E0",
+      icon: "landmark",
+      notice: "ร้านรับบัญชีนี้บัญชีเดียวเท่านั้น"
     }
   },
 
@@ -2332,9 +2334,9 @@ class PaymentService {
   }
 
   getPromptPayQrUrl(amount) {
-    const target = window.storeConfig?.paymentDetails?.promptpay?.promptpayNumber || "0951234567";
+    const target = window.storeConfig?.paymentDetails?.promptpay?.promptpayNumber || "1459901184414";
     const payload = this.generatePromptPayPayload(target, Math.max(1, parseFloat(amount) || 100));
-    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=Q&data=${encodeURIComponent(payload)}`;
   }
 
   async verifyPromptPaySlip(amount, transRef) {
@@ -2379,7 +2381,7 @@ class PaymentService {
       transRef: transRef,
       amount: amount,
       rawPayload: {
-        bank: window.storeConfig?.paymentDetails?.bank_transfer?.bankCode || "KBANK",
+        bank: window.storeConfig?.paymentDetails?.bank_transfer?.bankCode || "KTB",
         manualVerification: true,
         timestamp: new Date().toISOString()
       }
@@ -3925,7 +3927,82 @@ class TopUpModalComponent {
     const val = Math.max(1, parseFloat(amount) || 100);
 
     if (amountText) amountText.textContent = `฿${val.toFixed(2)}`;
-    if (qrImg) qrImg.src = this.paymentService.getPromptPayQrUrl(val);
+    if (!qrImg) return;
+
+    const rawQrUrl = this.paymentService.getPromptPayQrUrl(val);
+    qrImg.src = rawQrUrl;
+
+    // Render Canvas Anti-ABC Fraud Watermarked QR
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const width = 360;
+          const height = 440;
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+
+          // 1. Background (White Card)
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, width, height);
+
+          // 2. Official Thai QR Payment Top Bar
+          ctx.fillStyle = "#0056B3"; // PromptPay Blue
+          ctx.fillRect(0, 0, width, 48);
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = "bold 15px 'IBM Plex Sans Thai', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("THAI QR PAYMENT", width / 2, 22);
+
+          ctx.fillStyle = "#7AE0FF";
+          ctx.font = "bold 11px 'IBM Plex Sans Thai', sans-serif";
+          ctx.fillText("NYX9 STUDIO • nyxning.shop", width / 2, 40);
+
+          // 3. Draw PromptPay QR Code
+          const qrSize = 300;
+          const qrX = (width - qrSize) / 2;
+          const qrY = 54;
+          ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+          // 4. ANTI-ABC FRAUD WATERMARK OVERLAY
+          ctx.save();
+          ctx.translate(width / 2, qrY + qrSize / 2);
+          ctx.rotate(-28 * Math.PI / 180);
+
+          ctx.fillStyle = "rgba(220, 38, 38, 0.22)"; // Semi-transparent security red
+          ctx.font = "900 13px 'IBM Plex Sans Thai', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("🔒 ใช้เติมเงิน nyxning.shop เท่านั้น", 0, -18);
+          ctx.fillText("⚠️ ระวังกลโกง ABC • ห้ามโอนตามคำสั่งผู้อื่น", 0, 4);
+          ctx.fillText("NYX9 STUDIO • 1459901184414", 0, 24);
+          ctx.restore();
+
+          // 5. Bottom Security Bar
+          ctx.fillStyle = "#0B111E";
+          ctx.fillRect(0, height - 42, width, 42);
+
+          ctx.fillStyle = "#00B2FF";
+          ctx.font = "bold 12px 'JetBrains Mono', monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(`ยอดชำระ ฿${val.toFixed(2)} • พร้อมเพย์: 145-990-118-4414`, width / 2, height - 24);
+
+          ctx.fillStyle = "#F59E0B";
+          ctx.font = "bold 10px 'IBM Plex Sans Thai', sans-serif";
+          ctx.fillText("⚠️ หากมีบุคคลอื่นส่ง QR นี้ให้คุณ โปรดระวังมิจฉาชีพ", width / 2, height - 9);
+
+          qrImg.src = canvas.toDataURL("image/png");
+        } catch (canvasErr) {
+          console.warn("[QR WATERMARK] Canvas compositing fallback:", canvasErr);
+        }
+      };
+      img.src = rawQrUrl;
+    } catch (e) {
+      console.warn("[QR WATERMARK] Error:", e);
+    }
   }
 
   // --- SMART SLIP QR SCANNER ---
@@ -5842,11 +5919,11 @@ window.handlePromptPayAmountInput = (amt) => window.Shop.topupModal.updatePrompt
 window.verifyPromptPaySlip = () => window.Shop.topupModal.verifyPromptPay();
 window.redeemTrueMoneyVoucher = () => window.Shop.topupModal.redeemTrueMoney();
 window.copyTrueMoneyPhone = () => {
-  const phone = window.storeConfig?.paymentDetails?.truemoney?.phoneNumber || "098-765-4321";
+  const phone = window.storeConfig?.paymentDetails?.truemoney?.phoneNumber || "0838286508";
   navigator.clipboard.writeText(phone.replace(/-/g, "")).then(() => window.UI?.toast(`📱 คัดลอกเบอร์ TrueMoney ${phone} แล้ว!`, "success"));
 };
 window.copyBankAccount = () => {
-  const acc = window.storeConfig?.paymentDetails?.bank_transfer?.accountNumber || "142-8-91234-5";
+  const acc = window.storeConfig?.paymentDetails?.bank_transfer?.accountNumber || "4140810122";
   navigator.clipboard.writeText(acc.replace(/-/g, "")).then(() => window.UI?.toast(`📋 คัดลอกเลขบัญชี ${acc} แล้ว!`, "success"));
 };
 window.verifyBankTransferSlip = () => window.Shop.topupModal.verifyBankTransfer();

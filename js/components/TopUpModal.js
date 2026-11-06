@@ -98,7 +98,82 @@ class TopUpModalComponent {
     const val = Math.max(1, parseFloat(amount) || 100);
 
     if (amountText) amountText.textContent = `฿${val.toFixed(2)}`;
-    if (qrImg) qrImg.src = this.paymentService.getPromptPayQrUrl(val);
+    if (!qrImg) return;
+
+    const rawQrUrl = this.paymentService.getPromptPayQrUrl(val);
+    qrImg.src = rawQrUrl;
+
+    // Render Canvas Anti-ABC Fraud Watermarked QR
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const width = 360;
+          const height = 440;
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+
+          // 1. Background (White Card)
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, width, height);
+
+          // 2. Official Thai QR Payment Top Bar
+          ctx.fillStyle = "#0056B3"; // PromptPay Blue
+          ctx.fillRect(0, 0, width, 48);
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = "bold 15px 'IBM Plex Sans Thai', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("THAI QR PAYMENT", width / 2, 22);
+
+          ctx.fillStyle = "#7AE0FF";
+          ctx.font = "bold 11px 'IBM Plex Sans Thai', sans-serif";
+          ctx.fillText("NYX9 STUDIO • nyxning.shop", width / 2, 40);
+
+          // 3. Draw PromptPay QR Code
+          const qrSize = 300;
+          const qrX = (width - qrSize) / 2;
+          const qrY = 54;
+          ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+          // 4. ANTI-ABC FRAUD WATERMARK OVERLAY
+          ctx.save();
+          ctx.translate(width / 2, qrY + qrSize / 2);
+          ctx.rotate(-28 * Math.PI / 180);
+
+          ctx.fillStyle = "rgba(220, 38, 38, 0.22)"; // Semi-transparent security red
+          ctx.font = "900 13px 'IBM Plex Sans Thai', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("🔒 ใช้เติมเงิน nyxning.shop เท่านั้น", 0, -18);
+          ctx.fillText("⚠️ ระวังกลโกง ABC • ห้ามโอนตามคำสั่งผู้อื่น", 0, 4);
+          ctx.fillText("NYX9 STUDIO • 1459901184414", 0, 24);
+          ctx.restore();
+
+          // 5. Bottom Security Bar
+          ctx.fillStyle = "#0B111E";
+          ctx.fillRect(0, height - 42, width, 42);
+
+          ctx.fillStyle = "#00B2FF";
+          ctx.font = "bold 12px 'JetBrains Mono', monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(`ยอดชำระ ฿${val.toFixed(2)} • พร้อมเพย์: 145-990-118-4414`, width / 2, height - 24);
+
+          ctx.fillStyle = "#F59E0B";
+          ctx.font = "bold 10px 'IBM Plex Sans Thai', sans-serif";
+          ctx.fillText("⚠️ หากมีบุคคลอื่นส่ง QR นี้ให้คุณ โปรดระวังมิจฉาชีพ", width / 2, height - 9);
+
+          qrImg.src = canvas.toDataURL("image/png");
+        } catch (canvasErr) {
+          console.warn("[QR WATERMARK] Canvas compositing fallback:", canvasErr);
+        }
+      };
+      img.src = rawQrUrl;
+    } catch (e) {
+      console.warn("[QR WATERMARK] Error:", e);
+    }
   }
 
   // --- SMART SLIP QR SCANNER ---

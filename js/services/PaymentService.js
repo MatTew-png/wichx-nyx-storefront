@@ -44,9 +44,9 @@ class PaymentService {
   }
 
   getPromptPayQrUrl(amount) {
-    const target = window.storeConfig?.paymentDetails?.promptpay?.promptpayNumber || "0951234567";
+    const target = window.storeConfig?.paymentDetails?.promptpay?.promptpayNumber || "1459901184414";
     const payload = this.generatePromptPayPayload(target, Math.max(1, parseFloat(amount) || 100));
-    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=Q&data=${encodeURIComponent(payload)}`;
   }
 
   async verifyPromptPaySlip(amount, transRef) {
@@ -91,7 +91,7 @@ class PaymentService {
       transRef: transRef,
       amount: amount,
       rawPayload: {
-        bank: window.storeConfig?.paymentDetails?.bank_transfer?.bankCode || "KBANK",
+        bank: window.storeConfig?.paymentDetails?.bank_transfer?.bankCode || "KTB",
         manualVerification: true,
         timestamp: new Date().toISOString()
       }

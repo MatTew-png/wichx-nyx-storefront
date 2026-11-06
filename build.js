@@ -67,37 +67,31 @@ function build() {
 
   console.log(`✅ [BUILD] dist/store.bundle.js generated successfully! (${Math.round(totalBytes / 1024)} KB)`);
 
-  // Inline CSS and Bundle into index.html and 200.html for 100% Antivirus & Offline Resilience
+  // Generate standalone production distribution in dist/index.html & dist/200.html
+  // Leaves root index.html & 200.html 100% modular, clean, and instant-reload friendly!
   const stylesPath = path.join(__dirname, 'styles.css');
   const stylesContent = fs.existsSync(stylesPath) ? fs.readFileSync(stylesPath, 'utf8') : '';
+  const rootIndex = path.join(__dirname, 'index.html');
 
-  const htmlFiles = ['index.html', '200.html'];
-  for (const file of htmlFiles) {
-    const p = path.join(__dirname, file);
-    if (!fs.existsSync(p)) continue;
-    let html = fs.readFileSync(p, 'utf8');
+  if (fs.existsSync(rootIndex)) {
+    let distHtml = fs.readFileSync(rootIndex, 'utf8');
 
-    // 1. Replace styles.css link with inline style tag
-    const linkRegex = /<link\s+rel="stylesheet"\s+href="styles\.css[^"]*"\s*[^>]*>/i;
-    const inlineStyleTag = `<style id="nyx-core-styles">\n${stylesContent}\n</style>`;
-    if (linkRegex.test(html)) {
-      html = html.replace(linkRegex, inlineStyleTag);
-    } else if (html.includes('<style id="nyx-core-styles">')) {
-      html = html.replace(/<style id="nyx-core-styles">[\s\S]*?<\/style>/, inlineStyleTag);
+    // 1. In dist version: Inline CSS
+    distHtml = distHtml.replace(
+      /<link\s+rel="stylesheet"\s+href="styles\.css[^"]*"\s*[^>]*>/i,
+      `<style id="nyx-core-styles">\n${stylesContent}\n</style>`
+    );
+
+    // 2. In dist version: Replace modular script tags with single bundle
+    const modularScriptsRegex = /<!-- ==============================================================================[\s\S]*?<script src="app\.js"><\/script>/i;
+    const inlineBundleTag = `<!-- Unified Storefront Application Engine (Bundled for Production) -->\n  <script id="nyx-store-bundle">\n${bundleCode}\n  </script>`;
+    if (modularScriptsRegex.test(distHtml)) {
+      distHtml = distHtml.replace(modularScriptsRegex, inlineBundleTag);
     }
 
-    // 2. Replace bundle loader script with inline bundle
-    const bundleScriptRegex = /<!-- Unified Storefront Application Engine[\s\S]*?<script[\s\S]*?loadBundle[\s\S]*?<\/script>/i;
-    const inlineBundleTag = `<!-- Unified Storefront Application Engine (Direct Inlined for 100% Antivirus Immunity & Zero-Latency) -->\n  <script id="nyx-store-bundle">\n${bundleCode}\n  </script>`;
-    
-    if (bundleScriptRegex.test(html)) {
-      html = html.replace(bundleScriptRegex, inlineBundleTag);
-    } else if (html.includes('<script id="nyx-store-bundle">')) {
-      html = html.replace(/<!-- Unified Storefront Application Engine[\s\S]*?<script id="nyx-store-bundle">[\s\S]*?<\/script>/, inlineBundleTag);
-    }
-
-    fs.writeFileSync(p, html, 'utf8');
-    console.log(`✅ [BUILD] Inlined core CSS & JS bundle into ${file} (Antivirus/Firewall Safe)`);
+    fs.writeFileSync(path.join(distDir, 'index.html'), distHtml, 'utf8');
+    fs.writeFileSync(path.join(distDir, '200.html'), distHtml, 'utf8');
+    console.log('✅ [BUILD] Standalone production build generated in dist/index.html & dist/200.html');
   }
 }
 

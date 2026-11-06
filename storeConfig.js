@@ -177,24 +177,26 @@ const storeConfig = {
   paymentDetails: {
     promptpay: {
       accountName: "NYX9 STUDIO AUTO",
-      promptpayNumber: "095-123-4567",
+      promptpayNumber: "1459901184414",
       minAmount: 10,
       feeRate: 0.0
     },
     truemoney: {
       accountName: "NYX9 WALLET AUTO",
-      phoneNumber: "098-765-4321",
+      phoneNumber: "0838286508",
       feeRate: 0.0,
       hint: "กรอกลิงก์ซองของขวัญ หรือโอนผ่านเบอร์ TrueMoney Wallet เพื่อรับเงินเข้าทันที"
     },
     bank_transfer: {
-      bankName: "ธนาคารกสิกรไทย (K-Bank)",
-      bankCode: "KBANK",
-      accountNumber: "142-8-91234-5",
-      accountName: "NYX9 STUDIO BY MATTEW",
-      branch: "สาขาสยามพารากอน",
-      color: "#138f2d",
-      icon: "landmark"
+      bankName: "ธนาคารกรุงไทย (Krungthai Bank)",
+      bankCode: "KTB",
+      accountNumber: "4140810122",
+      formattedAccountNumber: "414-0-81012-2",
+      accountName: "NYX9 STUDIO (กรุงไทย)",
+      branch: "สาขาหลัก",
+      color: "#00A3E0",
+      icon: "landmark",
+      notice: "ร้านรับบัญชีนี้บัญชีเดียวเท่านั้น"
     }
   },
 

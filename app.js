@@ -175,11 +175,11 @@ window.handlePromptPayAmountInput = (amt) => window.Shop.topupModal.updatePrompt
 window.verifyPromptPaySlip = () => window.Shop.topupModal.verifyPromptPay();
 window.redeemTrueMoneyVoucher = () => window.Shop.topupModal.redeemTrueMoney();
 window.copyTrueMoneyPhone = () => {
-  const phone = window.storeConfig?.paymentDetails?.truemoney?.phoneNumber || "098-765-4321";
+  const phone = window.storeConfig?.paymentDetails?.truemoney?.phoneNumber || "0838286508";
   navigator.clipboard.writeText(phone.replace(/-/g, "")).then(() => window.UI?.toast(`📱 คัดลอกเบอร์ TrueMoney ${phone} แล้ว!`, "success"));
 };
 window.copyBankAccount = () => {
-  const acc = window.storeConfig?.paymentDetails?.bank_transfer?.accountNumber || "142-8-91234-5";
+  const acc = window.storeConfig?.paymentDetails?.bank_transfer?.accountNumber || "4140810122";
   navigator.clipboard.writeText(acc.replace(/-/g, "")).then(() => window.UI?.toast(`📋 คัดลอกเลขบัญชี ${acc} แล้ว!`, "success"));
 };
 window.verifyBankTransferSlip = () => window.Shop.topupModal.verifyBankTransfer();
