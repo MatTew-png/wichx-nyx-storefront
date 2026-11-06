@@ -6064,11 +6064,65 @@ window.addEventListener('popstate', (e) => {
   window.navigateToPage(p || 'home');
 });
 
-// Auto-route on initial page load
+// Auto-route on initial page load & Bind Contact Page Interactions
 document.addEventListener('DOMContentLoaded', () => {
   const initPath = window.location.pathname.replace(/^\//, '').toLowerCase();
   const known = ['topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
   if (known.includes(initPath)) {
     window.navigateToPage(initPath);
   }
+
+  // Setup Contact Page Interactive Pills
+  document.addEventListener('click', (e) => {
+    const pill = e.target.closest('.contact-pill');
+    if (pill) {
+      document.querySelectorAll('.contact-pill').forEach(p => {
+        p.classList.remove('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+        p.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
+      });
+      pill.classList.add('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+      pill.classList.remove('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
+    }
+
+    const urg = e.target.closest('.urgency-pill');
+    if (urg) {
+      document.querySelectorAll('.urgency-pill').forEach(u => {
+        u.classList.remove('active', 'border-emerald-500/40', 'bg-emerald-500/10', 'text-emerald-300');
+        u.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
+      });
+      urg.classList.add('active', 'border-emerald-500/40', 'bg-emerald-500/10', 'text-emerald-300');
+      urg.classList.remove('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
+    }
+  });
 });
+
+// Contact Ticket Submission & Discord Bridge
+window.handleContactSubmit = function() {
+  const activeService = document.querySelector('.contact-pill.active')?.textContent?.trim() || 'สอบถามทั่วไป';
+  const activeUrgency = document.querySelector('.urgency-pill.active')?.textContent?.trim() || 'ปกติ';
+  const orderId = document.getElementById('contact-order-id')?.value?.trim() || 'ไม่ได้ระบุ';
+  const message = document.getElementById('contact-message-body')?.value?.trim() || 'ต้องการเปิด Ticket สอบถามข้อมูล';
+
+  const ticketPayload = `📋 [NYX9 STUDIO TICKET]\n` +
+    `📌 เรื่อง: ${activeService}\n` +
+    `⚡ ความเร่งด่วน: ${activeUrgency}\n` +
+    `📦 เลขออเดอร์: ${orderId}\n` +
+    `💬 รายละเอียด: ${message}\n` +
+    `⏰ เวลาที่ส่ง: ${new Date().toLocaleString('th-TH')}`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(ticketPayload).catch(() => {});
+  }
+
+  const toast = document.getElementById('contact-status-toast');
+  if (toast) {
+    toast.classList.remove('hidden');
+    toast.textContent = '✓ คัดลอกรายละเอียดแล้ว พร้อมเปิด Discord Ticket!';
+    setTimeout(() => toast.classList.add('hidden'), 4000);
+  }
+
+  const discordUrl = window.Shop?.store?.get('discordCommunityUrl') || 'https://discord.gg/your-invite';
+  setTimeout(() => {
+    window.open(discordUrl, '_blank');
+  }, 600);
+};
