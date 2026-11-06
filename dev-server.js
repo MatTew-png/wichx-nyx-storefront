@@ -73,6 +73,28 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  // Block access to sensitive internal files
+  const normalized = reqPath.toLowerCase();
+  if (
+    normalized.includes('/.') ||
+    normalized.startsWith('/database') ||
+    normalized.startsWith('/scripts') ||
+    normalized.startsWith('/scratch') ||
+    normalized.startsWith('/docs') ||
+    normalized.endsWith('.sql') ||
+    normalized.endsWith('.env') ||
+    normalized.endsWith('.md') ||
+    normalized === '/package.json' ||
+    normalized === '/package-lock.json' ||
+    normalized === '/dev-server.js' ||
+    normalized === '/build.js' ||
+    normalized === '/wrangler.jsonc'
+  ) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=UTF-8', ...SECURITY_HEADERS });
+    res.end('Access Denied: Internal Resource Protected');
+    return;
+  }
+
   if (reqPath === '/' || reqPath === '') reqPath = '/index.html';
 
   let filePath = path.join(ROOT, decodeURIComponent(reqPath));

@@ -1,0 +1,11 @@
+services:
+  # Cloudflare Tunnel Service (Zero Open Ports)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: nyx9-cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      # นำ TUNNEL_TOKEN ที่ได้จาก Cloudflare Zero Trust Dashboard มาใส่ตรงนี้
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    network_mode: host

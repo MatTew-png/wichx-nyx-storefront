@@ -1,0 +1,34 @@
+# ==============================================================================
+# Cloudflare Tunnel (cloudflared) Configuration
+# Documentation: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+# ==============================================================================
+
+# แทนที่ <TUNNEL-UUID> ด้วย UUID ที่ได้จากการรัน: cloudflared tunnel create nyx9-storefront
+tunnel: YOUR_TUNNEL_UUID_HERE
+credentials-file: C:\Users\_newgen\.cloudflared\YOUR_TUNNEL_UUID_HERE.json
+
+# การตั้งค่าประสิทธิภาพการเชื่อมต่อ Edge
+warp-routing:
+  enabled: false
+
+# กฎการกระจายทราฟฟิก (Ingress Rules)
+# เรียงลำดับจากเจาะจงที่สุดลงไปจนถึง catch-all
+ingress:
+  # 1. โดเมนหลัก nyxning.shop ส่งเข้า Web Server ในเครื่อง (พอร์ต 3000)
+  - hostname: nyxning.shop
+    service: http://127.0.0.1:3000
+    originRequest:
+      connectTimeout: 10s
+      noTLSVerify: false
+      keepAliveTimeout: 90s
+
+  # 2. ซับโดเมน www.nyxning.shop
+  - hostname: www.nyxning.shop
+    service: http://127.0.0.1:3000
+    originRequest:
+      connectTimeout: 10s
+      noTLSVerify: false
+      keepAliveTimeout: 90s
+
+  # 3. กฎ Catch-all: ทราฟฟิกอื่นใดที่ไม่ตรงกับโดเมนข้างต้น ให้คืนค่า 404 ทันที
+  - service: http_status:404

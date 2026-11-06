@@ -1,0 +1,14 @@
+.git
+.github
+.env*
+*.env
+database/
+*.sql
+scripts/
+scratch/
+docs/
+*.md
+dev-server.js
+build.js
+wrangler.jsonc
+load-test-report.html

@@ -1,0 +1,33 @@
+# ==============================================================================
+# NYX9 STUDIO - Vercel Deployment Ignore Rules
+# Prevents sensitive internal files, scripts, and databases from leaking to production
+# ==============================================================================
+
+# Version Control & CI/CD
+.git
+.github
+
+# Environment & Sensitive Secrets
+.env*
+*.env
+
+# Database Schemas & Migrations (Must never be publicly readable)
+database/
+*.sql
+
+# Internal Scripts, Automation, & Verification Tools
+scripts/
+scratch/
+load-test-report.html
+
+# Local Dev & Build Tools
+dev-server.js
+build.js
+wrangler.jsonc
+
+# Architecture Docs & Internal Blueprints
+docs/
+*.md
+
+# Package Manager Files (Vercel builds via package.json, but ignores package-lock if needed)
+.package-lock.json

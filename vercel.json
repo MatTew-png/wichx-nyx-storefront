@@ -23,6 +23,12 @@
     { "source": "/.git(.*)", "destination": "/200.html" },
     { "source": "/xmlrpc.php", "destination": "/200.html" },
     { "source": "/phpmyadmin(.*)", "destination": "/200.html" },
-    { "source": "/(admin\\.php|config\\.json|backup(.*)|\\.aws(.*))", "destination": "/200.html" }
+    { "source": "/database/(.*)", "destination": "/200.html" },
+    { "source": "/scripts/(.*)", "destination": "/200.html" },
+    { "source": "/scratch/(.*)", "destination": "/200.html" },
+    { "source": "/docs/(.*)", "destination": "/200.html" },
+    { "source": "/(.*)\\.sql", "destination": "/200.html" },
+    { "source": "/(.*)\\.md", "destination": "/200.html" },
+    { "source": "/(admin\\.php|config\\.json|backup(.*)|\\.aws(.*)|package\\.json|package-lock\\.json|dev-server\\.js|build\\.js|wrangler\\.jsonc|load-test-report\\.html)", "destination": "/200.html" }
   ]
 }
