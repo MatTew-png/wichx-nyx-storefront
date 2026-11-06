@@ -193,7 +193,7 @@ window.setPromptPayPreset = (amt) => {
     if (val === amt) {
       btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-white text-[#0A0D14] font-bold border border-white shadow-sm text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     } else {
-      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-indigo-500/10 text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     }
   });
 };
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pill = e.target.closest('.contact-pill');
     if (pill) {
       document.querySelectorAll('.contact-pill').forEach(p => {
-        p.classList.remove('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
+        p.classList.remove('active', 'border-indigo-400/40', 'bg-white/[0.08]', 'text-white');
         p.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
       });
       pill.classList.add('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');

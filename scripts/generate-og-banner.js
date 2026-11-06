@@ -15,10 +15,10 @@ const htmlContent = `
     body {
       width: 1200px;
       height: 630px;
-      background: #06080C;
+      background: #08090C;
       background-image: 
-        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(56, 189, 248, 0.08) 0%, transparent 70%),
-        radial-gradient(circle at 85% 90%, rgba(30, 58, 138, 0.08) 0%, transparent 60%);
+        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 70%),
+        radial-gradient(circle at 85% 90%, rgba(79, 70, 229, 0.08) 0%, transparent 60%);
       font-family: 'Space Grotesk', 'IBM Plex Sans Thai', sans-serif;
       color: #FFFFFF;
       display: flex;
@@ -37,7 +37,7 @@ const htmlContent = `
       left: 15%;
       right: 15%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), rgba(255, 255, 255, 0.6), rgba(56, 189, 248, 0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), rgba(255, 255, 255, 0.6), rgba(99, 102, 241, 0.5), transparent);
     }
 
     /* Header */
@@ -111,7 +111,7 @@ const htmlContent = `
     .headline-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
-      color: #38BDF8;
+      color: #818CF8;
       font-weight: 600;
       letter-spacing: 1.5px;
       margin-bottom: 14px;

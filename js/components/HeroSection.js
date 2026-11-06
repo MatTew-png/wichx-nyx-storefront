@@ -38,14 +38,14 @@ class HeroSectionComponent {
             
             <!-- Left Column (7 cols): The Hook, Offer, and CTAs -->
             <div class="lg:col-span-7 space-y-4 text-left">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-sky-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-indigo-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
                 <span>${banner.badge}</span>
               </div>
 
               <h2 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-heading font-black text-white tracking-wide leading-tight">
                 ${banner.title}
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-100 to-indigo-200 mt-1">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-slate-100 mt-1">
                   ${banner.highlight}
                 </span>
               </h2>
@@ -80,7 +80,7 @@ class HeroSectionComponent {
 
             <!-- Right Column (5 cols): The Floating Holographic Cyber Card -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-sky-400/30 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
+              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-indigo-400/35 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
                 <!-- Iridescent Glare Sheen Foil (Stripe Issuing Style) -->
                 <div class="card-glare-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 rounded-3xl z-10"></div>
                 

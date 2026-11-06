@@ -461,7 +461,7 @@ const storeConfig = {
 
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
-    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "sky" },
+    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
     { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
     { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
@@ -471,7 +471,7 @@ const storeConfig = {
     heroBanners: [
     {
       id: "banner-nitro",
-      themeColor: "sky",
+      themeColor: "indigo",
       badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
@@ -483,7 +483,7 @@ const storeConfig = {
       secondaryAction: "discordCalculator",
       // Right Hologram Card Data
       cardBadge: "SALE -48%",
-      cardBadgeColor: "bg-white/[0.04] text-sky-300 border-sky-400/30",
+      cardBadgeColor: "bg-indigo-500/10 text-indigo-300 border-indigo-400/25",
       cardTitle: "Nitro Booster (Mailpass 3 เดือน)",
       cardSub: "ยกเมลเปลี่ยนรหัสได้แท้ 100%",
       cardPrice: "฿150.00",
@@ -554,14 +554,14 @@ const storeConfig = {
 
   // --- ธีมสี (Futuristic Glacier Cyan & Obsidian Theme) ---
     theme: {
-    accent: "#38BDF8",       // Electric Sapphire / Ice Sky
-    accentHover: "#7DD3FC",  // Soft Ice Glow
-    accentGlow: "rgba(56, 189, 248, 0.14)",
-    baseBg: "#06080C",       // Deep Midnight Obsidian
-    cardBg: "#0A0D14",       // Surface Layer 1
-    cardHover: "#0F1420",    // Surface Hover
+    accent: "#6366F1",       // Electric Indigo (Linear Dark)
+    accentHover: "#818CF8",  // Soft Indigo Glow
+    accentGlow: "rgba(99, 102, 241, 0.16)",
+    baseBg: "#08090C",       // Deep Slate Obsidian
+    cardBg: "#0E1017",       // Surface Layer 1
+    cardHover: "#141724",    // Surface Hover
     borderLight: "rgba(255, 255, 255, 0.07)",
-    borderActive: "rgba(56, 189, 248, 0.35)"
+    borderActive: "rgba(99, 102, 241, 0.40)"
   },
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
@@ -2964,14 +2964,14 @@ class HeroSectionComponent {
             
             <!-- Left Column (7 cols): The Hook, Offer, and CTAs -->
             <div class="lg:col-span-7 space-y-4 text-left">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-sky-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-indigo-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
                 <span>${banner.badge}</span>
               </div>
 
               <h2 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-heading font-black text-white tracking-wide leading-tight">
                 ${banner.title}
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-100 to-indigo-200 mt-1">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-slate-100 mt-1">
                   ${banner.highlight}
                 </span>
               </h2>
@@ -3006,7 +3006,7 @@ class HeroSectionComponent {
 
             <!-- Right Column (5 cols): The Floating Holographic Cyber Card -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-sky-400/30 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
+              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-indigo-400/35 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
                 <!-- Iridescent Glare Sheen Foil (Stripe Issuing Style) -->
                 <div class="card-glare-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 rounded-3xl z-10"></div>
                 
@@ -3413,7 +3413,7 @@ class CatalogViewComponent {
         <div id="${cat.id}" class="space-y-4 mb-10">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
             <div class="flex items-center gap-3">
-              <span class="w-1.5 h-5 rounded-full bg-sky-400"></span>
+              <span class="w-1.5 h-5 rounded-full bg-indigo-500"></span>
               <div>
                 <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
                 <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
@@ -3468,7 +3468,7 @@ class CatalogViewComponent {
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' rx=\'16\' fill=\'%230B101A\'/%3E%3Cpath d=\'M30 50h40M50 30v40\' stroke=\'%2300F2FF\' stroke-width=\'4\'/%3E%3C/svg%3E';" />` : `<i data-lucide="box" class="w-12 h-12 text-slate-600"></i>`}
             
             <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-sky-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
+              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-indigo-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
@@ -3483,7 +3483,7 @@ class CatalogViewComponent {
           </div>
 
           <!-- Title & Chips -->
-          <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
+          <h4 class="text-sm font-heading font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
           <div class="flex flex-wrap gap-1.5 mb-3.5">
             ${(p.chips || []).map(chip => `
@@ -3496,7 +3496,7 @@ class CatalogViewComponent {
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono-val font-bold text-sky-400 tracking-tight">฿${p.price.toFixed(2)}</div>
+            <div class="text-base font-mono-val font-bold text-indigo-400 tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
           ${isOut ? `
@@ -5705,7 +5705,7 @@ window.setPromptPayPreset = (amt) => {
     if (val === amt) {
       btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-white text-[#0A0D14] font-bold border border-white shadow-sm text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     } else {
-      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-indigo-500/10 text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     }
   });
 };
@@ -6093,7 +6093,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pill = e.target.closest('.contact-pill');
     if (pill) {
       document.querySelectorAll('.contact-pill').forEach(p => {
-        p.classList.remove('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
+        p.classList.remove('active', 'border-indigo-400/40', 'bg-white/[0.08]', 'text-white');
         p.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
       });
       pill.classList.add('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
