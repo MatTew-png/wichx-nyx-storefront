@@ -2584,7 +2584,9 @@ class HeroSectionComponent {
 
             <!-- Right Column (5 cols): The Floating Holographic Cyber Card -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-cyan-400/60 transition-all">
+              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-cyan-400/60 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
+                <!-- Iridescent Glare Sheen Foil (Stripe Issuing Style) -->
+                <div class="card-glare-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 rounded-3xl z-10"></div>
                 
                 <!-- Card Header Tag -->
                 <div class="flex items-center justify-between mb-4">
@@ -2662,7 +2664,43 @@ class HeroSectionComponent {
     }
 
     if (window.lucide) lucide.createIcons();
+    this.initTiltCards();
     this.startAutoTimer();
+  }
+
+  initTiltCards() {
+    const cards = document.querySelectorAll(".interactive-cyber-tilt-card");
+    cards.forEach(card => {
+      const glare = card.querySelector(".card-glare-foil");
+      let bounds = null;
+
+      const onMouseEnter = () => {
+        bounds = card.getBoundingClientRect();
+        if (glare) glare.style.opacity = "1";
+      };
+
+      const onMouseMove = (e) => {
+        if (!bounds) bounds = card.getBoundingClientRect();
+        const x = (e.clientX - bounds.left) / (bounds.width || 1);
+        const y = (e.clientY - bounds.top) / (bounds.height || 1);
+        const rotX = (y - 0.5) * -16;
+        const rotY = (x - 0.5) * 18;
+        card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`;
+        if (glare) {
+          glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(0, 242, 255, 0.35) 0%, rgba(139, 92, 246, 0.2) 35%, transparent 70%)`;
+        }
+      };
+
+      const onMouseLeave = () => {
+        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+        if (glare) glare.style.opacity = "0";
+        bounds = null;
+      };
+
+      card.addEventListener("mouseenter", onMouseEnter);
+      card.addEventListener("mousemove", onMouseMove);
+      card.addEventListener("mouseleave", onMouseLeave);
+    });
   }
 
   goToSlide(index) {
@@ -4702,9 +4740,13 @@ class AmbientWavesEngine {
     this.isScrolling = false;
     this.scrollTimeout = null;
 
-    // 8 Lightweight Ambient Motes (Zero CPU drain)
-    this.particles = [];
-    this.particleCount = 8;
+    // ReactBits Warp Stars Acceleration Physics
+    this.stars = [];
+    this.warpBoost = 1.0;
+    this.targetWarpBoost = 1.0;
+    this.lastMouseX = 0;
+    this.lastMouseY = 0;
+    this.lastMouseMoveTime = 0;
 
     // Detect mobile or low-power device
     this.isMobile = typeof window !== "undefined" && (window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024));
@@ -4745,10 +4787,19 @@ class AmbientWavesEngine {
       this.initParticles();
     }, { passive: true });
     
-    // Smooth, gentle mouse parallax (throttled)
+    // Smooth mouse parallax + ReactBits Warp Stars Acceleration
     window.addEventListener("mousemove", (e) => {
       this.targetMouseX = (e.clientX / (this.width || 1) - 0.5) * 30;
       this.targetMouseY = (e.clientY / (this.height || 1) - 0.5) * 20;
+
+      const now = performance.now();
+      const dt = Math.max(1, now - (this.lastMouseMoveTime || now));
+      const dist = Math.hypot(e.clientX - (this.lastMouseX || e.clientX), e.clientY - (this.lastMouseY || e.clientY));
+      const speed = dist / dt; // px per ms
+      this.lastMouseX = e.clientX;
+      this.lastMouseY = e.clientY;
+      this.lastMouseMoveTime = now;
+      this.targetWarpBoost = Math.min(3.2, 1.0 + speed * 1.6);
     }, { passive: true });
 
     // Scroll performance protector: Pause canvas redrawing during scroll!
@@ -4773,17 +4824,24 @@ class AmbientWavesEngine {
   }
 
   initParticles() {
-    this.particles = [];
-    for (let i = 0; i < this.particleCount; i++) {
-      this.particles.push({
+    this.starCount = this.isMobile ? 24 : 60;
+    this.stars = [];
+    const colors = [
+      { r: 0, g: 242, b: 255 },   // Cyan
+      { r: 168, g: 85, b: 247 },  // Neon Violet
+      { r: 56, g: 189, b: 248 }   // Ice Sky
+    ];
+    for (let i = 0; i < this.starCount; i++) {
+      const col = colors[i % colors.length];
+      this.stars.push({
         x: Math.random() * (this.width || 1200),
         y: Math.random() * (this.height || 800),
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: -0.15 - Math.random() * 0.2,
-        radius: 0.9 + Math.random() * 1.1,
-        baseAlpha: 0.10 + Math.random() * 0.15,
-        pulseSpeed: 0.012 + Math.random() * 0.02,
-        pulsePhase: Math.random() * Math.PI * 2
+        speed: 0.6 + Math.random() * 1.2,
+        trail: 10 + Math.random() * 20,
+        size: 0.9 + Math.random() * 1.3,
+        color: col,
+        alpha: 0.20 + Math.random() * 0.40,
+        twinkle: Math.random() * Math.PI * 2
       });
     }
   }
@@ -4969,25 +5027,40 @@ class AmbientWavesEngine {
     const w = this.width;
     const h = this.height;
 
-    for (let i = 0; i < this.particles.length; i++) {
-      const p = this.particles[i];
+    // ReactBits Fading Stars: Smooth spring recovery for warp boost
+    this.warpBoost += (this.targetWarpBoost - this.warpBoost) * 0.12;
+    this.targetWarpBoost += (1.0 - this.targetWarpBoost) * 0.04;
 
-      p.x += p.vx;
-      p.y += p.vy;
+    for (let i = 0; i < this.stars.length; i++) {
+      const s = this.stars[i];
+      const vy = s.speed * this.warpBoost;
+      s.y -= vy;
 
-      if (p.y < -10) {
-        p.y = h + 10;
-        p.x = Math.random() * w;
+      if (s.y < -40) {
+        s.y = h + 20;
+        s.x = Math.random() * w;
       }
-      if (p.x < -10) p.x = w + 10;
-      if (p.x > w + 10) p.x = -10;
 
-      p.pulsePhase += p.pulseSpeed;
-      const curAlpha = p.baseAlpha * (0.7 + 0.3 * Math.sin(p.pulsePhase));
+      s.twinkle += 0.04;
+      const alpha = s.alpha * (0.8 + 0.2 * Math.sin(s.twinkle));
+      const trailLen = s.trail * (0.7 + 0.3 * this.warpBoost);
+
+      // Star streak trail
+      const grad = ctx.createLinearGradient(s.x, s.y, s.x, s.y + trailLen);
+      grad.addColorStop(0, `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, ${alpha})`);
+      grad.addColorStop(1, `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, 0)`);
 
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(186, 230, 253, ${curAlpha})`;
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x, s.y + trailLen);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = s.size;
+      ctx.stroke();
+
+      // Star core point
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size * 0.9, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, ${alpha * 1.2})`;
       ctx.fill();
     }
   }

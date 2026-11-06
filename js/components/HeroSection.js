@@ -80,7 +80,9 @@ class HeroSectionComponent {
 
             <!-- Right Column (5 cols): The Floating Holographic Cyber Card -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-cyan-400/60 transition-all">
+              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-cyan-400/60 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
+                <!-- Iridescent Glare Sheen Foil (Stripe Issuing Style) -->
+                <div class="card-glare-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 rounded-3xl z-10"></div>
                 
                 <!-- Card Header Tag -->
                 <div class="flex items-center justify-between mb-4">
@@ -158,7 +160,43 @@ class HeroSectionComponent {
     }
 
     if (window.lucide) lucide.createIcons();
+    this.initTiltCards();
     this.startAutoTimer();
+  }
+
+  initTiltCards() {
+    const cards = document.querySelectorAll(".interactive-cyber-tilt-card");
+    cards.forEach(card => {
+      const glare = card.querySelector(".card-glare-foil");
+      let bounds = null;
+
+      const onMouseEnter = () => {
+        bounds = card.getBoundingClientRect();
+        if (glare) glare.style.opacity = "1";
+      };
+
+      const onMouseMove = (e) => {
+        if (!bounds) bounds = card.getBoundingClientRect();
+        const x = (e.clientX - bounds.left) / (bounds.width || 1);
+        const y = (e.clientY - bounds.top) / (bounds.height || 1);
+        const rotX = (y - 0.5) * -16;
+        const rotY = (x - 0.5) * 18;
+        card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`;
+        if (glare) {
+          glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(0, 242, 255, 0.35) 0%, rgba(139, 92, 246, 0.2) 35%, transparent 70%)`;
+        }
+      };
+
+      const onMouseLeave = () => {
+        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+        if (glare) glare.style.opacity = "0";
+        bounds = null;
+      };
+
+      card.addEventListener("mouseenter", onMouseEnter);
+      card.addEventListener("mousemove", onMouseMove);
+      card.addEventListener("mouseleave", onMouseLeave);
+    });
   }
 
   goToSlide(index) {

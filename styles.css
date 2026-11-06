@@ -433,3 +433,27 @@ input, textarea {
   -webkit-touch-callout: default !important;
   user-select: text !important;
 }
+
+/* ==============================================================================
+   ✨ REANIMATE SPECIAL EFFECTS (STRIPE 3D CARD + CLERK RADAR + TURBOREPO GAUGE)
+   ============================================================================== */
+.interactive-cyber-tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+.card-glare-foil {
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes radarSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar-sweep {
+  animation: radarSweep 3s linear infinite;
+}
