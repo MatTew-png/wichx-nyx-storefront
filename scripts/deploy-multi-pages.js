@@ -28,7 +28,7 @@ const newHeaderHTML = `<header class="sticky top-0 z-40 w-full bg-[#070A0F]/90 b
             </div>
             <div class="text-[10px] font-mono-val text-slate-400 -mt-0.5 tracking-tight flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>AUTO 24/7 FULFILLMENT</span>
+              <span>ออนไลน์ 24 ชม.</span>
             </div>
           </div>
         </a>
@@ -791,7 +791,7 @@ const viewsHTML = `
             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
           </summary>
           <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
-            <p>เรารองรับ 4 ช่องทางหลัก ได้แก่ <b>พร้อมเพย์ QR Code</b>, <b>ซองของขวัญ TrueMoney Wallet</b>, <b>โอนผ่านบัญชีธนาคาร (กสิกรไทย)</b>, และ <b>บัตรเครดิต/เดบิต (3D Secure)</b></p>
+            <p>เรารองรับ 4 ช่องทางหลัก ได้แก่ <b>พร้อมเพย์ QR Code</b>, <b>ซองของขวัญ TrueMoney Wallet</b>, <b>โอนผ่านบัญชีธนาคาร (กสิกรไทย)</b>, และ <b>โอนผ่านบัญชีธนาคาร</b></p>
             <p>ทุกช่องทาง <b>ฟรีค่าธรรมเนียม 0%</b> ยอดเงินเข้ากระเป๋าเต็มจำนวนไม่มีหัก</p>
           </div>
         </details>
@@ -962,7 +962,7 @@ const viewsHTML = `
               ช่องทางหลักสำหรับการพูดคุย แจ้งปัญหา เปิด Ticket ขอความช่วยเหลือ และติดตามโปรโมชั่นอัปเดตใหม่ๆ แบบเรียลไทม์
             </p>
           </div>
-          <a href="https://discord.gg/your-invite" target="_blank" data-bind="discordCommunityUrl" class="w-full h-11 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#5865F2]/25">
+          <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="w-full h-11 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#5865F2]/25">
             <i data-lucide="external-link" class="w-4 h-4"></i>
             <span>เข้าร่วม Discord Official</span>
           </a>
