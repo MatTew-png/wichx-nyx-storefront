@@ -113,8 +113,8 @@ const SupabaseAdapter = {
       const CATEGORY_DISPLAY_MAP = {
         "cat-discord-nitro": { name: "Discord Nitro & บูสต์", icon: "zap" },
         "cat-discord-services": { name: "บริการดิสคอร์ด & ไอดี", icon: "bot" },
-        "cat-gaming-apps": { name: "FiveM, Steam & เกมมิ่ง", icon: "gamepad-2" },
-        "cat-uncategorized": { name: "ซอฟต์แวร์ & คีย์แท้", icon: "sparkles" }
+        "cat-roblox-scripts": { name: "สคริปต์ & ระบบเกม Roblox", icon: "code-2" },
+        "cat-roblox-assets": { name: "Roblox GFX & โมเดล 3D", icon: "box" }
       };
 
       // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน

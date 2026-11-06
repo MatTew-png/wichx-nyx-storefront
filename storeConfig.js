@@ -60,9 +60,9 @@ const storeConfig = {
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
     { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
-    { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
-    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
-    { tag: "ALLIANCE", icon: "users", text: "เครือข่ายพันธมิตร NYX9 STUDIO & NOVAPE SHOP", highlight: "บริการครบวงจร", color: "indigo" }
+    { tag: "AUTO 24/7", icon: "bot", text: "ระบบจัดส่งรหัสและสินค้าอัตโนมัติ 24 ชม.", highlight: "ใน 1 นาที", color: "emerald" },
+    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันสินค้าและไอดีแท้ 100% มีทีมงานซัพพอร์ต", highlight: "ดูแลผ่าน Discord", color: "blue" },
+    { tag: "ALLIANCE", icon: "users", text: "เครือข่าย 2 ร้านค้า NOVAPE SHOP & NYX9 STUDIO", highlight: "บริการครบวงจร", color: "indigo" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
@@ -95,31 +95,31 @@ const storeConfig = {
       productId: "nitro-3m-mailpass"
     },
     {
-      id: "banner-fivem",
-      themeColor: "amber",
-      badge: "✦ GAMING READY • ปลดแบน HWID",
-      title: "FIVEM READY & STEAM แท้",
-      highlight: "ไอดีสะอาดแท้ ยกเมล 100%",
-      description: "ไอดีสดใหม่ยกเมลเปลี่ยนรหัสและอีเมลหลักได้ทันที ไร้ประวัติแบน คัดเกรดก่อนลงคลัง พร้อมโดดเข้าทุกเซิร์ฟเวอร์ดังได้ทันที ไร้ปัญหากวนใจ",
-      perks: ["ยกเมลเปลี่ยนได้ 100%", "เข้าได้ทุกเมืองดัง", "HWID Clean ปลอดภัย"],
-      ctaText: "ดูไอดี FiveM พร้อมส่ง",
-      ctaCategory: "cat-gaming-apps",
-      secondaryText: "ไอดีเกมมิ่งทั้งหมด",
-      secondaryCategory: "cat-gaming-apps",
+      id: "banner-roblox",
+      themeColor: "indigo",
+      badge: "✦ NYX9 STUDIO • ROBLOX SYSTEMS",
+      title: "ROBLOX SCRIPTS & 3D ASSETS",
+      highlight: "สคริปต์เกม & งานกราฟิกแท้ 100%",
+      description: "สคริปต์ระบบเกม Roblox คุณภาพสูง ออโต้ฟาร์ม ลื่นไหล ไม่โดนแบน พร้อมโมเดล 3D และงานออกแบบ GFX สำหรับสตูดิโอและครีเอเตอร์",
+      perks: ["รองรับ Luau ล่าสุด", "โมเดล Low-Poly คมชัด", "ซัพพอร์ตวิธีติดตั้ง 24 ชม."],
+      ctaText: "ดูสคริปต์และโมเดล Roblox",
+      ctaCategory: "cat-roblox-scripts",
+      secondaryText: "งาน GFX & 3D",
+      secondaryCategory: "cat-roblox-assets",
       // Right Hologram Card Data
-      cardBadge: "HOT DEAL",
-      cardBadgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-      cardTitle: "Rockstar FiveM สดใหม่",
-      cardSub: "ไอดีสะอาดแท้ 2 ชั้น • พร้อมเล่นทันที",
-      cardPrice: "฿10.00",
-      cardOriginalPrice: "฿50.00",
+      cardBadge: "STUDIO READY",
+      cardBadgeColor: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
+      cardTitle: "Blox Fruits & Game GUI Suite",
+      cardSub: "ระบบสคริปต์เกม Roblox คุณภาพสูง",
+      cardPrice: "฿150.00",
+      cardOriginalPrice: "฿250.00",
       cardStock: "พร้อมส่งในระบบ",
       cardPerks: [
-        { icon: "shield", text: "ไอดีสะอาด ไร้ประวัติโดนแบนจากระบบ Global" },
-        { icon: "globe", text: "เชื่อมโยงเซิร์ฟเวอร์ FiveM ได้ทุกประเทศ ทุกเมือง" },
-        { icon: "key", text: "เปลี่ยนรหัสผ่านและเมลสำรองได้อิสระ 100%" }
+        { icon: "check-circle-2", text: "อัปเดตตรงตามเวอร์ชันเกมล่าสุด ไม่โดนแบน" },
+        { icon: "code", text: "เขียนด้วย Luau แท้ คลีนโค้ด ลื่นไหล ไม่แลค" },
+        { icon: "headphones", text: "มีคู่มือสอนติดตั้งและวิธีใช้งานครบถ้วน" }
       ],
-      productId: "rockstar-fivem-fresh"
+      productId: "roblox-bloxfruits-script"
     },
     {
       id: "banner-wallet",
@@ -162,12 +162,12 @@ const storeConfig = {
     borderActive: "rgba(99, 102, 241, 0.40)"
   },
 
-  // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
+  // --- สถิติความน่าเชื่อถือ (4-Metric Grid) ---
   metrics: {
-    visitorsToday: "12,450",
-    ordersToday: "850",
-    totalMembers: "45,000+",
-    uptime: "24/7 AUTO"
+    delivery: "จัดส่งอัตโนมัติ",
+    support: "ซัพพอร์ตผ่าน Discord",
+    alliance: "2 เซิร์ฟเวอร์ในเครือ",
+    warranty: "รับประกันสินค้า 100%"
   },
 
   // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer) ---
@@ -195,20 +195,6 @@ const storeConfig = {
       branch: "สาขาสยามพารากอน",
       color: "#138f2d",
       icon: "landmark"
-    },
-    card_payment: {
-      gatewayName: "CyberPay 3D-Secure Vault",
-      supportedBrands: ["VISA", "Mastercard", "JCB", "TPN"],
-      feeRate: 0.0, // โปรโมชั่นค่าธรรมเนียม 0%
-      pciDssCompliance: "Level 1 Certified (256-Bit SSL Tokenization)",
-      icon: "credit-card"
-    },
-    crypto_ltc: {
-      coinName: "Litecoin (LTC)",
-      network: "LTC Native",
-      address: "ltc1q9x4n2s7j8m4zfk9pq98wv7wuxc3v5v2k4h5nqz",
-      bonusPercent: 5,
-      rateThbPerLtc: 3850.00
     }
   },
 

@@ -79,7 +79,6 @@ class ShopApp {
 
     this.socialProof.init();
     this.initCardSpotlight();
-    this.animateMetricsCountUp();
     if (window.lucide) lucide.createIcons();
     console.info("✅ [NYX9 STUDIO] Storefront Ready!");
   }
@@ -103,30 +102,7 @@ class ShopApp {
   }
 
   animateMetricsCountUp() {
-    const runCount = (id, target, suffix = "", duration = 1200) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const startTime = performance.now();
-      const frame = (now) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        const cur = Math.floor(target * ease);
-        el.textContent = cur.toLocaleString() + suffix;
-        if (progress < 1) requestAnimationFrame(frame);
-        else el.textContent = target.toLocaleString() + suffix;
-      };
-      requestAnimationFrame(frame);
-    };
-
-    setTimeout(() => {
-      runCount("live-visitors-today", 12450);
-      runCount("live-visitors-today-m", 12450);
-      runCount("live-orders-today", 850);
-      runCount("live-orders-today-m", 850);
-      runCount("live-total-members", 45000, "+");
-      runCount("live-total-members-m", 45000, "+");
-    }, 150);
+    // Telemetry count-up disabled per unslop policy
   }
 
   renderAcceptedPaymentsFooter() {

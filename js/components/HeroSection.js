@@ -131,17 +131,7 @@ class HeroSectionComponent {
   }
 
   renderTelemetry() {
-    const metrics = window.storeConfig?.metrics || {};
-    const setVal = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = val;
-    };
-    setVal("live-visitors-today", metrics.visitorsToday || "12,450");
-    setVal("live-orders-today", metrics.ordersToday || "850");
-    setVal("live-total-members", metrics.totalMembers || "45,000+");
-    setVal("live-visitors-today-m", metrics.visitorsToday || "12,450");
-    setVal("live-orders-today-m", metrics.ordersToday || "850");
-    setVal("live-total-members-m", metrics.totalMembers || "45,000+");
+    // Telemetry counters eliminated per unslop clean store policy
   }
 }
 
