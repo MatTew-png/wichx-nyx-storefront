@@ -55,18 +55,20 @@ module.exports = async (req, res) => {
       const qty = Math.min(100, Math.max(1, parseInt(item.quantity, 10) || 1));
       verifiedTotal += price * qty;
     }
+    verifiedTotal = Math.round(verifiedTotal * 100) / 100;
 
     const sanitizedPromo = typeof promoCode === 'string' ? promoCode.trim().toUpperCase().slice(0, 20) : null;
     let discountAmount = 0;
     if (sanitizedPromo === "NYX9VIP" && verifiedTotal >= 100) {
-      discountAmount = (verifiedTotal * 0.10);
+      discountAmount = Math.round((verifiedTotal * 0.10) * 100) / 100;
     } else if (sanitizedPromo === "NYX50" && verifiedTotal >= 300) {
       discountAmount = 50.00;
     } else if (sanitizedPromo === "CYBERVIP" && verifiedTotal >= 500) {
-      discountAmount = (verifiedTotal * 0.15);
+      discountAmount = Math.round((verifiedTotal * 0.15) * 100) / 100;
     }
+    discountAmount = Math.round(discountAmount * 100) / 100;
 
-    const finalAmount = Math.max(0, verifiedTotal - discountAmount);
+    const finalAmount = Math.round(Math.max(0, verifiedTotal - discountAmount) * 100) / 100;
 
     // 3. ตรวจสอบยอดเงินในกระเป๋า
     const currentBalance = parseFloat(userBalance) || 0;

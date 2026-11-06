@@ -107,7 +107,7 @@ module.exports = async (req, res) => {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (!supabaseKey) {
+    if (!supabaseKey && process.env.NODE_ENV === 'production') {
       console.error("[CRITICAL SECURITY] SUPABASE_SERVICE_ROLE_KEY is missing! Cannot execute process_topup.");
       return res.status(500).json({ 
         success: false, 
