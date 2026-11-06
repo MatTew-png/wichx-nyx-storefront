@@ -20,66 +20,49 @@ const storeConfig = {
     "422611554475835394"
   ],
 
-  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & 4-DISCORD ALLIANCE HUB) ---
+  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & DISCORD ALLIANCE HUB) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
   tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
-  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่าย 4 ร้านค้า Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
+  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่ายร้านค้าพันธมิตร NYX9 STUDIO & NOVAPE SHOP ครบวงจร",
   logoUrl: "assets/logo.png",
   faviconUrl: "assets/logo.png",
   
-  // --- เครือข่าย 4 ร้านค้า DISCORD (MULTI-HUB ALLIANCE) ---
+  // --- เครือข่ายร้านค้า DISCORD (MULTI-HUB ALLIANCE) ---
   discordStores: [
     {
       id: "shop_1",
-      name: "ร้านที่ 1: NYX9 STUDIO (หลัก)",
+      name: "nyx9 studio (หลัก)",
       active: true,
-      inviteUrl: "https://discord.gg/nyx9studio",
+      inviteUrl: "https://discord.gg/NTPcxKHrag",
       badge: "ONLINE",
-      description: "Nitro, บูสต์เซิร์ฟเวอร์ & FiveM",
-      memberCount: "45,000+"
+      description: "บริการขายเกี่ยวกับกับเกมส์ roblox ทั้งหมด",
+      memberCount: "13+"
     },
     {
       id: "shop_2",
-      name: "ร้านที่ 2 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
-    },
-    {
-      id: "shop_3",
-      name: "ร้านที่ 3 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
-    },
-    {
-      id: "shop_4",
-      name: "ร้านที่ 4 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
+      name: "novape shop (เครือข่ายพันธมิตร)",
+      active: true,
+      inviteUrl: "https://discord.gg/T44Up4cfy",
+      badge: "ONLINE",
+      description: "บริการขายของเกี่ยวกับดิสคอร์ดทั้งหมด",
+      memberCount: "300+"
     }
   ],
 
   // --- ช่องทางติดต่อ & ชุมชนหลัก ---
-  discordCommunityUrl: "https://discord.gg/nyx9studio",
-  contactLine: "@nyx9studio",
-  contactFacebook: "https://facebook.com/nyx9studio",
-  supportEmail: "support@nyxning.shop",
+  discordCommunityUrl: "https://discord.gg/NTPcxKHrag",
+  discordCommunitySecondaryUrl: "https://discord.gg/T44Up4cfy",
+  contactLine: "",
+  contactFacebook: "",
+  supportEmail: "sanaseeriri@gmail.com",
 
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
     { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
     { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
-    { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
+    { tag: "ALLIANCE", icon: "users", text: "เครือข่ายพันธมิตร NYX9 STUDIO & NOVAPE SHOP", highlight: "บริการครบวงจร", color: "indigo" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
@@ -87,7 +70,7 @@ const storeConfig = {
     {
       id: "banner-nitro",
       themeColor: "indigo",
-      badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
+      badge: "✦ FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
       description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB คุ้มค่าที่สุด",
@@ -114,7 +97,7 @@ const storeConfig = {
     {
       id: "banner-fivem",
       themeColor: "amber",
-      badge: "🎮 GAMING READY • ปลดแบน HWID",
+      badge: "✦ GAMING READY • ปลดแบน HWID",
       title: "FIVEM READY & STEAM แท้",
       highlight: "ไอดีสะอาดแท้ ยกเมล 100%",
       description: "ไอดีสดใหม่ยกเมลเปลี่ยนรหัสและอีเมลหลักได้ทันที ไร้ประวัติแบน คัดเกรดก่อนลงคลัง พร้อมโดดเข้าทุกเซิร์ฟเวอร์ดังได้ทันที ไร้ปัญหากวนใจ",
@@ -141,10 +124,10 @@ const storeConfig = {
     {
       id: "banner-wallet",
       themeColor: "emerald",
-      badge: "⚡ AUTO 24/7 • ตัดยอด Real-time",
+      badge: "✦ AUTO 24/7 • ตัดยอด Real-time",
       title: "ระบบเติมเงินอัตโนมัติ",
       highlight: "ฟรีค่าธรรมเนียม 0% เข้าใน 5 วิ",
-      description: "รองรับทั้ง พร้อมเพย์ QR Code, ซองของขวัญ TrueMoney, บัญชีธนาคารกสิกร และบัตรเครดิต บอทเช็คยอดอัตโนมัติตลอด 24 ชม. เครดิตเข้ากระเป๋าทันที",
+      description: "รองรับทั้ง พร้อมเพย์ QR Code, ซองของขวัญ TrueMoney และบัญชีธนาคาร บอทเช็คยอดอัตโนมัติตลอด 24 ชม. เครดิตเข้ากระเป๋าทันที",
       perks: ["ฟรีค่าธรรมเนียม 0%", "ตัดยอดใน 5-10 วินาที", "เครดิตไม่มีวันหมดอายุ"],
       ctaText: "เติมเงินเข้ากระเป๋าเลย",
       ctaAction: "openTopUp",
@@ -187,8 +170,8 @@ const storeConfig = {
     uptime: "24/7 AUTO"
   },
 
-  // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer, ผูกบัตร, Crypto) ---
-  acceptedPayments: ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"],
+  // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer) ---
+  acceptedPayments: ["promptpay", "truemoney", "bank_transfer"],
 
   // ข้อมูลตั้งค่าบัญชีรับเงิน
   paymentDetails: {

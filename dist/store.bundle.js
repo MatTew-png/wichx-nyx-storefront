@@ -403,66 +403,49 @@ const storeConfig = {
     "422611554475835394"
   ],
 
-  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & 4-DISCORD ALLIANCE HUB) ---
+  // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & DISCORD ALLIANCE HUB) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
   tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
-  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่าย 4 ร้านค้า Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM & ไอที ครบวงจร การันตีมากกว่า 660,000 ออเดอร์",
+  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่ายร้านค้าพันธมิตร NYX9 STUDIO & NOVAPE SHOP ครบวงจร",
   logoUrl: "assets/logo.png",
   faviconUrl: "assets/logo.png",
   
-  // --- เครือข่าย 4 ร้านค้า DISCORD (MULTI-HUB ALLIANCE) ---
+  // --- เครือข่ายร้านค้า DISCORD (MULTI-HUB ALLIANCE) ---
   discordStores: [
     {
       id: "shop_1",
-      name: "ร้านที่ 1: NYX9 STUDIO (หลัก)",
+      name: "nyx9 studio (หลัก)",
       active: true,
-      inviteUrl: "https://discord.gg/nyx9studio",
+      inviteUrl: "https://discord.gg/NTPcxKHrag",
       badge: "ONLINE",
-      description: "Nitro, บูสต์เซิร์ฟเวอร์ & FiveM",
-      memberCount: "45,000+"
+      description: "บริการขายเกี่ยวกับกับเกมส์ roblox ทั้งหมด",
+      memberCount: "13+"
     },
     {
       id: "shop_2",
-      name: "ร้านที่ 2 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
-    },
-    {
-      id: "shop_3",
-      name: "ร้านที่ 3 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
-    },
-    {
-      id: "shop_4",
-      name: "ร้านที่ 4 (เครือข่ายพันธมิตร)",
-      active: false,
-      inviteUrl: "#",
-      badge: "COMING SOON",
-      description: "พร้อมเปิดตัวเร็วๆ นี้",
-      memberCount: "-"
+      name: "novape shop (เครือข่ายพันธมิตร)",
+      active: true,
+      inviteUrl: "https://discord.gg/T44Up4cfy",
+      badge: "ONLINE",
+      description: "บริการขายของเกี่ยวกับดิสคอร์ดทั้งหมด",
+      memberCount: "300+"
     }
   ],
 
   // --- ช่องทางติดต่อ & ชุมชนหลัก ---
-  discordCommunityUrl: "https://discord.gg/nyx9studio",
-  contactLine: "@nyx9studio",
-  contactFacebook: "https://facebook.com/nyx9studio",
-  supportEmail: "support@nyxning.shop",
+  discordCommunityUrl: "https://discord.gg/NTPcxKHrag",
+  discordCommunitySecondaryUrl: "https://discord.gg/T44Up4cfy",
+  contactLine: "",
+  contactFacebook: "",
+  supportEmail: "sanaseeriri@gmail.com",
 
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
     { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
     { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
-    { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
+    { tag: "ALLIANCE", icon: "users", text: "เครือข่ายพันธมิตร NYX9 STUDIO & NOVAPE SHOP", highlight: "บริการครบวงจร", color: "indigo" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
@@ -470,7 +453,7 @@ const storeConfig = {
     {
       id: "banner-nitro",
       themeColor: "indigo",
-      badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
+      badge: "✦ FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
       description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB คุ้มค่าที่สุด",
@@ -497,7 +480,7 @@ const storeConfig = {
     {
       id: "banner-fivem",
       themeColor: "amber",
-      badge: "🎮 GAMING READY • ปลดแบน HWID",
+      badge: "✦ GAMING READY • ปลดแบน HWID",
       title: "FIVEM READY & STEAM แท้",
       highlight: "ไอดีสะอาดแท้ ยกเมล 100%",
       description: "ไอดีสดใหม่ยกเมลเปลี่ยนรหัสและอีเมลหลักได้ทันที ไร้ประวัติแบน คัดเกรดก่อนลงคลัง พร้อมโดดเข้าทุกเซิร์ฟเวอร์ดังได้ทันที ไร้ปัญหากวนใจ",
@@ -524,10 +507,10 @@ const storeConfig = {
     {
       id: "banner-wallet",
       themeColor: "emerald",
-      badge: "⚡ AUTO 24/7 • ตัดยอด Real-time",
+      badge: "✦ AUTO 24/7 • ตัดยอด Real-time",
       title: "ระบบเติมเงินอัตโนมัติ",
       highlight: "ฟรีค่าธรรมเนียม 0% เข้าใน 5 วิ",
-      description: "รองรับทั้ง พร้อมเพย์ QR Code, ซองของขวัญ TrueMoney, บัญชีธนาคารกสิกร และบัตรเครดิต บอทเช็คยอดอัตโนมัติตลอด 24 ชม. เครดิตเข้ากระเป๋าทันที",
+      description: "รองรับทั้ง พร้อมเพย์ QR Code, ซองของขวัญ TrueMoney และบัญชีธนาคาร บอทเช็คยอดอัตโนมัติตลอด 24 ชม. เครดิตเข้ากระเป๋าทันที",
       perks: ["ฟรีค่าธรรมเนียม 0%", "ตัดยอดใน 5-10 วินาที", "เครดิตไม่มีวันหมดอายุ"],
       ctaText: "เติมเงินเข้ากระเป๋าเลย",
       ctaAction: "openTopUp",
@@ -570,8 +553,8 @@ const storeConfig = {
     uptime: "24/7 AUTO"
   },
 
-  // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer, ผูกบัตร, Crypto) ---
-  acceptedPayments: ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"],
+  // --- เกตเวย์ชำระเงินที่รองรับ (PromptPay, TrueMoney, Bank Transfer) ---
+  acceptedPayments: ["promptpay", "truemoney", "bank_transfer"],
 
   // ข้อมูลตั้งค่าบัญชีรับเงิน
   paymentDetails: {
@@ -2443,21 +2426,67 @@ class CheckoutService {
 
     let discount = 0;
     if (promo) {
-      if (promo.discountPercent) {
-        discount = (subtotal * promo.discountPercent) / 100;
-      } else if (promo.discountThb) {
-        discount = promo.discountThb;
+      if (promo.discount_type === 'percent' || promo.discountPercent) {
+        const pct = promo.discount_value || promo.discountPercent;
+        discount = (subtotal * pct) / 100;
+        if (promo.max_discount && discount > promo.max_discount) {
+          discount = promo.max_discount;
+        }
+      } else if (promo.discount_type === 'fixed' || promo.discountThb) {
+        discount = promo.discount_value || promo.discountThb;
       }
+      discount = Math.min(discount, subtotal);
     }
 
     const total = Math.max(0, subtotal - discount);
     return { subtotal, discount, total };
   }
 
+  async loadAvailableVouchers() {
+    try {
+      if (window.supabaseClient) {
+        const { data, error } = await window.supabaseClient.rpc("get_available_vouchers");
+        if (!error && Array.isArray(data) && data.length > 0) {
+          this.store.set("availableVouchers", data);
+          return data;
+        }
+      }
+    } catch (e) {
+      console.warn("[CHECKOUT SERVICE] Error loading vouchers:", e.message);
+    }
+
+    // Fallback to storeConfig.promoCodes
+    const configCodes = window.storeConfig?.promoCodes || {};
+    const fallback = Object.entries(configCodes).map(([code, c]) => ({
+      code,
+      label: c.label || code,
+      discount_type: c.discountPercent ? 'percent' : 'fixed',
+      discount_value: c.discountPercent || c.discountThb,
+      min_spend: c.minSpend || 0,
+      max_discount: null
+    }));
+    this.store.set("availableVouchers", fallback);
+    return fallback;
+  }
+
   applyCoupon(code) {
     const cleanCode = (code || "").trim().toUpperCase();
-    const configCodes = window.storeConfig?.promoCodes || {};
-    const promo = configCodes[cleanCode];
+    const vouchers = this.store.get("availableVouchers") || [];
+    let promo = vouchers.find(v => v.code === cleanCode);
+
+    if (!promo) {
+      const configCodes = window.storeConfig?.promoCodes || {};
+      const cfg = configCodes[cleanCode];
+      if (cfg) {
+        promo = {
+          code: cleanCode,
+          label: cfg.label || cleanCode,
+          discount_type: cfg.discountPercent ? 'percent' : 'fixed',
+          discount_value: cfg.discountPercent || cfg.discountThb,
+          min_spend: cfg.minSpend || 0
+        };
+      }
+    }
 
     if (!promo) {
       throw new Error("โค้ดส่วนลดนี้ไม่ถูกต้องหรือหมดอายุแล้ว");
@@ -2466,8 +2495,10 @@ class CheckoutService {
     const cart = this.store.get("cart") || [];
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    if (promo.minSpend && subtotal < promo.minSpend) {
-      throw new Error(`โค้ดนี้ใช้ได้เมื่อมียอดสั่งซื้อขั้นต่ำ ฿${promo.minSpend}`);
+    const minSpend = Number(promo.min_spend || promo.minSpend || 0);
+    if (minSpend > 0 && subtotal < minSpend) {
+      const diff = (minSpend - subtotal).toFixed(2);
+      throw new Error(`โค้ดนี้ใช้ได้เมื่อมียอดสั่งซื้อขั้นต่ำ ฿${minSpend.toFixed(2)} (ขาดอีก ฿${diff})`);
     }
 
     this.store.set("appliedPromo", { ...promo, code: cleanCode });
@@ -2722,6 +2753,17 @@ class UIManager {
     document.querySelectorAll("[data-bind='brandShort']").forEach(el => el.textContent = config.brandShort || config.storeName);
     document.querySelectorAll("[data-bind='tagline']").forEach(el => el.textContent = config.tagline);
     document.querySelectorAll("[data-bind='subTagline']").forEach(el => el.textContent = config.subTagline);
+    if (config.discordCommunityUrl) {
+      document.querySelectorAll("[data-bind='discordCommunityUrl']").forEach(el => {
+        if (el.tagName === "A") el.href = config.discordCommunityUrl;
+      });
+    }
+    if (config.supportEmail) {
+      document.querySelectorAll("[data-bind='supportEmail']").forEach(el => {
+        el.textContent = config.supportEmail;
+        if (el.tagName === "A") el.href = `mailto:${config.supportEmail}`;
+      });
+    }
   }
 
   toast(message, type = "info") {
@@ -3469,6 +3511,7 @@ class CartDrawerComponent {
 
     this.store.on("change:cart", () => this.render());
     this.store.on("change:appliedPromo", () => this.render());
+    this.store.on("change:availableVouchers", () => this.render());
   }
 
   toggle() {
@@ -3480,6 +3523,9 @@ class CartDrawerComponent {
     if (!container || !backdrop || !drawer) return;
 
     if (this.isOpen) {
+      if (typeof this.checkoutService.loadAvailableVouchers === "function") {
+        this.checkoutService.loadAvailableVouchers();
+      }
       container.classList.remove("hidden");
       setTimeout(() => {
         backdrop.classList.remove("opacity-0");
@@ -3555,6 +3601,81 @@ class CartDrawerComponent {
     `).join("");
 
     this.updateSummary();
+    this.renderVouchers();
+    if (window.lucide) lucide.createIcons();
+  }
+
+  renderVouchers() {
+    const container = document.getElementById("cart-vouchers-container");
+    if (!container) return;
+
+    const vouchers = this.store.get("availableVouchers") || [];
+    const cart = this.store.get("cart") || [];
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const appliedPromo = this.store.get("appliedPromo");
+
+    if (vouchers.length === 0) {
+      container.innerHTML = `
+        <div class="text-[11px] text-slate-500 py-1.5 px-3 rounded-xl bg-white/[0.02] border border-white/[0.04] text-center italic">
+          ไม่มีคูปองส่วนลดที่ใช้งานได้ในขณะนี้
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = vouchers.map(v => {
+      const isApplied = appliedPromo && appliedPromo.code === v.code;
+      const minSpend = Number(v.min_spend || v.minSpend || 0);
+      const isEligible = subtotal >= minSpend;
+      const isFixed = v.discount_type === 'fixed' || v.discountThb;
+      const discountVal = isFixed ? `฿${Number(v.discount_value || v.discountThb).toFixed(0)}` : `${Number(v.discount_value || v.discountPercent).toFixed(0)}%`;
+
+      let badgeBg = isApplied ? 'border-emerald-500/40 bg-emerald-500/10' : (isEligible ? 'border-pink-500/30 bg-pink-500/5 hover:border-pink-500/60' : 'border-white/[0.06] bg-white/[0.02] opacity-60');
+
+      let actionHtml = '';
+      if (isApplied) {
+        actionHtml = `
+          <button onclick="window.removeCouponCode()" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold flex items-center gap-1 active:scale-95 cursor-pointer" title="ยกเลิกโค้ดนี้">
+            <i data-lucide="check" class="w-3 h-3"></i>
+            <span>ใช้แล้ว</span>
+          </button>
+        `;
+      } else if (isEligible) {
+        actionHtml = `
+          <button onclick="window.applyDirectCoupon('${v.code}')" class="px-3 py-1 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-bold text-[10px] shadow-sm shadow-pink-500/20 active:scale-95 transition-all cursor-pointer">
+            ใช้โค้ด
+          </button>
+        `;
+      } else {
+        const diff = (minSpend - subtotal).toFixed(0);
+        actionHtml = `
+          <span class="text-[9px] text-slate-500 font-mono text-right leading-tight block">
+            ซื้อเพิ่มอีก<br><strong class="text-rose-400">฿${diff}</strong>
+          </span>
+        `;
+      }
+
+      return `
+        <div class="p-2.5 rounded-xl border ${badgeBg} transition-all flex items-center justify-between gap-2.5 group">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-lg bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center shrink-0 font-extrabold text-[11px] font-mono">
+              ${discountVal}
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white flex items-center gap-1.5 truncate">
+                <span class="font-mono">${v.code}</span>
+                ${minSpend > 0 ? `<span class="text-[9px] text-slate-400 font-normal">ขั้นต่ำ ฿${minSpend}</span>` : `<span class="text-[9px] text-emerald-400 font-normal">ไม่มีขั้นต่ำ</span>`}
+              </div>
+              <div class="text-[10px] text-slate-400 truncate">${v.label || 'คูปองส่วนลดพิเศษ'}</div>
+            </div>
+          </div>
+          <div class="shrink-0">
+            ${actionHtml}
+          </div>
+        </div>
+      `;
+    }).join("");
+
     if (window.lucide) lucide.createIcons();
   }
 
@@ -3618,6 +3739,17 @@ class CartDrawerComponent {
 }
 
 window.CartDrawerComponent = CartDrawerComponent;
+
+window.applyDirectCoupon = (code) => {
+  if (window.Shop?.cartManager) {
+    try {
+      const promo = window.Shop.checkoutService.applyCoupon(code);
+      window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
+    } catch (err) {
+      window.UI?.toast(err.message, "error");
+    }
+  }
+};
 
 
 
@@ -5336,6 +5468,128 @@ window.AmbientWavesEngine = AmbientWavesEngine;
 
 
 /* ============================================================================== */
+/* 📦 MODULE: js/visitor-tracker.js */
+/* ============================================================================== */
+/**
+ * ==============================================================================
+ * 🌐 HIGH-VELOCITY VISITOR & IP TRACKER (NYX9 STUDIO)
+ * ==============================================================================
+ * Tracks real visitor IP, Country, Device, and Referral path via Supabase RPC.
+ * Runs non-blocking and asynchronously. Checks for blacklisted IPs in real time.
+ * ==============================================================================
+ */
+
+(function () {
+  'use strict';
+
+  // Prevent multiple initializations
+  if (window.__NYX9_TRACKER_INITIALIZED__) return;
+  window.__NYX9_TRACKER_INITIALIZED__ = true;
+
+  async function trackVisitor() {
+    try {
+      // 1. Session-based debounce to avoid spamming database on rapid reloads
+      const currentPath = window.location.pathname || '/';
+      const lastTrackKey = 'nyx9_last_track_' + currentPath;
+      const lastTrackTime = sessionStorage.getItem(lastTrackKey);
+      const now = Date.now();
+
+      if (lastTrackTime && now - parseInt(lastTrackTime, 10) < 45000) {
+        return; // Debounced for 45s per path
+      }
+
+      // 2. Resolve Supabase client
+      let client = window.supabaseClient;
+      if (!client && window.supabase && window.storeConfig?.supabase) {
+        client = window.supabase.createClient(
+          window.storeConfig.supabase.url,
+          window.storeConfig.supabase.anonKey
+        );
+      }
+
+      if (!client) {
+        // Fallback default config if storeConfig not yet loaded
+        const fallbackUrl = 'https://ymaulztlbctpzyhdhjvn.supabase.co';
+        const fallbackKey = 'sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u';
+        if (window.supabase) {
+          client = window.supabase.createClient(fallbackUrl, fallbackKey);
+        }
+      }
+
+      if (!client || typeof client.rpc !== 'function') {
+        return;
+      }
+
+      sessionStorage.setItem(lastTrackKey, now.toString());
+
+      const screenRes = `${window.screen?.width || window.innerWidth}x${window.screen?.height || window.innerHeight}`;
+      const referer = document.referrer || '';
+
+      const { data, error } = await client.rpc('log_page_visit', {
+        p_path: currentPath,
+        p_referer: referer.substring(0, 250),
+        p_screen: screenRes
+      });
+
+      if (error) {
+        console.debug('[TRACKER] Log skipped:', error.message);
+        return;
+      }
+
+      // 3. Blacklist enforcement
+      if (data && data.is_blacklisted) {
+        console.warn('[SECURITY] Visitor IP is blacklisted:', data.ip);
+        enforceBlacklistModal(data.ip);
+      }
+    } catch (err) {
+      // Silent error - do not disrupt storefront UX
+      console.debug('[TRACKER] Silent failure:', err);
+    }
+  }
+
+  function enforceBlacklistModal(ip) {
+    // If the modal already exists, do not recreate
+    if (document.getElementById('blacklist-lockdown-overlay')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'blacklist-lockdown-overlay';
+    overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 999999;
+      background: rgba(3, 7, 18, 0.96); backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem; font-family: ui-sans-serif, system-ui, sans-serif;
+    `;
+
+    overlay.innerHTML = `
+      <div style="max-width: 440px; width: 100%; background: #0b0f19; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+        <div style="width: 56px; height: 56px; margin: 0 auto 1.25rem; border-radius: 50%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;">
+          🚫
+        </div>
+        <h3 style="color: #f87171; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">การเข้าถึงถูกระงับ (Access Denied)</h3>
+        <p style="color: #94a3b8; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1.25rem;">
+          IP ของคุณ (<code style="color: #cbd5e1; background: #1e293b; padding: 2px 6px; border-radius: 6px;">${ip || 'Unknown'}</code>) อยู่ในบัญชีดำความปลอดภัยของระบบ กรุณาติดต่อแอดมินหากคุณคิดว่าเกิดข้อผิดพลาด
+        </p>
+        <div style="font-size: 0.75rem; color: #64748b;">NYX9 Studio Shield • Security Protocol Active</div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    // Prevent interaction with page
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Execute tracking when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisitor);
+  } else {
+    // Run with slight delay to prioritize critical rendering
+    setTimeout(trackVisitor, 500);
+  }
+})();
+
+
+
+/* ============================================================================== */
 /* 📦 MODULE: app.js */
 /* ============================================================================== */
 /**
@@ -5655,12 +5909,12 @@ window.claimOrderToDiscord = (orderId, title, date) => {
 
   navigator.clipboard.writeText(ticketText).then(() => {
     window.UI?.toast("📋 คัดลอกแบบฟอร์มเคลมแล้ว! กำลังเปิดห้อง Ticket ใน Discord...", "success");
-    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    const discordUrl = window.storeConfig?.discordCommunityUrl || window.storeConfig?.communityLinks?.discord || "https://discord.gg/NTPcxKHrag";
     setTimeout(() => {
       window.open(discordUrl, "_blank");
     }, 600);
   }).catch(() => {
-    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    const discordUrl = window.storeConfig?.discordCommunityUrl || window.storeConfig?.communityLinks?.discord || "https://discord.gg/NTPcxKHrag";
     window.open(discordUrl, "_blank");
   });
 };
@@ -5965,7 +6219,7 @@ window.handleContactSubmit = function() {
     setTimeout(() => toast.classList.add('hidden'), 4000);
   }
 
-  const discordUrl = window.Shop?.store?.get('discordCommunityUrl') || 'https://discord.gg/your-invite';
+  const discordUrl = window.Shop?.store?.get('discordCommunityUrl') || window.storeConfig?.discordCommunityUrl || 'https://discord.gg/NTPcxKHrag';
   setTimeout(() => {
     window.open(discordUrl, '_blank');
   }, 600);

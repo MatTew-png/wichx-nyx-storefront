@@ -8,7 +8,11 @@
     "dev": "node dev-server.js",
     "start": "node dev-server.js",
     "test": "node scripts/unified-verification.js",
-    "test:verify": "node scripts/unified-verification.js"
+    "test:verify": "node scripts/unified-verification.js",
+    "test:load": "node scripts/load-test/run-audit.js",
+    "test:k6": "node scripts/load-test/run-stress.js",
+    "test:burst": "node scripts/load-test/run-burst.js",
+    "test:headers": "node scripts/load-test/test-security-headers.js"
   },
   "keywords": [
     "ecommerce",

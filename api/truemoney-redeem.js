@@ -28,15 +28,15 @@ module.exports = async (req, res) => {
     const merchantPhone = process.env.TRUEMONEY_PHONE;
     const clientIp = getClientIp(req);
 
-    if (!voucherUrl) {
-      return res.status(400).json({ success: false, message: "กรุณาระบุลิงก์ซองของขวัญ TrueMoney" });
+    if (!voucherUrl || typeof voucherUrl !== 'string' || voucherUrl.length > 512) {
+      return res.status(400).json({ success: false, message: "กรุณาระบุลิงก์ซองของขวัญ TrueMoney ที่ถูกต้อง" });
     }
 
     const voucherCodeMatch = voucherUrl.match(/[?&]v=([a-zA-Z0-9]+)/);
     const voucherCode = voucherCodeMatch ? voucherCodeMatch[1] : (voucherUrl.trim().length >= 10 ? voucherUrl.trim() : null);
 
-    if (!voucherCode) {
-      return res.status(400).json({ success: false, message: "รูปแบบลิงก์ซองของขวัญไม่ถูกต้อง (ไม่พบรหัส v=)" });
+    if (!voucherCode || !/^[a-zA-Z0-9]{10,64}$/.test(voucherCode)) {
+      return res.status(400).json({ success: false, message: "รูปแบบรหัสซองของขวัญไม่ถูกต้อง (ต้องเป็นตัวอักษรและตัวเลข 10-64 ตัว)" });
     }
 
     const transRef = `TM-${voucherCode}`;

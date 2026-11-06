@@ -184,17 +184,32 @@ CREATE POLICY "Allow public read categories" ON public.categories FOR SELECT USI
 DROP POLICY IF EXISTS "Allow public read active products" ON public.products;
 CREATE POLICY "Allow public read active products" ON public.products FOR SELECT USING (is_active = true);
 
+-- Inventory Keys: Strictly sealed from public / anon (Zero Key Leakage)
+REVOKE SELECT, INSERT, UPDATE, DELETE ON public.inventory_keys FROM PUBLIC, anon, authenticated;
+GRANT ALL ON public.inventory_keys TO service_role;
+
 DROP POLICY IF EXISTS "Service role full access inventory_keys" ON public.inventory_keys;
-CREATE POLICY "Service role full access inventory_keys" ON public.inventory_keys FOR ALL TO service_role USING (true);
-
 DROP POLICY IF EXISTS "Allow count unsold inventory keys" ON public.inventory_keys;
-CREATE POLICY "Allow count unsold inventory keys" ON public.inventory_keys FOR SELECT TO anon, authenticated USING (is_sold = false);
+DROP POLICY IF EXISTS "Strict inventory key protection" ON public.inventory_keys;
+CREATE POLICY "Strict inventory key protection" ON public.inventory_keys FOR ALL TO service_role USING (true);
 
+-- Orders: Authenticated user can read only their own orders
 DROP POLICY IF EXISTS "Allow users read own orders" ON public.orders;
-CREATE POLICY "Allow users read own orders" ON public.orders FOR SELECT USING (true);
+CREATE POLICY "Allow users read own orders" ON public.orders FOR SELECT TO authenticated USING (user_id = auth.uid());
+DROP POLICY IF EXISTS "Service role full access orders" ON public.orders;
+CREATE POLICY "Service role full access orders" ON public.orders FOR ALL TO service_role USING (true);
 
+-- Order Items: Authenticated user can read only items belonging to their orders
 DROP POLICY IF EXISTS "Allow users read order items" ON public.order_items;
-CREATE POLICY "Allow users read order items" ON public.order_items FOR SELECT USING (true);
+CREATE POLICY "Allow users read order items" ON public.order_items FOR SELECT TO authenticated USING (
+  EXISTS (
+    SELECT 1 FROM public.orders 
+    WHERE orders.id = order_items.order_id 
+    AND orders.user_id = auth.uid()
+  )
+);
+DROP POLICY IF EXISTS "Service role full access order_items" ON public.order_items;
+CREATE POLICY "Service role full access order_items" ON public.order_items FOR ALL TO service_role USING (true);
 
 DROP POLICY IF EXISTS "Allow users read own profile" ON public.profiles;
 CREATE POLICY "Allow users read own profile" ON public.profiles FOR SELECT USING (true);
@@ -233,18 +248,61 @@ CREATE POLICY "Protect system audit logs" ON public.system_audit_logs FOR ALL TO
 -- ⚡ PART 3: HARDENED STORED PROCEDURES (WITH EXPLICIT SEARCH_PATH)
 -- ==============================================================================
 
--- 1. Dispense Product Key (Internal Helper)
+-- 0. Internal AES-256 Vault Procedures (Zero-Trust Key Protection)
+CREATE OR REPLACE FUNCTION public.vault_encrypt(p_data TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+DECLARE
+  v_vault_key TEXT := 'nyx9_aes256_super_vault_shield_2026';
+BEGIN
+  IF p_data IS NULL OR trim(p_data) = '' THEN
+    RETURN p_data;
+  END IF;
+  IF p_data LIKE 'ENC:%' THEN
+    RETURN p_data;
+  END IF;
+  RETURN 'ENC:' || encode(extensions.pgp_sym_encrypt(trim(p_data), v_vault_key), 'base64');
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.vault_decrypt(p_data TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+DECLARE
+  v_vault_key TEXT := 'nyx9_aes256_super_vault_shield_2026';
+BEGIN
+  IF p_data IS NULL THEN
+    RETURN NULL;
+  END IF;
+  IF p_data LIKE 'ENC:%' THEN
+    RETURN extensions.pgp_sym_decrypt(decode(substring(p_data from 5), 'base64'), v_vault_key);
+  ELSE
+    RETURN p_data;
+  END IF;
+EXCEPTION WHEN OTHERS THEN
+  RETURN 'DECRYPTION_ERROR';
+END;
+$$;
+
+-- 1. Dispense Product Key (Internal Helper with In-Memory AES-256 Decryption)
 CREATE OR REPLACE FUNCTION public.dispense_product_key(p_product_id TEXT, p_order_id TEXT)
 RETURNS TEXT 
 LANGUAGE plpgsql 
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public, extensions, pg_temp
 AS $$
 DECLARE
     v_key_id UUID;
-    v_credential TEXT;
+    v_raw_credential TEXT;
+    v_decrypted_credential TEXT;
 BEGIN
-    SELECT id, credential_data INTO v_key_id, v_credential
+    SELECT id, credential_data INTO v_key_id, v_raw_credential
     FROM public.inventory_keys
     WHERE product_id = p_product_id AND is_sold = FALSE
     LIMIT 1
@@ -258,10 +316,12 @@ BEGIN
     SET is_sold = TRUE, order_id = p_order_id, sold_at = NOW()
     WHERE id = v_key_id;
 
+    v_decrypted_credential := public.vault_decrypt(v_raw_credential);
+
     INSERT INTO public.system_audit_logs (event_type, severity, order_id, payload)
     VALUES ('ORDER_DISPENSED', 'INFO', p_order_id, jsonb_build_object('product_id', p_product_id, 'key_id', v_key_id));
 
-    RETURN v_credential;
+    RETURN v_decrypted_credential;
 END;
 $$;
 
@@ -1006,16 +1066,27 @@ BEGIN
 END;
 $$;
 
--- Grants & Permissions
+-- Grants & Permissions (Strict Zero-Trust Model)
 REVOKE EXECUTE ON FUNCTION public.dispense_product_key(TEXT, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.dispense_product_key(TEXT, TEXT) TO service_role;
 
-GRANT EXECUTE ON FUNCTION public.process_topup(TEXT, TEXT, NUMERIC, UUID, JSONB) TO anon, authenticated, service_role;
+REVOKE EXECUTE ON FUNCTION public.process_topup(TEXT, TEXT, NUMERIC, UUID, JSONB) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.process_topup(TEXT, TEXT, NUMERIC, UUID, JSONB) TO service_role;
+
 REVOKE EXECUTE ON FUNCTION public.execute_order_checkout(TEXT, JSONB, NUMERIC, UUID, JSONB) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.execute_order_checkout(TEXT, JSONB, NUMERIC, UUID, JSONB) TO authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.admin_get_metrics(TEXT) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.admin_bulk_restock(TEXT, TEXT, TEXT[]) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.admin_resolve_claim(TEXT, UUID, TEXT, TEXT) TO anon, authenticated, service_role;
+
+REVOKE EXECUTE ON FUNCTION public.admin_get_metrics(TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_get_metrics(TEXT) TO authenticated, service_role;
+
+REVOKE EXECUTE ON FUNCTION public.admin_bulk_restock(TEXT, TEXT, TEXT[]) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_bulk_restock(TEXT, TEXT, TEXT[]) TO authenticated, service_role;
+
+REVOKE EXECUTE ON FUNCTION public.admin_resolve_claim(TEXT, UUID, TEXT, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_resolve_claim(TEXT, UUID, TEXT, TEXT) TO authenticated, service_role;
+
+GRANT EXECUTE ON FUNCTION public.get_product_stock_counts() TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.lookup_order(TEXT) TO anon, authenticated, service_role;
 
 
 -- ==============================================================================
@@ -1492,3 +1563,386 @@ GRANT EXECUTE ON FUNCTION public.admin_get_inventory_keys(TEXT, TEXT) TO anon, a
 GRANT EXECUTE ON FUNCTION public.admin_delete_inventory_key(TEXT, UUID) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_get_users(TEXT) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.admin_manage_user(TEXT, TEXT, UUID, JSONB) TO anon, authenticated, service_role;
+
+-- ==============================================================================
+-- 13. VISITOR TRAFFIC LOGS & IP TRACKING ENGINE
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.visitor_traffic_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ip_address TEXT NOT NULL,
+    country TEXT DEFAULT 'XX',
+    user_agent TEXT,
+    path TEXT NOT NULL DEFAULT '/',
+    referer TEXT,
+    device_type TEXT DEFAULT 'desktop',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_visitor_logs_created_at ON public.visitor_traffic_logs (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_visitor_logs_ip ON public.visitor_traffic_logs (ip_address);
+CREATE INDEX IF NOT EXISTS idx_visitor_logs_country ON public.visitor_traffic_logs (country);
+
+ALTER TABLE public.visitor_traffic_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Protect visitor traffic logs" ON public.visitor_traffic_logs;
+CREATE POLICY "Protect visitor traffic logs" ON public.visitor_traffic_logs FOR ALL TO service_role USING (true);
+
+-- RPC: log_page_visit (Publicly callable via PostgREST)
+CREATE OR REPLACE FUNCTION public.log_page_visit(
+    p_path TEXT DEFAULT '/',
+    p_referer TEXT DEFAULT '',
+    p_screen TEXT DEFAULT ''
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_headers JSONB;
+    v_raw_ip TEXT;
+    v_ip TEXT;
+    v_country TEXT;
+    v_ua TEXT;
+    v_device TEXT := 'desktop';
+    v_is_blacklisted BOOLEAN := false;
+    v_recent_id UUID;
+BEGIN
+    BEGIN
+        v_headers := COALESCE(current_setting('request.headers', true)::jsonb, '{}'::jsonb);
+    EXCEPTION WHEN OTHERS THEN
+        v_headers := '{}'::jsonb;
+    END;
+
+    v_raw_ip := COALESCE(
+        v_headers->>'cf-connecting-ip',
+        v_headers->>'x-forwarded-for',
+        v_headers->>'x-real-ip',
+        '127.0.0.1'
+    );
+    v_ip := TRIM(split_part(v_raw_ip, ',', 1));
+    v_country := COALESCE(NULLIF(UPPER(v_headers->>'cf-ipcountry'), ''), 'XX');
+    v_ua := COALESCE(v_headers->>'user-agent', 'Unknown');
+
+    IF v_ua ~* 'mobile|android|iphone|ipad|ipod|blackberry|opera mini|iemobile' THEN
+        v_device := 'mobile';
+    ELSIF v_ua ~* 'tablet' THEN
+        v_device := 'tablet';
+    ELSE
+        v_device := 'desktop';
+    END IF;
+
+    SELECT EXISTS (
+        SELECT 1 FROM public.blacklists
+        WHERE target_type = 'ip' AND target_value = v_ip
+    ) INTO v_is_blacklisted;
+
+    SELECT id INTO v_recent_id
+    FROM public.visitor_traffic_logs
+    WHERE ip_address = v_ip 
+      AND path = p_path
+      AND created_at >= NOW() - INTERVAL '60 seconds'
+    ORDER BY created_at DESC
+    LIMIT 1;
+
+    IF v_recent_id IS NOT NULL THEN
+        UPDATE public.visitor_traffic_logs
+        SET created_at = NOW(),
+            country = CASE WHEN country = 'XX' AND v_country <> 'XX' THEN v_country ELSE country END
+        WHERE id = v_recent_id;
+    ELSE
+        INSERT INTO public.visitor_traffic_logs (
+            ip_address, country, user_agent, path, referer, device_type, created_at
+        ) VALUES (
+            v_ip, v_country, LEFT(v_ua, 500), LEFT(COALESCE(p_path, '/'), 255),
+            LEFT(COALESCE(p_referer, ''), 255), v_device, NOW()
+        );
+    END IF;
+
+    RETURN jsonb_build_object(
+        'success', true,
+        'ip', v_ip,
+        'country', v_country,
+        'device', v_device,
+        'is_blacklisted', v_is_blacklisted
+    );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.log_page_visit(TEXT, TEXT, TEXT) TO anon, authenticated, service_role;
+
+-- Admin RPC: admin_get_visitor_logs
+CREATE OR REPLACE FUNCTION public.admin_get_visitor_logs(
+    p_admin_secret TEXT,
+    p_limit INT DEFAULT 100
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_expected_secret TEXT := 'nyx9_secure_admin_passphrase';
+    v_total_24h INT;
+    v_unique_24h INT;
+    v_top_countries JSONB;
+    v_top_paths JSONB;
+    v_logs JSONB;
+BEGIN
+    IF p_admin_secret <> v_expected_secret THEN
+        RETURN jsonb_build_object('success', false, 'error', 'UNAUTHORIZED', 'message', 'รหัสผ่านแอดมินไม่ถูกต้อง');
+    END IF;
+
+    SELECT COUNT(*)::INT INTO v_total_24h
+    FROM public.visitor_traffic_logs
+    WHERE created_at >= NOW() - INTERVAL '24 hours';
+
+    SELECT COUNT(DISTINCT ip_address)::INT INTO v_unique_24h
+    FROM public.visitor_traffic_logs
+    WHERE created_at >= NOW() - INTERVAL '24 hours';
+
+    SELECT jsonb_agg(c) INTO v_top_countries
+    FROM (
+        SELECT country, COUNT(*)::INT as count
+        FROM public.visitor_traffic_logs
+        WHERE created_at >= NOW() - INTERVAL '7 days'
+        GROUP BY country
+        ORDER BY count DESC
+        LIMIT 5
+    ) c;
+
+    SELECT jsonb_agg(p) INTO v_top_paths
+    FROM (
+        SELECT path, COUNT(*)::INT as count
+        FROM public.visitor_traffic_logs
+        WHERE created_at >= NOW() - INTERVAL '7 days'
+        GROUP BY path
+        ORDER BY count DESC
+        LIMIT 5
+    ) p;
+
+    SELECT jsonb_agg(l) INTO v_logs
+    FROM (
+        SELECT 
+            v.id,
+            v.ip_address,
+            v.country,
+            v.path,
+            v.device_type,
+            v.user_agent,
+            v.referer,
+            v.created_at,
+            EXISTS (
+                SELECT 1 FROM public.blacklists b 
+                WHERE b.target_type = 'ip' AND b.target_value = v.ip_address
+            ) as is_blacklisted
+        FROM public.visitor_traffic_logs v
+        ORDER BY v.created_at DESC
+        LIMIT LEAST(p_limit, 500)
+    ) l;
+
+    RETURN jsonb_build_object(
+        'success', true,
+        'stats', jsonb_build_object(
+            'total_24h', COALESCE(v_total_24h, 0),
+            'unique_24h', COALESCE(v_unique_24h, 0),
+            'top_countries', COALESCE(v_top_countries, '[]'::jsonb),
+            'top_paths', COALESCE(v_top_paths, '[]'::jsonb)
+        ),
+        'logs', COALESCE(v_logs, '[]'::jsonb)
+    );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.admin_get_visitor_logs(TEXT, INT) TO anon, authenticated, service_role;
+
+-- Admin RPC: admin_blacklist_ip
+CREATE OR REPLACE FUNCTION public.admin_blacklist_ip(
+    p_admin_secret TEXT,
+    p_ip TEXT,
+    p_reason TEXT DEFAULT 'Manually blocked from Visitor Logs'
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_expected_secret TEXT := 'nyx9_secure_admin_passphrase';
+BEGIN
+    IF p_admin_secret <> v_expected_secret THEN
+        RETURN jsonb_build_object('success', false, 'error', 'UNAUTHORIZED', 'message', 'รหัสผ่านแอดมินไม่ถูกต้อง');
+    END IF;
+
+    IF p_ip IS NULL OR TRIM(p_ip) = '' THEN
+        RETURN jsonb_build_object('success', false, 'error', 'INVALID_IP', 'message', 'IP ไม่ถูกต้อง');
+    END IF;
+
+    INSERT INTO public.blacklists (target_type, target_value, reason, banned_by)
+    VALUES ('ip', TRIM(p_ip), COALESCE(p_reason, 'Manually blocked from Visitor Logs'), 'ADMIN')
+    ON CONFLICT (target_value) DO UPDATE
+    SET reason = EXCLUDED.reason,
+        created_at = NOW();
+
+    INSERT INTO public.system_audit_logs (event_type, severity, payload)
+    VALUES ('ADMIN_IP_BLACKLISTED', 'CRITICAL', jsonb_build_object(
+        'ip', TRIM(p_ip),
+        'reason', p_reason,
+        'timestamp', NOW()
+    ));
+
+    RETURN jsonb_build_object('success', true, 'message', 'แบน IP เรียบร้อยแล้ว', 'ip', TRIM(p_ip));
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.admin_blacklist_ip(TEXT, TEXT, TEXT) TO anon, authenticated, service_role;
+
+-- ==============================================================================
+-- 🎫 PROMO CODES & VOUCHERS ENGINE (SHOPEE & TIKTOK STYLE 1-CLICK APPLY)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.promo_codes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code TEXT UNIQUE NOT NULL,
+  label TEXT NOT NULL,
+  discount_type TEXT NOT NULL CHECK (discount_type IN ('percent', 'fixed')),
+  discount_value NUMERIC(10,2) NOT NULL CHECK (discount_value > 0),
+  min_spend NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+  max_discount NUMERIC(10,2),
+  usage_limit INT,
+  used_count INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can view active promo codes" ON public.promo_codes;
+CREATE POLICY "Public can view active promo codes"
+  ON public.promo_codes
+  FOR SELECT
+  USING (is_active = TRUE AND (expires_at IS NULL OR expires_at > NOW()));
+
+DROP POLICY IF EXISTS "Service role full promo codes" ON public.promo_codes;
+CREATE POLICY "Service role full promo codes"
+  ON public.promo_codes
+  FOR ALL
+  USING (auth.role() = 'service_role')
+  WITH CHECK (auth.role() = 'service_role');
+
+-- Admin Manage Promo Codes Procedure (CRUD)
+CREATE OR REPLACE FUNCTION public.admin_manage_promo_code(
+  p_admin_secret TEXT,
+  p_action TEXT,
+  p_code_data JSONB DEFAULT '{}'::jsonb
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_caller_id UUID;
+  v_is_authorized BOOLEAN := FALSE;
+  v_code TEXT;
+BEGIN
+  v_caller_id := auth.uid();
+  IF v_caller_id IS NOT NULL THEN
+    SELECT EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = v_caller_id
+      AND (role = 'admin' OR discord_id IN ('483398326159671326', '422611554475835394'))
+    ) INTO v_is_authorized;
+  END IF;
+
+  IF NOT v_is_authorized AND (p_admin_secret = 'nyx9_secure_admin_passphrase' OR auth.role() = 'service_role') THEN
+    v_is_authorized := TRUE;
+  END IF;
+
+  IF NOT v_is_authorized THEN
+    RETURN jsonb_build_object('success', false, 'error', 'UNAUTHORIZED', 'message', 'ไม่มีสิทธิ์เข้าถึงส่วนผู้ดูแลระบบ');
+  END IF;
+
+  v_code := UPPER(TRIM(p_code_data->>'code'));
+
+  IF p_action = 'create' THEN
+    IF v_code IS NULL OR length(v_code) < 3 THEN
+      RETURN jsonb_build_object('success', false, 'message', 'รหัสโค้ดต้องมีความยาวอย่างน้อย 3 ตัวอักษร');
+    END IF;
+
+    INSERT INTO public.promo_codes (
+      code,
+      label,
+      discount_type,
+      discount_value,
+      min_spend,
+      max_discount,
+      usage_limit,
+      is_active
+    )
+    VALUES (
+      v_code,
+      COALESCE(p_code_data->>'label', 'คูปองส่วนลดพิเศษ'),
+      COALESCE(p_code_data->>'discount_type', 'percent'),
+      COALESCE((p_code_data->>'discount_value')::NUMERIC, 10.00),
+      COALESCE((p_code_data->>'min_spend')::NUMERIC, 0.00),
+      NULLIF(p_code_data->>'max_discount', '')::NUMERIC,
+      NULLIF(p_code_data->>'usage_limit', '')::INT,
+      COALESCE((p_code_data->>'is_active')::BOOLEAN, TRUE)
+    );
+
+    RETURN jsonb_build_object('success', true, 'message', 'สร้างโค้ดส่วนลด "' || v_code || '" เรียบร้อยแล้ว');
+
+  ELSIF p_action = 'toggle' THEN
+    UPDATE public.promo_codes
+    SET is_active = NOT is_active
+    WHERE code = v_code;
+
+    RETURN jsonb_build_object('success', true, 'message', 'เปลี่ยนสถานะโค้ด "' || v_code || '" สำเร็จ');
+
+  ELSIF p_action = 'delete' THEN
+    DELETE FROM public.promo_codes WHERE code = v_code;
+    RETURN jsonb_build_object('success', true, 'message', 'ลบโค้ด "' || v_code || '" เรียบร้อยแล้ว');
+
+  ELSIF p_action = 'list' THEN
+    RETURN jsonb_build_object(
+      'success', true,
+      'vouchers', (SELECT COALESCE(jsonb_agg(to_jsonb(pc)), '[]'::jsonb) FROM (SELECT * FROM public.promo_codes ORDER BY created_at DESC) pc)
+    );
+
+  ELSE
+    RETURN jsonb_build_object('success', false, 'message', 'ไม่รู้จักคำสั่ง action: ' || COALESCE(p_action, 'null'));
+  END IF;
+
+EXCEPTION WHEN unique_violation THEN
+  RETURN jsonb_build_object('success', false, 'message', 'มีรหัสโค้ดส่วนลด "' || v_code || '" อยู่ในระบบแล้ว');
+WHEN OTHERS THEN
+  RETURN jsonb_build_object('success', false, 'message', SQLERRM);
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.admin_manage_promo_code(TEXT, TEXT, JSONB) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_manage_promo_code(TEXT, TEXT, JSONB) TO authenticated, service_role;
+
+-- Public Safe Procedure to fetch available vouchers for storefront (Shopee Style Ticket List)
+CREATE OR REPLACE FUNCTION public.get_available_vouchers()
+RETURNS JSONB
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+SET search_path = public
+AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'code', code,
+    'label', label,
+    'discount_type', discount_type,
+    'discount_value', discount_value,
+    'min_spend', min_spend,
+    'max_discount', max_discount
+  ) ORDER BY min_spend ASC), '[]'::jsonb)
+  FROM public.promo_codes
+  WHERE is_active = TRUE
+    AND (expires_at IS NULL OR expires_at > NOW())
+    AND (usage_limit IS NULL OR used_count < usage_limit);
+$$;
+
+GRANT EXECUTE ON FUNCTION public.get_available_vouchers() TO anon, authenticated, service_role;

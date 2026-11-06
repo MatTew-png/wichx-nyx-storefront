@@ -12,6 +12,7 @@ class CartDrawerComponent {
 
     this.store.on("change:cart", () => this.render());
     this.store.on("change:appliedPromo", () => this.render());
+    this.store.on("change:availableVouchers", () => this.render());
   }
 
   toggle() {
@@ -23,6 +24,9 @@ class CartDrawerComponent {
     if (!container || !backdrop || !drawer) return;
 
     if (this.isOpen) {
+      if (typeof this.checkoutService.loadAvailableVouchers === "function") {
+        this.checkoutService.loadAvailableVouchers();
+      }
       container.classList.remove("hidden");
       setTimeout(() => {
         backdrop.classList.remove("opacity-0");
@@ -98,6 +102,81 @@ class CartDrawerComponent {
     `).join("");
 
     this.updateSummary();
+    this.renderVouchers();
+    if (window.lucide) lucide.createIcons();
+  }
+
+  renderVouchers() {
+    const container = document.getElementById("cart-vouchers-container");
+    if (!container) return;
+
+    const vouchers = this.store.get("availableVouchers") || [];
+    const cart = this.store.get("cart") || [];
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const appliedPromo = this.store.get("appliedPromo");
+
+    if (vouchers.length === 0) {
+      container.innerHTML = `
+        <div class="text-[11px] text-slate-500 py-1.5 px-3 rounded-xl bg-white/[0.02] border border-white/[0.04] text-center italic">
+          ไม่มีคูปองส่วนลดที่ใช้งานได้ในขณะนี้
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = vouchers.map(v => {
+      const isApplied = appliedPromo && appliedPromo.code === v.code;
+      const minSpend = Number(v.min_spend || v.minSpend || 0);
+      const isEligible = subtotal >= minSpend;
+      const isFixed = v.discount_type === 'fixed' || v.discountThb;
+      const discountVal = isFixed ? `฿${Number(v.discount_value || v.discountThb).toFixed(0)}` : `${Number(v.discount_value || v.discountPercent).toFixed(0)}%`;
+
+      let badgeBg = isApplied ? 'border-emerald-500/40 bg-emerald-500/10' : (isEligible ? 'border-pink-500/30 bg-pink-500/5 hover:border-pink-500/60' : 'border-white/[0.06] bg-white/[0.02] opacity-60');
+
+      let actionHtml = '';
+      if (isApplied) {
+        actionHtml = `
+          <button onclick="window.removeCouponCode()" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold flex items-center gap-1 active:scale-95 cursor-pointer" title="ยกเลิกโค้ดนี้">
+            <i data-lucide="check" class="w-3 h-3"></i>
+            <span>ใช้แล้ว</span>
+          </button>
+        `;
+      } else if (isEligible) {
+        actionHtml = `
+          <button onclick="window.applyDirectCoupon('${v.code}')" class="px-3 py-1 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-bold text-[10px] shadow-sm shadow-pink-500/20 active:scale-95 transition-all cursor-pointer">
+            ใช้โค้ด
+          </button>
+        `;
+      } else {
+        const diff = (minSpend - subtotal).toFixed(0);
+        actionHtml = `
+          <span class="text-[9px] text-slate-500 font-mono text-right leading-tight block">
+            ซื้อเพิ่มอีก<br><strong class="text-rose-400">฿${diff}</strong>
+          </span>
+        `;
+      }
+
+      return `
+        <div class="p-2.5 rounded-xl border ${badgeBg} transition-all flex items-center justify-between gap-2.5 group">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-lg bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center shrink-0 font-extrabold text-[11px] font-mono">
+              ${discountVal}
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white flex items-center gap-1.5 truncate">
+                <span class="font-mono">${v.code}</span>
+                ${minSpend > 0 ? `<span class="text-[9px] text-slate-400 font-normal">ขั้นต่ำ ฿${minSpend}</span>` : `<span class="text-[9px] text-emerald-400 font-normal">ไม่มีขั้นต่ำ</span>`}
+              </div>
+              <div class="text-[10px] text-slate-400 truncate">${v.label || 'คูปองส่วนลดพิเศษ'}</div>
+            </div>
+          </div>
+          <div class="shrink-0">
+            ${actionHtml}
+          </div>
+        </div>
+      `;
+    }).join("");
+
     if (window.lucide) lucide.createIcons();
   }
 
@@ -161,3 +240,14 @@ class CartDrawerComponent {
 }
 
 window.CartDrawerComponent = CartDrawerComponent;
+
+window.applyDirectCoupon = (code) => {
+  if (window.Shop?.cartManager) {
+    try {
+      const promo = window.Shop.checkoutService.applyCoupon(code);
+      window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
+    } catch (err) {
+      window.UI?.toast(err.message, "error");
+    }
+  }
+};

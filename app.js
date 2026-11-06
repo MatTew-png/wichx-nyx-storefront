@@ -315,12 +315,12 @@ window.claimOrderToDiscord = (orderId, title, date) => {
 
   navigator.clipboard.writeText(ticketText).then(() => {
     window.UI?.toast("📋 คัดลอกแบบฟอร์มเคลมแล้ว! กำลังเปิดห้อง Ticket ใน Discord...", "success");
-    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    const discordUrl = window.storeConfig?.discordCommunityUrl || window.storeConfig?.communityLinks?.discord || "https://discord.gg/NTPcxKHrag";
     setTimeout(() => {
       window.open(discordUrl, "_blank");
     }, 600);
   }).catch(() => {
-    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    const discordUrl = window.storeConfig?.discordCommunityUrl || window.storeConfig?.communityLinks?.discord || "https://discord.gg/NTPcxKHrag";
     window.open(discordUrl, "_blank");
   });
 };
@@ -625,7 +625,7 @@ window.handleContactSubmit = function() {
     setTimeout(() => toast.classList.add('hidden'), 4000);
   }
 
-  const discordUrl = window.Shop?.store?.get('discordCommunityUrl') || 'https://discord.gg/your-invite';
+  const discordUrl = window.Shop?.store?.get('discordCommunityUrl') || window.storeConfig?.discordCommunityUrl || 'https://discord.gg/NTPcxKHrag';
   setTimeout(() => {
     window.open(discordUrl, '_blank');
   }, 600);

@@ -2,5 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /docs/
+Disallow: /admin.html
+Disallow: /database/
+Disallow: /scripts/
+Disallow: /scratch/
+Disallow: /.env*
 
 Sitemap: https://nyxning.shop/sitemap.xml

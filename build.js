@@ -26,6 +26,7 @@ const SOURCE_FILES = [
   'js/components/Modals.js',
   'js/components/SocialProof.js',
   'js/components/AmbientWaves.js',
+  'js/visitor-tracker.js',
   'app.js'
 ];
 

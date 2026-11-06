@@ -44,20 +44,25 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, message: "ไม่มีสินค้าในคำสั่งซื้อ" });
     }
 
-    // 2. คำนวณยอดเงินและส่วนลด
+    if (items.length > 50) {
+      return res.status(400).json({ success: false, message: "จำนวนรายการสินค้าเกินขีดจำกัด (สูงสุด 50 รายการ)" });
+    }
+
+    // 2. คำนวณยอดเงินและส่วนลด (Sanitize inputs)
     let verifiedTotal = 0;
     for (const item of items) {
-      const price = parseFloat(item.price) || 0;
-      const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+      const price = Math.max(0, parseFloat(item.price) || 0);
+      const qty = Math.min(100, Math.max(1, parseInt(item.quantity, 10) || 1));
       verifiedTotal += price * qty;
     }
 
+    const sanitizedPromo = typeof promoCode === 'string' ? promoCode.trim().toUpperCase().slice(0, 20) : null;
     let discountAmount = 0;
-    if (promoCode === "NYX9VIP" && verifiedTotal >= 100) {
+    if (sanitizedPromo === "NYX9VIP" && verifiedTotal >= 100) {
       discountAmount = (verifiedTotal * 0.10);
-    } else if (promoCode === "NYX50" && verifiedTotal >= 300) {
+    } else if (sanitizedPromo === "NYX50" && verifiedTotal >= 300) {
       discountAmount = 50.00;
-    } else if (promoCode === "CYBERVIP" && verifiedTotal >= 500) {
+    } else if (sanitizedPromo === "CYBERVIP" && verifiedTotal >= 500) {
       discountAmount = (verifiedTotal * 0.15);
     }
 

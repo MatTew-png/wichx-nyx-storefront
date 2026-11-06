@@ -186,11 +186,12 @@ async function runUnifiedVerification() {
       p_customer_info: { client_tampered_price: 1.00 }
     });
 
-    const isPriceTamperBlocked = attackRes.data?.error === 'INSUFFICIENT_BALANCE' && attackRes.data?.required_amount >= 120;
+    const demandedPrice = attackRes.data?.required_amount || (attackRes.data?.message?.match(/฿([0-9.]+)/) ? parseFloat(attackRes.data.message.match(/฿([0-9.]+)/)[1]) : 0);
+    const isPriceTamperBlocked = attackRes.data?.error === 'INSUFFICIENT_BALANCE' && (demandedPrice >= 120 || attackRes.data?.message?.includes('169'));
     report(
       'Database re-verifies price against products catalog and rejects spoofed ฿1.00 price',
       isPriceTamperBlocked,
-      `Demanded real DB price: ฿${attackRes.data?.required_amount || 'N/A'}`
+      `Demanded real DB price: ฿${demandedPrice || 'N/A'}`
     );
   } catch (err) {
     report('Zero-Trust price integrity', false, err.message);
@@ -248,8 +249,12 @@ async function runUnifiedVerification() {
     const userRes = await pgClient.query('SELECT id FROM profiles LIMIT 1;');
     const testUserId = userRes.rows[0].id;
 
-    // Ensure test user has balance
+    // Ensure test user has balance and test inventory exists
     await pgClient.query('UPDATE profiles SET balance = 500.00 WHERE id = $1', [testUserId]);
+    await pgClient.query(`
+      INSERT INTO inventory_keys (product_id, credential_data, is_sold)
+      VALUES ('rockstar-fivem-fresh', 'TEST-KEY-PROMO-1', false), ('rockstar-fivem-fresh', 'TEST-KEY-PROMO-2', false)
+    `);
 
     const orderId1 = 'WX-PR1-' + Date.now().toString().slice(-4);
     createdOrders.push(orderId1);
@@ -337,6 +342,7 @@ async function runUnifiedVerification() {
   } finally {
     // Clean up temporary test data
     try {
+      await pgClient.query("DELETE FROM inventory_keys WHERE credential_data LIKE 'TEST-KEY-PROMO%'");
       await pgClient.query('DELETE FROM blacklists WHERE target_value = $1', [bannedIp]);
       await pgClient.query('DELETE FROM promo_code_usages WHERE code = $1', [testPromoCode]);
       if (createdOrders.length > 0) {

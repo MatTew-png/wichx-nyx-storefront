@@ -7,6 +7,7 @@
  * ==============================================================================
  */
 
+const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 const { checkRateLimit, getClientIp } = require('./rate-limiter');
 
@@ -33,30 +34,107 @@ module.exports = async (req, res) => {
     const { amount, transRef, qrRawData, slipImageBase64, userId } = req.body || {};
     const parsedAmount = parseFloat(amount);
 
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      return res.status(400).json({ success: false, message: "กรุณาระบุจำนวนเงินที่ถูกต้อง" });
+    if (isNaN(parsedAmount) || parsedAmount <= 0 || parsedAmount > 500000) {
+      return res.status(400).json({ success: false, message: "กรุณาระบุจำนวนเงินที่ถูกต้อง (1 - 500,000 บาท)" });
     }
 
-    const slipRef = transRef || `PP-${Date.now()}`;
+    // 1. Sanitize & Validate Transaction Reference (Strict Whitelist & Length Caps)
+    if (!transRef || typeof transRef !== 'string') {
+      return res.status(400).json({ 
+        success: false, 
+        message: "รหัสอ้างอิงสลิป (TransRef) ไม่ถูกต้อง" 
+      });
+    }
+
+    const trimmedRef = transRef.trim();
+    if (trimmedRef.length < 8 || trimmedRef.length > 64) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "รหัสอ้างอิงสลิปต้องมีความยาวระหว่าง 8 ถึง 64 ตัวอักษร" 
+      });
+    }
+
+    if (!/^[a-zA-Z0-9_\-\.\/]+$/.test(trimmedRef)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "รหัสอ้างอิงสลิปมีอักขระที่ไม่อนุญาต" 
+      });
+    }
+
+    // Protect against payload bloat / DoS
+    if (slipImageBase64 && typeof slipImageBase64 === 'string' && slipImageBase64.length > 7000000) {
+      return res.status(413).json({ success: false, message: "ขนาดรูปภาพสลิปใหญ่เกินขีดจำกัด (สูงสุด 5MB)" });
+    }
+
+    let slipRef = trimmedRef;
+    let verifiedAmount = parsedAmount;
     const clientIp = getClientIp(req);
 
-    // เชื่อมต่อ Supabase
+    // 2. Optional: Third-party Bank Slip API Verification (EasySlip / SlipOK)
+    const slipApiKey = process.env.SLIP_VERIFY_API_KEY || process.env.EASYSLIP_TOKEN;
+    if (slipApiKey && (slipImageBase64 || qrRawData)) {
+      try {
+        const verifyRes = await fetch("https://api.easyslip.com/v1/verify", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${slipApiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            image: slipImageBase64,
+            payload: qrRawData
+          })
+        });
+
+        if (verifyRes.ok) {
+          const slipData = await verifyRes.json();
+          if (slipData.status === 200 && slipData.data) {
+            verifiedAmount = parseFloat(slipData.data.amount?.amount || verifiedAmount);
+            slipRef = slipData.data.transRef || slipRef;
+          } else {
+            return res.status(400).json({
+              success: false,
+              message: "สลิปนี้ไม่ผ่านการตรวจสอบจากระบบธนาคาร หรือมีการปลอมแปลงข้อมูล"
+            });
+          }
+        }
+      } catch (slipApiErr) {
+        console.warn("[SLIP API] Verification service error, falling back:", slipApiErr.message);
+      }
+    }
+
+    // 3. เชื่อมต่อ Supabase ด้วย Service Role Key (Zero Client Trust)
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseKey) {
+      console.error("[CRITICAL SECURITY] SUPABASE_SERVICE_ROLE_KEY is missing! Cannot execute process_topup.");
+      return res.status(500).json({ 
+        success: false, 
+        message: "ระบบความปลอดภัยของเซิร์ฟเวอร์ยังไม่ได้ตั้งค่า Service Role Key" 
+      });
+    }
 
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // Compute cryptographic SHA-256 fingerprint to guarantee anti-tamper idempotency
+      const slipFingerprint = crypto
+        .createHash('sha256')
+        .update(`${slipRef.toUpperCase()}:${verifiedAmount.toFixed(2)}`)
+        .digest('hex');
 
       // เรียก Stored Procedure ตรวจสอบและบันทึกสลิป (พร้อมตรวจสอบ Blacklist อัตโนมัติ)
       const { data, error } = await supabase.rpc('process_topup', {
         p_gateway: 'promptpay',
         p_trans_ref: slipRef,
-        p_amount: parsedAmount,
+        p_amount: verifiedAmount,
         p_user_id: userId || null,
         p_raw_payload: {
           ip: clientIp,
           has_slip_image: !!slipImageBase64,
           qr_raw: qrRawData || null,
+          slip_fingerprint_sha256: slipFingerprint,
           verified_at: new Date().toISOString()
         }
       });

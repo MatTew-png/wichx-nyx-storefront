@@ -26,6 +26,17 @@ class UIManager {
     document.querySelectorAll("[data-bind='brandShort']").forEach(el => el.textContent = config.brandShort || config.storeName);
     document.querySelectorAll("[data-bind='tagline']").forEach(el => el.textContent = config.tagline);
     document.querySelectorAll("[data-bind='subTagline']").forEach(el => el.textContent = config.subTagline);
+    if (config.discordCommunityUrl) {
+      document.querySelectorAll("[data-bind='discordCommunityUrl']").forEach(el => {
+        if (el.tagName === "A") el.href = config.discordCommunityUrl;
+      });
+    }
+    if (config.supportEmail) {
+      document.querySelectorAll("[data-bind='supportEmail']").forEach(el => {
+        el.textContent = config.supportEmail;
+        if (el.tagName === "A") el.href = `mailto:${config.supportEmail}`;
+      });
+    }
   }
 
   toast(message, type = "info") {

@@ -4,4 +4,6 @@ node_modules/
 .env
 .env.local
 scratch/
+scripts/bin/
+load-test-report.html
 

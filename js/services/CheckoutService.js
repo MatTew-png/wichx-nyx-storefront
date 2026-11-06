@@ -16,21 +16,67 @@ class CheckoutService {
 
     let discount = 0;
     if (promo) {
-      if (promo.discountPercent) {
-        discount = (subtotal * promo.discountPercent) / 100;
-      } else if (promo.discountThb) {
-        discount = promo.discountThb;
+      if (promo.discount_type === 'percent' || promo.discountPercent) {
+        const pct = promo.discount_value || promo.discountPercent;
+        discount = (subtotal * pct) / 100;
+        if (promo.max_discount && discount > promo.max_discount) {
+          discount = promo.max_discount;
+        }
+      } else if (promo.discount_type === 'fixed' || promo.discountThb) {
+        discount = promo.discount_value || promo.discountThb;
       }
+      discount = Math.min(discount, subtotal);
     }
 
     const total = Math.max(0, subtotal - discount);
     return { subtotal, discount, total };
   }
 
+  async loadAvailableVouchers() {
+    try {
+      if (window.supabaseClient) {
+        const { data, error } = await window.supabaseClient.rpc("get_available_vouchers");
+        if (!error && Array.isArray(data) && data.length > 0) {
+          this.store.set("availableVouchers", data);
+          return data;
+        }
+      }
+    } catch (e) {
+      console.warn("[CHECKOUT SERVICE] Error loading vouchers:", e.message);
+    }
+
+    // Fallback to storeConfig.promoCodes
+    const configCodes = window.storeConfig?.promoCodes || {};
+    const fallback = Object.entries(configCodes).map(([code, c]) => ({
+      code,
+      label: c.label || code,
+      discount_type: c.discountPercent ? 'percent' : 'fixed',
+      discount_value: c.discountPercent || c.discountThb,
+      min_spend: c.minSpend || 0,
+      max_discount: null
+    }));
+    this.store.set("availableVouchers", fallback);
+    return fallback;
+  }
+
   applyCoupon(code) {
     const cleanCode = (code || "").trim().toUpperCase();
-    const configCodes = window.storeConfig?.promoCodes || {};
-    const promo = configCodes[cleanCode];
+    const vouchers = this.store.get("availableVouchers") || [];
+    let promo = vouchers.find(v => v.code === cleanCode);
+
+    if (!promo) {
+      const configCodes = window.storeConfig?.promoCodes || {};
+      const cfg = configCodes[cleanCode];
+      if (cfg) {
+        promo = {
+          code: cleanCode,
+          label: cfg.label || cleanCode,
+          discount_type: cfg.discountPercent ? 'percent' : 'fixed',
+          discount_value: cfg.discountPercent || cfg.discountThb,
+          min_spend: cfg.minSpend || 0
+        };
+      }
+    }
 
     if (!promo) {
       throw new Error("โค้ดส่วนลดนี้ไม่ถูกต้องหรือหมดอายุแล้ว");
@@ -39,8 +85,10 @@ class CheckoutService {
     const cart = this.store.get("cart") || [];
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    if (promo.minSpend && subtotal < promo.minSpend) {
-      throw new Error(`โค้ดนี้ใช้ได้เมื่อมียอดสั่งซื้อขั้นต่ำ ฿${promo.minSpend}`);
+    const minSpend = Number(promo.min_spend || promo.minSpend || 0);
+    if (minSpend > 0 && subtotal < minSpend) {
+      const diff = (minSpend - subtotal).toFixed(2);
+      throw new Error(`โค้ดนี้ใช้ได้เมื่อมียอดสั่งซื้อขั้นต่ำ ฿${minSpend.toFixed(2)} (ขาดอีก ฿${diff})`);
     }
 
     this.store.set("appliedPromo", { ...promo, code: cleanCode });
