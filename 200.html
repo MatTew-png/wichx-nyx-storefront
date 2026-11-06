@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" class="dark bg-[#06080C]">
+<html lang="th" class="dark bg-[#06080C] nyx-intro-active">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -111,6 +111,104 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <!-- jsQR Engine for Smart Slip Auto-Scan -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+  <!-- Critical Inline Intro CSS (Seamless Pure Vector Reveal - Zero Box) -->
+  <style id="nyx-intro-critical-css">
+    html.nyx-intro-active,
+    html.nyx-intro-active body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      touch-action: none !important;
+    }
+    .nyx-intro-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: #06080C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) 2.4s 1 forwards moveLoader;
+      will-change: transform;
+      pointer-events: all;
+      user-select: none;
+      -webkit-user-select: none;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    @keyframes moveLoader {
+      0% { transform: translateY(0%); }
+      100% { transform: translateY(-100%); }
+    }
+    .intro-logo-container {
+      position: relative;
+      width: 140px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .intro-logo-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .intro-logo-back { opacity: 0.22; }
+    .intro-logo-front {
+      will-change: clip-path;
+      clip-path: inset(100% 0 0 0);
+      animation: 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.2s 1 forwards clipReveal;
+    }
+    @keyframes clipReveal {
+      0% { clip-path: inset(100% 0 0 0); }
+      100% { clip-path: inset(0% 0 0 0); }
+    }
+    .intro-brand-text {
+      margin-top: 24px;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.35em;
+      text-indent: 0.35em;
+      color: #FFFFFF;
+      opacity: 0;
+      transform: translateY(10px);
+      will-change: opacity, transform;
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.85s 1 forwards textFadeIn;
+    }
+    .intro-sub-text {
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em;
+      color: #00B2FF;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(10px);
+      will-change: opacity, transform;
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.05s 1 forwards textFadeIn;
+    }
+    .intro-skip-hint {
+      margin-top: 28px;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 11px;
+      color: #64748B;
+      opacity: 0;
+      will-change: opacity;
+      animation: 0.5s ease-out 1.25s 1 forwards textFadeIn;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .intro-skip-hint:hover { color: #94A3B8; }
+    @keyframes textFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 
   <!-- Custom Stylesheet -->
   <style id="nyx-core-styles">
@@ -656,9 +754,200 @@ input, textarea {
   from { opacity: 0.7; transform: translateY(-3px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==============================================================================
+   🎬 INTRO LOADER OVERLAY (SEAMLESS PURE VECTOR REVEAL - ZERO BOX)
+   ============================================================================== */
+html.nyx-intro-active,
+html.nyx-intro-active body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  touch-action: none !important;
+}
+
+.nyx-intro-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: #06080C;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) 2.4s 1 forwards moveLoader;
+  will-change: transform;
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@keyframes moveLoader {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.intro-logo-container {
+  position: relative;
+  width: 140px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-logo-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.intro-logo-back {
+  opacity: 0.22;
+}
+
+/* ⚡ SEAMLESS GPU CLIP-PATH REVEAL (ZERO RECTANGULAR BOX, ZERO MAIN-THREAD JANK) */
+.intro-logo-front {
+  will-change: clip-path;
+  clip-path: inset(100% 0 0 0);
+  animation: 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.2s 1 forwards clipReveal;
+}
+
+@keyframes clipReveal {
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    clip-path: inset(0% 0 0 0);
+  }
+}
+
+.intro-brand-text {
+  margin-top: 24px;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  color: #FFFFFF;
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.85s 1 forwards textFadeIn;
+}
+
+.intro-sub-text {
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-indent: 0.25em;
+  color: #00B2FF;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.05s 1 forwards textFadeIn;
+}
+
+.intro-skip-hint {
+  margin-top: 28px;
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+  font-size: 11px;
+  color: #64748B;
+  opacity: 0;
+  will-change: opacity;
+  animation: 0.5s ease-out 1.25s 1 forwards textFadeIn;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.intro-skip-hint:hover {
+  color: #94A3B8;
+}
+
+@keyframes textFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
+
+  <!-- ==============================================================================
+       🎬 INTRO ANIMATION LOADER (SEAMLESS PURE VECTOR REVEAL - ZERO BOX)
+       ============================================================================== -->
+  <div id="nyx-intro" class="nyx-intro-loader" onclick="dismissNyxIntro()">
+    <div class="intro-logo-container">
+      <!-- LAYER 1: Silhouette / Back Logo (Dark Muted) -->
+      <svg class="intro-logo-svg intro-logo-back" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#252A36" />
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#14324D" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#14324D" />
+      </svg>
+
+      <!-- LAYER 2: Foreground Vibrant Logo with Pure CSS clip-path (Seamless, Zero Box!) -->
+      <svg class="intro-logo-svg intro-logo-front" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base White Body -->
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+        <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+        <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+        <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+        <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+
+        <!-- Base Electric Blue Segments -->
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+        <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+        <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+        <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+      </svg>
+    </div>
+
+    <!-- Typography Brand Intro -->
+    <div class="intro-brand-text">NYX9 STUDIO</div>
+    <div class="intro-sub-text">DISCORD & ROBLOX STUDIO</div>
+    <div class="intro-skip-hint">แตะที่ใดก็ได้เพื่อข้าม (Skip)</div>
+  </div>
+
+  <script>
+    function dismissNyxIntro() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        intro.style.opacity = '0';
+        intro.style.transform = 'translateY(-100%)';
+        setTimeout(function() {
+          if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+          document.documentElement.classList.remove('nyx-intro-active');
+        }, 260);
+      }
+    }
+    (function() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.addEventListener('animationend', function(e) {
+          if (e.animationName === 'moveLoader') {
+            if (intro.parentNode) intro.parentNode.removeChild(intro);
+            document.documentElement.classList.remove('nyx-intro-active');
+          }
+        });
+      }
+    })();
+  </script>
 
   <!-- ==============================================================================
        1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)
