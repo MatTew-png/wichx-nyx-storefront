@@ -14,31 +14,45 @@ class ModalsComponent {
   showInstantDelivery(result) {
     const modal = document.getElementById("instant-delivery-modal");
     const container = document.getElementById("delivery-items-container");
+    const textarea = document.getElementById("delivered-content");
     const orderIdEl = document.getElementById("delivery-order-id");
 
-    if (!modal || !container) return;
+    if (!modal) return;
 
-    if (orderIdEl) orderIdEl.textContent = result.order_id || `WX-${Date.now()}`;
+    window.lastDeliveredOrder = result;
+    const orderId = result.order_id || result.orderId || `WX-${Math.floor(100000 + Math.random() * 900000)}`;
+    if (orderIdEl) orderIdEl.textContent = orderId;
 
-    const items = result.dispensed_items || [];
-    container.innerHTML = items.map(item => `
-      <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-white">${item.title} (x${item.quantity})</span>
-          <span class="text-[10px] font-mono text-emerald-400">ส่งมอบเรียบร้อย</span>
+    const items = result.dispensed_items || result.items || [];
+    const allCreds = [];
+    items.forEach(item => {
+      if (Array.isArray(item.credentials)) allCreds.push(...item.credentials);
+    });
+
+    if (textarea) {
+      textarea.value = allCreds.join("\n") || "คำสั่งซื้อแบบบริการพิเศษ ระบบกำลังจัดส่งข้อมูลให้ภายใน 5-15 นาที";
+    }
+
+    if (container) {
+      container.innerHTML = items.map(item => `
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 mb-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white">${item.title} (x${item.quantity})</span>
+            <span class="text-[10px] font-mono text-emerald-400">ส่งมอบเรียบร้อย</span>
+          </div>
+          <div class="space-y-1.5">
+            ${(item.credentials || []).map(cred => `
+              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-xs text-[var(--accent)] break-all select-all">
+                <span>${cred}</span>
+                <button onclick="window.Shop?.modals?.copyText('${cred}')" class="p-1 hover:text-white text-slate-400 cursor-pointer ml-2">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            `).join("")}
+          </div>
         </div>
-        <div class="space-y-1.5">
-          ${(item.credentials || []).map(cred => `
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-xs text-[var(--accent)] break-all select-all">
-              <span>${cred}</span>
-              <button onclick="window.Shop?.modals?.copyText('${cred}')" class="p-1 hover:text-white text-slate-400 cursor-pointer ml-2">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    `).join("");
+      `).join("");
+    }
 
     modal.classList.remove("hidden");
     if (window.lucide) lucide.createIcons();

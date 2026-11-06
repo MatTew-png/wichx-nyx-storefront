@@ -39,6 +39,7 @@ class ShopApp {
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
     this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
+    this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
@@ -278,6 +279,75 @@ window.quickClaimOrder = (orderId) => {
   window.Shop.modals.openClaim();
   const input = document.getElementById("claim-order-id");
   if (input) input.value = orderId;
+};
+
+// --- NEW 4-KILLER BRIDGES ---
+
+// 1. Restock Notification Bridge
+window.openRestockNotifyModal = (id, title) => {
+  if (window.Shop && window.Shop.restockModal) {
+    window.Shop.restockModal.open(id, title);
+  }
+};
+
+// 2. Smart Slip Reader Bridge
+window.handleSlipFileSelect = (e) => {
+  const file = e.target?.files?.[0];
+  if (file && window.Shop?.topupModal) {
+    window.Shop.topupModal.handleSlipFile(file);
+  }
+};
+
+// 3. Cyberpunk Receipt Generator Bridges (Save PNG)
+window.saveOrderReceiptPNG = async () => {
+  const order = window.lastDeliveredOrder;
+  if (!order) {
+    window.UI?.toast("ไม่พบข้อมูลคำสั่งซื้อล่าสุด", "warning");
+    return;
+  }
+  window.UI?.toast("📸 กำลังสร้างรูปภาพใบเสร็จความละเอียดสูง...", "info");
+  try {
+    if (window.ReceiptGenerator) {
+      await window.ReceiptGenerator.generateReceiptPNG(order);
+      window.UI?.toast("บันทึกรูปภาพใบเสร็จลงเครื่องเรียบร้อยแล้ว!", "success");
+    }
+  } catch (err) {
+    window.UI?.toast("ไม่สามารถสร้างรูปภาพได้: " + err.message, "error");
+  }
+};
+
+window.saveOrderCardPNG = async (orderId) => {
+  const orders = window.Shop?.historyModal?.orders || [];
+  const order = orders.find(o => (o.orderId || "").toUpperCase() === (orderId || "").toUpperCase());
+  if (!order) {
+    window.UI?.toast("ไม่พบข้อมูลออเดอร์ " + orderId, "warning");
+    return;
+  }
+  window.UI?.toast("📸 กำลังสร้างรูปภาพใบเสร็จ...", "info");
+  try {
+    if (window.ReceiptGenerator) {
+      await window.ReceiptGenerator.generateReceiptPNG(order);
+      window.UI?.toast(`บันทึกรูปใบเสร็จ ${orderId} เรียบร้อย!`, "success");
+    }
+  } catch (err) {
+    window.UI?.toast("ไม่สามารถสร้างรูปภาพได้: " + err.message, "error");
+  }
+};
+
+// 4. 1-Click Discord Warranty Claim Bridge
+window.claimOrderToDiscord = (orderId, title, date) => {
+  const ticketText = `📋 [แบบฟอร์มยื่นเคลมประกันอัตโนมัติ - NYX9 STUDIO]\n• หมายเลขคำสั่งซื้อ: ${orderId}\n• รายการสินค้า: ${title || "สินค้าดิจิทัล"}\n• วันที่สั่งซื้อ: ${date || "-"}\n• สถานะ: ยื่นเรื่องเคลมประกัน 24 ชั่วโมง\n• อาการปัญหาที่พบ: (โปรดระบุปัญหาที่นี่เพื่อความรวดเร็วในการเคลม)`;
+
+  navigator.clipboard.writeText(ticketText).then(() => {
+    window.UI?.toast("📋 คัดลอกแบบฟอร์มเคลมแล้ว! กำลังเปิดห้อง Ticket ใน Discord...", "success");
+    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    setTimeout(() => {
+      window.open(discordUrl, "_blank");
+    }, 600);
+  }).catch(() => {
+    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    window.open(discordUrl, "_blank");
+  });
 };
 
 // Discord Boost & Quests Calculator Bridges

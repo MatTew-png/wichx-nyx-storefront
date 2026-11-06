@@ -275,9 +275,13 @@ class CatalogViewComponent {
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
-              <span class="px-2 py-0.5 rounded-md ${isOut ? 'bg-rose-950/80 text-rose-300 border-rose-500/40' : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40'} border text-[10px] font-mono-val font-bold">
-                ${isOut ? 'สินค้าหมด' : `พร้อมส่ง: ${p.stock} ชิ้น`}
-              </span>
+              ${isOut 
+                ? `<span class="px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] font-mono-val font-bold">สินค้าหมดชั่วคราว</span>` 
+                : (p.stock <= 2 
+                    ? `<span class="px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500/20 to-rose-500/20 border border-amber-500/60 text-amber-300 text-[10px] font-mono-val font-extrabold flex items-center gap-1 animate-pulse shadow-[0_0_12px_rgba(245,158,11,0.4)]"><i data-lucide="flame" class="w-3 h-3 text-amber-400 fill-amber-400"></i><span>เหลือ ${p.stock} ชิ้นสุดท้าย!</span></span>`
+                    : `<span class="px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono-val font-bold">พร้อมส่ง: ${p.stock} ชิ้น</span>`
+                  )
+              }
             </div>
           </div>
 
@@ -298,22 +302,27 @@ class CatalogViewComponent {
             <div class="text-base font-mono-val font-extrabold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
-          ${isCustom ? `
+          ${isOut ? `
+            <button onclick="window.openRestockNotifyModal('${p.id}', '${p.title.replace(/'/g, "\\'")}')" class="w-full py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-600/25 border border-amber-500/40 hover:border-amber-400 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-md">
+              <i data-lucide="bell-ring" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>แจ้งเตือนเมื่อของมาเติม</span>
+            </button>
+          ` : (isCustom ? `
             <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
               <span>สั่งทำ</span>
             </button>
           ` : `
             <div class="flex items-center gap-1.5">
-              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
+              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
                 <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-300"></i>
               </button>
-              <button onclick="window.quickBuyProduct('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
+              <button onclick="window.quickBuyProduct('${p.id}')" class="btn-cyber-primary cursor-pointer active:scale-95 transition-transform px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
                 <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
                 <span>ซื้อด่วน</span>
               </button>
             </div>
-          `}
+          `)}
         </div>
       </div>
     `;

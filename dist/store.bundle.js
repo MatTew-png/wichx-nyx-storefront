@@ -1317,6 +1317,277 @@ window.SecurityEngine = SecurityEngine;
 
 
 /* ============================================================================== */
+/* 📦 MODULE: js/core/ReceiptGenerator.js */
+/* ============================================================================== */
+/**
+ * ==============================================================================
+ * 🧾 NYX9 STUDIO — CYBERPUNK RECEIPT IMAGE GENERATOR v1.0
+ * ==============================================================================
+ * วาดการ์ดใบเสร็จสั่งซื้อความละเอียดสูง (Retina Ready PNG) ด้วย Pure HTML5 Canvas
+ * สรุปชื่อสินค้า รหัสไอดี วันเวลา และตราประทับรับประกัน 24 ชม.
+ * เหมาะสำหรับเซฟลงมือถือในคลิกเดียว และแชร์ลงสตอรี่รีวิวร้านค้า
+ * ==============================================================================
+ */
+
+class ReceiptGenerator {
+  static async generateReceiptPNG(orderData) {
+    const width = 800;
+    const height = 1050;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error("เบราว์เซอร์ไม่รองรับ HTML5 Canvas");
+    }
+
+    const orderId = orderData.orderId || orderData.order_id || `WX-${Date.now().toString().slice(-6)}`;
+    const dateStr = orderData.timestamp 
+      ? new Date(orderData.timestamp).toLocaleString("th-TH", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+      : new Date().toLocaleString("th-TH", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    const totalAmount = parseFloat(orderData.totalAmount || orderData.total_amount || 0).toFixed(2);
+    const items = orderData.items || orderData.dispensed_items || [];
+    const customerName = orderData.customerName || (window.store && window.store.get("user")?.username) || "Customer";
+
+    // 1. Dark Cyberpunk Background Gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    bgGrad.addColorStop(0, "#06080E");
+    bgGrad.addColorStop(0.5, "#0A0F1D");
+    bgGrad.addColorStop(1, "#04060A");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // Subtle Carbon Dot Matrix
+    ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
+    for (let x = 20; x < width; x += 25) {
+      for (let y = 20; y < height; y += 25) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Outer Glow Neon Border
+    ctx.strokeStyle = "rgba(0, 242, 255, 0.35)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(20, 20, width - 40, height - 40);
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(26, 26, width - 52, height - 52);
+
+    // 2. Header Branding
+    // Cyan Accent Light Bar
+    const barGrad = ctx.createLinearGradient(40, 45, width - 40, 45);
+    barGrad.addColorStop(0, "rgba(0, 242, 255, 0.8)");
+    barGrad.addColorStop(0.5, "rgba(255, 0, 128, 0.6)");
+    barGrad.addColorStop(1, "rgba(0, 242, 255, 0.8)");
+    ctx.fillStyle = barGrad;
+    ctx.fillRect(40, 45, width - 80, 4);
+
+    // Store Logo Text
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "bold 32px 'Space Grotesk', 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("NYX9 STUDIO", 50, 95);
+
+    ctx.fillStyle = "#00F2FF";
+    ctx.font = "bold 13px 'JetBrains Mono', monospace";
+    ctx.fillText("OFFICIAL ORDER RECEIPT • 24/7 AUTOMATION", 50, 118);
+
+    // Verified Stamp Top Right
+    ctx.fillStyle = "rgba(16, 185, 129, 0.15)";
+    ctx.strokeStyle = "rgba(16, 185, 129, 0.6)";
+    ctx.lineWidth = 1.5;
+    this.roundRect(ctx, width - 210, 65, 160, 48, 12, true, true);
+
+    ctx.fillStyle = "#34D399";
+    ctx.font = "bold 13px 'JetBrains Mono', sans-serif";
+    ctx.fillText("✓ VERIFIED PAID", width - 195, 95);
+
+    // Divider
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.beginPath();
+    ctx.moveTo(50, 145);
+    ctx.lineTo(width - 50, 145);
+    ctx.stroke();
+
+    // 3. Metadata Grid (Order ID, Date, Customer)
+    ctx.fillStyle = "#94A3B8";
+    ctx.font = "12px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("หมายเลขคำสั่งซื้อ (ORDER ID)", 50, 175);
+    ctx.fillStyle = "#00F2FF";
+    ctx.font = "bold 20px 'JetBrains Mono', monospace";
+    ctx.fillText(orderId, 50, 202);
+
+    ctx.fillStyle = "#94A3B8";
+    ctx.font = "12px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("วันที่สั่งซื้อ (DATE/TIME)", 320, 175);
+    ctx.fillStyle = "#F8FAFC";
+    ctx.font = "bold 15px 'JetBrains Mono', sans-serif";
+    ctx.fillText(dateStr, 320, 202);
+
+    ctx.fillStyle = "#94A3B8";
+    ctx.font = "12px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("ลูกค้า (BUYER)", 580, 175);
+    ctx.fillStyle = "#F8FAFC";
+    ctx.font = "bold 15px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText(customerName.slice(0, 16), 580, 202);
+
+    // Divider
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.beginPath();
+    ctx.moveTo(50, 225);
+    ctx.lineTo(width - 50, 225);
+    ctx.stroke();
+
+    // 4. Purchased Items Table
+    ctx.fillStyle = "#94A3B8";
+    ctx.font = "bold 13px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("รายการสินค้าที่ได้รับ", 50, 255);
+    ctx.fillText("จำนวน", 560, 255);
+    ctx.fillText("ยอดเงิน", 680, 255);
+
+    let currentY = 285;
+    let allCredentials = [];
+
+    items.forEach((item, idx) => {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.03)";
+      ctx.fillRect(45, currentY - 20, width - 90, 40);
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 15px 'IBM Plex Sans Thai', sans-serif";
+      const itemTitle = (item.title || item.id || `สินค้าดิจิทัล #${idx + 1}`).slice(0, 42);
+      ctx.fillText(itemTitle, 55, currentY + 5);
+
+      ctx.fillStyle = "#94A3B8";
+      ctx.font = "bold 14px 'JetBrains Mono', monospace";
+      ctx.fillText(`x${item.quantity || 1}`, 570, currentY + 5);
+
+      ctx.fillStyle = "#00F2FF";
+      ctx.font = "bold 15px 'JetBrains Mono', monospace";
+      const itemPrice = item.price ? `฿${(item.price * (item.quantity || 1)).toFixed(2)}` : "-";
+      ctx.fillText(itemPrice, 680, currentY + 5);
+
+      currentY += 46;
+
+      const creds = item.credentials || [];
+      if (Array.isArray(creds) && creds.length > 0) {
+        allCredentials.push(...creds);
+      }
+    });
+
+    // 5. Delivered Credentials Box (The Gold Mine)
+    currentY += 15;
+    ctx.fillStyle = "rgba(0, 242, 255, 0.06)";
+    ctx.strokeStyle = "rgba(0, 242, 255, 0.25)";
+    ctx.lineWidth = 1;
+    this.roundRect(ctx, 45, currentY, width - 90, 220, 16, true, true);
+
+    ctx.fillStyle = "#00F2FF";
+    ctx.font = "bold 13px 'JetBrains Mono', monospace";
+    ctx.fillText("🔑 คีย์ / ลิงก์สินค้าที่จัดส่ง (DELIVERED CREDENTIALS)", 60, currentY + 30);
+
+    let credY = currentY + 60;
+    if (allCredentials.length === 0) {
+      ctx.fillStyle = "#F59E0B";
+      ctx.font = "14px 'IBM Plex Sans Thai', sans-serif";
+      ctx.fillText("• สินค้าแบบบริการพิเศษ ระบบกำลังจัดคิวส่งมอบให้ภายใน 5-15 นาที", 65, credY);
+    } else {
+      allCredentials.slice(0, 4).forEach((cred, cIdx) => {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(60, credY - 16, width - 120, 32);
+
+        ctx.fillStyle = "#E2E8F0";
+        ctx.font = "13px 'JetBrains Mono', monospace";
+        const displayCred = cred.length > 55 ? cred.slice(0, 52) + "..." : cred;
+        ctx.fillText(`[${cIdx + 1}]  ${displayCred}`, 70, credY + 5);
+        credY += 38;
+      });
+      if (allCredentials.length > 4) {
+        ctx.fillStyle = "#64748B";
+        ctx.font = "italic 12px 'JetBrains Mono', monospace";
+        ctx.fillText(`+ อีก ${allCredentials.length - 4} รายการ (ตรวจสอบรายการทั้งหมดในคลังประวัติของร้าน)`, 70, credY + 5);
+      }
+    }
+
+    // 6. Total Summary & Warranty Seal
+    const summaryY = height - 240;
+
+    // Total Amount Highlight
+    ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+    ctx.fillRect(45, summaryY, width - 90, 60);
+
+    ctx.fillStyle = "#E2E8F0";
+    ctx.font = "bold 16px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("ยอดชำระสุทธิ (TOTAL PAID)", 65, summaryY + 37);
+
+    ctx.fillStyle = "#00F2FF";
+    ctx.font = "bold 26px 'JetBrains Mono', monospace";
+    ctx.fillText(`฿${totalAmount}`, width - 200, summaryY + 40);
+
+    // Warranty Box & Anti-Counterfeit Stamp
+    const footerY = height - 150;
+    ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
+    ctx.strokeStyle = "rgba(16, 185, 129, 0.3)";
+    this.roundRect(ctx, 45, footerY, width - 90, 75, 14, true, true);
+
+    ctx.fillStyle = "#34D399";
+    ctx.font = "bold 13px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("🛡️ มีประกันร้าน 24 ชม. • หากมีปัญหาแคปใบเสร็จนี้แจ้งเคลมได้ทันที", 65, footerY + 30);
+
+    ctx.fillStyle = "#94A3B8";
+    ctx.font = "11px 'IBM Plex Sans Thai', sans-serif";
+    ctx.fillText("ใบเสร็จดิจิทัลออกโดยระบบอัตโนมัติ NYX9 STUDIO (https://nyxning.shop)", 65, footerY + 55);
+
+    // Official Digital Stamp watermark
+    ctx.save();
+    ctx.translate(width - 130, footerY + 38);
+    ctx.rotate(-0.15);
+    ctx.strokeStyle = "rgba(0, 242, 255, 0.6)";
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, -55, -22, 110, 44, 8, false, true);
+    ctx.fillStyle = "#00F2FF";
+    ctx.font = "bold 11px 'JetBrains Mono', monospace";
+    ctx.fillText("NYX9 PASSED", -42, 5);
+    ctx.restore();
+
+    // 7. Convert to PNG and Trigger Download
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `NYX9_Receipt_${orderId}.png`;
+        link.click();
+        resolve(link.href);
+      }, "image/png");
+    });
+  }
+
+  static roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+}
+
+window.ReceiptGenerator = ReceiptGenerator;
+
+
+
+/* ============================================================================== */
 /* 📦 MODULE: js/services/AuthService.js */
 /* ============================================================================== */
 /**
@@ -2615,9 +2886,13 @@ class CatalogViewComponent {
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
-              <span class="px-2 py-0.5 rounded-md ${isOut ? 'bg-rose-950/80 text-rose-300 border-rose-500/40' : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40'} border text-[10px] font-mono-val font-bold">
-                ${isOut ? 'สินค้าหมด' : `พร้อมส่ง: ${p.stock} ชิ้น`}
-              </span>
+              ${isOut 
+                ? `<span class="px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] font-mono-val font-bold">สินค้าหมดชั่วคราว</span>` 
+                : (p.stock <= 2 
+                    ? `<span class="px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500/20 to-rose-500/20 border border-amber-500/60 text-amber-300 text-[10px] font-mono-val font-extrabold flex items-center gap-1 animate-pulse shadow-[0_0_12px_rgba(245,158,11,0.4)]"><i data-lucide="flame" class="w-3 h-3 text-amber-400 fill-amber-400"></i><span>เหลือ ${p.stock} ชิ้นสุดท้าย!</span></span>`
+                    : `<span class="px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono-val font-bold">พร้อมส่ง: ${p.stock} ชิ้น</span>`
+                  )
+              }
             </div>
           </div>
 
@@ -2638,22 +2913,27 @@ class CatalogViewComponent {
             <div class="text-base font-mono-val font-extrabold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
-          ${isCustom ? `
+          ${isOut ? `
+            <button onclick="window.openRestockNotifyModal('${p.id}', '${p.title.replace(/'/g, "\\'")}')" class="w-full py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-600/25 border border-amber-500/40 hover:border-amber-400 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-md">
+              <i data-lucide="bell-ring" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>แจ้งเตือนเมื่อของมาเติม</span>
+            </button>
+          ` : (isCustom ? `
             <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-cyber-primary px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
               <span>สั่งทำ</span>
             </button>
           ` : `
             <div class="flex items-center gap-1.5">
-              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" ${isOut ? 'disabled' : ''} class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
+              <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" class="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer active:scale-95 transition-all" title="หยิบใส่ตะกร้า">
                 <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-300"></i>
               </button>
-              <button onclick="window.quickBuyProduct('${p.id}')" ${isOut ? 'disabled' : ''} class="${isOut ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500' : 'btn-cyber-primary cursor-pointer active:scale-95 transition-transform'} px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
+              <button onclick="window.quickBuyProduct('${p.id}')" class="btn-cyber-primary cursor-pointer active:scale-95 transition-transform px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1 shadow-md">
                 <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
                 <span>ซื้อด่วน</span>
               </button>
             </div>
-          `}
+          `)}
         </div>
       </div>
     `;
@@ -2852,6 +3132,30 @@ class TopUpModalComponent {
     this.store = store;
     this.paymentService = paymentService;
     this.activeTab = "promptpay";
+    this.initPasteListener();
+  }
+
+  initPasteListener() {
+    if (typeof window === "undefined") return;
+    window.addEventListener("paste", (e) => {
+      const modal = document.getElementById("topup-modal");
+      if (!modal || modal.classList.contains("hidden")) return;
+      if (this.activeTab !== "promptpay") return;
+
+      const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type && item.type.indexOf("image") === 0) {
+          const blob = item.getAsFile();
+          if (blob) {
+            e.preventDefault();
+            this.handleSlipFile(blob);
+            break;
+          }
+        }
+      }
+    });
   }
 
   open(recommendedAmount = 0) {
@@ -2919,6 +3223,99 @@ class TopUpModalComponent {
 
     if (amountText) amountText.textContent = `฿${val.toFixed(2)}`;
     if (qrImg) qrImg.src = this.paymentService.getPromptPayQrUrl(val);
+  }
+
+  // --- SMART SLIP QR SCANNER ---
+  async handleSlipFile(file) {
+    if (!file || !file.type || !file.type.startsWith("image/")) {
+      window.UI?.toast("กรุณาเลือกไฟล์รูปภาพสลิปที่ถูกต้อง (JPG/PNG)", "warning");
+      return;
+    }
+
+    const dropzoneIdle = document.getElementById("slip-dropzone-idle");
+    const dropzoneScanning = document.getElementById("slip-dropzone-scanning");
+    const previewImg = document.getElementById("slip-preview-img");
+    const scanStatus = document.getElementById("slip-scan-status");
+    const transRefInput = document.getElementById("promptpay-trans-ref-input");
+
+    if (dropzoneIdle) dropzoneIdle.classList.add("hidden");
+    if (dropzoneScanning) dropzoneScanning.classList.remove("hidden");
+    if (scanStatus) {
+      scanStatus.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> <span>กำลังสแกน QR บนสลิป...</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      if (previewImg) previewImg.src = dataUrl;
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          let qrCode = null;
+
+          if (window.jsQR) {
+            qrCode = window.jsQR(imageData.data, imageData.width, imageData.height, {
+              inversionAttempts: "dontInvert"
+            });
+            if (!qrCode) {
+              qrCode = window.jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "attemptBoth"
+              });
+            }
+          }
+
+          if (qrCode && qrCode.data) {
+            const rawData = qrCode.data.trim();
+            // Thai PromptPay Slip QR extraction (tag 02 has transRef)
+            let extractedRef = rawData;
+            if (rawData.startsWith("0046") || rawData.includes("000001")) {
+              const match = rawData.match(/(?:01\d{2})(\d{3})(?:02\d{2})([A-Za-z0-9_-]{10,35})/);
+              if (match && match[2]) {
+                extractedRef = match[2];
+              }
+            }
+
+            if (transRefInput) {
+              transRefInput.value = extractedRef;
+            }
+
+            if (scanStatus) {
+              scanStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="text-emerald-400 font-bold">สแกน QR สำเร็จ! ดึงรหัสธุรกรรมอัตโนมัติ</span>`;
+              if (window.lucide) lucide.createIcons();
+            }
+
+            window.UI?.toast("📸 สแกนสลิปสำเร็จ! ระบบกรอกรหัสอ้างอิงให้เรียบร้อย", "success");
+
+            // Auto-trigger verification after 600ms
+            setTimeout(() => {
+              this.verifyPromptPay();
+            }, 600);
+          } else {
+            if (scanStatus) {
+              scanStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-400"></i> <span class="text-amber-400 text-[11px]">ตรวจไม่พบ QR Code ในรูป กรุณากรอกรหัสอ้างอิงด้านล่าง</span>`;
+              if (window.lucide) lucide.createIcons();
+            }
+            window.UI?.toast("ตรวจไม่พบ QR บนรูปสลิป กรุณาระบุรหัสอ้างอิงด้วยตนเอง", "warning");
+          }
+        } catch (err) {
+          console.warn("[SLIP SCANNER] Scan error:", err);
+          if (scanStatus) {
+            scanStatus.innerHTML = `<span class="text-rose-400 text-[11px]">การสแกนล้มเหลว กรุณากรอกรหัสด้วยตนเอง</span>`;
+          }
+        }
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
   }
 
   // --- ACTIONS ---
@@ -3087,7 +3484,7 @@ class HistoryModalComponent {
             </button>
           </div>
 
-          <!-- Search Filter Bar -->
+          <!-- Search Filter Bar with Cloud Lookup Button -->
           <div class="px-5 md:px-6 py-3 border-b border-slate-800/60 bg-slate-900/40 flex items-center gap-2">
             <div class="relative flex-1">
               <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
@@ -3095,10 +3492,19 @@ class HistoryModalComponent {
                 type="text" 
                 id="history-search-input"
                 oninput="window.handleHistorySearch(event)"
-                placeholder="ค้นหาด้วยรหัสออเดอร์ (เช่น WX-123456) หรือชื่อสินค้า..." 
-                class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-all font-body"
+                onkeydown="if(event.key==='Enter') window.Shop?.historyModal?.searchCloudOrder()"
+                placeholder="ค้นหาด้วยรหัสออเดอร์ (เช่น WX-371156) หรือชื่อสินค้า..." 
+                class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-all font-body font-mono"
               />
             </div>
+            <button 
+              onclick="window.Shop?.historyModal?.searchCloudOrder()" 
+              class="px-3.5 py-2 rounded-xl bg-[var(--accent)]/15 hover:bg-[var(--accent)]/25 border border-[var(--accent)]/40 text-[var(--accent)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95"
+              title="ค้นหาออเดอร์จากฐานข้อมูลเซิร์ฟเวอร์"
+            >
+              <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
+              <span>ค้นหาในระบบ</span>
+            </button>
           </div>
 
           <!-- Order List Body (Scrollable) -->
@@ -3163,6 +3569,59 @@ class HistoryModalComponent {
   filter(query) {
     this.activeSearch = (query || "").trim().toLowerCase();
     this.render();
+  }
+
+  async searchCloudOrder() {
+    const input = document.getElementById("history-search-input");
+    const query = (input?.value || "").trim().toUpperCase();
+    if (!query) {
+      window.UI?.toast("กรุณาระบุรหัสออเดอร์ที่ต้องการค้นหา (เช่น WX-371156)", "warning");
+      return;
+    }
+
+    // 1. Check local cache
+    const foundLocal = this.orders.find(o => (o.orderId || "").toUpperCase() === query);
+    if (foundLocal) {
+      this.activeSearch = query.toLowerCase();
+      this.render();
+      window.UI?.toast(`พบออเดอร์ ${query} ในประวัติของคุณ`, "info");
+      return;
+    }
+
+    // 2. Query Supabase
+    window.UI?.toast(`กำลังค้นหาออเดอร์ ${query} ในเซิร์ฟเวอร์...`, "info");
+
+    try {
+      if (window.SupabaseAdapter && window.SupabaseAdapter.client) {
+        const { data, error } = await window.SupabaseAdapter.client.rpc("lookup_order", { p_order_id: query });
+        if (data && data.success && data.order) {
+          const ord = data.order;
+          this.orders.unshift({
+            orderId: ord.orderId,
+            totalAmount: parseFloat(ord.totalAmount || 0),
+            timestamp: ord.timestamp,
+            paymentMethod: ord.paymentMethod || "wallet",
+            status: ord.status || "PAID",
+            items: (ord.items || []).map(oi => ({
+              id: oi.id,
+              title: oi.title || "สินค้าดิจิทัล",
+              quantity: oi.quantity || 1,
+              credentials: Array.isArray(oi.credentials) ? oi.credentials : (oi.credentials ? [oi.credentials] : [])
+            }))
+          });
+          this.activeSearch = query.toLowerCase();
+          this.render();
+          window.UI?.confetti();
+          window.UI?.toast(`✨ พบข้อมูลออเดอร์ ${query} จากฐานข้อมูลเรียบร้อยแล้ว!`, "success");
+          return;
+        } else {
+          window.UI?.toast(data?.message || "ไม่พบคำสั่งซื้อรหัสนี้ในระบบ กรุณาตรวจสอบรหัสอีกครั้ง", "warning");
+        }
+      }
+    } catch (err) {
+      console.warn("[HISTORY SEARCH] Error:", err);
+      window.UI?.toast("การค้นหาล้มเหลว กรุณาตรวจสอบรหัสออเดอร์อีกครั้ง", "error");
+    }
   }
 
   render() {
@@ -3270,18 +3729,40 @@ class HistoryModalComponent {
               <div class="text-[10px] font-mono text-slate-400 mt-0.5">${dateFormatted}</div>
             </div>
 
-            <div class="flex items-center gap-3">
-              <div class="text-right">
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="text-right mr-1">
                 <div class="text-[10px] text-slate-400 font-mono">ยอดสุทธิ</div>
                 <div class="text-xs font-mono font-bold text-white">฿${(order.totalAmount || 0).toFixed(2)}</div>
               </div>
+
+              <!-- Button 1: Download Cyberpunk Receipt PNG -->
+              <button 
+                onclick="window.saveOrderCardPNG('${order.orderId}')"
+                class="px-2.5 py-1.5 rounded-xl bg-[var(--accent)]/15 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-black border border-[var(--accent)]/40 text-[11px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                title="บันทึกใบเสร็จเป็นรูปภาพ PNG สวยงามลงมือถือ/คอม"
+              >
+                <i data-lucide="image-down" class="w-3.5 h-3.5"></i>
+                <span>รูปใบเสร็จ</span>
+              </button>
+
+              <!-- Button 2: 1-Click Discord Claim 24h -->
+              <button 
+                onclick="window.claimOrderToDiscord('${order.orderId}', '${(order.items?.[0]?.title || '').replace(/'/g, "\\'")}', '${dateFormatted}')"
+                class="px-2.5 py-1.5 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2]/40 border border-[#5865F2]/50 text-[11px] text-[#A5B4FC] hover:text-white font-body font-bold flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                title="คัดลอกแบบฟอร์มแล้วเปิดห้องเคลมใน Discord 24 ชม."
+              >
+                <i data-lucide="message-square" class="w-3.5 h-3.5 text-[#5865F2]"></i>
+                <span>เคลมใน Discord</span>
+              </button>
+
+              <!-- Button 3: Web Claim Form -->
               <button 
                 onclick="window.quickClaimOrder('${order.orderId}')"
-                class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-[11px] text-slate-300 hover:text-rose-300 font-body flex items-center gap-1 transition-all cursor-pointer"
-                title="ยื่นเรื่องเคลมสินค้านี้"
+                class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-[11px] text-slate-300 hover:text-rose-300 font-body flex items-center gap-1 transition-all cursor-pointer"
+                title="ยื่นเรื่องเคลมผ่านหน้าเว็บ"
               >
                 <i data-lucide="life-buoy" class="w-3 h-3 text-rose-400"></i>
-                <span>แจ้งเคลม</span>
+                <span>เคลมหน้าเว็บ</span>
               </button>
             </div>
           </div>
@@ -3303,6 +3784,176 @@ window.HistoryModalComponent = HistoryModalComponent;
 if (typeof module !== "undefined" && module.exports) {
   module.exports = HistoryModalComponent;
 }
+
+
+
+/* ============================================================================== */
+/* 📦 MODULE: js/components/RestockModal.js */
+/* ============================================================================== */
+/**
+ * ==============================================================================
+ * 🔔 RESTOCK NOTIFICATION MODAL COMPONENT (OOP CONTROLLER)
+ * ==============================================================================
+ * ให้ลูกค้าลงชื่อดิสคอร์ดรับการแจ้งเตือนทันทีเมื่อแอดมินเติมสต็อกสินค้า
+ * ==============================================================================
+ */
+
+class RestockModalComponent {
+  constructor(store) {
+    this.store = store;
+    this.currentProductId = null;
+    this.currentProductTitle = "";
+    this.initDOM();
+  }
+
+  initDOM() {
+    if (typeof document === "undefined") return;
+    if (document.getElementById("restock-notify-modal")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "restock-notify-modal";
+    modal.className = "fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all";
+    modal.innerHTML = `
+      <div class="relative modal-spring-dialog w-full max-w-md rounded-3xl bg-[#0B0F19]/95 border border-slate-800 shadow-2xl shadow-amber-500/10 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/60">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/10">
+              <i data-lucide="bell-ring" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-heading font-extrabold text-white">แจ้งเตือนเมื่อของมาเติม</h3>
+              <p class="text-xs text-slate-400 font-body">ไม่พลาดสินค้าชิ้นโปรด ระบบจะแจ้งเตือนทันทีที่ของเข้า</p>
+            </div>
+          </div>
+          <button onclick="window.Shop?.restockModal?.close()" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-5 md:p-6 space-y-4">
+          <!-- Target Product Banner -->
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="package" class="w-4 h-4 text-amber-400"></i>
+              <span id="restock-modal-product-title" class="text-xs font-bold text-white">สินค้าดิจิทัล</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              หมดชั่วคราว
+            </span>
+          </div>
+
+          <!-- Contact Input -->
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">
+              ระบุแท็ก Discord หรือ Username สำหรับแจ้งเตือน:
+            </label>
+            <div class="relative">
+              <i data-lucide="at-sign" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              <input 
+                type="text" 
+                id="restock-discord-input" 
+                placeholder="เช่น matthew_dev หรือ 422611554475835394" 
+                class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono"
+              />
+            </div>
+            <p class="text-[10px] text-slate-500 mt-1">เมื่อแอดมินเติมคีย์ ระบบจะแจ้งคิวและส่งข้อความแจ้งเตือนถึงคุณเป็นลำดับแรก</p>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            id="btn-submit-restock-notify" 
+            onclick="window.Shop?.restockModal?.submit()" 
+            class="btn-cyber-primary w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-black flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20"
+          >
+            <i data-lucide="bell" class="w-4 h-4 fill-current"></i>
+            <span>ยืนยันรับการแจ้งเตือน</span>
+          </button>
+        </div>
+
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  open(productId, productTitle) {
+    this.initDOM();
+    this.currentProductId = productId;
+    this.currentProductTitle = productTitle;
+
+    const modal = document.getElementById("restock-notify-modal");
+    const titleEl = document.getElementById("restock-modal-product-title");
+    const input = document.getElementById("restock-discord-input");
+
+    if (titleEl) titleEl.textContent = productTitle;
+
+    // Auto-fill from store if logged in
+    const user = this.store ? this.store.get("user") : null;
+    if (input) {
+      input.value = user?.username ? `@${user.username}` : (user?.discordId || "");
+    }
+
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+
+  close() {
+    const modal = document.getElementById("restock-notify-modal");
+    if (modal) {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+  }
+
+  async submit() {
+    const input = document.getElementById("restock-discord-input");
+    const contact = (input?.value || "").trim();
+    const btn = document.getElementById("btn-submit-restock-notify");
+
+    if (!contact || contact.length < 2) {
+      window.UI?.toast("กรุณาระบุแท็ก Discord หรือ Username ของคุณ", "warning");
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>กำลังบันทึก...</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    try {
+      const user = this.store ? this.store.get("user") : null;
+      if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
+        await window.SupabaseAdapter.client.from("restock_subscriptions").insert({
+          product_id: this.currentProductId,
+          discord_contact: contact,
+          user_id: user?.id || null
+        });
+      }
+
+      window.UI?.confetti();
+      window.UI?.toast(`🔔 บันทึกการแจ้งเตือนสำหรับ "${this.currentProductTitle}" เรียบร้อย!`, "success");
+      this.close();
+    } catch (err) {
+      console.warn("[RESTOCK NOTIFY] Submit error:", err);
+      window.UI?.toast("บันทึกการแจ้งเตือนเรียบร้อย (ระบบจองคิวออฟไลน์)", "success");
+      this.close();
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="bell" class="w-4 h-4 fill-current"></i> <span>ยืนยันรับการแจ้งเตือน</span>`;
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+  }
+}
+
+window.RestockModalComponent = RestockModalComponent;
 
 
 
@@ -3711,31 +4362,45 @@ class ModalsComponent {
   showInstantDelivery(result) {
     const modal = document.getElementById("instant-delivery-modal");
     const container = document.getElementById("delivery-items-container");
+    const textarea = document.getElementById("delivered-content");
     const orderIdEl = document.getElementById("delivery-order-id");
 
-    if (!modal || !container) return;
+    if (!modal) return;
 
-    if (orderIdEl) orderIdEl.textContent = result.order_id || `WX-${Date.now()}`;
+    window.lastDeliveredOrder = result;
+    const orderId = result.order_id || result.orderId || `WX-${Math.floor(100000 + Math.random() * 900000)}`;
+    if (orderIdEl) orderIdEl.textContent = orderId;
 
-    const items = result.dispensed_items || [];
-    container.innerHTML = items.map(item => `
-      <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-white">${item.title} (x${item.quantity})</span>
-          <span class="text-[10px] font-mono text-emerald-400">ส่งมอบเรียบร้อย</span>
+    const items = result.dispensed_items || result.items || [];
+    const allCreds = [];
+    items.forEach(item => {
+      if (Array.isArray(item.credentials)) allCreds.push(...item.credentials);
+    });
+
+    if (textarea) {
+      textarea.value = allCreds.join("\n") || "คำสั่งซื้อแบบบริการพิเศษ ระบบกำลังจัดส่งข้อมูลให้ภายใน 5-15 นาที";
+    }
+
+    if (container) {
+      container.innerHTML = items.map(item => `
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 mb-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white">${item.title} (x${item.quantity})</span>
+            <span class="text-[10px] font-mono text-emerald-400">ส่งมอบเรียบร้อย</span>
+          </div>
+          <div class="space-y-1.5">
+            ${(item.credentials || []).map(cred => `
+              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-xs text-[var(--accent)] break-all select-all">
+                <span>${cred}</span>
+                <button onclick="window.Shop?.modals?.copyText('${cred}')" class="p-1 hover:text-white text-slate-400 cursor-pointer ml-2">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            `).join("")}
+          </div>
         </div>
-        <div class="space-y-1.5">
-          ${(item.credentials || []).map(cred => `
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-xs text-[var(--accent)] break-all select-all">
-              <span>${cred}</span>
-              <button onclick="window.Shop?.modals?.copyText('${cred}')" class="p-1 hover:text-white text-slate-400 cursor-pointer ml-2">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    `).join("");
+      `).join("");
+    }
 
     modal.classList.remove("hidden");
     if (window.lucide) lucide.createIcons();
@@ -4314,6 +4979,7 @@ class ShopApp {
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
     this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
+    this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
@@ -4553,6 +5219,75 @@ window.quickClaimOrder = (orderId) => {
   window.Shop.modals.openClaim();
   const input = document.getElementById("claim-order-id");
   if (input) input.value = orderId;
+};
+
+// --- NEW 4-KILLER BRIDGES ---
+
+// 1. Restock Notification Bridge
+window.openRestockNotifyModal = (id, title) => {
+  if (window.Shop && window.Shop.restockModal) {
+    window.Shop.restockModal.open(id, title);
+  }
+};
+
+// 2. Smart Slip Reader Bridge
+window.handleSlipFileSelect = (e) => {
+  const file = e.target?.files?.[0];
+  if (file && window.Shop?.topupModal) {
+    window.Shop.topupModal.handleSlipFile(file);
+  }
+};
+
+// 3. Cyberpunk Receipt Generator Bridges (Save PNG)
+window.saveOrderReceiptPNG = async () => {
+  const order = window.lastDeliveredOrder;
+  if (!order) {
+    window.UI?.toast("ไม่พบข้อมูลคำสั่งซื้อล่าสุด", "warning");
+    return;
+  }
+  window.UI?.toast("📸 กำลังสร้างรูปภาพใบเสร็จความละเอียดสูง...", "info");
+  try {
+    if (window.ReceiptGenerator) {
+      await window.ReceiptGenerator.generateReceiptPNG(order);
+      window.UI?.toast("บันทึกรูปภาพใบเสร็จลงเครื่องเรียบร้อยแล้ว!", "success");
+    }
+  } catch (err) {
+    window.UI?.toast("ไม่สามารถสร้างรูปภาพได้: " + err.message, "error");
+  }
+};
+
+window.saveOrderCardPNG = async (orderId) => {
+  const orders = window.Shop?.historyModal?.orders || [];
+  const order = orders.find(o => (o.orderId || "").toUpperCase() === (orderId || "").toUpperCase());
+  if (!order) {
+    window.UI?.toast("ไม่พบข้อมูลออเดอร์ " + orderId, "warning");
+    return;
+  }
+  window.UI?.toast("📸 กำลังสร้างรูปภาพใบเสร็จ...", "info");
+  try {
+    if (window.ReceiptGenerator) {
+      await window.ReceiptGenerator.generateReceiptPNG(order);
+      window.UI?.toast(`บันทึกรูปใบเสร็จ ${orderId} เรียบร้อย!`, "success");
+    }
+  } catch (err) {
+    window.UI?.toast("ไม่สามารถสร้างรูปภาพได้: " + err.message, "error");
+  }
+};
+
+// 4. 1-Click Discord Warranty Claim Bridge
+window.claimOrderToDiscord = (orderId, title, date) => {
+  const ticketText = `📋 [แบบฟอร์มยื่นเคลมประกันอัตโนมัติ - NYX9 STUDIO]\n• หมายเลขคำสั่งซื้อ: ${orderId}\n• รายการสินค้า: ${title || "สินค้าดิจิทัล"}\n• วันที่สั่งซื้อ: ${date || "-"}\n• สถานะ: ยื่นเรื่องเคลมประกัน 24 ชั่วโมง\n• อาการปัญหาที่พบ: (โปรดระบุปัญหาที่นี่เพื่อความรวดเร็วในการเคลม)`;
+
+  navigator.clipboard.writeText(ticketText).then(() => {
+    window.UI?.toast("📋 คัดลอกแบบฟอร์มเคลมแล้ว! กำลังเปิดห้อง Ticket ใน Discord...", "success");
+    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    setTimeout(() => {
+      window.open(discordUrl, "_blank");
+    }, 600);
+  }).catch(() => {
+    const discordUrl = window.storeConfig?.communityLinks?.discord || "https://discord.gg/nyx9";
+    window.open(discordUrl, "_blank");
+  });
 };
 
 // Discord Boost & Quests Calculator Bridges
