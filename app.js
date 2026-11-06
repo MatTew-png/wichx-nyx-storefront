@@ -489,6 +489,10 @@ window.navigateToPage = function(page, hash = '') {
       if (v === target) {
         el.classList.remove('hidden');
         el.classList.add('block');
+        // Julian Fella Signature Smooth View Reveal
+        if (window.JulianMotion && typeof window.JulianMotion.animateView === 'function') {
+          window.JulianMotion.animateView(el);
+        }
       } else {
         el.classList.remove('block');
         el.classList.add('hidden');

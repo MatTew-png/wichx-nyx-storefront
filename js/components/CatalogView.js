@@ -121,6 +121,9 @@ class CatalogViewComponent {
 
     container.innerHTML = html;
     if (window.lucide) lucide.createIcons();
+    if (window.JulianMotion && typeof window.JulianMotion.animateCatalogGrid === 'function') {
+      window.JulianMotion.animateCatalogGrid(container);
+    }
   }
 
   renderProducts() {
@@ -179,6 +182,9 @@ class CatalogViewComponent {
         </div>
       `;
       if (window.lucide) lucide.createIcons();
+    if (window.JulianMotion && typeof window.JulianMotion.animateCatalogGrid === 'function') {
+      window.JulianMotion.animateCatalogGrid(container);
+    }
       return;
     }
 
@@ -257,6 +263,9 @@ class CatalogViewComponent {
     }
 
     if (window.lucide) lucide.createIcons();
+    if (window.JulianMotion && typeof window.JulianMotion.animateCatalogGrid === 'function') {
+      window.JulianMotion.animateCatalogGrid(container);
+    }
   }
 
     createProductCardHTML(p, cat) {

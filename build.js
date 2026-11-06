@@ -8,6 +8,7 @@ const SOURCE_FILES = [
   'js/core/Store.js',
   'js/core/SecurityEngine.js',
   'js/core/ReceiptGenerator.js',
+  'js/core/JulianMotion.js',
   'js/services/AuthService.js',
   'js/services/CatalogService.js',
   'js/services/PaymentService.js',
