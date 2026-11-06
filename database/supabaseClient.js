@@ -136,9 +136,7 @@ const SupabaseAdapter = {
             status: stockMap[p.id] === 0 ? "OUT OF STOCK" : (p.status || "SALE"),
             fulfillmentType: p.fulfillment_type || "instant",
             chips: (p.chips || []).map(c => String(c).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{1FA00}-\u{1FAFF}\u{FE0F}]/gu, '').trim()),
-            imageUrl: typeof createCyberArtwork === "function" 
-              ? createCyberArtwork(p.title, cat.name, p.id.includes("nitro") ? "nitro" : "discord", "#19BAFF", "#38D4FF")
-              : ""
+            imageUrl: p.image_url || ""
           }))
       }));
     } catch (err) {

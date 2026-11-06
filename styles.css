@@ -4,17 +4,17 @@
    ============================================================================== */
 
 :root {
-  --accent: #6366F1;
-  --accent-hover: #818CF8;
-  --accent-glow: rgba(99, 102, 241, 0.16);
+  --accent: #00B2FF;
+  --accent-hover: #009DE6;
+  --accent-glow: rgba(0, 178, 255, 0.16);
   --accent-emerald: #10B981;
   --accent-purple: #A855F7;
   --base-bg: #08090C;
   --card-bg: #0E1017;
-  --card-hover: #141724;
+  --card-hover: #12151D;
   --border-light: rgba(255, 255, 255, 0.07);
   --border-hairline: rgba(255, 255, 255, 0.04);
-  --border-active: rgba(99, 102, 241, 0.40);
+  --border-active: rgba(0, 178, 255, 0.40);
 }
 
 * {

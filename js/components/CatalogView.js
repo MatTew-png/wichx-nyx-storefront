@@ -225,7 +225,7 @@ class CatalogViewComponent {
         <div id="${cat.id}" class="space-y-4 mb-10">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
             <div class="flex items-center gap-3">
-              <span class="w-1.5 h-5 rounded-full bg-indigo-500"></span>
+              <span class="w-1.5 h-5 rounded-full bg-[var(--accent)]"></span>
               <div>
                 <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
                 <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
@@ -275,12 +275,27 @@ class CatalogViewComponent {
     return `
       <div class="product-card group rounded-2xl bg-[#0A0D14] hover:bg-[#0F1420] border border-white/[0.07] hover:border-white/[0.18] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.85)] hover:-translate-y-1">
         <div>
-          <!-- Artwork Area (1:1 Ratio with Subtle Dark Backdrop) -->
-          <div class="w-full aspect-square rounded-xl bg-[#06080D] border border-[rgba(255,255,255,0.06)] overflow-hidden relative mb-3.5 flex items-center justify-center p-2.5">
-            ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' rx=\'16\' fill=\'%230B101A\'/%3E%3Cpath d=\'M30 50h40M50 30v40\' stroke=\'%2300F2FF\' stroke-width=\'4\'/%3E%3C/svg%3E';" />` : `<i data-lucide="box" class="w-12 h-12 text-slate-600"></i>`}
+          <!-- Artwork Area (1:1 Ratio Minimal Base Placeholder) -->
+          <div class="w-full aspect-square rounded-xl bg-white/[0.02] border border-white/[0.06] group-hover:border-white/[0.14] overflow-hidden relative mb-3.5 flex items-center justify-center p-2.5 transition-colors">
+            ${p.imageUrl ? `
+              <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.classList.remove('hidden');" />
+              <div class="hidden flex-col items-center justify-center gap-2 select-none pointer-events-none">
+                <div class="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500">
+                  <i data-lucide="image" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-mono-val uppercase tracking-widest text-slate-600">NO IMAGE</span>
+              </div>
+            ` : `
+              <div class="flex flex-col items-center justify-center gap-2 select-none pointer-events-none">
+                <div class="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 group-hover:text-slate-400 group-hover:scale-105 group-hover:border-white/[0.12] transition-all">
+                  <i data-lucide="image" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-mono-val uppercase tracking-widest text-slate-600 group-hover:text-slate-500 transition-colors">NO IMAGE</span>
+              </div>
+            `}
             
             <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-indigo-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
+              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-sky-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
@@ -295,7 +310,7 @@ class CatalogViewComponent {
           </div>
 
           <!-- Title & Chips -->
-          <h4 class="text-sm font-heading font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
+          <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
           <div class="flex flex-wrap gap-1.5 mb-3.5">
             ${(p.chips || []).map(chip => `
@@ -308,7 +323,7 @@ class CatalogViewComponent {
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono-val font-bold text-indigo-400 tracking-tight">฿${p.price.toFixed(2)}</div>
+            <div class="text-base font-mono-val font-bold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
           ${isOut ? `

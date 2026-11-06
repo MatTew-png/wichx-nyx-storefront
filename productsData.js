@@ -93,7 +93,7 @@ const categoriesData = [
         discountPercent: 32,
         chips: ["ส่งทันที", "ประกันเต็ม", "2 บูส"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro Booster", "1 Month Mailpass", "nitro", "#19BAFF", "#38D4FF"),
+        imageUrl: "",
         sampleDelivery: "NITRO-1M-ACTIVE-KEY-9921",
         warrantyDays: 30
       },
@@ -108,7 +108,7 @@ const categoriesData = [
         discountPercent: 48,
         chips: ["ยกเมลแท้", "2 บูส", "เปลี่ยนรหัสได้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro 3 Months", "Full Email Transfer", "nitro", "#38D4FF", "#00FFA3"),
+        imageUrl: "",
         sampleDelivery: "NITRO-3M-ACTIVE-KEY-8812",
         warrantyDays: 90
       },
@@ -123,7 +123,7 @@ const categoriesData = [
         discountPercent: 44,
         chips: ["2 บูสแท้", "ใน 1 นาที"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: createCyberArtwork("Server Boost", "1 Month x2 Boosts", "boost", "#19BAFF", "#7928CA"),
+        imageUrl: "",
         instructions: "กรอกลิงก์เซิร์ฟเวอร์ Discord ที่ต้องการให้บอทเข้าไปบูส (ต้องไม่หมดอายุ)"
       },
       {
@@ -137,7 +137,7 @@ const categoriesData = [
         discountPercent: 44,
         chips: ["90 วันเต็ม", "ยอดนิยม"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: createCyberArtwork("Server Boost 90D", "3 Months x2 Boosts", "boost", "#FF0080", "#19BAFF"),
+        imageUrl: "",
         instructions: "ระบบจะดำเนินการส่งบูสเข้าเซิร์ฟเวอร์ภายใน 1-5 นาทีหลังชำระเงิน"
       },
       {
@@ -151,7 +151,7 @@ const categoriesData = [
         discountPercent: 58,
         chips: ["กิฟต์ลิงก์", "ไอดีใหม่"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Nitro Promo Link", "3 Months Promo Xbox", "nitro", "#10B981", "#19BAFF"),
+        imageUrl: "",
         sampleDelivery: "https://discord.com/billing/promotions/xbox-game-pass-promo-key-83749204812",
         warrantyDays: 14
       },
@@ -166,7 +166,7 @@ const categoriesData = [
         discountPercent: 47,
         chips: ["ถาวร", "ของแต่งแท้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Avatar Deco", "Permanent Nameplates", "nitro", "#F59E0B", "#EF4444"),
+        imageUrl: "",
         sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-WICHX",
         warrantyDays: 365
       }
@@ -195,7 +195,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["มีรูปโปรไฟล์", "เริ่มใน 5 นาที"],
         fulfillmentType: "custom_discord_members",
-        imageUrl: createCyberArtwork("Member Booster", "Real Avatars 24/7", "discord", "#19BAFF", "#3B82F6"),
+        imageUrl: "",
         instructions: "ระบบปั๊มเมมเบอร์อัตโนมัติ กรอกลิงก์ Discord Invite และเลือกจำนวนสมาชิกที่ต้องการ"
       },
       {
@@ -208,7 +208,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["เบอร์ไทย/นอก", "ส่งรหัสใน 30 วิ"],
         fulfillmentType: "custom_phone_otp",
-        imageUrl: createCyberArtwork("Phone OTP Verify", "Instant SMS Code", "key", "#10B981", "#38D4FF"),
+        imageUrl: "",
         instructions: "เลือกประเทศเพื่อขอรับเบอร์เสมือน และรอรับรหัส OTP สดได้ทันทีที่หน้าจอ"
       },
       {
@@ -221,7 +221,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["รับตราทันที", "ไม่ต้องเปิดเกม"],
         fulfillmentType: "custom_quest_badge",
-        imageUrl: createCyberArtwork("Quest Badge", "Discord Mission Auto", "boost", "#8B5CF6", "#19BAFF"),
+        imageUrl: "",
         instructions: "กรอก Discord User ID เพื่อให้ระบบออโต้ส่งตราเควสต์เข้าโปรไฟล์ของคุณ"
       },
       {
@@ -234,7 +234,7 @@ const categoriesData = [
         status: "STOCK",
         chips: ["พร้อมใช้งาน", "ไม่ติดบอท"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Discord Age 1M+", "Aged Clean Account", "discord", "#6366F1", "#19BAFF"),
+        imageUrl: "",
         sampleDelivery: "DISCORD-VERIFIED-AUTH-TOKEN-7721",
         warrantyDays: 7
       },
@@ -248,7 +248,7 @@ const categoriesData = [
         status: "HOT",
         chips: ["ปีเก่าหายาก", "ยกเมลหลัก"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Discord Vintage", "Rare 2016-2018 ID", "discord", "#F59E0B", "#E11D48"),
+        imageUrl: "",
         sampleDelivery: "DISCORD-VINTAGE-AUTH-TOKEN-2016",
         warrantyDays: 30
       }
@@ -274,7 +274,7 @@ const categoriesData = [
         discountPercent: 60,
         chips: ["FiveM", "ส่งทันที"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("FiveM Clean", "Rockstar 2-Step Auth", "game", "#19BAFF", "#EC4899"),
+        imageUrl: "",
         sampleDelivery: "FIVEM-READY-CLEAN-AUTH-991",
         warrantyDays: 7
       },
@@ -289,7 +289,7 @@ const categoriesData = [
         discountPercent: 43,
         chips: ["Steam แท้", "ยกไอดี"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Steam GTA V", "Unlinked Clean Account", "game", "#3B82F6", "#06B6D4"),
+        imageUrl: "",
         sampleDelivery: "STEAM-GTAV-CLEAN-SERIAL-771",
         warrantyDays: 30
       },
@@ -304,7 +304,7 @@ const categoriesData = [
         discountPercent: 35,
         chips: ["จอส่วนตัว", "ประกัน 30 วัน"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Netflix UHD", "30 Days Private Screen", "stream", "#E50914", "#19BAFF"),
+        imageUrl: "",
         sampleDelivery: "NETFLIX-UHD-SLOT-TOKEN-291",
         warrantyDays: 30
       },
@@ -319,7 +319,7 @@ const categoriesData = [
         discountPercent: 45,
         chips: ["ไร้โฆษณา", "อนุมัติไว"],
         fulfillmentType: "custom_email_invite",
-        imageUrl: createCyberArtwork("YouTube Premium", "Ad-Free Background Play", "stream", "#FF0000", "#38D4FF"),
+        imageUrl: "",
         instructions: "กรอก Gmail ของคุณเพื่อรับลิงก์คำเชิญเข้าร่วมครอบครัวพรีเมียม (ไม่จำเป็นต้องให้รหัสผ่าน)"
       },
       {
@@ -332,7 +332,7 @@ const categoriesData = [
         status: "PRE-ORDER",
         chips: ["AI Tool", "พรีออเดอร์"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Cursor Pro AI", "Claude 3.7 & GPT-4o", "ai", "#00FFA3", "#19BAFF"),
+        imageUrl: "",
         sampleDelivery: "PREORDER-CONFIRMED: ระบบจะจัดส่งรหัสคีย์เข้าอีเมลของคุณภายใน 24 ชม.",
         warrantyDays: 30
       },
@@ -346,7 +346,7 @@ const categoriesData = [
         status: "OUT OF STOCK",
         chips: ["หมดชั่วคราว", "รอเติมของ"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Out of Stock", "Item Unavailable", "key", "#6B7280", "#374151"),
+        imageUrl: "",
         sampleDelivery: ""
       }
     ]
@@ -371,7 +371,7 @@ const categoriesData = [
         discountPercent: 73,
         chips: ["คีย์แท้", "ถาวร", "ย้ายเครื่องได้"],
         fulfillmentType: "instant",
-        imageUrl: createCyberArtwork("Windows 11 Pro", "Original Retail License", "key", "#0078D4", "#19BAFF"),
+        imageUrl: "",
         sampleDelivery: "W269N-WFGWX-YVC9B-4J6C9-T83GX",
         warrantyDays: 365
       },
@@ -386,7 +386,7 @@ const categoriesData = [
         discountPercent: 50,
         chips: ["เมลเดิม", "ต่ออายุได้"],
         fulfillmentType: "custom_email_invite",
-        imageUrl: createCyberArtwork("Spotify 3M", "Original Family Plan", "stream", "#1DB954", "#19BAFF"),
+        imageUrl: "",
         instructions: "กรอกอีเมล Spotify เพื่อรับลิงก์ Family Invite เข้าใช้งานทันที"
       }
     ]
