@@ -11,6 +11,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { checkRateLimit } = require('./rate-limiter');
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,6 +20,11 @@ module.exports = async (req, res) => {
 
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ message: "Method Not Allowed" });
+
+  // Edge Rate Limiting: Max 10 requests / min per IP for Checkout
+  if (!checkRateLimit(req, res, { action: 'checkout', limit: 10, windowMs: 60 * 1000 })) {
+    return;
+  }
 
   try {
     const { items, honeypotTrap, promoCode, userBalance, userId, customerInfo } = req.body || {};
@@ -77,12 +83,19 @@ module.exports = async (req, res) => {
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
 
+      const clientIp = req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"]?.split(',')[0]?.trim() || req.headers["x-real-ip"] || req.socket?.remoteAddress || "";
+
       const { data, error } = await supabase.rpc('execute_order_checkout', {
         p_order_id: orderId,
         p_items: items,
         p_total_amount: finalAmount,
         p_user_id: userId || null,
-        p_customer_info: customerInfo || {}
+        p_customer_info: {
+          ...(customerInfo || {}),
+          promoCode: promoCode || customerInfo?.promoCode || null,
+          discountAmount: discountAmount || customerInfo?.discountAmount || 0,
+          ip: clientIp
+        }
       });
 
       if (error) {

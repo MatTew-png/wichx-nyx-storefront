@@ -8,6 +8,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { checkRateLimit, getClientIp } = require('./rate-limiter');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -23,6 +24,11 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 
+  // Edge Rate Limiting & Anti-Brute-Force: Max 5 requests / min per IP
+  if (!checkRateLimit(req, res, { action: 'verify-slip', limit: 5, windowMs: 60 * 1000 })) {
+    return;
+  }
+
   try {
     const { amount, transRef, qrRawData, slipImageBase64, userId } = req.body || {};
     const parsedAmount = parseFloat(amount);
@@ -32,6 +38,7 @@ module.exports = async (req, res) => {
     }
 
     const slipRef = transRef || `PP-${Date.now()}`;
+    const clientIp = getClientIp(req);
 
     // เชื่อมต่อ Supabase
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -40,13 +47,14 @@ module.exports = async (req, res) => {
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      // เรียก Stored Procedure ตรวจสอบและบันทึกสลิป
+      // เรียก Stored Procedure ตรวจสอบและบันทึกสลิป (พร้อมตรวจสอบ Blacklist อัตโนมัติ)
       const { data, error } = await supabase.rpc('process_topup', {
         p_gateway: 'promptpay',
         p_trans_ref: slipRef,
         p_amount: parsedAmount,
         p_user_id: userId || null,
         p_raw_payload: {
+          ip: clientIp,
           has_slip_image: !!slipImageBase64,
           qr_raw: qrRawData || null,
           verified_at: new Date().toISOString()

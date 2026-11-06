@@ -417,3 +417,19 @@ html, body {
   animation: skeletonWave 1.8s ease-in-out infinite;
   pointer-events: none;
 }
+
+
+/* ==============================================================================
+   🛡️ ANTI-CALLOUT & ASSET EXTRACTION SHIELD
+   ============================================================================== */
+html, body {
+  -webkit-touch-callout: none;
+}
+img, canvas, svg, button {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+input, textarea {
+  -webkit-touch-callout: default !important;
+  user-select: text !important;
+}

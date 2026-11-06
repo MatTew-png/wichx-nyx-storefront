@@ -1,6 +1,85 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
 <head>
+
+  <!-- ==============================================================================
+       🛡️ ZERO-LATENCY BROWSER ANTI-TAMPER & CONTEXT MENU SHIELD (HEAD-LEVEL)
+       Synchronous execution before any external resource loads (0.00s instant lock)
+       ============================================================================== -->
+  <script>
+    (function() {
+      window.__nyxAdminUnlocked = false;
+      function isInputTarget(el) {
+        if (!el) return false;
+        var tag = (el.tagName || '').toLowerCase();
+        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
+      }
+      window.__nyxBlockCtx = function(e) {
+        if (window.__nyxAdminUnlocked) return true;
+        if (isInputTarget(e.target)) return true;
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if (e) e.returnValue = false;
+        return false;
+      };
+
+      // 1. Chromium priority property overrides
+      window.oncontextmenu = window.__nyxBlockCtx;
+      document.oncontextmenu = window.__nyxBlockCtx;
+
+      // 2. Capture-phase interception across window and document
+      window.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
+      document.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
+      window.addEventListener('auxclick', function(e) {
+        if (e.button === 2) window.__nyxBlockCtx(e);
+      }, { capture: true, passive: false });
+
+      // 3. DevTools & Inspection Keyboard Shortcuts Interceptors
+      function blockDevKeys(e) {
+        var key = (e.key || '').toLowerCase();
+        var code = e.keyCode || e.which;
+        var isCtrlOrMeta = e.ctrlKey || e.metaKey;
+
+        // Admin Secret Unlock: Ctrl + Alt + D
+        if (isCtrlOrMeta && e.altKey && key === 'd') {
+          if (window.Shop && window.Shop.security && window.Shop.security.isAdmin && window.Shop.security.isAdmin()) {
+            window.__nyxAdminUnlocked = !window.__nyxAdminUnlocked;
+            return;
+          }
+        }
+
+        if (window.__nyxAdminUnlocked) return;
+
+        // F12 or code 123
+        if (key === 'f12' || code === 123) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Shift + F10 (Context Menu Shortcut) or ContextMenu physical key
+        if ((e.shiftKey && (key === 'f10' || code === 121)) || key === 'contextmenu' || code === 93) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+Shift+I / J / C (DevTools Inspect & Console)
+        if (isCtrlOrMeta && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || code === 73 || code === 74 || code === 67)) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+U (View Source)
+        if (isCtrlOrMeta && (key === 'u' || code === 85)) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+S (Save Page) & Ctrl+P (Print Page)
+        if (isCtrlOrMeta && (key === 's' || key === 'p' || code === 83 || code === 80)) {
+          if (!isInputTarget(e.target)) {
+            e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+          }
+        }
+      }
+
+      window.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
+      document.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
+    })();
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NYX9 STUDIO • OPERATIONS SUITE (Admin Control Center)</title>
@@ -50,7 +129,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-[#06080C] text-slate-100 flex flex-col">
+<body class="min-h-screen bg-[#06080C] text-slate-100 flex flex-col" oncontextmenu="return window.__nyxBlockCtx ? window.__nyxBlockCtx(event) : false;">
 
   <!-- ==============================================================================
        1. AUTHENTICATION GATE (LOGIN MODAL & ACCESS CONTROL)
@@ -328,7 +407,13 @@
             <i data-lucide="shopping-bag" class="w-4 h-4 text-[var(--accent)]"></i>
             <span>ประวัติคำสั่งซื้อล่าสุด (Orders Explorer)</span>
           </h3>
-          <span class="text-xs text-slate-400">แสดง 10 รายการล่าสุดจากฐานข้อมูลจริง</span>
+          <div class="flex items-center gap-3">
+            <button onclick="exportOrdersToCSV()" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>📥 ดาวน์โหลดรายงานยอดขาย (.CSV)</span>
+            </button>
+            <span class="text-xs text-slate-400 hidden sm:inline">ดึงข้อมูลคำสั่งซื้อทั้งหมด</span>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -705,6 +790,7 @@
     }
 
     function renderDashboard(data) {
+      window.currentDashboardData = data;
       const { metrics, stock_by_product, recent_orders, recent_topups, warranty_claims } = data;
 
       // Metrics
@@ -1006,6 +1092,90 @@
         lucide.createIcons();
       }
     }
-  </script>
+  
+    // ==============================================================================
+    // 📊 EXCEL / CSV REPORT EXPORTER FOR ADMIN (UTF-8 BOM FOR THAI LANGUAGE)
+    // ==============================================================================
+    async function exportOrdersToCSV() {
+      try {
+        let orders = [];
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!error && data && data.length > 0) {
+            orders = data;
+          }
+        }
+        if (orders.length === 0 && window.currentDashboardData && window.currentDashboardData.recent_orders) {
+          orders = window.currentDashboardData.recent_orders;
+        }
+
+        if (!orders || orders.length === 0) {
+          alert('ไม่พบข้อมูลคำสั่งซื้อสำหรับส่งออก CSV');
+          return;
+        }
+
+        // CSV Headers
+        const headers = [
+          'ลำดับ',
+          'รหัสคำสั่งซื้อ (Order ID)',
+          'วันที่-เวลา (Date Time)',
+          'ผู้สั่งซื้อ (Discord ID / User)',
+          'สินค้า (Items)',
+          'จำนวน (Qty)',
+          'ยอดชำระสุทธิ (Total THB)',
+          'ช่องทางชำระ (Payment Method)',
+          'สถานะ (Status)'
+        ];
+
+        const rows = orders.map((ord, idx) => {
+          let itemsStr = '-';
+          let qty = 1;
+          if (Array.isArray(ord.items)) {
+            itemsStr = ord.items.map(it => (it.title || it.name || 'สินค้า') + ' x' + (it.quantity || 1)).join('; ');
+            qty = ord.items.reduce((sum, it) => sum + (it.quantity || 1), 0);
+          } else if (typeof ord.items === 'object' && ord.items !== null) {
+            itemsStr = JSON.stringify(ord.items);
+          } else if (ord.items) {
+            itemsStr = String(ord.items);
+          }
+
+          const dateStr = new Date(ord.created_at).toLocaleString('th-TH');
+          const safe = (val) => '"' + String(val || '').replace(/"/g, '""') + '"';
+
+          return [
+            idx + 1,
+            safe(ord.id),
+            safe(dateStr),
+            safe(ord.discord_id || ord.user_id || 'Guest'),
+            safe(itemsStr),
+            qty,
+            parseFloat(ord.total_amount || 0).toFixed(2),
+            safe(ord.payment_method || 'wallet'),
+            safe(ord.status || 'PAID')
+          ].join(',');
+        });
+
+        // Prepend UTF-8 BOM (\uFEFF) so Excel on Windows opens Thai characters correctly
+        const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const dateToday = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = 'NYX9_Sales_Report_' + dateToday + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Export CSV Error:', err);
+        alert('เกิดข้อผิดพลาดในการดาวน์โหลด CSV: ' + err.message);
+      }
+    }
+
+</script>
 </body>
 </html>

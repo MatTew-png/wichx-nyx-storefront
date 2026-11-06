@@ -1,6 +1,85 @@
 <!DOCTYPE html>
 <html lang="th" class="dark bg-[#06080C]">
 <head>
+
+  <!-- ==============================================================================
+       🛡️ ZERO-LATENCY BROWSER ANTI-TAMPER & CONTEXT MENU SHIELD (HEAD-LEVEL)
+       Synchronous execution before any external resource loads (0.00s instant lock)
+       ============================================================================== -->
+  <script>
+    (function() {
+      window.__nyxAdminUnlocked = false;
+      function isInputTarget(el) {
+        if (!el) return false;
+        var tag = (el.tagName || '').toLowerCase();
+        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
+      }
+      window.__nyxBlockCtx = function(e) {
+        if (window.__nyxAdminUnlocked) return true;
+        if (isInputTarget(e.target)) return true;
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if (e) e.returnValue = false;
+        return false;
+      };
+
+      // 1. Chromium priority property overrides
+      window.oncontextmenu = window.__nyxBlockCtx;
+      document.oncontextmenu = window.__nyxBlockCtx;
+
+      // 2. Capture-phase interception across window and document
+      window.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
+      document.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
+      window.addEventListener('auxclick', function(e) {
+        if (e.button === 2) window.__nyxBlockCtx(e);
+      }, { capture: true, passive: false });
+
+      // 3. DevTools & Inspection Keyboard Shortcuts Interceptors
+      function blockDevKeys(e) {
+        var key = (e.key || '').toLowerCase();
+        var code = e.keyCode || e.which;
+        var isCtrlOrMeta = e.ctrlKey || e.metaKey;
+
+        // Admin Secret Unlock: Ctrl + Alt + D
+        if (isCtrlOrMeta && e.altKey && key === 'd') {
+          if (window.Shop && window.Shop.security && window.Shop.security.isAdmin && window.Shop.security.isAdmin()) {
+            window.__nyxAdminUnlocked = !window.__nyxAdminUnlocked;
+            return;
+          }
+        }
+
+        if (window.__nyxAdminUnlocked) return;
+
+        // F12 or code 123
+        if (key === 'f12' || code === 123) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Shift + F10 (Context Menu Shortcut) or ContextMenu physical key
+        if ((e.shiftKey && (key === 'f10' || code === 121)) || key === 'contextmenu' || code === 93) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+Shift+I / J / C (DevTools Inspect & Console)
+        if (isCtrlOrMeta && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || code === 73 || code === 74 || code === 67)) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+U (View Source)
+        if (isCtrlOrMeta && (key === 'u' || code === 85)) {
+          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+        }
+        // Ctrl+S (Save Page) & Ctrl+P (Print Page)
+        if (isCtrlOrMeta && (key === 's' || key === 'p' || code === 83 || code === 80)) {
+          if (!isInputTarget(e.target)) {
+            e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
+          }
+        }
+      }
+
+      window.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
+      document.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
+    })();
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -12,17 +91,23 @@
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="apple-touch-icon" href="assets/logo.png" />
 
-  <!-- OpenGraph / Social Sharing -->
+  <!-- Discord & OpenGraph Rich Embed Metadata -->
+  <meta name="theme-color" content="#00F2FF" />
+  <meta property="og:site_name" content="NYX9 STUDIO" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://nyxning.shop/" />
-  <meta property="og:title" content="NYX9 STUDIO | ศูนย์รวมบริการดิจิทัลอัตโนมัติ 24 ชม." />
-  <meta property="og:description" content="ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีใน 1 นาที ปลอดภัย การันตียอดขายมากกว่า 660,000 ออเดอร์" />
-  <meta property="og:image" content="https://nyxning.shop/assets/discord-base-frame.png" />
+  <meta property="og:title" content="NYX9 STUDIO — ร้านค้าบริการ Discord Nitro & Gaming Accounts ส่งออโต้ 24 ชม." />
+  <meta property="og:description" content="⚡ ศูนย์รวมบริการดิจิทัล Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM, Steam & แอพพรีเมียม ตัดยอดและจัดส่งรหัสทันทีใน 1 วินาที การันตีมากกว่า 660,000 ออเดอร์" />
+  <meta property="og:image" content="https://nyxning.shop/assets/og-banner.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="NYX9 STUDIO Cyberpunk Storefront" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="NYX9 STUDIO | ร้านค้าบริการดิจิทัลออโต้ 24/7" />
-  <meta name="twitter:description" content="บริการดิจิทัล Discord, FiveM, Steam และแอปพรีเมียม จัดส่งรวดเร็วด้วยระบบอัตโนมัติ" />
+  <meta name="twitter:title" content="NYX9 STUDIO — ร้านค้าบริการ Discord Nitro & Gaming Accounts ส่งออโต้ 24 ชม." />
+  <meta name="twitter:description" content="⚡ ศูนย์รวมบริการดิจิทัล Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM, Steam & แอพพรีเมียม ตัดยอดและจัดส่งรหัสทันทีใน 1 วินาที การันตีมากกว่า 660,000 ออเดอร์" />
+  <meta name="twitter:image" content="https://nyxning.shop/assets/og-banner.png" />
 
   <!-- Schema.org Structured Data (JSON-LD) -->
   <script type="application/ld+json">
@@ -103,9 +188,9 @@
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=2.1.0" />
+  <link rel="stylesheet" href="styles.css?v=2.4.0" />
 </head>
-<body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
+<body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black" oncontextmenu="return window.__nyxBlockCtx ? window.__nyxBlockCtx(event) : false;">
 
   <!-- ==============================================================================
        1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)
@@ -1722,6 +1807,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Unified Storefront Application Engine (Zero Latency Single-Bundle) -->
-  <script src="dist/store.bundle.js?v=2.3.0"></script>
+  <script src="dist/store.bundle.js?v=2.4.0"></script>
 </body>
 </html>

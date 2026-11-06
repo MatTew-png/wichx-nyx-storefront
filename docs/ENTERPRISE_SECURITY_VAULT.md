@@ -90,8 +90,24 @@
 
 ---
 
-## 6. แนวทางการขยายขีดความสามารถเพิ่มเติม (Recommended Vault Extensions)
+## 6. เสาหลักความปลอดภัยระดับฐานข้อมูล & Edge Security (Security Hardening v2)
 
-1. **Enforce Single-Use Promo Codes:** บันทึกการใช้งานคูปองลงในตาราง `promo_code_usages` ใน `execute_order_checkout` โดยอัตโนมัติ เพื่อบังคับใช้กฎ 1 คน / 1 สิทธิ์ ผ่านฐานข้อมูล
-2. **Automated Blacklist Query in Checkout:** ตรวจสอบตาราง `blacklists` ในขั้นตอน `execute_order_checkout` และ `process_topup` เพื่อบล็อกผู้ใช้งานหรือ IP ที่ติดบัญชีดำโดยอัตโนมัติ
-3. **Security Audit Log Pipeline:** บันทึกความพยายามโจมตีหรือการพยายามใช้สลิปซ้ำลงใน `system_audit_logs` พร้อมส่งแจ้งเตือนด่วนผ่าน Discord Webhook
+1. **Enforce Single-Use Promo Codes (Database Constraint):** 
+   - บันทึกประวัติการใช้คูปองลงในตาราง `promo_code_usages` ในขั้นตอน `execute_order_checkout` โดยตรง
+   - บังคับใช้กฎผ่านข้อจำกัด `UNIQUE(user_id, code)` ระดับฐานข้อมูล
+   - หากตรวจพบว่าลูกค้ารายเดิมพยายามใช้โค้ดซ้ำ ฐานข้อมูลจะ Reject คำสั่งซื้อทันทีด้วยข้อผิดพลาด `PROMO_CODE_ALREADY_USED`
+
+2. **Automated Blacklist Query in Transaction:** 
+   - ดึงตาราง `blacklists` เข้าไปตรวจสอบอัตโนมัติใน `execute_order_checkout` และ `process_topup`
+   - ตรวจสอบทั้ง `target_value` ของ Discord ID, User ID และ IP Address ของผู้ส่งคำขอ
+   - หากตรงกับรายการบัญชีดำที่ยังไม่หมดอายุ ระบบจะบันทึก Critical Audit Log และปฏิเสธการทำรายการทันที (`BLACKLISTED_USER`)
+
+3. **Edge Rate Limiting & Anti-Brute-Force:**
+   - ติดตั้งตัวจำกัดอัตราคำขอ (`api/rate-limiter.js`) ในหน้า `/api/verify-slip`, `/api/truemoney-redeem` และ `/api/checkout`
+   - จำกัด 5 requests / นาที ต่อ 1 IP (Sliding Window Algorithm)
+   - ป้องกันการสุ่มหมายเลขอ้างอิงสลิป (TransRef) และซองของขวัญ TrueMoney หากยิงเกินโควตาจะได้รับ HTTP 429 `RATE_LIMIT_EXCEEDED` พร้อม Header `Retry-After`
+
+4. **Unified Verification Test Suite (npm run test:verify):**
+   - คำสั่งเดี่ยวตามแนวทาง pstack: `npm run test:verify` หรือ `npm test` เพื่อพิสูจน์ความสมบูรณ์ของระบบ
+   - ทดสอบ RLS Leak, Zero-Trust Price recalculation, Anti-Dupe Slips/Vouchers, Promo Code Constraint, Blacklist Auto-Query และ Edge Rate Limiting
+   - ผสานเข้ากับ GitHub Actions (`.github/workflows/deploy.yml`) เพื่อรันตรวจสอบอัตโนมัติก่อน Deploy ขึ้น Production ทุกครั้ง

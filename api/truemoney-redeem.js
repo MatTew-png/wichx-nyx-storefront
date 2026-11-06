@@ -8,6 +8,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { checkRateLimit, getClientIp } = require('./rate-limiter');
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -17,9 +18,15 @@ module.exports = async (req, res) => {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ message: "Method Not Allowed" });
 
+  // Edge Rate Limiting & Anti-Brute-Force: Max 5 requests / min per IP
+  if (!checkRateLimit(req, res, { action: 'truemoney-redeem', limit: 5, windowMs: 60 * 1000 })) {
+    return;
+  }
+
   try {
     const { voucherUrl, userId } = req.body || {};
     const merchantPhone = process.env.TRUEMONEY_PHONE;
+    const clientIp = getClientIp(req);
 
     if (!voucherUrl) {
       return res.status(400).json({ success: false, message: "กรุณาระบุลิงก์ซองของขวัญ TrueMoney" });
@@ -76,6 +83,7 @@ module.exports = async (req, res) => {
         p_amount: redeemedAmount,
         p_user_id: userId || null,
         p_raw_payload: {
+          ip: clientIp,
           voucher_code: voucherCode,
           merchant_phone: merchantPhone || null,
           redeemed_at: new Date().toISOString()

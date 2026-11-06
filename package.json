@@ -6,7 +6,9 @@
   "scripts": {
     "build": "node build.js",
     "dev": "node dev-server.js",
-    "start": "node dev-server.js"
+    "start": "node dev-server.js",
+    "test": "node scripts/unified-verification.js",
+    "test:verify": "node scripts/unified-verification.js"
   },
   "keywords": [
     "ecommerce",

@@ -1247,6 +1247,7 @@ class SecurityEngine {
       if (isCtrlOrMeta && e.altKey && key === "d") {
         if (this.isAdmin()) {
           this.adminUnlocked = !this.adminUnlocked;
+          window.__nyxAdminUnlocked = this.adminUnlocked;
           if (window.UI && typeof window.UI.toast === "function") {
             window.UI.toast(
               this.adminUnlocked 

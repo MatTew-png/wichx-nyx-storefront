@@ -67,6 +67,8 @@ class CheckoutService {
 
     const orderId = `WX-${Math.floor(100000 + Math.random() * 900000)}`;
     const user = this.store.get("user");
+    const promo = this.store.get("appliedPromo");
+    const { discount } = this.calculateTotals();
     let result = null;
 
     if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
@@ -78,7 +80,9 @@ class CheckoutService {
         customerInfo: {
           clientTimestamp: new Date().toISOString(),
           username: user?.username || "Guest",
-          discordId: user?.discordId || null
+          discordId: user?.discordId || null,
+          promoCode: promo?.code || null,
+          discountAmount: discount || 0
         }
       });
     } else {

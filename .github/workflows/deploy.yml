@@ -1,4 +1,4 @@
-name: Production Build & Syntax Verification
+name: Production Security Verification & Build
 
 on:
   push:
@@ -19,12 +19,26 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Verify JavaScript Syntax
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Verify JavaScript Syntax & Build Bundle
       run: |
         node -e "require('./storeConfig.js'); console.log('storeConfig.js OK');"
         node -e "require('./productsData.js'); console.log('productsData.js OK');"
         node -e "const fs = require('fs'); new Function(fs.readFileSync('./app.js', 'utf8')); console.log('app.js OK');"
+        node -e "require('./api/rate-limiter.js'); console.log('rate-limiter.js OK');"
         node -e "require('./api/verify-slip.js'); console.log('verify-slip.js OK');"
         node -e "require('./api/discord-notify.js'); console.log('discord-notify.js OK');"
         node -e "require('./api/truemoney-redeem.js'); console.log('truemoney-redeem.js OK');"
         node -e "require('./api/crypto-ltc.js'); console.log('crypto-ltc.js OK');"
+        node -e "require('./api/checkout.js'); console.log('checkout.js OK');"
+        npm run build
+
+    - name: Run Unified Automated Verification Suite (pstack)
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: npm run test:verify
