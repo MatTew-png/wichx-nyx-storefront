@@ -1952,38 +1952,6 @@ class PaymentService {
     });
   }
 
-  // --- 4. CREDIT/DEBIT CARD & BINDING ---
-  async processCardPayment(amount, cardData, shouldBind = true) {
-    const cardAuthRef = `CARD-AUTH-${Date.now().toString().slice(-8)}-${Math.floor(1000 + Math.random() * 9000)}`;
-    
-    const result = await this.processTopup({
-      gateway: "card_payment",
-      transRef: cardAuthRef,
-      amount: amount,
-      rawPayload: {
-        last4: cardData.number.slice(-4),
-        brand: cardData.number.startsWith("4") ? "VISA" : "Mastercard",
-        holderName: cardData.holder.toUpperCase(),
-        threeDSecure: "PASSED",
-        tokenized: shouldBind,
-        timestamp: new Date().toISOString()
-      }
-    });
-
-    if (result.success && shouldBind) {
-      const boundCard = {
-        brand: cardData.number.startsWith("4") ? "VISA" : "Mastercard",
-        last4: cardData.number.slice(-4),
-        holder: cardData.holder.toUpperCase(),
-        expiry: cardData.expiry,
-        boundAt: new Date().toISOString()
-      };
-      localStorage.setItem("nyx_bound_card", JSON.stringify(boundCard));
-    }
-
-    return result;
-  }
-
   // --- CENTRAL TOPUP EXECUTOR (DATABASE RPC + FALLBACK) ---
   async processTopup({ gateway, transRef, amount, rawPayload = {} }) {
     const user = this.store.get("user");
@@ -3326,7 +3294,7 @@ class TopUpModalComponent {
   }
 
   clearFeedbacks() {
-    ["promptpay-feedback", "truemoney-feedback", "bank-transfer-feedback", "card-feedback"].forEach(id => {
+    ["promptpay-feedback", "truemoney-feedback", "bank-transfer-feedback"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.classList.add("hidden");
@@ -3536,33 +3504,6 @@ class TopUpModalComponent {
       window.UI?.toast(err.message, "error");
     } finally {
       this.resetBtn(btn, `<i data-lucide="shield-check" class="w-4 h-4"></i> <span>ตรวจสอบสลิปและปรับยอดทันที</span>`);
-    }
-  }
-
-  async processCard() {
-    const btn = document.getElementById("btn-pay-card");
-    const amount = parseFloat(document.getElementById("card-topup-amount")?.value || "300");
-    const number = (document.getElementById("card-number-input")?.value || "").replace(/\s+/g, "");
-    const expiry = document.getElementById("card-expiry-input")?.value.trim();
-    const cvv = document.getElementById("card-cvv-input")?.value.trim();
-    const holder = document.getElementById("card-holder-input")?.value.trim();
-    const bindToggle = document.getElementById("card-bind-toggle")?.checked;
-
-    if (number.length < 15 || !expiry || !cvv || !holder) {
-      window.UI?.toast("กรุณากรอกข้อมูลบัตรให้ครบถ้วนถูกต้อง", "warning");
-      return;
-    }
-
-    this.setBtnLoading(btn, "กำลังยืนยัน 3D Secure 2.0...");
-    try {
-      await this.paymentService.processCardPayment(amount, { number, expiry, cvv, holder }, bindToggle);
-      window.UI?.confetti();
-      window.UI?.toast(`ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
-      setTimeout(() => this.close(), 1500);
-    } catch (err) {
-      window.UI?.toast(err.message, "error");
-    } finally {
-      this.resetBtn(btn, `<i data-lucide="zap" class="w-4 h-4 fill-current"></i> <span>ยืนยันการชำระเงินและผูกบัตร</span>`);
     }
   }
 
@@ -5276,31 +5217,6 @@ window.copyBankAccount = () => {
   navigator.clipboard.writeText(acc.replace(/-/g, "")).then(() => window.UI?.toast(`📋 คัดลอกเลขบัญชี ${acc} แล้ว!`, "success"));
 };
 window.verifyBankTransferSlip = () => window.Shop.topupModal.verifyBankTransfer();
-
-// Card Bridges
-window.setCardAmountPreset = (amt) => {
-  const el = document.getElementById("card-topup-amount");
-  if (el) el.value = amt;
-};
-window.handleCardNumberInput = (input) => {
-  let val = input.value.replace(/\D/g, "").substring(0, 16);
-  let formatted = val.match(/.{1,4}/g)?.join(" ") || val;
-  input.value = formatted;
-  const p = document.getElementById("preview-card-number");
-  if (p) p.textContent = formatted || "•••• •••• •••• ••••";
-};
-window.handleCardExpiryInput = (input) => {
-  let val = input.value.replace(/\D/g, "").substring(0, 4);
-  if (val.length >= 2) val = val.substring(0, 2) + "/" + val.substring(2);
-  input.value = val;
-  const p = document.getElementById("preview-card-expiry");
-  if (p) p.textContent = val || "MM/YY";
-};
-window.handleCardHolderInput = (input) => {
-  const p = document.getElementById("preview-card-name");
-  if (p) p.textContent = input.value.trim().toUpperCase() || "YOUR NAME";
-};
-window.processCardPayment = () => window.Shop.topupModal.processCard();
 
 // Auth Bridges
 window.handleDiscordLogin = () => window.Shop.auth.loginWithDiscord();

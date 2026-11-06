@@ -210,31 +210,6 @@ window.copyBankAccount = () => {
 };
 window.verifyBankTransferSlip = () => window.Shop.topupModal.verifyBankTransfer();
 
-// Card Bridges
-window.setCardAmountPreset = (amt) => {
-  const el = document.getElementById("card-topup-amount");
-  if (el) el.value = amt;
-};
-window.handleCardNumberInput = (input) => {
-  let val = input.value.replace(/\D/g, "").substring(0, 16);
-  let formatted = val.match(/.{1,4}/g)?.join(" ") || val;
-  input.value = formatted;
-  const p = document.getElementById("preview-card-number");
-  if (p) p.textContent = formatted || "•••• •••• •••• ••••";
-};
-window.handleCardExpiryInput = (input) => {
-  let val = input.value.replace(/\D/g, "").substring(0, 4);
-  if (val.length >= 2) val = val.substring(0, 2) + "/" + val.substring(2);
-  input.value = val;
-  const p = document.getElementById("preview-card-expiry");
-  if (p) p.textContent = val || "MM/YY";
-};
-window.handleCardHolderInput = (input) => {
-  const p = document.getElementById("preview-card-name");
-  if (p) p.textContent = input.value.trim().toUpperCase() || "YOUR NAME";
-};
-window.processCardPayment = () => window.Shop.topupModal.processCard();
-
 // Auth Bridges
 window.handleDiscordLogin = () => window.Shop.auth.loginWithDiscord();
 window.handleLogout = () => window.Shop.auth.logout();

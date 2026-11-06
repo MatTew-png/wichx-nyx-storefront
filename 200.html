@@ -1,85 +1,6 @@
 <!DOCTYPE html>
 <html lang="th" class="dark bg-[#06080C]">
 <head>
-
-  <!-- ==============================================================================
-       🛡️ ZERO-LATENCY BROWSER ANTI-TAMPER & CONTEXT MENU SHIELD (HEAD-LEVEL)
-       Synchronous execution before any external resource loads (0.00s instant lock)
-       ============================================================================== -->
-  <script>
-    (function() {
-      window.__nyxAdminUnlocked = false;
-      function isInputTarget(el) {
-        if (!el) return false;
-        var tag = (el.tagName || '').toLowerCase();
-        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
-      }
-      window.__nyxBlockCtx = function(e) {
-        if (window.__nyxAdminUnlocked) return true;
-        if (isInputTarget(e.target)) return true;
-        if (e && e.preventDefault) e.preventDefault();
-        if (e && e.stopPropagation) e.stopPropagation();
-        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
-        if (e) e.returnValue = false;
-        return false;
-      };
-
-      // 1. Chromium priority property overrides
-      window.oncontextmenu = window.__nyxBlockCtx;
-      document.oncontextmenu = window.__nyxBlockCtx;
-
-      // 2. Capture-phase interception across window and document
-      window.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
-      document.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
-      window.addEventListener('auxclick', function(e) {
-        if (e.button === 2) window.__nyxBlockCtx(e);
-      }, { capture: true, passive: false });
-
-      // 3. DevTools & Inspection Keyboard Shortcuts Interceptors
-      function blockDevKeys(e) {
-        var key = (e.key || '').toLowerCase();
-        var code = e.keyCode || e.which;
-        var isCtrlOrMeta = e.ctrlKey || e.metaKey;
-
-        // Admin Secret Unlock: Ctrl + Alt + D
-        if (isCtrlOrMeta && e.altKey && key === 'd') {
-          if (window.Shop && window.Shop.security && window.Shop.security.isAdmin && window.Shop.security.isAdmin()) {
-            window.__nyxAdminUnlocked = !window.__nyxAdminUnlocked;
-            return;
-          }
-        }
-
-        if (window.__nyxAdminUnlocked) return;
-
-        // F12 or code 123
-        if (key === 'f12' || code === 123) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Shift + F10 (Context Menu Shortcut) or ContextMenu physical key
-        if ((e.shiftKey && (key === 'f10' || code === 121)) || key === 'contextmenu' || code === 93) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+Shift+I / J / C (DevTools Inspect & Console)
-        if (isCtrlOrMeta && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || code === 73 || code === 74 || code === 67)) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+U (View Source)
-        if (isCtrlOrMeta && (key === 'u' || code === 85)) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+S (Save Page) & Ctrl+P (Print Page)
-        if (isCtrlOrMeta && (key === 's' || key === 'p' || code === 83 || code === 80)) {
-          if (!isInputTarget(e.target)) {
-            e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-          }
-        }
-      }
-
-      window.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
-      document.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
-    })();
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -190,7 +111,7 @@
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="styles.css?v=2.4.0" />
 </head>
-<body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black" oncontextmenu="return window.__nyxBlockCtx ? window.__nyxBlockCtx(event) : false;">
+<body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
   <!-- ==============================================================================
        1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)

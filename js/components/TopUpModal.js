@@ -54,7 +54,7 @@ class TopUpModalComponent {
   }
 
   clearFeedbacks() {
-    ["promptpay-feedback", "truemoney-feedback", "bank-transfer-feedback", "card-feedback"].forEach(id => {
+    ["promptpay-feedback", "truemoney-feedback", "bank-transfer-feedback"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.classList.add("hidden");
@@ -264,33 +264,6 @@ class TopUpModalComponent {
       window.UI?.toast(err.message, "error");
     } finally {
       this.resetBtn(btn, `<i data-lucide="shield-check" class="w-4 h-4"></i> <span>ตรวจสอบสลิปและปรับยอดทันที</span>`);
-    }
-  }
-
-  async processCard() {
-    const btn = document.getElementById("btn-pay-card");
-    const amount = parseFloat(document.getElementById("card-topup-amount")?.value || "300");
-    const number = (document.getElementById("card-number-input")?.value || "").replace(/\s+/g, "");
-    const expiry = document.getElementById("card-expiry-input")?.value.trim();
-    const cvv = document.getElementById("card-cvv-input")?.value.trim();
-    const holder = document.getElementById("card-holder-input")?.value.trim();
-    const bindToggle = document.getElementById("card-bind-toggle")?.checked;
-
-    if (number.length < 15 || !expiry || !cvv || !holder) {
-      window.UI?.toast("กรุณากรอกข้อมูลบัตรให้ครบถ้วนถูกต้อง", "warning");
-      return;
-    }
-
-    this.setBtnLoading(btn, "กำลังยืนยัน 3D Secure 2.0...");
-    try {
-      await this.paymentService.processCardPayment(amount, { number, expiry, cvv, holder }, bindToggle);
-      window.UI?.confetti();
-      window.UI?.toast(`ตัดบัตรสำเร็จ +฿${amount.toFixed(2)} เข้ากระเป๋าแล้ว!`, "success");
-      setTimeout(() => this.close(), 1500);
-    } catch (err) {
-      window.UI?.toast(err.message, "error");
-    } finally {
-      this.resetBtn(btn, `<i data-lucide="zap" class="w-4 h-4 fill-current"></i> <span>ยืนยันการชำระเงินและผูกบัตร</span>`);
     }
   }
 

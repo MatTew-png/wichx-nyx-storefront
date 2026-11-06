@@ -98,38 +98,6 @@ class PaymentService {
     });
   }
 
-  // --- 4. CREDIT/DEBIT CARD & BINDING ---
-  async processCardPayment(amount, cardData, shouldBind = true) {
-    const cardAuthRef = `CARD-AUTH-${Date.now().toString().slice(-8)}-${Math.floor(1000 + Math.random() * 9000)}`;
-    
-    const result = await this.processTopup({
-      gateway: "card_payment",
-      transRef: cardAuthRef,
-      amount: amount,
-      rawPayload: {
-        last4: cardData.number.slice(-4),
-        brand: cardData.number.startsWith("4") ? "VISA" : "Mastercard",
-        holderName: cardData.holder.toUpperCase(),
-        threeDSecure: "PASSED",
-        tokenized: shouldBind,
-        timestamp: new Date().toISOString()
-      }
-    });
-
-    if (result.success && shouldBind) {
-      const boundCard = {
-        brand: cardData.number.startsWith("4") ? "VISA" : "Mastercard",
-        last4: cardData.number.slice(-4),
-        holder: cardData.holder.toUpperCase(),
-        expiry: cardData.expiry,
-        boundAt: new Date().toISOString()
-      };
-      localStorage.setItem("nyx_bound_card", JSON.stringify(boundCard));
-    }
-
-    return result;
-  }
-
   // --- CENTRAL TOPUP EXECUTOR (DATABASE RPC + FALLBACK) ---
   async processTopup({ gateway, transRef, amount, rawPayload = {} }) {
     const user = this.store.get("user");
