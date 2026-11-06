@@ -171,7 +171,7 @@ class CheckoutService {
       totalAmount: total,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
+    localStorage.setItem("nyx_orders", JSON.stringify(history.slice(0, 30))); localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
 
     return result;
   }

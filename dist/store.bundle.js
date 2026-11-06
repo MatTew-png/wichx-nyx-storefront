@@ -172,7 +172,7 @@ const SupabaseAdapter = {
   // 2. ดึงยอดเงินในกระเป๋าของผู้ใช้
   async getUserBalance(userId) {
     if (!this.isLive || !this.client || !userId) {
-      return parseFloat(localStorage.getItem("wichx_balance") || "500.00");
+      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
     }
 
     try {
@@ -185,7 +185,7 @@ const SupabaseAdapter = {
       if (error) throw error;
       return parseFloat(data.balance);
     } catch (e) {
-      return parseFloat(localStorage.getItem("wichx_balance") || "500.00");
+      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
     }
   },
 
@@ -1027,9 +1027,9 @@ class Store {
 
     this.state = {
       user: null,
-      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("wichx_balance") || "500.00") : 500.00,
-      cart: safeParse("wichx_cart", []),
-      orderHistory: safeParse("wichx_orders", []),
+      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00") : 500.00,
+      cart: safeParse("nyx_cart", safeParse("wichx_cart", [])),
+      orderHistory: safeParse("nyx_orders", safeParse("wichx_orders", [])),
       appliedPromo: null,
       isCatalogLoading: initialCategories.length === 0,
       categories: initialCategories,
@@ -1078,7 +1078,7 @@ class Store {
   setWalletBalance(amount) {
     this.state.walletBalance = Math.max(0, Math.round((parseFloat(amount) || 0) * 100) / 100);
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+      localStorage.setItem("nyx_balance", this.state.walletBalance.toString()); localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
     }
     this.emit("change:wallet", this.state.walletBalance);
   }
@@ -1094,7 +1094,7 @@ class Store {
   // --- CART METHODS ---
   saveCart() {
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+      localStorage.setItem("nyx_cart", JSON.stringify(this.state.cart));
     }
     this.emit("change:cart", this.state.cart);
   }
@@ -2140,7 +2140,7 @@ class AuthService {
       localStorage.removeItem("nyx9_admin_token");
     } catch (e) {}
     this.store.setUser(null);
-    this.store.setWalletBalance(parseFloat(localStorage.getItem("wichx_balance") || "500.00"));
+    this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00"));
   }
 
   async loginWithDiscord() {
@@ -2290,7 +2290,7 @@ if (typeof module !== "undefined" && module.exports) {
  * ==============================================================================
  * 💳 PAYMENT ENGINE SERVICE (OOP 4-GATEWAY PROCESSOR)
  * ==============================================================================
- * ควบคุมการประมวลผลทั้ง 4 ช่องทาง: PromptPay, TrueMoney, Bank Transfer, Card Payment
+ * ควบคุมการประมวลผลทั้ง 3 ช่องทางหลัก: PromptPay, TrueMoney, Bank Transfer
  * ==============================================================================
  */
 
@@ -2401,12 +2401,12 @@ class PaymentService {
       });
     } else {
       // Local fallback with dupe check
-      const usedSlips = JSON.parse(localStorage.getItem("wichx_used_slips") || "[]");
+      const usedSlips = JSON.parse(localStorage.getItem("nyx_used_slips") || localStorage.getItem("wichx_used_slips") || "[]");
       if (usedSlips.includes(transRef)) {
         throw new Error("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้ซ้ำได้ (Anti-Double-Spend Triggered)");
       }
       usedSlips.push(transRef);
-      localStorage.setItem("wichx_used_slips", JSON.stringify(usedSlips));
+      localStorage.setItem("nyx_used_slips", JSON.stringify(usedSlips));
       result = { success: true, amount: parseFloat(amount) };
     }
 
@@ -2606,7 +2606,7 @@ class CheckoutService {
       totalAmount: total,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
+    localStorage.setItem("nyx_orders", JSON.stringify(history.slice(0, 30))); localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
 
     return result;
   }
@@ -2654,7 +2654,7 @@ class HistoryService {
    */
   async getOrderHistory() {
     const user = this.store.get("user");
-    const localRaw = typeof localStorage !== "undefined" ? localStorage.getItem("wichx_orders") : null;
+    const localRaw = typeof localStorage !== "undefined" ? (localStorage.getItem("nyx_orders") || localStorage.getItem("wichx_orders")) : null;
     let localOrders = [];
 
     try {
@@ -5780,8 +5780,6 @@ class ShopApp {
       { name: "PromptPay QR", icon: "qr-code", tag: "สแกนฟรี 0%" },
       { name: "TrueMoney", icon: "wallet", tag: "ซอง/วอลเล็ท" },
       { name: "โอนธนาคาร", icon: "landmark", tag: "ทุกธนาคาร" },
-      { name: "บัตรเครดิต/เดบิต", icon: "credit-card", tag: "Visa / MC" },
-      { name: "Crypto LTC", icon: "coins", tag: "Litecoin" },
       { name: "e-Receipt", icon: "receipt", tag: "ใบเสร็จออโต้" }
     ];
 

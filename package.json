@@ -1,7 +1,7 @@
 {
-  "name": "nyx9-studio-webshop",
+  "name": "nyx9-studio-storefront",
   "version": "1.0.0",
-  "description": "High-Action Graphic E-Commerce Storefront Template (XenonHub × Melody191 × WichxShop)",
+  "description": "NYX9 STUDIO & NOVAPE SHOP Official Storefront - Discord & Roblox Studio Services",
   "main": "index.html",
   "scripts": {
     "build": "node build.js",
@@ -15,16 +15,15 @@
     "test:headers": "node scripts/load-test/test-security-headers.js"
   },
   "keywords": [
-    "ecommerce",
-    "whitelabel",
-    "discord-services",
-    "nitro",
-    "fivem",
-    "cyberpunk",
-    "crypto-ltc",
-    "promptpay"
+    "nyx9-studio",
+    "novape-shop",
+    "discord-nitro",
+    "roblox-scripts",
+    "roblox-gfx",
+    "promptpay",
+    "truemoney"
   ],
-  "author": "Antigravity Architect",
+  "author": "NYX9 STUDIO",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

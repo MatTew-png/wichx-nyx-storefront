@@ -27,9 +27,9 @@ class Store {
 
     this.state = {
       user: null,
-      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("wichx_balance") || "500.00") : 500.00,
-      cart: safeParse("wichx_cart", []),
-      orderHistory: safeParse("wichx_orders", []),
+      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00") : 500.00,
+      cart: safeParse("nyx_cart", safeParse("wichx_cart", [])),
+      orderHistory: safeParse("nyx_orders", safeParse("wichx_orders", [])),
       appliedPromo: null,
       isCatalogLoading: initialCategories.length === 0,
       categories: initialCategories,
@@ -78,7 +78,7 @@ class Store {
   setWalletBalance(amount) {
     this.state.walletBalance = Math.max(0, Math.round((parseFloat(amount) || 0) * 100) / 100);
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+      localStorage.setItem("nyx_balance", this.state.walletBalance.toString()); localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
     }
     this.emit("change:wallet", this.state.walletBalance);
   }
@@ -94,7 +94,7 @@ class Store {
   // --- CART METHODS ---
   saveCart() {
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+      localStorage.setItem("nyx_cart", JSON.stringify(this.state.cart));
     }
     this.emit("change:cart", this.state.cart);
   }

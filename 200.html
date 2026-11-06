@@ -213,8 +213,8 @@
   <!-- Custom Stylesheet -->
   <style id="nyx-core-styles">
 /* ==============================================================================
-   CYBERPUNK HIGH-ACTION E-COMMERCE DESIGN SYSTEM
-   Synthesized from xenonhub.pro, melody191.shop & wichxshop.com
+   NYX9 STUDIO & NOVAPE SHOP DESIGN SYSTEM
+   Cyberpunk Electric Dark UI - Tailored for Discord & Roblox Services
    ============================================================================== */
 
 :root {
@@ -978,7 +978,7 @@ html.nyx-intro-active body {
             </div>
             <div class="text-[10px] font-mono-val text-slate-400 -mt-0.5 tracking-tight flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>AUTO 24/7 FULFILLMENT</span>
+              <span>ออนไลน์ 24 ชม.</span>
             </div>
           </div>
         </a>
@@ -1276,7 +1276,7 @@ html.nyx-intro-active body {
           <i data-lucide="life-buoy" class="w-4 h-4 text-amber-400"></i>
           <span>ยื่นเรื่องเคลม</span>
         </button>
-        <a href="https://discord.gg/your-invite" target="_blank" data-bind="discordCommunityUrl" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform cursor-pointer">
+        <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform cursor-pointer">
           <span>ติดต่อแอดมิน</span>
           <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
         </a>
@@ -1767,7 +1767,7 @@ html.nyx-intro-active body {
             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
           </summary>
           <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
-            <p>เรารองรับ 4 ช่องทางหลัก ได้แก่ <b>พร้อมเพย์ QR Code</b>, <b>ซองของขวัญ TrueMoney Wallet</b>, <b>โอนผ่านบัญชีธนาคาร (กสิกรไทย)</b>, และ <b>บัตรเครดิต/เดบิต (3D Secure)</b></p>
+            <p>เรารองรับ 3 ช่องทางหลัก ได้แก่ <b>พร้อมเพย์ QR Code</b>, <b>ซองของขวัญ TrueMoney Wallet</b> และ <b>โอนผ่านบัญชีธนาคาร (กสิกรไทย)</b></p>
             <p>ทุกช่องทาง <b>ฟรีค่าธรรมเนียม 0%</b> ยอดเงินเข้ากระเป๋าเต็มจำนวนไม่มีหัก</p>
           </div>
         </details>
@@ -2029,11 +2029,11 @@ html.nyx-intro-active body {
           <div class="rounded-3xl bg-[#090D15]/90 border border-white/[0.08] overflow-hidden backdrop-blur-2xl shadow-2xl divide-y divide-white/[0.08]">
             
             <!-- Card 1: Discord Official Server -->
-            <a href="https://discord.gg/your-invite" target="_blank" data-bind="discordCommunityUrl" class="julian-liquid-hover group block p-5 transition-all">
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="julian-liquid-hover group block p-5 transition-all">
               <div class="julian-liquid-inner flex items-center justify-between w-full">
                 <div class="space-y-0.5">
                   <div class="text-sm font-bold tracking-tight">เข้าร่วม Discord Official</div>
-                  <div class="text-[11px] opacity-70">เปิด Ticket, ติดตามอัปเดต & ชุมชนกว่า 10,000+ คน</div>
+                  <div class="text-[11px] opacity-70">เปิด Ticket สอบถามและดูแลปัญหาตลอด 24 ชม.</div>
                 </div>
                 <div class="julian-arrow w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 ml-3">
                   <svg width="16" height="16" viewBox="0 0 21 18" fill="none">
@@ -2046,7 +2046,7 @@ html.nyx-intro-active body {
             </a>
 
             <!-- Card 2: Direct Admin Live Chat -->
-            <a href="https://discord.com/channels/@me" target="_blank" class="julian-liquid-hover group block p-5 transition-all">
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="julian-liquid-hover group block p-5 transition-all">
               <div class="julian-liquid-inner flex items-center justify-between w-full">
                 <div class="space-y-0.5">
                   <div class="text-sm font-bold tracking-tight">แชทกับแอดมินโดยตรง (Live Chat)</div>
@@ -2849,7 +2849,7 @@ const SupabaseAdapter = {
   // 2. ดึงยอดเงินในกระเป๋าของผู้ใช้
   async getUserBalance(userId) {
     if (!this.isLive || !this.client || !userId) {
-      return parseFloat(localStorage.getItem("wichx_balance") || "500.00");
+      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
     }
 
     try {
@@ -2862,7 +2862,7 @@ const SupabaseAdapter = {
       if (error) throw error;
       return parseFloat(data.balance);
     } catch (e) {
-      return parseFloat(localStorage.getItem("wichx_balance") || "500.00");
+      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
     }
   },
 
@@ -3704,9 +3704,9 @@ class Store {
 
     this.state = {
       user: null,
-      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("wichx_balance") || "500.00") : 500.00,
-      cart: safeParse("wichx_cart", []),
-      orderHistory: safeParse("wichx_orders", []),
+      walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00") : 500.00,
+      cart: safeParse("nyx_cart", safeParse("wichx_cart", [])),
+      orderHistory: safeParse("nyx_orders", safeParse("wichx_orders", [])),
       appliedPromo: null,
       isCatalogLoading: initialCategories.length === 0,
       categories: initialCategories,
@@ -3755,7 +3755,7 @@ class Store {
   setWalletBalance(amount) {
     this.state.walletBalance = Math.max(0, Math.round((parseFloat(amount) || 0) * 100) / 100);
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+      localStorage.setItem("nyx_balance", this.state.walletBalance.toString()); localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
     }
     this.emit("change:wallet", this.state.walletBalance);
   }
@@ -3771,7 +3771,7 @@ class Store {
   // --- CART METHODS ---
   saveCart() {
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+      localStorage.setItem("nyx_cart", JSON.stringify(this.state.cart));
     }
     this.emit("change:cart", this.state.cart);
   }
@@ -4817,7 +4817,7 @@ class AuthService {
       localStorage.removeItem("nyx9_admin_token");
     } catch (e) {}
     this.store.setUser(null);
-    this.store.setWalletBalance(parseFloat(localStorage.getItem("wichx_balance") || "500.00"));
+    this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00"));
   }
 
   async loginWithDiscord() {
@@ -4967,7 +4967,7 @@ if (typeof module !== "undefined" && module.exports) {
  * ==============================================================================
  * 💳 PAYMENT ENGINE SERVICE (OOP 4-GATEWAY PROCESSOR)
  * ==============================================================================
- * ควบคุมการประมวลผลทั้ง 4 ช่องทาง: PromptPay, TrueMoney, Bank Transfer, Card Payment
+ * ควบคุมการประมวลผลทั้ง 3 ช่องทางหลัก: PromptPay, TrueMoney, Bank Transfer
  * ==============================================================================
  */
 
@@ -5078,12 +5078,12 @@ class PaymentService {
       });
     } else {
       // Local fallback with dupe check
-      const usedSlips = JSON.parse(localStorage.getItem("wichx_used_slips") || "[]");
+      const usedSlips = JSON.parse(localStorage.getItem("nyx_used_slips") || localStorage.getItem("wichx_used_slips") || "[]");
       if (usedSlips.includes(transRef)) {
         throw new Error("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้ซ้ำได้ (Anti-Double-Spend Triggered)");
       }
       usedSlips.push(transRef);
-      localStorage.setItem("wichx_used_slips", JSON.stringify(usedSlips));
+      localStorage.setItem("nyx_used_slips", JSON.stringify(usedSlips));
       result = { success: true, amount: parseFloat(amount) };
     }
 
@@ -5283,7 +5283,7 @@ class CheckoutService {
       totalAmount: total,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
+    localStorage.setItem("nyx_orders", JSON.stringify(history.slice(0, 30))); localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
 
     return result;
   }
@@ -5331,7 +5331,7 @@ class HistoryService {
    */
   async getOrderHistory() {
     const user = this.store.get("user");
-    const localRaw = typeof localStorage !== "undefined" ? localStorage.getItem("wichx_orders") : null;
+    const localRaw = typeof localStorage !== "undefined" ? (localStorage.getItem("nyx_orders") || localStorage.getItem("wichx_orders")) : null;
     let localOrders = [];
 
     try {
@@ -8457,8 +8457,6 @@ class ShopApp {
       { name: "PromptPay QR", icon: "qr-code", tag: "สแกนฟรี 0%" },
       { name: "TrueMoney", icon: "wallet", tag: "ซอง/วอลเล็ท" },
       { name: "โอนธนาคาร", icon: "landmark", tag: "ทุกธนาคาร" },
-      { name: "บัตรเครดิต/เดบิต", icon: "credit-card", tag: "Visa / MC" },
-      { name: "Crypto LTC", icon: "coins", tag: "Litecoin" },
       { name: "e-Receipt", icon: "receipt", tag: "ใบเสร็จออโต้" }
     ];
 

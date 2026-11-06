@@ -2,7 +2,7 @@
  * ==============================================================================
  * 💳 PAYMENT ENGINE SERVICE (OOP 4-GATEWAY PROCESSOR)
  * ==============================================================================
- * ควบคุมการประมวลผลทั้ง 4 ช่องทาง: PromptPay, TrueMoney, Bank Transfer, Card Payment
+ * ควบคุมการประมวลผลทั้ง 3 ช่องทางหลัก: PromptPay, TrueMoney, Bank Transfer
  * ==============================================================================
  */
 
@@ -113,12 +113,12 @@ class PaymentService {
       });
     } else {
       // Local fallback with dupe check
-      const usedSlips = JSON.parse(localStorage.getItem("wichx_used_slips") || "[]");
+      const usedSlips = JSON.parse(localStorage.getItem("nyx_used_slips") || localStorage.getItem("wichx_used_slips") || "[]");
       if (usedSlips.includes(transRef)) {
         throw new Error("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้ซ้ำได้ (Anti-Double-Spend Triggered)");
       }
       usedSlips.push(transRef);
-      localStorage.setItem("wichx_used_slips", JSON.stringify(usedSlips));
+      localStorage.setItem("nyx_used_slips", JSON.stringify(usedSlips));
       result = { success: true, amount: parseFloat(amount) };
     }
 

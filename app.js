@@ -113,8 +113,6 @@ class ShopApp {
       { name: "PromptPay QR", icon: "qr-code", tag: "สแกนฟรี 0%" },
       { name: "TrueMoney", icon: "wallet", tag: "ซอง/วอลเล็ท" },
       { name: "โอนธนาคาร", icon: "landmark", tag: "ทุกธนาคาร" },
-      { name: "บัตรเครดิต/เดบิต", icon: "credit-card", tag: "Visa / MC" },
-      { name: "Crypto LTC", icon: "coins", tag: "Litecoin" },
       { name: "e-Receipt", icon: "receipt", tag: "ใบเสร็จออโต้" }
     ];
 
