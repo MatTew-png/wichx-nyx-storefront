@@ -482,10 +482,12 @@ window.navigateToPage = function(page, hash = '') {
   const views = ['home', 'topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
   const target = views.includes(page) ? page : 'home';
 
-  // If clicking "All Products" (#category-filter-bar), ensure category is set to 'all'
+  // If clicking "All Products" (#category-filter-bar), ensure category is set to 'all' only if needed
   if (hash === '#category-filter-bar' || hash === '#catalog-container') {
-    if (window.Shop?.catalogService) {
-      window.Shop.catalogService.setCategoryFilter('all');
+    if (window.Shop?.catalogService && window.Shop?.store) {
+      if (window.Shop.store.get('activeCategory') !== 'all') {
+        window.Shop.catalogService.setCategoryFilter('all');
+      }
     }
   }
 

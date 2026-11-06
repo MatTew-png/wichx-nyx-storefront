@@ -214,14 +214,14 @@ class JulianMotionEngine {
       window.gsap.killTweensOf(cards);
       window.gsap.fromTo(cards,
         {
-          y: 8,
-          opacity: 0.35
+          y: 6,
+          opacity: 0.65
         },
         {
           y: 0,
           opacity: 1,
-          duration: 0.22,
-          stagger: { amount: 0.12, from: "start" },
+          duration: 0.16,
+          stagger: { amount: 0.08, from: "start" },
           ease: "power2.out",
           overwrite: "auto"
         }

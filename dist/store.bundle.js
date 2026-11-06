@@ -94,33 +94,24 @@ const SupabaseAdapter = {
     }
 
     try {
-      // ดึง Categories ทั้งหมด
-      const { data: cats, error: catErr } = await this.client
-        .from("categories")
-        .select("*")
-        .order("sort_order", { ascending: true });
+      // ดึง Categories, Products, และสต็อกจริงคงเหลือแบบขนาน 100% (Parallel Concurrent Queries)
+      const [catRes, prodRes, stockRes] = await Promise.all([
+        this.client.from("categories").select("*").order("sort_order", { ascending: true }),
+        this.client.from("products").select("*").eq("is_active", true),
+        this.client.rpc("get_product_stock_counts").catch(e => ({ data: null, error: e }))
+      ]);
 
-      if (catErr) throw catErr;
+      if (catRes.error) throw catRes.error;
+      if (prodRes.error) throw prodRes.error;
 
-      // ดึง Products ทั้งหมด
-      const { data: prods, error: prodErr } = await this.client
-        .from("products")
-        .select("*")
-        .eq("is_active", true);
+      const cats = catRes.data || [];
+      const prods = prodRes.data || [];
 
-      if (prodErr) throw prodErr;
-
-      // ดึงจำนวนสต็อกจริงคงเหลือที่ยังไม่ขายผ่าน Secure RPC (Zero Data Leakage)
       let stockMap = {};
-      try {
-        const { data: stockCounts, error: stockErr } = await this.client.rpc("get_product_stock_counts");
-        if (!stockErr && Array.isArray(stockCounts)) {
-          stockCounts.forEach(item => {
-            stockMap[item.product_id] = Number(item.in_stock_count) || 0;
-          });
-        }
-      } catch (err) {
-        console.warn("[SUPABASE] Stock count query warning:", err.message);
+      if (stockRes && !stockRes.error && Array.isArray(stockRes.data)) {
+        stockRes.data.forEach(item => {
+          stockMap[item.product_id] = Number(item.in_stock_count) || 0;
+        });
       }
 
       const CATEGORY_DISPLAY_MAP = {
@@ -1085,9 +1076,9 @@ class Store {
       cart: safeParse("wichx_cart", []),
       orderHistory: safeParse("wichx_orders", []),
       appliedPromo: null,
-      isCatalogLoading: true,
-      categories: [],
-      categoryFilters: {},
+      isCatalogLoading: initialCategories.length === 0,
+      categories: initialCategories,
+      categoryFilters: initialFilters,
       activeCategory: "all",
       sortOrder: "popular",
       inStockOnly: false,
@@ -1844,14 +1835,14 @@ class JulianMotionEngine {
       window.gsap.killTweensOf(cards);
       window.gsap.fromTo(cards,
         {
-          y: 8,
-          opacity: 0.35
+          y: 6,
+          opacity: 0.65
         },
         {
           y: 0,
           opacity: 1,
-          duration: 0.22,
-          stagger: { amount: 0.12, from: "start" },
+          duration: 0.16,
+          stagger: { amount: 0.08, from: "start" },
           ease: "power2.out",
           overwrite: "auto"
         }
@@ -2194,7 +2185,11 @@ class CatalogService {
   }
 
   async loadCatalog() {
-    this.store.set("isCatalogLoading", true);
+    const currentCats = this.store.get("categories") || [];
+    // Only show skeleton if we have literally zero products in memory
+    if (currentCats.length === 0) {
+      this.store.set("isCatalogLoading", true);
+    }
     if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
       try {
         const liveCats = await window.SupabaseAdapter.getProducts();
@@ -2227,6 +2222,10 @@ class CatalogService {
   }
 
   setCategoryFilter(catId) {
+    if (this.store.get("activeCategory") === catId) {
+      // Already on this category: skip redundant DOM rebuild and animation
+      return;
+    }
     const cats = this.store.get("categories") || [];
     const filters = {};
     if (catId === "all") {
@@ -2234,8 +2233,8 @@ class CatalogService {
     } else {
       cats.forEach(c => filters[c.id] = (c.id === catId));
     }
-    this.store.set("activeCategory", catId);
-    this.store.set("categoryFilters", filters);
+    this.store.set("activeCategory", catId, true); // silent update
+    this.store.set("categoryFilters", filters);    // triggers single coordinated render
   }
 
   setSortOrder(order) {
@@ -5995,10 +5994,12 @@ window.navigateToPage = function(page, hash = '') {
   const views = ['home', 'topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
   const target = views.includes(page) ? page : 'home';
 
-  // If clicking "All Products" (#category-filter-bar), ensure category is set to 'all'
+  // If clicking "All Products" (#category-filter-bar), ensure category is set to 'all' only if needed
   if (hash === '#category-filter-bar' || hash === '#catalog-container') {
-    if (window.Shop?.catalogService) {
-      window.Shop.catalogService.setCategoryFilter('all');
+    if (window.Shop?.catalogService && window.Shop?.store) {
+      if (window.Shop.store.get('activeCategory') !== 'all') {
+        window.Shop.catalogService.setCategoryFilter('all');
+      }
     }
   }
 

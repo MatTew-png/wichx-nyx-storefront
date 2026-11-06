@@ -10,7 +10,11 @@ class CatalogService {
   }
 
   async loadCatalog() {
-    this.store.set("isCatalogLoading", true);
+    const currentCats = this.store.get("categories") || [];
+    // Only show skeleton if we have literally zero products in memory
+    if (currentCats.length === 0) {
+      this.store.set("isCatalogLoading", true);
+    }
     if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
       try {
         const liveCats = await window.SupabaseAdapter.getProducts();
@@ -43,6 +47,10 @@ class CatalogService {
   }
 
   setCategoryFilter(catId) {
+    if (this.store.get("activeCategory") === catId) {
+      // Already on this category: skip redundant DOM rebuild and animation
+      return;
+    }
     const cats = this.store.get("categories") || [];
     const filters = {};
     if (catId === "all") {
@@ -50,8 +58,8 @@ class CatalogService {
     } else {
       cats.forEach(c => filters[c.id] = (c.id === catId));
     }
-    this.store.set("activeCategory", catId);
-    this.store.set("categoryFilters", filters);
+    this.store.set("activeCategory", catId, true); // silent update
+    this.store.set("categoryFilters", filters);    // triggers single coordinated render
   }
 
   setSortOrder(order) {

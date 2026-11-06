@@ -90,33 +90,24 @@ const SupabaseAdapter = {
     }
 
     try {
-      // ดึง Categories ทั้งหมด
-      const { data: cats, error: catErr } = await this.client
-        .from("categories")
-        .select("*")
-        .order("sort_order", { ascending: true });
+      // ดึง Categories, Products, และสต็อกจริงคงเหลือแบบขนาน 100% (Parallel Concurrent Queries)
+      const [catRes, prodRes, stockRes] = await Promise.all([
+        this.client.from("categories").select("*").order("sort_order", { ascending: true }),
+        this.client.from("products").select("*").eq("is_active", true),
+        this.client.rpc("get_product_stock_counts").catch(e => ({ data: null, error: e }))
+      ]);
 
-      if (catErr) throw catErr;
+      if (catRes.error) throw catRes.error;
+      if (prodRes.error) throw prodRes.error;
 
-      // ดึง Products ทั้งหมด
-      const { data: prods, error: prodErr } = await this.client
-        .from("products")
-        .select("*")
-        .eq("is_active", true);
+      const cats = catRes.data || [];
+      const prods = prodRes.data || [];
 
-      if (prodErr) throw prodErr;
-
-      // ดึงจำนวนสต็อกจริงคงเหลือที่ยังไม่ขายผ่าน Secure RPC (Zero Data Leakage)
       let stockMap = {};
-      try {
-        const { data: stockCounts, error: stockErr } = await this.client.rpc("get_product_stock_counts");
-        if (!stockErr && Array.isArray(stockCounts)) {
-          stockCounts.forEach(item => {
-            stockMap[item.product_id] = Number(item.in_stock_count) || 0;
-          });
-        }
-      } catch (err) {
-        console.warn("[SUPABASE] Stock count query warning:", err.message);
+      if (stockRes && !stockRes.error && Array.isArray(stockRes.data)) {
+        stockRes.data.forEach(item => {
+          stockMap[item.product_id] = Number(item.in_stock_count) || 0;
+        });
       }
 
       const CATEGORY_DISPLAY_MAP = {
