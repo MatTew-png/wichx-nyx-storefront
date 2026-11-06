@@ -158,13 +158,15 @@ class ModalsComponent {
 
   // --- 3. WARRANTY CLAIMS MODAL ---
   openClaim() {
-    const modal = document.getElementById("claim-ticket-modal");
-    if (modal) modal.classList.remove("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('claim');
+    }
   }
 
   closeClaim() {
-    const modal = document.getElementById("claim-ticket-modal");
-    if (modal) modal.classList.add("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
   }
 
   async submitClaim() {

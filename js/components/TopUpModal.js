@@ -36,21 +36,20 @@ class TopUpModalComponent {
   }
 
   open(recommendedAmount = 0) {
-    const modal = document.getElementById("topup-modal");
-    if (!modal) return;
-    modal.classList.remove("hidden");
-
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('topup');
+    }
     const input = document.getElementById("promptpay-amount-input");
     const val = recommendedAmount > 0 ? Math.ceil(recommendedAmount) : parseFloat(input?.value || "100");
     if (input) input.value = val;
-
     this.switchGateway("promptpay");
     this.updatePromptPayQr(val);
   }
 
   close() {
-    const modal = document.getElementById("topup-modal");
-    if (modal) modal.classList.add("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
     this.clearFeedbacks();
   }
 

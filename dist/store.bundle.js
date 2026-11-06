@@ -3159,21 +3159,20 @@ class TopUpModalComponent {
   }
 
   open(recommendedAmount = 0) {
-    const modal = document.getElementById("topup-modal");
-    if (!modal) return;
-    modal.classList.remove("hidden");
-
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('topup');
+    }
     const input = document.getElementById("promptpay-amount-input");
     const val = recommendedAmount > 0 ? Math.ceil(recommendedAmount) : parseFloat(input?.value || "100");
     if (input) input.value = val;
-
     this.switchGateway("promptpay");
     this.updatePromptPayQr(val);
   }
 
   close() {
-    const modal = document.getElementById("topup-modal");
-    if (modal) modal.classList.add("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
     this.clearFeedbacks();
   }
 
@@ -3530,40 +3529,17 @@ class HistoryModalComponent {
   }
 
   async open() {
-    this.initDOM();
-    const modalEl = document.getElementById("history-modal");
-    if (!modalEl) return;
-
-    modalEl.classList.remove("hidden");
-    modalEl.classList.add("flex");
-
-    const container = document.getElementById("history-orders-container");
-    container.innerHTML = `
-      <div class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
-        <div class="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-xs font-mono">กำลังโหลดประวัติคำสั่งซื้อ...</p>
-      </div>
-    `;
-
-    try {
-      this.orders = await this.historyService.getOrderHistory();
-      this.render();
-    } catch (e) {
-      container.innerHTML = `
-        <div class="py-8 text-center text-rose-400 text-xs font-body">
-          เกิดข้อผิดพลาดในการโหลดประวัติ: ${e.message}
-        </div>
-      `;
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('history');
     }
-
+    this.render();
     if (window.lucide) lucide.createIcons();
   }
 
   close() {
-    const modalEl = document.getElementById("history-modal");
-    if (!modalEl) return;
-    modalEl.classList.add("hidden");
-    modalEl.classList.remove("flex");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
   }
 
   filter(query) {
@@ -4506,13 +4482,15 @@ class ModalsComponent {
 
   // --- 3. WARRANTY CLAIMS MODAL ---
   openClaim() {
-    const modal = document.getElementById("claim-ticket-modal");
-    if (modal) modal.classList.remove("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('claim');
+    }
   }
 
   closeClaim() {
-    const modal = document.getElementById("claim-ticket-modal");
-    if (modal) modal.classList.add("hidden");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
   }
 
   async submitClaim() {
@@ -5120,8 +5098,8 @@ if (document.readyState === "loading") {
 // ==============================================================================
 
 // Top-Up Bridges
-window.openTopUpModal = (amt) => window.Shop.topupModal.open(amt);
-window.closeTopUpModal = () => window.Shop.topupModal.close();
+window.openTopUpModal = (amt) => window.Shop?.topupModal?.open(amt);
+window.closeTopUpModal = () => window.Shop?.topupModal?.close();
 window.switchTopUpGateway = (tab) => window.Shop.topupModal.switchGateway(tab);
 window.switchTopUpTab = window.switchTopUpGateway;
 window.setPromptPayPreset = (amt) => {
@@ -5206,8 +5184,8 @@ window.executeCheckout = async () => {
 };
 
 // History & Key Vault Bridges
-window.openHistoryModal = () => window.Shop.historyModal.open();
-window.closeHistoryModal = () => window.Shop.historyModal.close();
+window.openHistoryModal = () => window.Shop?.historyModal?.open();
+window.closeHistoryModal = () => window.Shop?.historyModal?.close();
 window.handleHistorySearch = (e) => window.Shop.historyModal.filter(e.target.value);
 window.copyHistoryKey = (key) => {
   window.Shop.historyService.copyToClipboard(key).then(() => {
@@ -5352,8 +5330,8 @@ window.closeDeliveryModal = () => window.Shop.modals.closeDelivery();
 window.openCustomServiceForm = (id) => window.Shop.modals.openCustomServiceForm(id);
 window.closeCustomServiceModal = () => window.Shop.modals.closeCustomService();
 window.submitCustomServiceOrder = (id) => window.Shop.modals.submitCustomService(id);
-window.openClaimModal = () => window.Shop.modals.openClaim();
-window.closeClaimModal = () => window.Shop.modals.closeClaim();
+window.openClaimModal = () => window.Shop?.modals?.openClaim();
+window.closeClaimModal = () => window.Shop?.modals?.closeClaim();
 window.submitClaimTicket = () => window.Shop.modals.submitClaim();
 window.handleSearchInput = (e) => window.Shop.catalogService.setSearchQuery(e.target.value);
 window.showToast = (msg, type) => window.UI?.toast(msg, type);
@@ -5409,5 +5387,102 @@ document.addEventListener("keydown", (e) => {
     if (searchInput && document.activeElement === searchInput) {
       searchInput.blur();
     }
+  }
+});
+
+
+// ==============================================================================
+// 🌐 SPA CLIENT ROUTER (MULTI-PAGE ARCHITECTURE WITH HISTORY API)
+// ==============================================================================
+window.navigateToPage = function(page, hash = '') {
+  const views = ['home', 'topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
+  const target = views.includes(page) ? page : 'home';
+
+  // 1. Toggle Active View Panel
+  views.forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) {
+      if (v === target) {
+        el.classList.remove('hidden');
+        el.classList.add('block');
+      } else {
+        el.classList.remove('block');
+        el.classList.add('hidden');
+      }
+    }
+  });
+
+  // 2. Toggle Back-to-Home Button in Header
+  const backBtn = document.getElementById('nav-back-home-btn');
+  if (backBtn) {
+    if (target === 'home') {
+      backBtn.classList.add('hidden');
+      backBtn.classList.remove('flex');
+    } else {
+      backBtn.classList.remove('hidden');
+      backBtn.classList.add('flex');
+    }
+  }
+
+  // 3. Update Browser URL
+  const targetPath = target === 'home' ? '/' : '/' + target;
+  if (window.location.pathname !== targetPath) {
+    try {
+      window.history.pushState({ page: target }, '', targetPath);
+    } catch(e) {}
+  }
+
+  // 4. Update Document Title
+  const titles = {
+    home: 'ร้านค้าไอดี & บริการ Discord อัตโนมัติ 24 ชม.',
+    topup: 'เติมเงินเข้ากระเป๋า (Wallet Top-Up)',
+    history: 'ประวัติการสั่งซื้อและคลังคีย์ (Order History)',
+    claim: 'ศูนย์บริการแจ้งเคลม & ประกันสินค้า (Warranty & Claims)',
+    faq: 'คำถามที่พบบ่อย (FAQ)',
+    terms: 'เงื่อนไขและข้อตกลงการให้บริการ (Terms of Service)',
+    privacy: 'นโยบายความเป็นส่วนตัว (Privacy Policy)',
+    contact: 'ติดต่อแอดมินและฝ่ายบริการลูกค้า (Contact Support)'
+  };
+  document.title = (titles[target] || 'NYX9 STUDIO') + ' | NYX9 STUDIO';
+
+  // 5. Scroll Action
+  if (hash) {
+    setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 120);
+  } else {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // 6. Hook Page-Specific Initializers
+  if (target === 'topup') {
+    const balance = window.Shop?.store?.get("walletBalance") || 0;
+    const pageBal = document.getElementById("page-wallet-balance");
+    if (pageBal) pageBal.textContent = '฿' + balance.toFixed(2);
+    const amt = parseFloat(document.getElementById("promptpay-amount-input")?.value || "100");
+    if (window.Shop?.topupModal) window.Shop.topupModal.updatePromptPayQr(amt);
+  } else if (target === 'history') {
+    if (window.Shop?.historyModal) {
+      window.Shop.historyModal.render();
+    }
+  }
+
+  // 7. Re-initialize Lucide Icons
+  if (window.lucide) window.lucide.createIcons();
+};
+
+// Listen to browser Back/Forward navigation
+window.addEventListener('popstate', (e) => {
+  const p = window.location.pathname.replace(/^\//, '').toLowerCase();
+  window.navigateToPage(p || 'home');
+});
+
+// Auto-route on initial page load
+document.addEventListener('DOMContentLoaded', () => {
+  const initPath = window.location.pathname.replace(/^\//, '').toLowerCase();
+  const known = ['topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
+  if (known.includes(initPath)) {
+    window.navigateToPage(initPath);
   }
 });

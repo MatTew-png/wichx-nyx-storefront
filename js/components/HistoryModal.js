@@ -88,40 +88,17 @@ class HistoryModalComponent {
   }
 
   async open() {
-    this.initDOM();
-    const modalEl = document.getElementById("history-modal");
-    if (!modalEl) return;
-
-    modalEl.classList.remove("hidden");
-    modalEl.classList.add("flex");
-
-    const container = document.getElementById("history-orders-container");
-    container.innerHTML = `
-      <div class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
-        <div class="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-xs font-mono">กำลังโหลดประวัติคำสั่งซื้อ...</p>
-      </div>
-    `;
-
-    try {
-      this.orders = await this.historyService.getOrderHistory();
-      this.render();
-    } catch (e) {
-      container.innerHTML = `
-        <div class="py-8 text-center text-rose-400 text-xs font-body">
-          เกิดข้อผิดพลาดในการโหลดประวัติ: ${e.message}
-        </div>
-      `;
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('history');
     }
-
+    this.render();
     if (window.lucide) lucide.createIcons();
   }
 
   close() {
-    const modalEl = document.getElementById("history-modal");
-    if (!modalEl) return;
-    modalEl.classList.add("hidden");
-    modalEl.classList.remove("flex");
+    if (typeof window.navigateToPage === 'function') {
+      window.navigateToPage('home');
+    }
   }
 
   filter(query) {
