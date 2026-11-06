@@ -470,7 +470,7 @@ const storeConfig = {
 
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
-    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "cyan" },
+    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "sky" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
     { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
     { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
@@ -480,7 +480,7 @@ const storeConfig = {
     heroBanners: [
     {
       id: "banner-nitro",
-      themeColor: "cyan",
+      themeColor: "sky",
       badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
@@ -492,7 +492,7 @@ const storeConfig = {
       secondaryAction: "discordCalculator",
       // Right Hologram Card Data
       cardBadge: "SALE -48%",
-      cardBadgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+      cardBadgeColor: "bg-white/[0.04] text-sky-300 border-sky-400/30",
       cardTitle: "Nitro Booster (Mailpass 3 เดือน)",
       cardSub: "ยกเมลเปลี่ยนรหัสได้แท้ 100%",
       cardPrice: "฿150.00",
@@ -563,14 +563,14 @@ const storeConfig = {
 
   // --- ธีมสี (Futuristic Glacier Cyan & Obsidian Theme) ---
     theme: {
-    accent: "#00F2FF",       // Electric Hyper-Cyan
-    accentHover: "#38F8FF",  // Glowing Highlights
-    accentGlow: "rgba(0, 242, 255, 0.35)",
-    baseBg: "#070A0F",       // Deep Obsidian Gunmetal Canvas
-    cardBg: "#0C111A",       // Surface Layer 1
-    cardHover: "#111724",    // Surface Hover
-    borderLight: "rgba(0, 242, 255, 0.14)",
-    borderActive: "rgba(0, 242, 255, 0.50)"
+    accent: "#38BDF8",       // Electric Sapphire / Ice Sky
+    accentHover: "#7DD3FC",  // Soft Ice Glow
+    accentGlow: "rgba(56, 189, 248, 0.14)",
+    baseBg: "#06080C",       // Deep Midnight Obsidian
+    cardBg: "#0A0D14",       // Surface Layer 1
+    cardHover: "#0F1420",    // Surface Hover
+    borderLight: "rgba(255, 255, 255, 0.07)",
+    borderActive: "rgba(56, 189, 248, 0.35)"
   },
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---
@@ -2952,8 +2952,8 @@ class HeroSectionComponent {
 
     container.innerHTML = banners.map((banner, idx) => {
       const isWallet = !banner.productId;
-      const glowColor = banner.themeColor === 'amber' ? 'rgba(245,158,11,0.15)' : (banner.themeColor === 'emerald' ? 'rgba(16,185,129,0.15)' : 'rgba(0,242,255,0.15)');
-      const borderColor = banner.themeColor === 'amber' ? 'border-amber-500/30' : (banner.themeColor === 'emerald' ? 'border-emerald-500/30' : 'border-cyan-500/30');
+      const glowColor = banner.themeColor === 'amber' ? 'rgba(245,158,11,0.06)' : (banner.themeColor === 'emerald' ? 'rgba(16,185,129,0.06)' : 'rgba(56,189,248,0.06)');
+      const borderColor = banner.themeColor === 'amber' ? 'border-amber-500/20' : (banner.themeColor === 'emerald' ? 'border-emerald-500/20' : 'border-sky-500/20');
 
       return `
         <div class="w-full flex-shrink-0 relative rounded-3xl overflow-hidden p-6 sm:p-8 md:p-10 border border-white/[0.08] bg-gradient-to-br from-[#0A0F1A]/95 via-[#070A12]/95 to-[#040609]/95 backdrop-blur-2xl transition-all duration-500 shadow-2xl">
@@ -2965,14 +2965,14 @@ class HeroSectionComponent {
             
             <!-- Left Column (7 cols): The Hook, Offer, and CTAs -->
             <div class="lg:col-span-7 space-y-4 text-left">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-xs font-mono font-bold text-[var(--accent)]">
-                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-sky-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
                 <span>${banner.badge}</span>
               </div>
 
               <h2 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-heading font-black text-white tracking-wide leading-tight">
                 ${banner.title}
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] via-cyan-200 to-blue-400 mt-1">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-100 to-indigo-200 mt-1">
                   ${banner.highlight}
                 </span>
               </h2>
@@ -2985,7 +2985,7 @@ class HeroSectionComponent {
               <div class="flex flex-wrap items-center gap-2 pt-1">
                 ${(banner.perks || []).map(p => `
                   <span class="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-slate-300 flex items-center gap-1.5">
-                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-sky-400"></i>
                     <span>${p}</span>
                   </span>
                 `).join('')}
@@ -2993,7 +2993,7 @@ class HeroSectionComponent {
 
               <!-- Action Buttons -->
               <div class="flex flex-wrap items-center gap-3 pt-2 sm:pt-3">
-                <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}', '${banner.productId || ''}')" class="btn-cyber-primary btn-shimmer px-6 py-3 rounded-xl flex items-center gap-2 text-xs sm:text-sm font-extrabold cursor-pointer active:scale-95 transition-all shadow-lg shadow-cyan-500/20">
+                <button onclick="window.handleBannerCta('${banner.ctaCategory || ''}', '${banner.ctaAction || ''}', '${banner.productId || ''}')" class="btn-cyber-primary btn-shimmer px-6 py-3 rounded-xl flex items-center gap-2 text-xs sm:text-sm font-extrabold cursor-pointer active:scale-95 transition-all shadow-md">
                   <span>${banner.ctaText}</span>
                   <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
@@ -3007,7 +3007,7 @@ class HeroSectionComponent {
 
             <!-- Right Column (5 cols): The Floating Holographic Cyber Card -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-cyan-400/60 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
+              <div class="interactive-cyber-tilt-card w-full max-w-sm rounded-3xl bg-[#080C16]/90 border ${borderColor} p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl group hover:border-sky-400/30 transition-transform duration-200 ease-out will-change-transform" style="transform-style: preserve-3d; perspective: 1000px;">
                 <!-- Iridescent Glare Sheen Foil (Stripe Issuing Style) -->
                 <div class="card-glare-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 rounded-3xl z-10"></div>
                 
@@ -3051,7 +3051,7 @@ class HeroSectionComponent {
                 <div class="space-y-2 mb-5">
                   ${(banner.cardPerks || []).map(cp => `
                     <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                      <div class="w-4 h-4 rounded-md bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+                      <div class="w-4 h-4 rounded-md bg-white/[0.04] text-sky-400 flex items-center justify-center shrink-0 mt-0.5">
                         <i data-lucide="${cp.icon || 'check'}" class="w-3 h-3"></i>
                       </div>
                       <span class="text-[11px] leading-tight text-slate-300">${cp.text}</span>
@@ -3246,7 +3246,7 @@ class CatalogViewComponent {
         <!-- ALL TAB -->
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" 
           class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            ? 'bg-white text-[#0A0D14] shadow-md shadow-black/40 font-bold border border-white' 
             : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
           <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-white'}"></i>
           <span>ทั้งหมด</span>
@@ -3262,7 +3262,7 @@ class CatalogViewComponent {
       html += `
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" 
           class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            ? 'bg-white text-[#0A0D14] shadow-md shadow-black/40 font-bold border border-white' 
             : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
           <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-[var(--accent)]'}"></i>
           <span>${cat.name}</span>
@@ -3340,7 +3340,7 @@ class CatalogViewComponent {
                   </div>
                 </div>
                 <div class="pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                  <div class="h-5 w-16 rounded bg-cyan-500/20"></div>
+                  <div class="h-5 w-16 rounded bg-white/[0.05]"></div>
                   <div class="h-8 w-16 rounded-xl bg-white/[0.06]"></div>
                 </div>
               </div>
@@ -3414,7 +3414,7 @@ class CatalogViewComponent {
         <div id="${cat.id}" class="space-y-4 mb-10">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
             <div class="flex items-center gap-3">
-              <span class="w-2.5 h-6 rounded-full bg-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.5)]"></span>
+              <span class="w-1.5 h-5 rounded-full bg-sky-400"></span>
               <div>
                 <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
                 <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
@@ -3462,14 +3462,14 @@ class CatalogViewComponent {
     const isCustom = p.fulfillmentType === "custom_form";
 
     return `
-      <div class="product-card group rounded-2xl bg-[#0C111A] hover:bg-[#111724] border border-[rgba(255,255,255,0.08)] hover:border-[var(--accent)] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.8),0_0_24px_-6px_rgba(0,242,255,0.25)] hover:-translate-y-1">
+      <div class="product-card group rounded-2xl bg-[#0A0D14] hover:bg-[#0F1420] border border-white/[0.07] hover:border-white/[0.18] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.85)] hover:-translate-y-1">
         <div>
           <!-- Artwork Area (1:1 Ratio with Subtle Dark Backdrop) -->
           <div class="w-full aspect-square rounded-xl bg-[#06080D] border border-[rgba(255,255,255,0.06)] overflow-hidden relative mb-3.5 flex items-center justify-center p-2.5">
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' rx=\'16\' fill=\'%230B101A\'/%3E%3Cpath d=\'M30 50h40M50 30v40\' stroke=\'%2300F2FF\' stroke-width=\'4\'/%3E%3C/svg%3E';" />` : `<i data-lucide="box" class="w-12 h-12 text-slate-600"></i>`}
             
             <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] border border-[rgba(0,242,255,0.35)] text-[10px] font-mono-val font-bold uppercase tracking-wider">${p.status}</span>` : ""}
+              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-sky-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
@@ -3484,7 +3484,7 @@ class CatalogViewComponent {
           </div>
 
           <!-- Title & Chips -->
-          <h4 class="text-sm font-heading font-extrabold text-white group-hover:text-[var(--accent)] transition-colors line-clamp-1 mb-2">${p.title}</h4>
+          <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
           <div class="flex flex-wrap gap-1.5 mb-3.5">
             ${(p.chips || []).map(chip => `
@@ -3497,7 +3497,7 @@ class CatalogViewComponent {
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono-val font-extrabold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
+            <div class="text-base font-mono-val font-bold text-sky-400 tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
           ${isOut ? `
@@ -3783,7 +3783,7 @@ class TopUpModalComponent {
       
       if (t === tabKey) {
         if (btn) {
-          btn.className = "topup-tab-btn active h-11 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-400/40 shadow-[0_0_15px_rgba(0,242,255,0.15)] ring-1 ring-cyan-400/50";
+          btn.className = "topup-tab-btn active h-11 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-white/[0.08] text-white border border-white/[0.18] shadow-sm";
         }
         if (pane) pane.classList.remove("hidden");
       } else {
@@ -5704,7 +5704,7 @@ window.setPromptPayPreset = (amt) => {
   document.querySelectorAll(".promptpay-preset-btn").forEach(btn => {
     const val = parseFloat(btn.getAttribute("data-amount"));
     if (val === amt) {
-      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold border border-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.3)] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-white text-[#0A0D14] font-bold border border-white shadow-sm text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     } else {
       btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     }
@@ -6092,10 +6092,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pill = e.target.closest('.contact-pill');
     if (pill) {
       document.querySelectorAll('.contact-pill').forEach(p => {
-        p.classList.remove('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+        p.classList.remove('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
         p.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
       });
-      pill.classList.add('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+      pill.classList.add('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
       pill.classList.remove('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
     }
 

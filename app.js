@@ -191,7 +191,7 @@ window.setPromptPayPreset = (amt) => {
   document.querySelectorAll(".promptpay-preset-btn").forEach(btn => {
     const val = parseFloat(btn.getAttribute("data-amount"));
     if (val === amt) {
-      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold border border-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.3)] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-white text-[#0A0D14] font-bold border border-white shadow-sm text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     } else {
       btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
     }
@@ -579,10 +579,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pill = e.target.closest('.contact-pill');
     if (pill) {
       document.querySelectorAll('.contact-pill').forEach(p => {
-        p.classList.remove('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+        p.classList.remove('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
         p.classList.add('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
       });
-      pill.classList.add('active', 'border-cyan-500/40', 'bg-cyan-500/10', 'text-white');
+      pill.classList.add('active', 'border-white/40', 'bg-white/[0.08]', 'text-white');
       pill.classList.remove('border-white/[0.08]', 'bg-white/[0.02]', 'text-slate-300');
     }
 

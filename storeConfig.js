@@ -76,7 +76,7 @@ const storeConfig = {
 
   // --- ประกาศแถบวิ่งด้านบนสุด (Marquee Ticker - Structured High-Tech Chips) ---
   announcements: [
-    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "cyan" },
+    { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "sky" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบตัดยอดอัตโนมัติ จัดส่งรหัสทันทีไม่ต้องรอแอดมิน", highlight: "ใน 1 นาที", color: "emerald" },
     { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ 100% มีทีมซัพพอร์ต", highlight: "ดูแลตลอด 24 ชม.", color: "blue" },
     { tag: "LTC BONUS", icon: "coins", text: "ชำระเงินผ่าน Crypto Litecoin รับยอดเงินเพิ่มทันที", highlight: "ฟรี +5% ทุกบิล", color: "amber" }
@@ -86,7 +86,7 @@ const storeConfig = {
     heroBanners: [
     {
       id: "banner-nitro",
-      themeColor: "cyan",
+      themeColor: "sky",
       badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
@@ -98,7 +98,7 @@ const storeConfig = {
       secondaryAction: "discordCalculator",
       // Right Hologram Card Data
       cardBadge: "SALE -48%",
-      cardBadgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+      cardBadgeColor: "bg-white/[0.04] text-sky-300 border-sky-400/30",
       cardTitle: "Nitro Booster (Mailpass 3 เดือน)",
       cardSub: "ยกเมลเปลี่ยนรหัสได้แท้ 100%",
       cardPrice: "฿150.00",
@@ -169,14 +169,14 @@ const storeConfig = {
 
   // --- ธีมสี (Futuristic Glacier Cyan & Obsidian Theme) ---
     theme: {
-    accent: "#00F2FF",       // Electric Hyper-Cyan
-    accentHover: "#38F8FF",  // Glowing Highlights
-    accentGlow: "rgba(0, 242, 255, 0.35)",
-    baseBg: "#070A0F",       // Deep Obsidian Gunmetal Canvas
-    cardBg: "#0C111A",       // Surface Layer 1
-    cardHover: "#111724",    // Surface Hover
-    borderLight: "rgba(0, 242, 255, 0.14)",
-    borderActive: "rgba(0, 242, 255, 0.50)"
+    accent: "#38BDF8",       // Electric Sapphire / Ice Sky
+    accentHover: "#7DD3FC",  // Soft Ice Glow
+    accentGlow: "rgba(56, 189, 248, 0.14)",
+    baseBg: "#06080C",       // Deep Midnight Obsidian
+    cardBg: "#0A0D14",       // Surface Layer 1
+    cardHover: "#0F1420",    // Surface Hover
+    borderLight: "rgba(255, 255, 255, 0.07)",
+    borderActive: "rgba(56, 189, 248, 0.35)"
   },
 
   // --- สถิติความน่าเชื่อถือ (4-Metric Telemetry Grid) ---

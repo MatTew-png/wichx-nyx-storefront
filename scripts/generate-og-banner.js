@@ -9,46 +9,35 @@ const htmlContent = `
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@600;700;800&family=JetBrains+Mono:wght@700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       width: 1200px;
       height: 630px;
-      background: radial-gradient(circle at 80% 20%, rgba(0, 242, 255, 0.15) 0%, transparent 50%),
-                  radial-gradient(circle at 20% 80%, rgba(255, 0, 128, 0.12) 0%, transparent 50%),
-                  linear-gradient(135deg, #05070D 0%, #0A0F1D 50%, #030508 100%);
+      background: #06080C;
+      background-image: 
+        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(56, 189, 248, 0.08) 0%, transparent 70%),
+        radial-gradient(circle at 85% 90%, rgba(30, 58, 138, 0.08) 0%, transparent 60%);
       font-family: 'Space Grotesk', 'IBM Plex Sans Thai', sans-serif;
       color: #FFFFFF;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 60px 80px;
+      padding: 64px 84px;
       position: relative;
       overflow: hidden;
-      border: 4px solid rgba(0, 242, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Cyberpunk Grid Mesh Overlay */
-    .grid-overlay {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
-    /* Top Accent Line */
-    .top-glow-bar {
+    /* Ambient Subtle Hairline Bezel */
+    .top-hairline {
       position: absolute;
       top: 0;
-      left: 10%;
-      right: 10%;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, #00F2FF, #FF007A, transparent);
-      box-shadow: 0 0 20px #00F2FF;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), rgba(255, 255, 255, 0.6), rgba(56, 189, 248, 0.4), transparent);
     }
 
     /* Header */
@@ -63,55 +52,53 @@ const htmlContent = `
     .brand {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
     .logo-badge {
-      width: 68px;
-      height: 68px;
-      border-radius: 20px;
-      background: rgba(0, 242, 255, 0.1);
-      border: 2px solid #00F2FF;
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
-      font-size: 32px;
-      font-weight: 900;
-      color: #00F2FF;
+      font-size: 24px;
+      font-weight: 800;
+      color: #FFFFFF;
       font-family: 'Space Grotesk', monospace;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
     }
 
     .brand-title {
-      font-size: 48px;
+      font-size: 34px;
       font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #FFFFFF 40%, #00F2FF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
     }
 
     .status-pill {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 22px;
+      gap: 9px;
+      padding: 9px 18px;
       border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1.5px solid rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       color: #34D399;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #10B981;
-      box-shadow: 0 0 12px #10B981;
+      box-shadow: 0 0 8px #10B981;
     }
 
     /* Main Headline */
@@ -123,35 +110,37 @@ const htmlContent = `
 
     .headline-tag {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
-      color: #00F2FF;
-      font-weight: 700;
-      letter-spacing: 2px;
-      margin-bottom: 12px;
+      font-size: 13px;
+      color: #38BDF8;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
       text-transform: uppercase;
     }
 
     .headline-main {
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 800;
-      line-height: 1.25;
-      color: #FFFFFF;
+      line-height: 1.28;
+      color: #F8FAFC;
+      letter-spacing: -0.02em;
       margin-bottom: 14px;
+      max-width: 1020px;
     }
 
     .headline-sub {
-      font-size: 20px;
+      font-size: 18px;
       color: #94A3B8;
-      font-weight: 600;
-      line-height: 1.5;
-      max-width: 900px;
+      font-weight: 500;
+      line-height: 1.55;
+      max-width: 920px;
     }
 
-    /* Feature Pills */
+    /* Feature Pills - Unified Monochrome Luxury Glass */
     .badges-row {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       position: relative;
       z-index: 10;
     }
@@ -161,24 +150,13 @@ const htmlContent = `
       align-items: center;
       gap: 10px;
       padding: 12px 20px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 15px;
-      font-weight: 700;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+      font-weight: 600;
       color: #E2E8F0;
-    }
-
-    .badge-card.cyan {
-      border-color: rgba(0, 242, 255, 0.4);
-      background: rgba(0, 242, 255, 0.08);
-      color: #00F2FF;
-    }
-
-    .badge-card.gold {
-      border-color: rgba(245, 158, 11, 0.4);
-      background: rgba(245, 158, 11, 0.08);
-      color: #FBBF24;
+      box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.4);
     }
 
     /* Footer URL watermark */
@@ -186,30 +164,31 @@ const htmlContent = `
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      padding-top: 22px;
       position: relative;
       z-index: 10;
     }
 
     .domain-text {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 22px;
+      font-size: 19px;
       font-weight: 700;
-      color: #00F2FF;
+      color: #F8FAFC;
       letter-spacing: 1px;
     }
 
     .order-counter {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
+      font-size: 13px;
+      font-weight: 500;
       color: #64748B;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
-  <div class="grid-overlay"></div>
-  <div class="top-glow-bar"></div>
+  <div class="top-hairline"></div>
 
   <!-- Header -->
   <div class="header">
@@ -225,16 +204,16 @@ const htmlContent = `
 
   <!-- Headline -->
   <div class="headline-area">
-    <div class="headline-tag">⚡ HIGH-SPEED AUTOMATION DIGITAL STORE</div>
+    <div class="headline-tag">HIGH-SPEED AUTOMATION DIGITAL STORE</div>
     <div class="headline-main">ร้านค้าบริการ Discord Nitro & Gaming Accounts ส่งออโต้ 24 ชม.</div>
     <div class="headline-sub">ศูนย์รวมบริการ Discord Nitro, บูสต์เซิร์ฟเวอร์, FiveM, Steam GTA V & แอพพรีเมียม ตัดยอดและส่งมอบรหัสทันทีใน 1 วินาที</div>
   </div>
 
-  <!-- Badges -->
+  <!-- Badges - Unified Luxury Glass -->
   <div class="badges-row">
-    <div class="badge-card cyan">⚡ จัดส่งรวดเร็วใน 1 วินาที</div>
+    <div class="badge-card">⚡ จัดส่งรวดเร็วใน 1 วินาที</div>
     <div class="badge-card">🛡️ รับประกันคุณภาพ 24 ชม.</div>
-    <div class="badge-card gold">💳 พร้อมเพย์ QR & TrueMoney</div>
+    <div class="badge-card">💳 พร้อมเพย์ QR & TrueMoney</div>
     <div class="badge-card">🌟 รีวิวแน่น ปลอดภัย 100%</div>
   </div>
 
@@ -255,7 +234,7 @@ fs.writeFileSync(tempHtmlPath, htmlContent, 'utf8');
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const cmd = `"${chromePath}" --headless --disable-gpu --window-size=1200,630 --screenshot="${outBannerPath}" "${tempHtmlPath}"`;
 
-console.log('Rendering 1200x630 Cyberpunk Banner with Headless Chrome...');
+console.log('Rendering 1200x630 Luxury Editorial Banner with Headless Chrome...');
 execSync(cmd);
 
 if (fs.existsSync(tempHtmlPath)) fs.unlinkSync(tempHtmlPath);

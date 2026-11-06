@@ -57,7 +57,7 @@ class CatalogViewComponent {
         <!-- ALL TAB -->
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('all')" 
           class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${activeCategory === 'all' 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            ? 'bg-white text-[#0A0D14] shadow-md shadow-black/40 font-bold border border-white' 
             : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
           <i data-lucide="layout-grid" class="w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-white'}"></i>
           <span>ทั้งหมด</span>
@@ -73,7 +73,7 @@ class CatalogViewComponent {
       html += `
         <button onclick="window.Shop?.catalogService?.setCategoryFilter('${cat.id}')" 
           class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${isActive 
-            ? 'bg-[var(--accent)] text-[#05080E] shadow-[0_0_18px_rgba(0,242,255,0.35)] font-extrabold border border-[var(--accent)]' 
+            ? 'bg-white text-[#0A0D14] shadow-md shadow-black/40 font-bold border border-white' 
             : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12]'}">
           <i data-lucide="${icon}" class="w-3.5 h-3.5 ${isActive ? 'text-[#05080E]' : 'text-slate-400 group-hover:text-[var(--accent)]'}"></i>
           <span>${cat.name}</span>
@@ -151,7 +151,7 @@ class CatalogViewComponent {
                   </div>
                 </div>
                 <div class="pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                  <div class="h-5 w-16 rounded bg-cyan-500/20"></div>
+                  <div class="h-5 w-16 rounded bg-white/[0.05]"></div>
                   <div class="h-8 w-16 rounded-xl bg-white/[0.06]"></div>
                 </div>
               </div>
@@ -225,7 +225,7 @@ class CatalogViewComponent {
         <div id="${cat.id}" class="space-y-4 mb-10">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.08)]">
             <div class="flex items-center gap-3">
-              <span class="w-2.5 h-6 rounded-full bg-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.5)]"></span>
+              <span class="w-1.5 h-5 rounded-full bg-sky-400"></span>
               <div>
                 <h3 class="text-base sm:text-lg font-heading font-extrabold text-white tracking-wide">${cat.name}</h3>
                 <p class="text-xs text-slate-400 font-mono-val">${cat.subName || ""}</p>
@@ -273,14 +273,14 @@ class CatalogViewComponent {
     const isCustom = p.fulfillmentType === "custom_form";
 
     return `
-      <div class="product-card group rounded-2xl bg-[#0C111A] hover:bg-[#111724] border border-[rgba(255,255,255,0.08)] hover:border-[var(--accent)] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.8),0_0_24px_-6px_rgba(0,242,255,0.25)] hover:-translate-y-1">
+      <div class="product-card group rounded-2xl bg-[#0A0D14] hover:bg-[#0F1420] border border-white/[0.07] hover:border-white/[0.18] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.85)] hover:-translate-y-1">
         <div>
           <!-- Artwork Area (1:1 Ratio with Subtle Dark Backdrop) -->
           <div class="w-full aspect-square rounded-xl bg-[#06080D] border border-[rgba(255,255,255,0.06)] overflow-hidden relative mb-3.5 flex items-center justify-center p-2.5">
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' rx=\'16\' fill=\'%230B101A\'/%3E%3Cpath d=\'M30 50h40M50 30v40\' stroke=\'%2300F2FF\' stroke-width=\'4\'/%3E%3C/svg%3E';" />` : `<i data-lucide="box" class="w-12 h-12 text-slate-600"></i>`}
             
             <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] border border-[rgba(0,242,255,0.35)] text-[10px] font-mono-val font-bold uppercase tracking-wider">${p.status}</span>` : ""}
+              ${p.status ? `<span class="px-2 py-0.5 rounded-md bg-white/[0.04] text-sky-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider">${p.status}</span>` : ""}
             </div>
 
             <div class="absolute top-2.5 right-2.5 z-10">
@@ -295,7 +295,7 @@ class CatalogViewComponent {
           </div>
 
           <!-- Title & Chips -->
-          <h4 class="text-sm font-heading font-extrabold text-white group-hover:text-[var(--accent)] transition-colors line-clamp-1 mb-2">${p.title}</h4>
+          <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
           <div class="flex flex-wrap gap-1.5 mb-3.5">
             ${(p.chips || []).map(chip => `
@@ -308,7 +308,7 @@ class CatalogViewComponent {
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono-val font-extrabold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
+            <div class="text-base font-mono-val font-bold text-sky-400 tracking-tight">฿${p.price.toFixed(2)}</div>
           </div>
 
           ${isOut ? `
