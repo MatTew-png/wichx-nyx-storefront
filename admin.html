@@ -579,13 +579,18 @@
     });
 
     function initSupabase() {
+      if (supabaseClient) return supabaseClient;
       if (window.supabase && window.storeConfig?.supabase) {
         supabaseClient = window.supabase.createClient(
           window.storeConfig.supabase.url,
           window.storeConfig.supabase.anonKey
         );
       }
+      return supabaseClient;
     }
+
+    // Initialize client early
+    initSupabase();
 
     // 2. Discord Admin 1-Click OAuth
     async function loginWithDiscordAdmin() {
@@ -610,49 +615,74 @@
       }
     }
 
-    // 3. Check Session & Verify Whitelist
-    async function checkAdminSession() {
-      if (!supabaseClient) initSupabase();
+    // 3. Handle verified admin unlock
+    let isVerifyingAdmin = false;
+    async function handleAdminUser(user) {
+      if (!user || isVerifyingAdmin || currentAdminUser) return;
+      isVerifyingAdmin = true;
 
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        
-        if (session && session.user) {
-          const user = session.user;
-          const meta = user.user_metadata || {};
-          const discordId = String(meta.provider_id || meta.sub || "");
-          const username = meta.custom_claims?.global_name || meta.full_name || meta.user_name || "Admin Member";
-          const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
+        const meta = user.user_metadata || {};
+        const discordId = String(meta.provider_id || meta.sub || (user.identities && user.identities[0] && user.identities[0].id) || "");
+        const username = meta.custom_claims?.global_name || meta.full_name || meta.user_name || "Admin Member";
+        const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
 
-          // ตรวจสอบ Discord ID เทียบกับ 2 ไอดีที่ได้รับอนุญาต
-          if (ADMIN_WHITELIST.includes(discordId)) {
-            currentAdminUser = { id: user.id, discordId, username, avatarUrl };
-            currentAdminSecret = "nyx9_secure_admin_passphrase";
-            setAdminBadge(username, avatarUrl, discordId);
+        // ตรวจสอบ Discord ID เทียบกับรายชื่อแอดมินที่ได้รับอนุญาต
+        if (ADMIN_WHITELIST.includes(discordId)) {
+          currentAdminUser = { id: user.id, discordId, username, avatarUrl };
+          currentAdminSecret = "nyx9_secure_admin_passphrase";
+          setAdminBadge(username, avatarUrl, discordId);
 
-            // โหลดแดชบอร์ดผ่าน RPC (ส่ง NULL หรือ Passphrase ฐานข้อมูลยอมรับทั้งคู่)
-            const { data, error } = await supabaseClient.rpc("admin_get_metrics", {
-              p_admin_secret: currentAdminSecret
-            });
+          const { data, error } = await supabaseClient.rpc("admin_get_metrics", {
+            p_admin_secret: currentAdminSecret
+          });
 
-            if (data && data.success) {
-              document.getElementById("admin-auth-overlay").classList.add("hidden");
-              document.getElementById("admin-dashboard-container").classList.remove("hidden");
-              renderDashboard(data);
-              return;
-            }
+          if (data && data.success) {
+            document.getElementById("admin-auth-overlay").classList.add("hidden");
+            document.getElementById("admin-dashboard-container").classList.remove("hidden");
+            renderDashboard(data);
           } else {
-            // ล็อกอิน Discord แล้ว แต่ไม่ใช่ 2 ไอดีที่ได้รับอนุญาต
-            showAccessDenied(username, discordId);
-            return;
+            console.error("[ADMIN RPC ERROR]", error);
+            showAuthError("ไม่สามารถดึงข้อมูลระบบได้: " + (error ? error.message : "RPC Failed"));
           }
+        } else {
+          // ล็อกอิน Discord แล้ว แต่ไม่ใช่ ID แอดมิน
+          showAccessDenied(username, discordId);
+        }
+      } catch (err) {
+        console.warn("[ADMIN AUTH ERROR]", err);
+      } finally {
+        isVerifyingAdmin = false;
+      }
+    }
+
+    // 4. Check Session & Verify Whitelist (Auto-Unlock from Storefront Session)
+    async function checkAdminSession() {
+      if (!supabaseClient) initSupabase();
+      if (!supabaseClient) return;
+
+      try {
+        // 4.1 Direct getSession()
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          await handleAdminUser(session.user);
+          if (currentAdminUser) return;
         }
 
-        // 4. ถ้ายังไม่ได้ล็อกอิน ให้ตรวจสอบ Session Token เดิม (Master Secret)
-        const savedSecret = sessionStorage.getItem("nyx9_admin_token");
-        if (savedSecret) {
-          currentAdminSecret = savedSecret;
-          verifyAndLoad(savedSecret);
+        // 4.2 Real-time auth listener (catches session restored from localStorage without delay)
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+          if (session && session.user) {
+            await handleAdminUser(session.user);
+          }
+        });
+
+        // 4.3 Fallback: Saved Secret in sessionStorage
+        if (!currentAdminUser) {
+          const savedSecret = sessionStorage.getItem("nyx9_admin_token");
+          if (savedSecret) {
+            currentAdminSecret = savedSecret;
+            verifyAndLoad(savedSecret);
+          }
         }
 
       } catch (err) {
