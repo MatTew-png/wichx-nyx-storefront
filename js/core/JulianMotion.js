@@ -200,29 +200,29 @@ class JulianMotionEngine {
   }
 
   /**
-   * Animate catalog product grid when category filter changes
+   * Animate catalog product grid when category filter changes (High-Speed Crisp Transition)
    */
   animateCatalogGrid(container) {
     const target = container || document.getElementById("catalog-container");
     if (!target) return;
 
     if (window.gsap) {
-      const cards = target.querySelectorAll(".rounded-2xl, .group");
+      // Specifically target product cards only to avoid double-animating child containers
+      const cards = target.querySelectorAll(".product-card");
       if (cards.length === 0) return;
 
+      window.gsap.killTweensOf(cards);
       window.gsap.fromTo(cards,
         {
-          y: 28,
-          opacity: 0,
-          scale: 0.97
+          y: 8,
+          opacity: 0.35
         },
         {
           y: 0,
           opacity: 1,
-          scale: 1,
-          duration: 0.85,
-          stagger: 0.04,
-          ease: "power3.out",
+          duration: 0.22,
+          stagger: { amount: 0.12, from: "start" },
+          ease: "power2.out",
           overwrite: "auto"
         }
       );
@@ -231,32 +231,37 @@ class JulianMotionEngine {
 
   /**
    * Called during SPA page view routing (e.g. /topup, /history, /claim, /faq)
-   * Gives dedicated pages the luxurious award-winning agency entrance
+   * Gives dedicated pages the luxurious award-winning agency entrance with zero layout shift
    */
   animateView(viewEl) {
-    if (!viewEl) return;
+    // #view-home has its own ScrollTriggers; never blank it out with opacity:0
+    if (!viewEl || viewEl.id === "view-home") return;
+
+    // Instant top scroll synchronously before animation to prevent position warping
     window.scrollTo({ top: 0, behavior: "instant" });
 
     if (window.gsap) {
       window.gsap.killTweensOf(viewEl.querySelectorAll("*"));
       
       const header = viewEl.querySelector(".border-b, h1, h2");
-      const contents = viewEl.querySelectorAll(".rounded-2xl, .rounded-3xl, form, table, .space-y-4 > div");
+      // Select top-level content cards, details accordions, forms, or direct blocks only
+      const contents = viewEl.querySelectorAll("details, form, table, .grid > div, .space-y-3\\.5 > details, .space-y-4 > div");
 
-      const tl = window.gsap.timeline({ defaults: { ease: "power3.out" } });
+      const tl = window.gsap.timeline({ defaults: { ease: "power2.out" } });
 
       if (header) {
         tl.fromTo(header,
-          { y: -15, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7 }
+          { y: -6, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.22 }
         );
       }
 
-      if (contents.length > 0) {
-        tl.fromTo(contents,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power3.out" },
-          "<0.1"
+      const items = contents.length > 0 ? contents : viewEl.children;
+      if (items.length > 0) {
+        tl.fromTo(items,
+          { y: 10, opacity: 0.2 },
+          { y: 0, opacity: 1, duration: 0.28, stagger: { amount: 0.12 } },
+          "<0.04"
         );
       }
     }

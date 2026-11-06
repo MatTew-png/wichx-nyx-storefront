@@ -482,6 +482,13 @@ window.navigateToPage = function(page, hash = '') {
   const views = ['home', 'topup', 'history', 'claim', 'faq', 'terms', 'privacy', 'contact'];
   const target = views.includes(page) ? page : 'home';
 
+  // If clicking "All Products" (#category-filter-bar), ensure category is set to 'all'
+  if (hash === '#category-filter-bar' || hash === '#catalog-container') {
+    if (window.Shop?.catalogService) {
+      window.Shop.catalogService.setCategoryFilter('all');
+    }
+  }
+
   // 1. Toggle Active View Panel
   views.forEach(v => {
     const el = document.getElementById('view-' + v);
@@ -489,8 +496,8 @@ window.navigateToPage = function(page, hash = '') {
       if (v === target) {
         el.classList.remove('hidden');
         el.classList.add('block');
-        // Julian Fella Signature Smooth View Reveal
-        if (window.JulianMotion && typeof window.JulianMotion.animateView === 'function') {
+        // Only run JulianMotion on dedicated sub-pages, NEVER blank out #view-home
+        if (target !== 'home' && window.JulianMotion && typeof window.JulianMotion.animateView === 'function') {
           window.JulianMotion.animateView(el);
         }
       } else {
@@ -523,12 +530,15 @@ window.navigateToPage = function(page, hash = '') {
   };
   document.title = (titles[target] || 'NYX9 STUDIO') + ' | NYX9 STUDIO';
 
-  // 5. Scroll Action
+  // 5. High-Precision Scroll Alignment (Zero-Lag, Sticky Nav Offset Aware)
   if (hash) {
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const el = document.querySelector(hash);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 120);
+      if (el) {
+        const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 85;
+        window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+      }
+    });
   } else {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }

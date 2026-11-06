@@ -523,3 +523,26 @@ input, textarea {
   transform-origin: center center;
   will-change: transform;
 }
+
+/* ==============================================================================
+   🏛️ VIEW PANEL STABILIZATION & ZERO-WARP LAYOUT ANCHOR
+   Prevents layout collapse, viewport jump, and scroll misalignment on view switch
+   ============================================================================== */
+.view-panel {
+  min-height: 70vh;
+  width: 100%;
+}
+
+#view-faq details {
+  contain: layout style;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#view-faq details[open] {
+  animation: faqAccordionOpen 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes faqAccordionOpen {
+  from { opacity: 0.7; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
