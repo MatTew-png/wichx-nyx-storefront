@@ -450,14 +450,7 @@ input, textarea {
   transition: opacity 0.3s ease;
 }
 
-@keyframes radarSweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.animate-radar-sweep {
-  animation: radarSweep 3s linear infinite;
-}
+/* Radar sweep effect removed */
 
 /* ==============================================================================
    🌊 JULIAN FELLA SIGNATURE DIRECTION-AWARE LIQUID WAVE HOVER EFFECT
