@@ -10,18 +10,26 @@ class CatalogService {
   }
 
   async loadCatalog() {
+    this.store.set("isCatalogLoading", true);
     if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
       try {
         const liveCats = await window.SupabaseAdapter.getProducts();
         if (liveCats && liveCats.length > 0) {
           window.categoriesData = liveCats;
           this.store.set("categories", liveCats);
+          this.initCategoryFilters();
+          this.store.set("isCatalogLoading", false);
+          return;
         }
       } catch (err) {
         console.warn("[CATALOG SERVICE] Failed to fetch live products, using fallback:", err.message);
       }
     }
+    // Offline or Network Failure Fallback
+    const fallback = window.categoriesData || [];
+    this.store.set("categories", fallback);
     this.initCategoryFilters();
+    this.store.set("isCatalogLoading", false);
   }
 
   initCategoryFilters() {

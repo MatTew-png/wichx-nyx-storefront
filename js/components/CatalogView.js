@@ -8,6 +8,7 @@ class CatalogViewComponent {
   constructor(store) {
     this.store = store;
     this.store.on("change:categories", () => this.render());
+    this.store.on("change:isCatalogLoading", () => this.render());
     this.store.on("change:categoryFilters", () => {
       this.renderCategoryFilterBar();
       this.renderProducts();
@@ -29,6 +30,18 @@ class CatalogViewComponent {
   renderCategoryFilterBar() {
     const container = document.getElementById("category-filter-bar");
     if (!container) return;
+
+    if (this.store.get("isCatalogLoading")) {
+      container.innerHTML = `
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 animate-pulse">
+          <div class="h-8 w-24 rounded-xl bg-white/[0.04] border border-white/[0.06]"></div>
+          <div class="h-8 w-32 rounded-xl bg-white/[0.04] border border-white/[0.06]"></div>
+          <div class="h-8 w-36 rounded-xl bg-white/[0.04] border border-white/[0.06]"></div>
+          <div class="h-8 w-28 rounded-xl bg-white/[0.04] border border-white/[0.06]"></div>
+        </div>
+      `;
+      return;
+    }
 
     const categories = this.store.get("categories") || [];
     const activeCategory = this.store.get("activeCategory") || "all";
@@ -113,6 +126,38 @@ class CatalogViewComponent {
   renderProducts() {
     const container = document.getElementById("catalog-container") || document.getElementById("products-catalog-container");
     if (!container) return;
+
+    if (this.store.get("isCatalogLoading")) {
+      container.innerHTML = `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.06] animate-pulse">
+            <div class="h-6 w-44 rounded-lg bg-white/[0.06]"></div>
+            <div class="h-4 w-16 rounded bg-white/[0.04]"></div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            ${[1, 2, 3, 4, 5, 6, 7, 8].map(() => `
+              <div class="rounded-2xl bg-[#0C111A] border border-white/[0.06] p-4 flex flex-col justify-between relative overflow-hidden skeleton-shimmer">
+                <div>
+                  <div class="w-full aspect-square rounded-xl bg-[#06080D] border border-white/[0.04] mb-3.5 relative overflow-hidden flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-xl bg-white/[0.03]"></div>
+                  </div>
+                  <div class="h-4 w-3/4 rounded bg-white/[0.08] mb-2.5"></div>
+                  <div class="flex gap-1.5 mb-3.5">
+                    <div class="h-3.5 w-12 rounded bg-white/[0.04]"></div>
+                    <div class="h-3.5 w-16 rounded bg-white/[0.04]"></div>
+                  </div>
+                </div>
+                <div class="pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                  <div class="h-5 w-16 rounded bg-cyan-500/20"></div>
+                  <div class="h-8 w-16 rounded-xl bg-white/[0.06]"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     const categories = this.store.get("categories") || [];
     const filters = this.store.get("categoryFilters") || {};
