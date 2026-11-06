@@ -630,3 +630,39 @@ window.handleContactSubmit = function() {
     window.open(discordUrl, '_blank');
   }, 600);
 };
+
+// ==============================================================================
+// 🌐 LIVE DISCORD COMMUNITY WIDGET AUTO-SYNC (Counts & Badges)
+// ==============================================================================
+async function initLiveDiscordWidgets() {
+  const servers = [
+    { code: 'T44Up4cfy', onlineSelector: '.novape-live-online', membersSelector: '.novape-live-members' },
+    { code: 'NTPcxKHrag', onlineSelector: '.nyx9-live-online', membersSelector: '.nyx9-live-members' }
+  ];
+
+  for (const s of servers) {
+    try {
+      const res = await fetch(`https://discord.com/api/v9/invites/${s.code}?with_counts=true`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.approximate_presence_count !== undefined) {
+        document.querySelectorAll(s.onlineSelector).forEach(el => {
+          el.textContent = Number(data.approximate_presence_count).toLocaleString();
+        });
+      }
+      if (data.approximate_member_count !== undefined) {
+        document.querySelectorAll(s.membersSelector).forEach(el => {
+          el.textContent = Number(data.approximate_member_count).toLocaleString();
+        });
+      }
+    } catch (e) {
+      // Fallback values in HTML already rendered smoothly
+    }
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLiveDiscordWidgets);
+} else {
+  initLiveDiscordWidgets();
+}

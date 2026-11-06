@@ -2305,47 +2305,133 @@
         </span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- Store 1: NYX9 STUDIO (หลัก) -->
-        <div class="p-4 rounded-2xl bg-[#5865F2]/10 border border-[#5865F2]/40 space-y-3 relative overflow-hidden group hover:border-[#5865F2]/70 transition-all shadow-sm">
-          <div class="flex items-center justify-between">
-            <div class="w-7 h-7 rounded-lg bg-[#5865F2] flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              #1
-            </div>
-            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[9px] font-mono-val text-emerald-400 font-bold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>ONLINE</span>
-            </div>
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        <!-- CARD 1: NOVAPE SHOP (Discord Authentic Embed Card) -->
+        <div class="rounded-[20px] bg-[#18191c] border border-[#2b2d31] overflow-hidden shadow-2xl transition-all hover:border-white/20 flex flex-col justify-between">
           <div>
-            <div class="text-white font-bold text-sm group-hover:text-[var(--accent)] transition-colors">nyx9 studio (หลัก)</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">บริการขายเกี่ยวกับกับเกมส์ roblox ทั้งหมด</div>
+            <!-- Banner -->
+            <div class="h-24 w-full bg-cover bg-center relative" style="background-image: url('https://cdn.discordapp.com/banners/1399056573535621163/568a60b2515d257c1cd06a93445cea29.png?size=480');">
+              <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#18191c]"></div>
+            </div>
+
+            <!-- Avatar & Content -->
+            <div class="px-4 pt-0">
+              <!-- Floating Avatar -->
+              <div class="relative -mt-10 mb-2.5 inline-block">
+                <div class="w-[66px] h-[66px] rounded-[18px] bg-[#18191c] p-1 shadow-xl">
+                  <img src="https://cdn.discordapp.com/icons/1399056573535621163/d662b6579010a8b341cef8555f532e75.png?size=128" alt="NOVAPE SHOP" class="w-full h-full rounded-[14px] object-cover bg-black" />
+                </div>
+              </div>
+
+              <!-- Server Title & Badges -->
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <h3 class="text-white font-extrabold text-base tracking-wide font-sans">NOVAPE SHOP</h3>
+                <!-- Discord Community Home Badge -->
+                <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#ec62ff] text-white p-0.5 shadow-sm" title="Discord Community">
+                  <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </span>
+                <!-- Custom Guild Clan Badge -->
+                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#2b2d31] border border-white/10 text-[10px] font-bold text-white leading-none">
+                  <span>🌸</span><span>✨</span>
+                </span>
+              </div>
+
+              <!-- Online & Member Count -->
+              <div class="flex items-center gap-3 text-xs text-slate-300 font-medium mb-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#23a55a] animate-pulse"></span>
+                  <span class="novape-live-online">73</span> ออนไลน์
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#80848e]"></span>
+                  <span class="novape-live-members">314</span> คน
+                </span>
+              </div>
+
+              <!-- Created Date -->
+              <div class="text-[11px] text-slate-400 font-medium mb-2.5">
+                สร้างเมื่อ ก.ค. 2568
+              </div>
+
+              <!-- Description -->
+              <p class="text-xs text-slate-300 leading-relaxed line-clamp-3 mb-4">
+                ร้านจำหน่ายสินค้าเกี่ยวกับดิสคอร์ดครบวงจร ไม่ว่าจะเป็น แอคเคาท์ / เม็ดบูสต์ / ไนโตร / รับยืนยันเบอร์ดิสคอร์ด / ของตกแต่ง / แบนเนอร์ / รับซื้อแอคดิส / รับทำเซิร์ฟเวอร์ / แก้ไขบอท+เซ็ตบอท / รับทำสติกเกอร์ ร้านมีบัตรสะสมแต้ม ของแลกจุกๆ เปิดร้าน 24 ชั่วโมง มีแอดมินตอบตลอด
+              </p>
+            </div>
           </div>
-          <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-bold shadow-md shadow-[#5865F2]/25 transition-all">
-            <span>เข้าสู่ Discord NYX9 STUDIO</span>
-            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-          </a>
+
+          <!-- Action Button -->
+          <div class="px-4 pb-4 pt-1">
+            <a href="https://discord.gg/T44Up4cfy" target="_blank" class="w-full h-10 rounded-xl bg-[#23a55a] hover:bg-[#1f934f] text-white font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.98] cursor-pointer">
+              เข้าร่วม
+            </a>
+          </div>
         </div>
 
-        <!-- Store 2: NOVAPE SHOP -->
-        <div class="p-4 rounded-2xl bg-[#5865F2]/10 border border-[#5865F2]/40 space-y-3 relative overflow-hidden group hover:border-[#5865F2]/70 transition-all shadow-sm">
-          <div class="flex items-center justify-between">
-            <div class="w-7 h-7 rounded-lg bg-[#5865F2] flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              #2
-            </div>
-            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[9px] font-mono-val text-emerald-400 font-bold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>ONLINE</span>
-            </div>
-          </div>
+        <!-- CARD 2: NYX9 STUDIO (Discord Authentic Embed Card) -->
+        <div class="rounded-[20px] bg-[#18191c] border border-[#2b2d31] overflow-hidden shadow-2xl transition-all hover:border-white/20 flex flex-col justify-between">
           <div>
-            <div class="text-white font-bold text-sm group-hover:text-[var(--accent)] transition-colors">novape shop (เครือข่ายพันธมิตร)</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">บริการขายของเกี่ยวกับดิสคอร์ดทั้งหมด</div>
+            <!-- Banner (Vivid Cyan-Blue Gradient) -->
+            <div class="h-24 w-full relative" style="background: linear-gradient(180deg, #00A8FC 0%, #0077c8 70%, #18191c 100%);">
+              <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#18191c]"></div>
+            </div>
+
+            <!-- Avatar & Content -->
+            <div class="px-4 pt-0">
+              <!-- Floating Avatar -->
+              <div class="relative -mt-10 mb-2.5 inline-block">
+                <div class="w-[66px] h-[66px] rounded-[18px] bg-[#18191c] p-1 shadow-xl">
+                  <img src="https://cdn.discordapp.com/icons/1562600577311973438/d0a466347c88cd48e997c24b5949e3a0.png?size=128" alt="NYX9 STUDIO" class="w-full h-full rounded-[14px] object-cover bg-black" />
+                </div>
+              </div>
+
+              <!-- Server Title & Badges -->
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <h3 class="text-white font-extrabold text-base tracking-wide font-sans">NYX9 STUDIO</h3>
+                <!-- Discord Community Home Badge -->
+                <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#ec62ff] text-white p-0.5 shadow-sm" title="Discord Community">
+                  <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </span>
+                <!-- Clan Tag Badge -->
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#2b2d31] border border-white/10 text-[10px] font-bold text-white leading-none">
+                  <span>🐰</span><span>9Y!x</span>
+                </span>
+              </div>
+
+              <!-- Online & Member Count -->
+              <div class="flex items-center gap-3 text-xs text-slate-300 font-medium mb-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#23a55a] animate-pulse"></span>
+                  <span class="nyx9-live-online">5</span> ออนไลน์
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#80848e]"></span>
+                  <span class="nyx9-live-members">13</span> คน
+                </span>
+              </div>
+
+              <!-- Created Date -->
+              <div class="text-[11px] text-slate-400 font-medium mb-2.5">
+                สร้างเมื่อ ต.ค. 2569
+              </div>
+
+              <!-- Tags / Traits Chips -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Script Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Graphic</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">GFX Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Model Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">อื่นๆสอบถาม 24 HR</span>
+              </div>
+            </div>
           </div>
-          <a href="https://discord.gg/T44Up4cfy" target="_blank" class="flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-bold shadow-md shadow-[#5865F2]/25 transition-all">
-            <span>เข้าสู่ Discord NOVAPE SHOP</span>
-            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-          </a>
+
+          <!-- Action Button -->
+          <div class="px-4 pb-4 pt-1">
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="w-full h-10 rounded-xl bg-[#23a55a] hover:bg-[#1f934f] text-white font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.98] cursor-pointer">
+              เข้าร่วม
+            </a>
+          </div>
         </div>
       </div>
     </div>
