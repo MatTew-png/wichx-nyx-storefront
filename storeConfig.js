@@ -23,8 +23,8 @@ const storeConfig = {
   // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & DISCORD ALLIANCE HUB) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
-  tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
-  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่ายร้านค้าพันธมิตร NYX9 STUDIO & NOVAPE SHOP ครบวงจร",
+  tagline: "ร้านขายไอดีเกม & บริการ Discord อัตโนมัติ จัดส่งรหัสทันที 24 ชม.",
+  subTagline: "เลือกสินค้า ชำระเงินผ่านพร้อมเพย์/ทรูมันนี่ และรับรหัสใช้งานได้ทันที",
   logoUrl: "assets/logo.png",
   faviconUrl: "assets/logo.png",
   
@@ -221,8 +221,10 @@ const storeConfig = {
 };
 
 // Export หรือผูกเข้า Window สำหรับ Vanilla JS
+if (typeof window !== "undefined") {
+  window.storeConfig = storeConfig;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = storeConfig;
-} else {
-  window.storeConfig = storeConfig;
 }

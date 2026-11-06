@@ -429,3 +429,7 @@ class JulianMotionEngine {
 if (typeof window !== "undefined") {
   window.JulianMotion = new JulianMotionEngine();
 }
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = JulianMotionEngine;
+}

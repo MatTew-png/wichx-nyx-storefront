@@ -100,8 +100,11 @@ class SecurityEngine {
         return;
       }
 
-      // 2. Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
-      if (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) {
+      // 2. Block DevTools (Ctrl+Shift+I/J/C or Mac Cmd+Option+I/J/C)
+      if (
+        (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) ||
+        (isCtrlOrMeta && e.altKey && (key === "i" || key === "j" || key === "c"))
+      ) {
         e.preventDefault();
         e.stopPropagation();
         return;
@@ -138,4 +141,10 @@ class SecurityEngine {
   }
 }
 
-window.SecurityEngine = SecurityEngine;
+if (typeof window !== "undefined") {
+  window.SecurityEngine = SecurityEngine;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = SecurityEngine;
+}

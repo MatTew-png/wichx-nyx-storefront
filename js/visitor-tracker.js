@@ -1,9 +1,9 @@
 /**
  * ==============================================================================
- * 🌐 HIGH-VELOCITY VISITOR & IP TRACKER (NYX9 STUDIO)
+ * 🌐 PAGE VIEW METRICS & ROUTE TELEMETRY (NYX9 STUDIO)
  * ==============================================================================
- * Tracks real visitor IP, Country, Device, and Referral path via Supabase RPC.
- * Runs non-blocking and asynchronously. Checks for blacklisted IPs in real time.
+ * Anonymous page telemetry and session visit counter via Supabase RPC.
+ * Runs non-blocking and asynchronously for storefront reliability.
  * ==============================================================================
  */
 

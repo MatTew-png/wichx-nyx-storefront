@@ -76,8 +76,10 @@ class Store {
 
   // --- WALLET METHODS ---
   setWalletBalance(amount) {
-    this.state.walletBalance = parseFloat(amount) || 0;
-    localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+    this.state.walletBalance = Math.max(0, Math.round((parseFloat(amount) || 0) * 100) / 100);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+    }
     this.emit("change:wallet", this.state.walletBalance);
   }
 
@@ -91,23 +93,28 @@ class Store {
 
   // --- CART METHODS ---
   saveCart() {
-    localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+    }
     this.emit("change:cart", this.state.cart);
   }
 
   addToCart(product, quantity = 1, customData = null) {
+    if (!product || typeof product !== "object" || !product.id) return;
+    const safeQty = Math.max(1, parseInt(quantity, 10) || 1);
+
     const existingIndex = this.state.cart.findIndex(item => 
       item.id === product.id && JSON.stringify(item.customData) === JSON.stringify(customData)
     );
 
     if (existingIndex > -1) {
-      this.state.cart[existingIndex].quantity += quantity;
+      this.state.cart[existingIndex].quantity += safeQty;
     } else {
       this.state.cart.push({
         id: product.id,
         title: product.title,
-        price: parseFloat(product.price),
-        quantity: quantity,
+        price: parseFloat(product.price) || 0,
+        quantity: safeQty,
         fulfillmentType: product.fulfillmentType || "instant",
         customData: customData,
         chips: product.chips || []
@@ -144,8 +151,10 @@ class Store {
 }
 
 // Global Singleton Instance
-window.Store = Store;
-window.AppStore = new Store();
+if (typeof window !== "undefined") {
+  window.Store = Store;
+  window.AppStore = new Store();
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = Store;

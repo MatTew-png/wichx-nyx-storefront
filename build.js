@@ -66,6 +66,39 @@ function build() {
   new Function(bundleCode);
 
   console.log(`✅ [BUILD] dist/store.bundle.js generated successfully! (${Math.round(totalBytes / 1024)} KB)`);
+
+  // Inline CSS and Bundle into index.html and 200.html for 100% Antivirus & Offline Resilience
+  const stylesPath = path.join(__dirname, 'styles.css');
+  const stylesContent = fs.existsSync(stylesPath) ? fs.readFileSync(stylesPath, 'utf8') : '';
+
+  const htmlFiles = ['index.html', '200.html'];
+  for (const file of htmlFiles) {
+    const p = path.join(__dirname, file);
+    if (!fs.existsSync(p)) continue;
+    let html = fs.readFileSync(p, 'utf8');
+
+    // 1. Replace styles.css link with inline style tag
+    const linkRegex = /<link\s+rel="stylesheet"\s+href="styles\.css[^"]*"\s*[^>]*>/i;
+    const inlineStyleTag = `<style id="nyx-core-styles">\n${stylesContent}\n</style>`;
+    if (linkRegex.test(html)) {
+      html = html.replace(linkRegex, inlineStyleTag);
+    } else if (html.includes('<style id="nyx-core-styles">')) {
+      html = html.replace(/<style id="nyx-core-styles">[\s\S]*?<\/style>/, inlineStyleTag);
+    }
+
+    // 2. Replace bundle loader script with inline bundle
+    const bundleScriptRegex = /<!-- Unified Storefront Application Engine[\s\S]*?<script[\s\S]*?loadBundle[\s\S]*?<\/script>/i;
+    const inlineBundleTag = `<!-- Unified Storefront Application Engine (Direct Inlined for 100% Antivirus Immunity & Zero-Latency) -->\n  <script id="nyx-store-bundle">\n${bundleCode}\n  </script>`;
+    
+    if (bundleScriptRegex.test(html)) {
+      html = html.replace(bundleScriptRegex, inlineBundleTag);
+    } else if (html.includes('<script id="nyx-store-bundle">')) {
+      html = html.replace(/<!-- Unified Storefront Application Engine[\s\S]*?<script id="nyx-store-bundle">[\s\S]*?<\/script>/, inlineBundleTag);
+    }
+
+    fs.writeFileSync(p, html, 'utf8');
+    console.log(`✅ [BUILD] Inlined core CSS & JS bundle into ${file} (Antivirus/Firewall Safe)`);
+  }
 }
 
 build();

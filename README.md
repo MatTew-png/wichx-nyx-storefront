@@ -1,8 +1,8 @@
-# ⚡ NYX9 STUDIO — COMMERCIAL WHITELABEL DIGITAL STOREFRONT
-> Commercial-Grade, Action-Driven & Fully Responsive Cyber E-Commerce Architecture  
+# ⚡ NYX9 STUDIO — Whitelabel Digital Storefront
+> ร้านค้าจำหน่ายไอดีเกมและบริการ Discord ส่งออโต้ 24 ชม. พร้อมระบบชำระเงินหลายช่องทาง (PromptPay, TrueMoney, LTC)  
 > GitHub Repository: [https://github.com/MatTew-png/wichx-nyx-storefront](https://github.com/MatTew-png/wichx-nyx-storefront)
 
-สถาปัตยกรรมเทมเพลตร้านค้าดิจิทัลระดับโปรดักชัน สังเคราะห์จุดแข็งจาก **`xenonhub.pro`**, **`melody191.shop`** และ **`wichxshop.com`** ยกระดับสโตร์สู่เวอร์ชั่น Cyberpunk Glacier Cyan พร้อมระบบ Serverless API Backend สำหรับการ Deploy สู่ Vercel / Cloudflare ทันที
+ร้านค้าดิจิทัลสไตล์ Cyberpunk Glacier Cyan ออกแบบเน้นความเร็ว ปลอดภัย และใช้งานง่าย รองรับการต่อยอดเป็น Whitelabel พร้อมระบบ Serverless API Backend สำหรับ Deploy บน Vercel หรือ Cloudflare Pages ทันที
 
 ---
 

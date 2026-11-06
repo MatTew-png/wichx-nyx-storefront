@@ -406,8 +406,8 @@ const storeConfig = {
   // --- ข้อมูลพื้นฐานและแบรนดิ้ง (Rebranded for NYX9 STUDIO & DISCORD ALLIANCE HUB) ---
   storeName: "NYX9 STUDIO",
   brandShort: "NYX9",
-  tagline: "ระบบร้านค้าบริการอัตโนมัติตลอด 24 ชั่วโมง สะดวกรวดเร็ว ปลอดภัย",
-  subTagline: "ศูนย์รวมบริการดิจิทัลเครือข่ายร้านค้าพันธมิตร NYX9 STUDIO & NOVAPE SHOP ครบวงจร",
+  tagline: "ร้านขายไอดีเกม & บริการ Discord อัตโนมัติ จัดส่งรหัสทันที 24 ชม.",
+  subTagline: "เลือกสินค้า ชำระเงินผ่านพร้อมเพย์/ทรูมันนี่ และรับรหัสใช้งานได้ทันที",
   logoUrl: "assets/logo.png",
   faviconUrl: "assets/logo.png",
   
@@ -604,10 +604,12 @@ const storeConfig = {
 };
 
 // Export หรือผูกเข้า Window สำหรับ Vanilla JS
+if (typeof window !== "undefined") {
+  window.storeConfig = storeConfig;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = storeConfig;
-} else {
-  window.storeConfig = storeConfig;
 }
 
 
@@ -1102,8 +1104,10 @@ class Store {
 
   // --- WALLET METHODS ---
   setWalletBalance(amount) {
-    this.state.walletBalance = parseFloat(amount) || 0;
-    localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+    this.state.walletBalance = Math.max(0, Math.round((parseFloat(amount) || 0) * 100) / 100);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("wichx_balance", this.state.walletBalance.toString());
+    }
     this.emit("change:wallet", this.state.walletBalance);
   }
 
@@ -1117,23 +1121,28 @@ class Store {
 
   // --- CART METHODS ---
   saveCart() {
-    localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("wichx_cart", JSON.stringify(this.state.cart));
+    }
     this.emit("change:cart", this.state.cart);
   }
 
   addToCart(product, quantity = 1, customData = null) {
+    if (!product || typeof product !== "object" || !product.id) return;
+    const safeQty = Math.max(1, parseInt(quantity, 10) || 1);
+
     const existingIndex = this.state.cart.findIndex(item => 
       item.id === product.id && JSON.stringify(item.customData) === JSON.stringify(customData)
     );
 
     if (existingIndex > -1) {
-      this.state.cart[existingIndex].quantity += quantity;
+      this.state.cart[existingIndex].quantity += safeQty;
     } else {
       this.state.cart.push({
         id: product.id,
         title: product.title,
-        price: parseFloat(product.price),
-        quantity: quantity,
+        price: parseFloat(product.price) || 0,
+        quantity: safeQty,
         fulfillmentType: product.fulfillmentType || "instant",
         customData: customData,
         chips: product.chips || []
@@ -1170,8 +1179,10 @@ class Store {
 }
 
 // Global Singleton Instance
-window.Store = Store;
-window.AppStore = new Store();
+if (typeof window !== "undefined") {
+  window.Store = Store;
+  window.AppStore = new Store();
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = Store;
@@ -1284,8 +1295,11 @@ class SecurityEngine {
         return;
       }
 
-      // 2. Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
-      if (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) {
+      // 2. Block DevTools (Ctrl+Shift+I/J/C or Mac Cmd+Option+I/J/C)
+      if (
+        (isCtrlOrMeta && e.shiftKey && (key === "i" || key === "j" || key === "c")) ||
+        (isCtrlOrMeta && e.altKey && (key === "i" || key === "j" || key === "c"))
+      ) {
         e.preventDefault();
         e.stopPropagation();
         return;
@@ -1322,7 +1336,13 @@ class SecurityEngine {
   }
 }
 
-window.SecurityEngine = SecurityEngine;
+if (typeof window !== "undefined") {
+  window.SecurityEngine = SecurityEngine;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = SecurityEngine;
+}
 
 
 
@@ -1564,14 +1584,19 @@ class ReceiptGenerator {
     ctx.restore();
 
     // 7. Convert to PNG and Trigger Download
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
-        if (!blob) return;
+        if (!blob) {
+          resolve(null);
+          return;
+        }
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
+        const objectUrl = URL.createObjectURL(blob);
+        link.href = objectUrl;
         link.download = `NYX9_Receipt_${orderId}.png`;
         link.click();
-        resolve(link.href);
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+        resolve(objectUrl);
       }, "image/png");
     });
   }
@@ -1593,7 +1618,13 @@ class ReceiptGenerator {
   }
 }
 
-window.ReceiptGenerator = ReceiptGenerator;
+if (typeof window !== "undefined") {
+  window.ReceiptGenerator = ReceiptGenerator;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ReceiptGenerator;
+}
 
 
 
@@ -2030,6 +2061,10 @@ class JulianMotionEngine {
 // Global initialization
 if (typeof window !== "undefined") {
   window.JulianMotion = new JulianMotionEngine();
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = JulianMotionEngine;
 }
 
 
@@ -5472,10 +5507,10 @@ window.AmbientWavesEngine = AmbientWavesEngine;
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🌐 HIGH-VELOCITY VISITOR & IP TRACKER (NYX9 STUDIO)
+ * 🌐 PAGE VIEW METRICS & ROUTE TELEMETRY (NYX9 STUDIO)
  * ==============================================================================
- * Tracks real visitor IP, Country, Device, and Referral path via Supabase RPC.
- * Runs non-blocking and asynchronously. Checks for blacklisted IPs in real time.
+ * Anonymous page telemetry and session visit counter via Supabase RPC.
+ * Runs non-blocking and asynchronously for storefront reliability.
  * ==============================================================================
  */
 

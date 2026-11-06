@@ -233,14 +233,19 @@ class ReceiptGenerator {
     ctx.restore();
 
     // 7. Convert to PNG and Trigger Download
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
-        if (!blob) return;
+        if (!blob) {
+          resolve(null);
+          return;
+        }
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
+        const objectUrl = URL.createObjectURL(blob);
+        link.href = objectUrl;
         link.download = `NYX9_Receipt_${orderId}.png`;
         link.click();
-        resolve(link.href);
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+        resolve(objectUrl);
       }, "image/png");
     });
   }
@@ -262,4 +267,10 @@ class ReceiptGenerator {
   }
 }
 
-window.ReceiptGenerator = ReceiptGenerator;
+if (typeof window !== "undefined") {
+  window.ReceiptGenerator = ReceiptGenerator;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ReceiptGenerator;
+}
