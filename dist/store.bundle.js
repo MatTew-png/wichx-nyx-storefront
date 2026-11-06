@@ -2052,7 +2052,7 @@ window.UI = new UIManager();
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🧭 NAVBAR COMPONENT (OOP CONTROLLER)
+ * NAVBAR COMPONENT (OOP CONTROLLER WITH USER DROPDOWN)
  * ==============================================================================
  */
 
@@ -2060,12 +2060,60 @@ class NavbarComponent {
   constructor(store) {
     this.store = store;
     this.initListeners();
+    this.initGlobalBindings();
   }
 
   initListeners() {
     this.store.on("change:wallet", () => this.updateWalletUI());
     this.store.on("change:user", () => this.updateAuthUI());
     this.store.on("change:cart", () => this.updateCartBadge());
+  }
+
+  initGlobalBindings() {
+    window.toggleUserMenu = (e) => {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById("user-dropdown-menu");
+      const chevron = document.getElementById("user-menu-chevron");
+      if (!menu) return;
+      const isHidden = menu.classList.contains("hidden");
+      if (isHidden) {
+        menu.classList.remove("hidden");
+        if (chevron) chevron.classList.add("rotate-180");
+      } else {
+        menu.classList.add("hidden");
+        if (chevron) chevron.classList.remove("rotate-180");
+      }
+    };
+
+    window.handleMenuAction = (action) => {
+      const menu = document.getElementById("user-dropdown-menu");
+      const chevron = document.getElementById("user-menu-chevron");
+      if (menu) menu.classList.add("hidden");
+      if (chevron) chevron.classList.remove("rotate-180");
+
+      if (action === "history") {
+        if (typeof openHistoryModal === "function") openHistoryModal();
+      } else if (action === "claim") {
+        if (typeof openClaimModal === "function") openClaimModal();
+      } else if (action === "topup") {
+        if (typeof openTopUpModal === "function") openTopUpModal();
+      } else if (action === "logout") {
+        if (typeof handleLogout === "function") handleLogout();
+      }
+    };
+
+    // Close on click outside
+    if (typeof document !== "undefined") {
+      document.addEventListener("click", (e) => {
+        const authSec = document.getElementById("auth-section");
+        const menu = document.getElementById("user-dropdown-menu");
+        const chevron = document.getElementById("user-menu-chevron");
+        if (authSec && menu && !authSec.contains(e.target)) {
+          menu.classList.add("hidden");
+          if (chevron) chevron.classList.remove("rotate-180");
+        }
+      });
+    }
   }
 
   updateWalletUI() {
@@ -2075,6 +2123,9 @@ class NavbarComponent {
 
     const cartBal = document.getElementById("cart-wallet-balance");
     if (cartBal) cartBal.textContent = `฿${balance.toFixed(2)}`;
+
+    const menuBal = document.getElementById("menu-wallet-balance");
+    if (menuBal) menuBal.textContent = `฿${balance.toFixed(2)}`;
   }
 
   updateAuthUI() {
@@ -2083,10 +2134,17 @@ class NavbarComponent {
     const profileBadge = document.getElementById("user-profile-badge");
     const avatarImg = document.getElementById("user-avatar-img");
     const nameEl = document.getElementById("user-display-name");
-    const adminLink = document.getElementById("nav-admin-link");
+
+    // Dropdown elements
+    const menuAvatar = document.getElementById("menu-avatar-img");
+    const menuUsername = document.getElementById("menu-username");
+    const menuDiscordId = document.getElementById("menu-discord-id");
+    const menuWallet = document.getElementById("menu-wallet-balance");
+    const menuAdminLink = document.getElementById("menu-admin-link");
 
     const adminIds = (window.storeConfig && window.storeConfig.adminDiscordIds) || ["483398326159671326", "422611554475835394"];
     const isAdmin = user && (user.role === "admin" || adminIds.includes(String(user.discordId)));
+    const balance = this.store.get("walletBalance") || 0;
 
     if (user) {
       if (loginBtn) loginBtn.classList.add("hidden");
@@ -2094,17 +2152,24 @@ class NavbarComponent {
         profileBadge.classList.remove("hidden");
         profileBadge.classList.add("flex");
       }
-      if (avatarImg) avatarImg.src = user.avatarUrl;
-      if (nameEl) nameEl.textContent = user.username;
+      const avatarUrl = user.avatarUrl || "assets/logo.png";
+      const username = user.username || "Discord User";
 
-      // แสดงปุ่มเข้าหลังบ้านเฉพาะแอดมิน 2 ไอดี
-      if (adminLink) {
+      if (avatarImg) avatarImg.src = avatarUrl;
+      if (nameEl) nameEl.textContent = username;
+
+      if (menuAvatar) menuAvatar.src = avatarUrl;
+      if (menuUsername) menuUsername.textContent = username;
+      if (menuDiscordId) menuDiscordId.textContent = user.discordId ? `ID: ${user.discordId}` : (user.email || "Discord Member");
+      if (menuWallet) menuWallet.textContent = `฿${balance.toFixed(2)}`;
+
+      if (menuAdminLink) {
         if (isAdmin) {
-          adminLink.classList.remove("hidden");
-          adminLink.classList.add("inline-flex");
+          menuAdminLink.classList.remove("hidden");
+          menuAdminLink.classList.add("flex");
         } else {
-          adminLink.classList.add("hidden");
-          adminLink.classList.remove("inline-flex");
+          menuAdminLink.classList.add("hidden");
+          menuAdminLink.classList.remove("flex");
         }
       }
     } else {
@@ -2113,10 +2178,8 @@ class NavbarComponent {
         profileBadge.classList.add("hidden");
         profileBadge.classList.remove("flex");
       }
-      if (adminLink) {
-        adminLink.classList.add("hidden");
-        adminLink.classList.remove("inline-flex");
-      }
+      const menu = document.getElementById("user-dropdown-menu");
+      if (menu) menu.classList.add("hidden");
     }
 
     if (window.lucide) lucide.createIcons();
