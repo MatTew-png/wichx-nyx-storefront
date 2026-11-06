@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" class="dark bg-[#06080C]">
+<html lang="th" class="dark bg-[#06080C] nyx-intro-active">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -111,17 +111,99 @@
   <!-- jsQR Engine for Smart Slip Auto-Scan -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
-    <!-- Check session storage for intro skip immediately to avoid flash -->
-  <script>
-    try {
-      if (sessionStorage.getItem('nyx_intro_seen') === '1') {
-        document.documentElement.classList.add('nyx-intro-skipped');
-      }
-    } catch(e) {}
-  </script>
+  <!-- Critical Inline Intro CSS (Zero-Flash, Blocks Viewport Instantly) -->
+  <style id="nyx-intro-critical-css">
+    html.nyx-intro-active,
+    html.nyx-intro-active body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      touch-action: none !important;
+    }
+    .nyx-intro-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: #06080C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: 0.7s cubic-bezier(0.77, 0, 0.175, 1) 2.4s 1 forwards moveLoader;
+      will-change: transform;
+      pointer-events: all;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    @keyframes moveLoader {
+      0% { transform: translateY(0%); }
+      100% { transform: translateY(-100%); visibility: hidden; }
+    }
+    .intro-logo-container {
+      position: relative;
+      width: 140px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .intro-logo-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 35px rgba(0, 178, 255, 0.35));
+    }
+    .intro-logo-back { opacity: 0.22; }
+    @keyframes slideMask {
+      0% { y: 100%; }
+      100% { y: 0%; }
+    }
+    #nyx-logo-mask-rect {
+      animation: 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.2s 1 forwards slideMask;
+    }
+    .intro-brand-text {
+      margin-top: 24px;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.35em;
+      text-indent: 0.35em;
+      color: #FFFFFF;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s 1 forwards textFadeIn;
+    }
+    .intro-sub-text {
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em;
+      color: #00B2FF;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.0s 1 forwards textFadeIn;
+    }
+    .intro-skip-hint {
+      margin-top: 28px;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 11px;
+      color: #64748B;
+      opacity: 0;
+      animation: 0.5s ease-out 1.2s 1 forwards textFadeIn;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .intro-skip-hint:hover { color: #94A3B8; }
+    @keyframes textFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.2.0" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.2.0';}" />
+  <link rel="stylesheet" href="styles.css?v=3.2.1" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.2.1';}" />
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
@@ -179,17 +261,17 @@
         intro.style.transform = 'translateY(-100%)';
         setTimeout(function() {
           if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+          document.documentElement.classList.remove('nyx-intro-active');
         }, 260);
       }
-      try { sessionStorage.setItem('nyx_intro_seen', '1'); } catch(e) {}
     }
     (function() {
       var intro = document.getElementById('nyx-intro');
       if (intro) {
         intro.addEventListener('animationend', function(e) {
           if (e.animationName === 'moveLoader') {
-            try { sessionStorage.setItem('nyx_intro_seen', '1'); } catch(err) {}
             if (intro.parentNode) intro.parentNode.removeChild(intro);
+            document.documentElement.classList.remove('nyx-intro-active');
           }
         });
       }
@@ -1850,12 +1932,12 @@
         if (!isFallback) {
           s.onerror = function() {
             console.warn('[HA-EDGE] Client network or local antivirus blocked primary bundle host. Activating high-availability edge mirror...');
-            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.2.0', true);
+            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.2.1', true);
           };
         }
         document.body.appendChild(s);
       }
-      loadBundle('dist/store.bundle.js?v=3.2.0', false);
+      loadBundle('dist/store.bundle.js?v=3.2.1', false);
     })();
   </script>
 </body>

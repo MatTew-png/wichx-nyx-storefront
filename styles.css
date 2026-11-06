@@ -544,6 +544,13 @@ input, textarea {
 /* ==============================================================================
    🎬 INTRO LOADER OVERLAY (WEBFLOW PARITY WITH SVG MASK & CURTAIN SLIDE)
    ============================================================================== */
+html.nyx-intro-active,
+html.nyx-intro-active body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  touch-action: none !important;
+}
+
 .nyx-intro-loader {
   position: fixed;
   inset: 0;
@@ -553,7 +560,8 @@ input, textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: 0.75s cubic-bezier(0.77, 0, 0.175, 1) 1.6s 1 forwards moveLoader;
+  /* Holds fully revealed logo for ~0.8s, then smoothly slides curtain up */
+  animation: 0.7s cubic-bezier(0.77, 0, 0.175, 1) 2.4s 1 forwards moveLoader;
   will-change: transform;
   pointer-events: all;
   user-select: none;
@@ -588,7 +596,7 @@ input, textarea {
 }
 
 .intro-logo-back {
-  opacity: 0.25;
+  opacity: 0.22;
 }
 
 @keyframes slideMask {
@@ -601,7 +609,7 @@ input, textarea {
 }
 
 #nyx-logo-mask-rect {
-  animation: 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.15s 1 forwards slideMask;
+  animation: 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.2s 1 forwards slideMask;
 }
 
 .intro-brand-text {
@@ -654,9 +662,5 @@ input, textarea {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-html.nyx-intro-skipped #nyx-intro {
-  display: none !important;
 }
 
