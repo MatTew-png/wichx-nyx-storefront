@@ -111,10 +111,90 @@
   <!-- jsQR Engine for Smart Slip Auto-Scan -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
+    <!-- Check session storage for intro skip immediately to avoid flash -->
+  <script>
+    try {
+      if (sessionStorage.getItem('nyx_intro_seen') === '1') {
+        document.documentElement.classList.add('nyx-intro-skipped');
+      }
+    } catch(e) {}
+  </script>
+
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.1.0" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.1.0';}" />
+  <link rel="stylesheet" href="styles.css?v=3.2.0" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.2.0';}" />
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
+
+  <!-- ==============================================================================
+       🎬 INTRO ANIMATION LOADER (WEBFLOW PARITY WITH SVG MASK & CURTAIN REVEAL)
+       ============================================================================== -->
+  <div id="nyx-intro" class="nyx-intro-loader" onclick="dismissNyxIntro()">
+    <div class="intro-logo-container">
+      <!-- LAYER 1: Silhouette / Back Logo (Dark Muted) -->
+      <svg class="intro-logo-svg intro-logo-back" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#252A36" />
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#14324D" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#14324D" />
+      </svg>
+
+      <!-- LAYER 2: Foreground Vibrant Logo with Animated SVG Mask -->
+      <svg class="intro-logo-svg intro-logo-front" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <mask id="nyx-logo-slide-mask">
+            <rect id="nyx-logo-mask-rect" x="0" y="100%" width="100%" height="100%" fill="#ffffff"/>
+          </mask>
+        </defs>
+
+        <!-- Group with Mask Applied -->
+        <g mask="url(#nyx-logo-slide-mask)">
+          <!-- Base White Body -->
+          <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+          <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+          <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+          <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+          <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+
+          <!-- Base Electric Blue Segments -->
+          <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+          <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+          <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+          <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+          <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Typography Brand Intro -->
+    <div class="intro-brand-text">NYX9 STUDIO</div>
+    <div class="intro-sub-text">DIGITAL AUTOMATION STORE</div>
+    <div class="intro-skip-hint">แตะที่ใดก็ได้เพื่อข้าม (Skip)</div>
+  </div>
+
+  <script>
+    function dismissNyxIntro() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        intro.style.opacity = '0';
+        intro.style.transform = 'translateY(-100%)';
+        setTimeout(function() {
+          if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+        }, 260);
+      }
+      try { sessionStorage.setItem('nyx_intro_seen', '1'); } catch(e) {}
+    }
+    (function() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.addEventListener('animationend', function(e) {
+          if (e.animationName === 'moveLoader') {
+            try { sessionStorage.setItem('nyx_intro_seen', '1'); } catch(err) {}
+            if (intro.parentNode) intro.parentNode.removeChild(intro);
+          }
+        });
+      }
+    })();
+  </script>
 
   <!-- ==============================================================================
        1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)
@@ -1770,12 +1850,12 @@
         if (!isFallback) {
           s.onerror = function() {
             console.warn('[HA-EDGE] Client network or local antivirus blocked primary bundle host. Activating high-availability edge mirror...');
-            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.1.0', true);
+            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.2.0', true);
           };
         }
         document.body.appendChild(s);
       }
-      loadBundle('dist/store.bundle.js?v=3.1.0', false);
+      loadBundle('dist/store.bundle.js?v=3.2.0', false);
     })();
   </script>
 </body>
