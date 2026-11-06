@@ -88,38 +88,7 @@ class HeroSectionComponent {
   }
 
   initTiltCards() {
-    const cards = document.querySelectorAll(".interactive-cyber-tilt-card");
-    cards.forEach(card => {
-      const glare = card.querySelector(".card-glare-foil");
-      let bounds = null;
-
-      const onMouseEnter = () => {
-        bounds = card.getBoundingClientRect();
-        if (glare) glare.style.opacity = "1";
-      };
-
-      const onMouseMove = (e) => {
-        if (!bounds) bounds = card.getBoundingClientRect();
-        const x = (e.clientX - bounds.left) / (bounds.width || 1);
-        const y = (e.clientY - bounds.top) / (bounds.height || 1);
-        const rotX = (y - 0.5) * -16;
-        const rotY = (x - 0.5) * 18;
-        card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`;
-        if (glare) {
-          glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(0, 242, 255, 0.35) 0%, rgba(139, 92, 246, 0.2) 35%, transparent 70%)`;
-        }
-      };
-
-      const onMouseLeave = () => {
-        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-        if (glare) glare.style.opacity = "0";
-        bounds = null;
-      };
-
-      card.addEventListener("mouseenter", onMouseEnter);
-      card.addEventListener("mousemove", onMouseMove);
-      card.addEventListener("mouseleave", onMouseLeave);
-    });
+    // Deprecated: Tilt cards removed for clean mobile-first layout
   }
 
   goToSlide(index) {
