@@ -187,6 +187,14 @@ window.setPromptPayPreset = (amt) => {
   const el = document.getElementById("promptpay-amount-input");
   if (el) el.value = amt;
   window.Shop.topupModal.updatePromptPayQr(amt);
+  document.querySelectorAll(".promptpay-preset-btn").forEach(btn => {
+    const val = parseFloat(btn.getAttribute("data-amount"));
+    if (val === amt) {
+      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold border border-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.3)] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+    } else {
+      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+    }
+  });
 };
 window.handlePromptPayAmountInput = (amt) => window.Shop.topupModal.updatePromptPayQr(amt);
 window.verifyPromptPaySlip = () => window.Shop.topupModal.verifyPromptPay();

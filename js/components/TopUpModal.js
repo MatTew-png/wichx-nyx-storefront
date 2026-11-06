@@ -42,17 +42,21 @@ class TopUpModalComponent {
 
   switchGateway(tabKey) {
     this.activeTab = tabKey;
-    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"];
+    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment"];
     
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
       const pane = document.getElementById(`gateway-panel-${t}`);
       
       if (t === tabKey) {
-        if (btn) btn.className = "p-2.5 rounded-xl border border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)] text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer";
+        if (btn) {
+          btn.className = "topup-tab-btn active h-11 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-400/40 shadow-[0_0_15px_rgba(0,242,255,0.15)] ring-1 ring-cyan-400/50";
+        }
         if (pane) pane.classList.remove("hidden");
       } else {
-        if (btn) btn.className = "p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer";
+        if (btn) {
+          btn.className = "topup-tab-btn h-11 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent";
+        }
         if (pane) pane.classList.add("hidden");
       }
     });

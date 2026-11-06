@@ -1771,6 +1771,8 @@ class CheckoutService {
 
     const orderId = `WX-${Math.floor(100000 + Math.random() * 900000)}`;
     const user = this.store.get("user");
+    const promo = this.store.get("appliedPromo");
+    const { discount } = this.calculateTotals();
     let result = null;
 
     if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
@@ -1782,7 +1784,9 @@ class CheckoutService {
         customerInfo: {
           clientTimestamp: new Date().toISOString(),
           username: user?.username || "Guest",
-          discordId: user?.discordId || null
+          discordId: user?.discordId || null,
+          promoCode: promo?.code || null,
+          discountAmount: discount || 0
         }
       });
     } else {
@@ -2881,17 +2885,21 @@ class TopUpModalComponent {
 
   switchGateway(tabKey) {
     this.activeTab = tabKey;
-    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment", "crypto_ltc"];
+    const tabs = ["promptpay", "truemoney", "bank_transfer", "card_payment"];
     
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
       const pane = document.getElementById(`gateway-panel-${t}`);
       
       if (t === tabKey) {
-        if (btn) btn.className = "p-2.5 rounded-xl border border-[var(--accent)] bg-[rgba(25,186,255,0.15)] text-[var(--accent)] text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer";
+        if (btn) {
+          btn.className = "topup-tab-btn active h-11 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-400/40 shadow-[0_0_15px_rgba(0,242,255,0.15)] ring-1 ring-cyan-400/50";
+        }
         if (pane) pane.classList.remove("hidden");
       } else {
-        if (btn) btn.className = "p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer";
+        if (btn) {
+          btn.className = "topup-tab-btn h-11 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent";
+        }
         if (pane) pane.classList.add("hidden");
       }
     });
@@ -4454,6 +4462,14 @@ window.setPromptPayPreset = (amt) => {
   const el = document.getElementById("promptpay-amount-input");
   if (el) el.value = amt;
   window.Shop.topupModal.updatePromptPayQr(amt);
+  document.querySelectorAll(".promptpay-preset-btn").forEach(btn => {
+    const val = parseFloat(btn.getAttribute("data-amount"));
+    if (val === amt) {
+      btn.className = "promptpay-preset-btn active h-9 rounded-xl bg-[var(--accent)] text-[#05080E] font-bold border border-[var(--accent)] shadow-[0_0_12px_rgba(0,242,255,0.3)] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+    } else {
+      btn.className = "promptpay-preset-btn h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer";
+    }
+  });
 };
 window.handlePromptPayAmountInput = (amt) => window.Shop.topupModal.updatePromptPayQr(amt);
 window.verifyPromptPaySlip = () => window.Shop.topupModal.verifyPromptPay();
