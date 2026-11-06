@@ -112,7 +112,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.0.0" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.0.0';}" />
+  <link rel="stylesheet" href="styles.css?v=3.1.0" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.1.0';}" />
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
@@ -1378,11 +1378,7 @@
               <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
               <span>นโยบายความเป็นส่วนตัว</span>
             </button>
-            <a href="admin.html" class="w-full text-left text-slate-400 hover:text-[var(--accent)] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
-              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
-              <span>ระบบหลังบ้านแอดมิน</span>
-            </a>
-          </div>
+            </div>
         </div>
       </div>
 
@@ -1774,12 +1770,12 @@
         if (!isFallback) {
           s.onerror = function() {
             console.warn('[HA-EDGE] Client network or local antivirus blocked primary bundle host. Activating high-availability edge mirror...');
-            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.0.0', true);
+            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.1.0', true);
           };
         }
         document.body.appendChild(s);
       }
-      loadBundle('dist/store.bundle.js?v=3.0.0', false);
+      loadBundle('dist/store.bundle.js?v=3.1.0', false);
     })();
   </script>
 </body>
