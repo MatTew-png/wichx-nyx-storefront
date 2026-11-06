@@ -33,6 +33,7 @@
       --accent-hover: #38D4FF;
       --base-bg: #06080C;
       --card-bg: #0E131D;
+      --sidebar-bg: #090D15;
     }
     body {
       font-family: 'Prompt', sans-serif;
@@ -41,10 +42,14 @@
     }
     .font-heading { font-family: 'Chakra Petch', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
     .glass-panel {
       background: rgba(14, 19, 29, 0.88);
       backdrop-filter: blur(14px);
-      border: 1px solid rgba(25, 186, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-panel:hover {
+      border-color: rgba(25, 186, 255, 0.25);
     }
     .glass-panel-glow {
       box-shadow: 0 0 25px rgba(25, 186, 255, 0.08);
@@ -53,19 +58,55 @@
       background: linear-gradient(135deg, #19BAFF 0%, #0088CC 100%);
       color: #000000;
       font-weight: 700;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-cyber-primary:hover {
       box-shadow: 0 0 20px rgba(25, 186, 255, 0.45);
       transform: translateY(-1px);
     }
-    /* Custom Scrollbar for tables and modal lists */
+    
+    /* Sidebar Navigation Styles */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: #94A3B8;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-item:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-item.active {
+      color: #19BAFF;
+      background: rgba(25, 186, 255, 0.1);
+      font-weight: 700;
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      height: 70%;
+      width: 3.5px;
+      border-radius: 0 4px 4px 0;
+      background: #19BAFF;
+      box-shadow: 0 0 10px #19BAFF;
+    }
+
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: #0A0D14;
+      background: #06080C;
     }
     ::-webkit-scrollbar-thumb {
       background: #1E293B;
@@ -74,6 +115,8 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #334155;
     }
+
+    /* Switch toggle */
     .switch-toggle:checked ~ .switch-dot {
       transform: translateX(100%);
       background-color: #10B981;
@@ -93,7 +136,7 @@
     
     <!-- Box 1: Admin Login Gate -->
     <div id="admin-login-box" class="glass-panel glass-panel-glow max-w-md w-full p-8 rounded-3xl border border-[rgba(25,186,255,0.3)] shadow-2xl text-center">
-      <div class="w-16 h-16 rounded-2xl bg-[rgba(25,186,255,0.1)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center mx-auto mb-4">
+      <div class="w-16 h-16 rounded-2xl bg-[rgba(25,186,255,0.1)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/20">
         <i data-lucide="shield-alert" class="w-8 h-8"></i>
       </div>
       <h3 class="text-xl font-heading font-extrabold text-white tracking-wider">NYX9 OPERATIONS SUITE</h3>
@@ -173,526 +216,721 @@
   </div>
 
   <!-- ==============================================================================
-       2. MAIN OPERATIONS DASHBOARD (AUTHENTICATED)
+       2. MAIN OPERATIONS DASHBOARD (AUTHENTICATED) WITH LEFT SIDEBAR LAYOUT
        ============================================================================== -->
-  <div id="admin-dashboard-container" class="hidden flex-1 flex flex-col">
+  <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col lg:flex-row">
 
-    <!-- Top Navigation Bar -->
-    <header class="border-b border-slate-800/80 bg-[#0E131D]/90 backdrop-blur-md sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[rgba(25,186,255,0.15)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <i data-lucide="terminal" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h1 class="text-base font-heading font-extrabold text-white flex items-center gap-2">
-              <span>NYX9 OPERATIONS SUITE</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">v3.0 ENTERPRISE</span>
-            </h1>
-            <p class="text-[11px] text-slate-400">ระบบศูนย์กลาง • กราฟสถิติ • CRUD สินค้า • จัดการสมาชิก • คำสั่งซื้อ 24 ชม.</p>
-          </div>
-        </div>
+    <!-- Mobile Drawer Backdrop -->
+    <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/80 z-40 lg:hidden hidden backdrop-blur-sm transition-opacity"></div>
 
-        <div class="flex items-center gap-2.5">
-          <!-- Admin User Badge -->
-          <div id="admin-profile-pill" class="hidden items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs">
-            <img id="admin-profile-avatar" class="w-5 h-5 rounded-full object-cover" src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" />
-            <span id="admin-profile-name" class="font-bold text-white max-w-[120px] truncate">Admin</span>
-            <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-[10px] text-emerald-300 font-mono font-bold">ADMIN</span>
-          </div>
-
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>POSTGRES LIVE</span>
-          </span>
-          <button onclick="loadDashboardData()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer" title="รีเฟรชข้อมูลทั้งหมด">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-          </button>
-          <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[var(--accent)] text-xs text-white flex items-center gap-1.5 transition-all">
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            <span>หน้าร้านค้า</span>
-          </a>
-          <button onclick="handleAdminLogout()" class="px-3.5 py-1.5 rounded-xl bg-red-950/40 border border-red-500/30 hover:bg-red-900/40 text-xs text-red-300 flex items-center gap-1.5 transition-all cursor-pointer">
-            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-            <span>ออกจากระบบ</span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-6 w-full space-y-6 flex-1">
-
-      <!-- 4-METRIC TELEMETRY GRID -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-emerald-500/30 transition-all">
-          <div class="flex items-center justify-between text-slate-400 mb-2">
-            <span class="text-xs font-semibold">ยอดขายคำสั่งซื้อรวม</span>
-            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-              <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
-            </div>
-          </div>
-          <div id="metric-revenue" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
-          <div class="text-[10px] text-slate-500 mt-1">จากคำสั่งซื้อที่จ่ายสำเร็จทั้งหมด</div>
-        </div>
-
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-cyan-500/30 transition-all">
-          <div class="flex items-center justify-between text-slate-400 mb-2">
-            <span class="text-xs font-semibold">ออเดอร์ที่จัดส่งแล้ว</span>
-            <div class="w-8 h-8 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-              <i data-lucide="package-check" class="w-4 h-4"></i>
-            </div>
-          </div>
-          <div id="metric-orders" class="text-2xl font-heading font-extrabold text-white">0</div>
-          <div class="text-[10px] text-slate-500 mt-1">เบิกจ่ายคีย์สำเร็จ 100%</div>
-        </div>
-
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition-all">
-          <div class="flex items-center justify-between text-slate-400 mb-2">
-            <span class="text-xs font-semibold">คีย์พร้อมขายในคลัง</span>
-            <div class="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
-              <i data-lucide="database" class="w-4 h-4"></i>
-            </div>
-          </div>
-          <div id="metric-stock" class="text-2xl font-heading font-extrabold text-white">0</div>
-          <div class="text-[10px] text-slate-500 mt-1">ยังไม่ถูกขาย (Unsold Vault)</div>
-        </div>
-
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-purple-500/30 transition-all">
-          <div class="flex items-center justify-between text-slate-400 mb-2">
-            <span class="text-xs font-semibold">ยอดเติมเงินเข้ากระเป๋า</span>
-            <div class="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
-              <i data-lucide="wallet" class="w-4 h-4"></i>
-            </div>
-          </div>
-          <div id="metric-topups" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
-          <div class="text-[10px] text-slate-500 mt-1">PromptPay + TrueMoney</div>
-        </div>
-      </div>
-
-      <!-- OPERATIONS TABS NAVIGATION -->
-      <div class="flex border-b border-slate-800 overflow-x-auto gap-1">
-        <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-4 py-2.5 text-xs font-bold font-heading border-b-2 border-[var(--accent)] text-[var(--accent)] flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-          <span>📊 กราฟสถิติ & สรุปภาพรวม (Analytics)</span>
-        </button>
-        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="boxes" class="w-4 h-4"></i>
-          <span>📦 สินค้า & สต็อก (Products & Vault)</span>
-        </button>
-        <button onclick="switchAdminTab('users')" id="tab-btn-users" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="users" class="w-4 h-4"></i>
-          <span>👥 จัดการสมาชิก & วอลเล็ต (Users)</span>
-        </button>
-        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-          <span>📑 รายการคำสั่งซื้อ (Orders)</span>
-        </button>
-        <button onclick="switchAdminTab('topups')" id="tab-btn-topups" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="receipt" class="w-4 h-4"></i>
-          <span>💸 ประวัติเติมเงิน (Topups)</span>
-        </button>
-        <button onclick="switchAdminTab('claims')" id="tab-btn-claims" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="shield-question" class="w-4 h-4"></i>
-          <span>🛡️ เคลมประกัน (Warranty)</span>
-          <span id="badge-pending-claims" class="hidden px-1.5 py-0.2 text-[9px] rounded-full bg-red-500 text-black font-extrabold">0</span>
-        </button>
-        <button onclick="switchAdminTab('discord')" id="tab-btn-discord" class="px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer">
-          <i data-lucide="bell-ring" class="w-4 h-4"></i>
-          <span>⚙️ Discord Webhook</span>
-        </button>
-      </div>
-
-      <!-- ==============================================================================
-           TAB 1: ANALYTICS & INTERACTIVE CHARTS
-           ============================================================================== -->
-      <div id="tab-pane-analytics" class="space-y-6">
+    <!-- ==============================================================================
+         LEFT SIDEBAR NAVIGATION RAIL (HIGH-TECH CYBERPUNK DOCKED SIDEBAR)
+         ============================================================================== -->
+    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#080B11] border-r border-slate-800/80 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl">
+      
+      <!-- Upper Section: Branding & Nav Links -->
+      <div class="flex flex-col flex-1 min-h-0">
         
-        <!-- Secondary Health Status Bar -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
-            <div>
-              <div class="text-[11px] text-slate-400">สินค้าในระบบทั้งหมด</div>
-              <div id="analytics-total-prods" class="text-base font-heading font-bold text-white mt-0.5">0 รายการ</div>
+        <!-- Sidebar Brand Header -->
+        <div class="p-5 border-b border-slate-800/80 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(25,186,255,0.12)] border border-[var(--accent)] text-[var(--accent)] flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <i data-lucide="terminal" class="w-5 h-5"></i>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/30">Total</span>
+            <div>
+              <div class="text-sm font-heading font-extrabold text-white flex items-center gap-1.5 tracking-wider">
+                <span>NYX9 STUDIO</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">v3.0</span>
+              </div>
+              <div class="text-[11px] text-slate-400 font-mono flex items-center gap-1 mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>OPERATIONS SUITE</span>
+              </div>
+            </div>
           </div>
-          <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
-            <div>
-              <div class="text-[11px] text-slate-400">สินค้าที่เปิดขายหน้าร้าน</div>
-              <div id="analytics-active-prods" class="text-base font-heading font-bold text-emerald-400 mt-0.5">0 รายการ</div>
+          <!-- Mobile Close Button -->
+          <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-1">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Admin Profile Card in Sidebar -->
+        <div class="p-4 border-b border-slate-800/60 bg-slate-900/30">
+          <div class="flex items-center gap-3 p-2.5 rounded-2xl bg-[#0E131D] border border-slate-800/80">
+            <div class="relative shrink-0">
+              <img id="admin-profile-avatar" class="w-9 h-9 rounded-xl object-cover border border-cyan-500/40 shadow-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" />
+              <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#0E131D] rounded-full"></span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Active</span>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
-            <div>
-              <div class="text-[11px] text-slate-400">คีย์ที่ถูกขายแล้วสะสม</div>
-              <div id="analytics-sold-keys" class="text-base font-heading font-bold text-cyan-400 mt-0.5">0 ชิ้น</div>
+            <div class="flex-1 min-w-0">
+              <div id="admin-profile-name" class="text-xs font-bold text-white truncate">Administrator</div>
+              <div id="admin-profile-id" class="text-[10px] font-mono text-cyan-400 truncate">422611554475835394</div>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">Sold</span>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
-            <div>
-              <div class="text-[11px] text-slate-400">คีย์คงคลังพร้อมขาย</div>
-              <div id="analytics-unsold-keys" class="text-base font-heading font-bold text-amber-400 mt-0.5">0 ชิ้น</div>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">In-Stock</span>
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30 shrink-0">ADMIN</span>
           </div>
         </div>
 
-        <!-- Main Chart: 30-Day Sales Trend & Volume -->
-        <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+        <!-- Sidebar Menu Items (Grouped Navigation) -->
+        <div class="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
+          
+          <!-- Group 1: Insights & Intelligence -->
+          <div>
+            <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              Insights & Telemetry
+            </div>
+            <nav class="space-y-1">
+              <button onclick="switchAdminTab('analytics')" id="nav-btn-analytics" class="nav-item active w-full text-left">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-cyan-400"></i>
+                <span>สถิติ & ภาพรวมธุรกิจ</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Group 2: Catalog & Key Inventory -->
+          <div>
+            <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              Catalog & Inventory
+            </div>
+            <nav class="space-y-1">
+              <button onclick="switchAdminTab('products')" id="nav-btn-products" class="nav-item w-full text-left">
+                <i data-lucide="boxes" class="w-4 h-4 text-indigo-400"></i>
+                <span>จัดการสินค้าหน้าเว็บ (CRUD)</span>
+              </button>
+              <button onclick="switchAdminTab('vault')" id="nav-btn-vault" class="nav-item w-full text-left">
+                <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
+                <span>คลังคีย์สินค้า (Key Vault)</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Group 3: Customer Management -->
+          <div>
+            <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              User Management
+            </div>
+            <nav class="space-y-1">
+              <button onclick="switchAdminTab('users')" id="nav-btn-users" class="nav-item w-full text-left">
+                <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+                <span>รายชื่อสมาชิก & วอลเล็ต</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Group 4: Sales & Transactions -->
+          <div>
+            <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              Sales & Support
+            </div>
+            <nav class="space-y-1">
+              <button onclick="switchAdminTab('orders')" id="nav-btn-orders" class="nav-item w-full text-left">
+                <i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i>
+                <span>รายการคำสั่งซื้อ (Orders)</span>
+              </button>
+              <button onclick="switchAdminTab('topups')" id="nav-btn-topups" class="nav-item w-full text-left">
+                <i data-lucide="receipt" class="w-4 h-4 text-emerald-400"></i>
+                <span>ประวัติเติมเงิน (Topups)</span>
+              </button>
+              <button onclick="switchAdminTab('claims')" id="nav-btn-claims" class="nav-item w-full text-left justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-lucide="shield-question" class="w-4 h-4 text-red-400"></i>
+                  <span>เคลมประกันสินค้า</span>
+                </div>
+                <span id="badge-pending-claims" class="hidden px-2 py-0.5 text-[9px] rounded-full bg-red-500 text-black font-extrabold">0</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Group 5: Settings & Webhook -->
+          <div>
+            <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              Automation & Alerts
+            </div>
+            <nav class="space-y-1">
+              <button onclick="switchAdminTab('discord')" id="nav-btn-discord" class="nav-item w-full text-left">
+                <i data-lucide="bell-ring" class="w-4 h-4 text-purple-400"></i>
+                <span>Discord Webhook</span>
+              </button>
+            </nav>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Lower Sidebar Footer: Actions & Logout -->
+      <div class="p-4 border-t border-slate-800/80 bg-[#06080C]/80 space-y-2">
+        <a href="/" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
+          <i data-lucide="external-link" class="w-4 h-4 text-[var(--accent)]"></i>
+          <span>กลับสู่หน้าร้านค้าหลัก</span>
+        </a>
+        <button onclick="handleAdminLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-all cursor-pointer">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span>ออกจากระบบแอดมิน</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ==============================================================================
+         RIGHT MAIN CONTENT AREA (PADDED LEFT ON DESKTOP)
+         ============================================================================== -->
+    <div class="flex-1 flex flex-col lg:pl-72 min-w-0 min-h-screen bg-[#06080C]">
+
+      <!-- Top Sticky Command & Breadcrumb Bar -->
+      <header class="border-b border-slate-800/80 bg-[#0E131D]/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+          
+          <div class="flex items-center gap-3 min-w-0">
+            <!-- Mobile Sidebar Toggle -->
+            <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white cursor-pointer">
+              <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 hidden sm:inline">NYX9 Operations</span>
+                <span class="text-xs text-slate-600 hidden sm:inline">/</span>
+                <h1 id="page-current-title" class="text-sm sm:text-base font-heading font-extrabold text-white flex items-center gap-2 truncate">
+                  📊 สถิติ & ภาพรวมธุรกิจ (Analytics)
+                </h1>
+              </div>
+              <p id="page-current-desc" class="text-[11px] text-slate-400 truncate hidden sm:block">สรุปยอดขาย คำสั่งซื้อ สต็อก และความเคลื่อนไหว 24 ชม.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 shrink-0">
+            <!-- Live Status Pulse -->
+            <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>POSTGRES LIVE</span>
+            </span>
+
+            <!-- Refresh Button -->
+            <button onclick="loadDashboardData()" id="btn-refresh-dashboard" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer" title="รีเฟรชข้อมูลทั้งหมด">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Quick Add Shortcut -->
+            <button onclick="openProductModal('create')" class="btn-cyber-primary px-3.5 py-1.5 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all cursor-pointer">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span class="hidden sm:inline">+ เพิ่มสินค้า</span>
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- Main Workspace -->
+      <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 w-full space-y-6 flex-1">
+
+        <!-- 4-METRIC TELEMETRY GRID -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all group">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-semibold">ยอดขายคำสั่งซื้อรวม</span>
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="metric-revenue" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
+            <div class="text-[10px] text-slate-500 mt-1">จากคำสั่งซื้อที่จ่ายสำเร็จทั้งหมด</div>
+          </div>
+
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition-all group">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-semibold">ออเดอร์ที่จัดส่งแล้ว</span>
+              <div class="w-8 h-8 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="package-check" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="metric-orders" class="text-2xl font-heading font-extrabold text-white">0</div>
+            <div class="text-[10px] text-slate-500 mt-1">เบิกจ่ายคีย์สำเร็จ 100%</div>
+          </div>
+
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-amber-500/40 transition-all group">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-semibold">คีย์พร้อมขายในคลัง</span>
+              <div class="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="database" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="metric-stock" class="text-2xl font-heading font-extrabold text-white">0</div>
+            <div class="text-[10px] text-slate-500 mt-1">ยังไม่ถูกขาย (Unsold Vault)</div>
+          </div>
+
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 hover:border-purple-500/40 transition-all group">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-semibold">ยอดเติมเงินเข้ากระเป๋า</span>
+              <div class="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="wallet" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="metric-topups" class="text-2xl font-heading font-extrabold text-white">฿0.00</div>
+            <div class="text-[10px] text-slate-500 mt-1">PromptPay + TrueMoney</div>
+          </div>
+        </div>
+
+        <!-- ==============================================================================
+             PANE 1: ANALYTICS & INTERACTIVE CHARTS
+             ============================================================================== -->
+        <div id="tab-pane-analytics" class="space-y-6">
+          
+          <!-- Secondary Health Status Bar -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-400">สินค้าในระบบทั้งหมด</div>
+                <div id="analytics-total-prods" class="text-base font-heading font-bold text-white mt-0.5">0 รายการ</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/30">Total</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-400">สินค้าที่เปิดขายหน้าร้าน</div>
+                <div id="analytics-active-prods" class="text-base font-heading font-bold text-emerald-400 mt-0.5">0 รายการ</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Active</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-400">คีย์ที่ถูกขายแล้วสะสม</div>
+                <div id="analytics-sold-keys" class="text-base font-heading font-bold text-cyan-400 mt-0.5">0 ชิ้น</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">Sold</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-400">คีย์คงคลังพร้อมขาย</div>
+                <div id="analytics-unsold-keys" class="text-base font-heading font-bold text-amber-400 mt-0.5">0 ชิ้น</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">In-Stock</span>
+            </div>
+          </div>
+
+          <!-- Main Chart: 30-Day Sales Trend & Volume -->
+          <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-[var(--accent)]"></i>
+                  <span>แนวโน้มยอดขาย & ปริมาณคำสั่งซื้อ (Sales Trend & Order Volume)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">แสดงข้อมูลยอดขายรวม (บาท) และปริมาณออเดอร์ในแต่ละวัน</p>
+              </div>
+              <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                <button onclick="setChartTimespan(7)" id="btn-timespan-7" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition-all cursor-pointer">7 วัน</button>
+                <button onclick="setChartTimespan(14)" id="btn-timespan-14" class="px-3 py-1 rounded-lg bg-[var(--accent)]/15 text-[var(--accent)] font-bold border border-[var(--accent)]/30 transition-all cursor-pointer">14 วัน</button>
+                <button onclick="setChartTimespan(30)" id="btn-timespan-30" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition-all cursor-pointer">30 วัน</button>
+              </div>
+            </div>
+
+            <div class="w-full relative h-[280px]">
+              <canvas id="chart-sales-timeseries"></canvas>
+            </div>
+          </div>
+
+          <!-- Dual Chart Row: Top Selling Products & Payment Gateways -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Chart: Top Selling Products -->
+            <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+                  <span>สินค้าขายดีที่สุด (Top Selling Products)</span>
+                </h3>
+                <span class="text-[11px] text-slate-400">นับตามยอดจำหน่ายสะสม</span>
+              </div>
+              <div class="relative h-[220px] flex items-center justify-center">
+                <canvas id="chart-top-products"></canvas>
+              </div>
+              <div id="top-products-list" class="space-y-2 pt-2 border-t border-slate-800/80 text-xs">
+                <!-- Dynamically rendered rank rows -->
+              </div>
+            </div>
+
+            <!-- Chart: Payment Gateways Breakdown -->
+            <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+                  <span>สัดส่วนช่องทางชำระเงิน (Payment Methods)</span>
+                </h3>
+                <span class="text-[11px] text-slate-400">Wallet, PromptPay, TrueMoney</span>
+              </div>
+              <div class="relative h-[220px] flex items-center justify-center">
+                <canvas id="chart-payment-methods"></canvas>
+              </div>
+              <div id="payment-methods-list" class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/80 text-center">
+                <!-- Dynamically rendered payment summaries -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==============================================================================
+             PANE 2: PRODUCTS CRUD (CATALOG MANAGEMENT)
+             ============================================================================== -->
+        <div id="tab-pane-products" class="hidden space-y-6">
+
+          <!-- Controls Toolbar -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+              <div class="relative flex-1 min-w-[200px]">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="products-search-input" oninput="filterProductsTable()" placeholder="ค้นหาสินค้าด้วยชื่อ, รหัส หรือแท็ก..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+              </div>
+              <select id="products-category-filter" onchange="filterProductsTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
+                <option value="">ทุกหมวดหมู่</option>
+                <option value="cat-discord-nitro">Discord Nitro & บูสต์</option>
+                <option value="cat-discord-services">บริการดิสคอร์ด & ไอดี</option>
+                <option value="cat-gaming-apps">FiveM, Steam & เกมมิ่ง</option>
+                <option value="cat-uncategorized">ซอฟต์แวร์ & คีย์แท้</option>
+              </select>
+              <select id="products-status-filter" onchange="filterProductsTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
+                <option value="">ทุกสถานะ</option>
+                <option value="active">เปิดขายอยู่ (Active)</option>
+                <option value="inactive">ปิดการขาย (Inactive)</option>
+                <option value="out_of_stock">สต็อกหมด (Out)</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="openProductModal('create')" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>+ เพิ่มสินค้าใหม่</span>
+              </button>
+              <button onclick="openBulkRestockModal()" class="px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                <span>⚡ เติมสต็อกด่วน</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Products Table -->
+          <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>รายการสินค้าในระบบทั้งหมด (Product Catalog)</span>
+              </h3>
+              <span id="products-count-badge" class="text-xs text-slate-400 font-mono">0 รายการ</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400">
+                    <th class="py-2.5 px-3">สินค้า / รหัส (ID)</th>
+                    <th class="py-2.5 px-3">หมวดหมู่</th>
+                    <th class="py-2.5 px-3">ราคาขาย</th>
+                    <th class="py-2.5 px-3 text-center">คงเหลือ (Unsold)</th>
+                    <th class="py-2.5 px-3 text-center">ขายแล้ว (Sold)</th>
+                    <th class="py-2.5 px-3 text-center">เปิดขายหน้าเว็บ</th>
+                    <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="products-table-body" class="divide-y divide-slate-800/60">
+                  <tr>
+                    <td colspan="7" class="py-6 text-center text-slate-500">กำลังโหลดรายการสินค้า...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==============================================================================
+             PANE 3: DEDICATED INVENTORY KEY VAULT VIEW
+             ============================================================================== -->
+        <div id="tab-pane-vault" class="hidden space-y-6">
+          <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+              <div>
+                <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
+                  <span>คลังคีย์สินค้าแบบละเอียด (Inventory Key Vault)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">ตรวจสอบ ลบคีย์หมดอายุ หรือเติมสต็อกเพิ่มแยกตามรายสินค้าได้ทันที</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="vault-view-product-select" onchange="onVaultProductSelectChange()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Quick Add Area -->
+            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>เติมคีย์ด่วนเข้าสินค้านี้:</span>
+                </span>
+                <span class="text-[10px] text-slate-500 font-mono">(1 บรรทัด = 1 คีย์)</span>
+              </div>
+              <div class="flex gap-2">
+                <textarea id="vault-view-quick-input" rows="2" placeholder="mailpass_example_1:pass123&#10;mailpass_example_2:pass456..." class="flex-1 px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-emerald-300 focus:outline-none focus:border-[var(--accent)]"></textarea>
+                <button onclick="handleVaultViewQuickAdd()" id="btn-vault-view-quick-add" class="btn-cyber-primary px-5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                  <span>เติมคีย์</span>
+                </button>
+              </div>
+              <div id="vault-view-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+            </div>
+
+            <!-- Vault Subtabs -->
+            <div class="flex border-b border-slate-800 space-x-2">
+              <button onclick="switchVaultViewSubtab('unsold')" id="btn-vault-view-tab-unsold" class="px-4 py-2 text-xs font-bold font-heading border-b-2 border-emerald-400 text-emerald-400 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
+                <span>คีย์พร้อมขาย (<span id="vault-view-unsold-count">0</span>)</span>
+              </button>
+              <button onclick="switchVaultViewSubtab('sold')" id="btn-vault-view-tab-sold" class="px-4 py-2 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                <span>คีย์ที่ขายแล้ว (<span id="vault-view-sold-count">0</span>)</span>
+              </button>
+            </div>
+
+            <!-- Unsold List -->
+            <div id="vault-view-pane-unsold" class="space-y-2">
+              <div id="vault-view-unsold-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                <div class="text-center py-8 text-slate-500 text-xs">เลือกสินค้าเพื่อดูคีย์ในคลัง</div>
+              </div>
+            </div>
+
+            <!-- Sold List -->
+            <div id="vault-view-pane-sold" class="hidden space-y-2">
+              <div id="vault-view-sold-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                <div class="text-center py-8 text-slate-500 text-xs">เลือกสินค้าเพื่อดูประวัติคีย์ที่ขายแล้ว</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================================
+             PANE 4: USER MANAGEMENT & WALLET CONTROL
+             ============================================================================== -->
+        <div id="tab-pane-users" class="hidden space-y-6">
+
+          <!-- User Controls Toolbar -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+              <div class="relative flex-1 min-w-[220px]">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="users-search-input" oninput="filterUsersTable()" placeholder="ค้นหาด้วย Username, Discord ID หรือ User UUID..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+              </div>
+              <select id="users-role-filter" onchange="filterUsersTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
+                <option value="">ทุกบทบาท (Roles)</option>
+                <option value="admin">แอดมิน (Admin)</option>
+                <option value="customer">ลูกค้าทั่วไป (Customer)</option>
+              </select>
+              <select id="users-status-filter" onchange="filterUsersTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
+                <option value="">สถานะทั้งหมด</option>
+                <option value="active">ปกติ (Active)</option>
+                <option value="blacklisted">ติดแบล็กลิสต์ (Blacklisted)</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-right">
+                <div class="text-[10px] text-slate-400">ยอดเงินในกระเป๋ารวมทุกยูสเซอร์</div>
+                <div id="users-total-balance-liability" class="text-xs font-mono font-bold text-emerald-400">฿0.00</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Users Table -->
+          <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>รายชื่อสมาชิกที่ลงทะเบียน (User Profiles Directory)</span>
+              </h3>
+              <span id="users-count-badge" class="text-xs text-slate-400 font-mono">0 สมาชิก</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400">
+                    <th class="py-2.5 px-3">สมาชิก (User)</th>
+                    <th class="py-2.5 px-3">Discord Snowflake ID</th>
+                    <th class="py-2.5 px-3 text-center">บทบาท</th>
+                    <th class="py-2.5 px-3 font-mono">ยอดเงินคงเหลือ</th>
+                    <th class="py-2.5 px-3">ประวัติซื้อ (Orders / ยอดรวม)</th>
+                    <th class="py-2.5 px-3 text-center">สถานะความปลอดภัย</th>
+                    <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body" class="divide-y divide-slate-800/60">
+                  <tr>
+                    <td colspan="7" class="py-6 text-center text-slate-500">กำลังโหลดรายชื่อสมาชิก...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==============================================================================
+             PANE 5: ORDERS EXPLORER
+             ============================================================================== -->
+        <div id="tab-pane-orders" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-                <i data-lucide="trending-up" class="w-4 h-4 text-[var(--accent)]"></i>
-                <span>แนวโน้มยอดขาย & ปริมาณคำสั่งซื้อ (Sales Trend & Order Volume)</span>
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>ประวัติคำสั่งซื้อล่าสุด (Orders Explorer)</span>
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">แสดงข้อมูลยอดขายรวม (บาท) และปริมาณออเดอร์ในแต่ละวัน</p>
+              <p class="text-xs text-slate-400 mt-0.5">ตรวจสอบสถานะการชำระเงินและประวัติการส่งมอบสินค้า</p>
             </div>
-            <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-              <button onclick="setChartTimespan(7)" id="btn-timespan-7" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition-all cursor-pointer">7 วัน</button>
-              <button onclick="setChartTimespan(14)" id="btn-timespan-14" class="px-3 py-1 rounded-lg bg-[var(--accent)]/15 text-[var(--accent)] font-bold border border-[var(--accent)]/30 transition-all cursor-pointer">14 วัน</button>
-              <button onclick="setChartTimespan(30)" id="btn-timespan-30" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition-all cursor-pointer">30 วัน</button>
+            <div class="flex items-center gap-3">
+              <button onclick="exportOrdersToCSV()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>📥 ดาวน์โหลดรายงานยอดขาย (.CSV)</span>
+              </button>
             </div>
           </div>
 
-          <div class="w-full relative h-[280px]">
-            <canvas id="chart-sales-timeseries"></canvas>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-2.5 px-3">Order ID</th>
+                  <th class="py-2.5 px-3">ผู้สั่งซื้อ</th>
+                  <th class="py-2.5 px-3">ยอดเงินสุทธิ</th>
+                  <th class="py-2.5 px-3">ช่องทาง</th>
+                  <th class="py-2.5 px-3">วันที่ / เวลา</th>
+                  <th class="py-2.5 px-3 text-right">สถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-body" class="divide-y divide-slate-800/60">
+                <tr>
+                  <td colspan="6" class="py-6 text-center text-slate-500">กำลังโหลดรายการออเดอร์...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Dual Chart Row: Top Selling Products & Payment Gateways -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Chart: Top Selling Products -->
-          <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-                <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
-                <span>สินค้าขายดีที่สุด (Top Selling Products)</span>
-              </h3>
-              <span class="text-[11px] text-slate-400">นับตามยอดจำหน่ายสะสม</span>
-            </div>
-            <div class="relative h-[220px] flex items-center justify-center">
-              <canvas id="chart-top-products"></canvas>
-            </div>
-            <div id="top-products-list" class="space-y-2 pt-2 border-t border-slate-800/80 text-xs">
-              <!-- Dynamically rendered rank rows -->
-            </div>
-          </div>
-
-          <!-- Chart: Payment Gateways Breakdown -->
-          <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-            <div class="flex items-center justify-between">
+        <!-- ==============================================================================
+             PANE 6: TOPUPS EXPLORER
+             ============================================================================== -->
+        <div id="tab-pane-topups" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
               <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
                 <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
-                <span>สัดส่วนช่องทางชำระเงิน (Payment Methods)</span>
+                <span>ประวัติการทำรายการเติมเงิน (Top-Up Logs)</span>
               </h3>
-              <span class="text-[11px] text-slate-400">Wallet, PromptPay, TrueMoney</span>
+              <p class="text-xs text-slate-400 mt-0.5">บันทึกป้องกันสลิปซ้ำ & ซองอั่งเปา (Anti-Double-Spend Protection)</p>
             </div>
-            <div class="relative h-[220px] flex items-center justify-center">
-              <canvas id="chart-payment-methods"></canvas>
-            </div>
-            <div id="payment-methods-list" class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/80 text-center">
-              <!-- Dynamically rendered payment summaries -->
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- ==============================================================================
-           TAB 2: PRODUCTS CRUD & INVENTORY KEY VAULT
-           ============================================================================== -->
-      <div id="tab-pane-products" class="hidden space-y-6">
-
-        <!-- Controls Toolbar -->
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-            <div class="relative flex-1 min-w-[200px]">
-              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-              <input type="text" id="products-search-input" oninput="filterProductsTable()" placeholder="ค้นหาสินค้าด้วยชื่อ, รหัส หรือแท็ก..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
-            </div>
-            <select id="products-category-filter" onchange="filterProductsTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
-              <option value="">ทุกหมวดหมู่</option>
-              <option value="cat-discord-nitro">Discord Nitro & บูสต์</option>
-              <option value="cat-discord-services">บริการดิสคอร์ด & ไอดี</option>
-              <option value="cat-gaming-apps">FiveM, Steam & เกมมิ่ง</option>
-              <option value="cat-uncategorized">ซอฟต์แวร์ & คีย์แท้</option>
-            </select>
-            <select id="products-status-filter" onchange="filterProductsTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
-              <option value="">ทุกสถานะ</option>
-              <option value="active">เปิดขายอยู่ (Active)</option>
-              <option value="inactive">ปิดการขาย (Inactive)</option>
-              <option value="out_of_stock">สต็อกหมด (Out)</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button onclick="openProductModal('create')" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all cursor-pointer">
-              <i data-lucide="plus" class="w-4 h-4"></i>
-              <span>+ เพิ่มสินค้าใหม่</span>
-            </button>
-            <button onclick="openBulkRestockModal()" class="px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
-              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-              <span>⚡ เติมสต็อกด่วน</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Products Table -->
-        <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="layers" class="w-4 h-4 text-[var(--accent)]"></i>
-              <span>รายการสินค้าในระบบทั้งหมด (Product Catalog)</span>
-            </h3>
-            <span id="products-count-badge" class="text-xs text-slate-400 font-mono">0 รายการ</span>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead>
                 <tr class="border-b border-slate-800 text-slate-400">
-                  <th class="py-2.5 px-3">สินค้า / รหัส (ID)</th>
-                  <th class="py-2.5 px-3">หมวดหมู่</th>
-                  <th class="py-2.5 px-3">ราคาขาย</th>
-                  <th class="py-2.5 px-3 text-center">คงเหลือ (Unsold)</th>
-                  <th class="py-2.5 px-3 text-center">ขายแล้ว (Sold)</th>
-                  <th class="py-2.5 px-3 text-center">เปิดขายหน้าเว็บ</th>
-                  <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  <th class="py-2.5 px-3">ช่องทาง (Gateway)</th>
+                  <th class="py-2.5 px-3">ยอดเติม (บาท)</th>
+                  <th class="py-2.5 px-3">รหัสอ้างอิง (TransRef)</th>
+                  <th class="py-2.5 px-3">วันที่ / เวลา</th>
+                  <th class="py-2.5 px-3 text-right">สถานะ</th>
                 </tr>
               </thead>
-              <tbody id="products-table-body" class="divide-y divide-slate-800/60">
+              <tbody id="topups-table-body" class="divide-y divide-slate-800/60">
                 <tr>
-                  <td colspan="7" class="py-6 text-center text-slate-500">กำลังโหลดรายการสินค้า...</td>
+                  <td colspan="5" class="py-6 text-center text-slate-500">กำลังโหลดรายการเติมเงิน...</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-      </div>
-
-      <!-- ==============================================================================
-           TAB 3: USER MANAGEMENT & WALLET CONTROL
-           ============================================================================== -->
-      <div id="tab-pane-users" class="hidden space-y-6">
-
-        <!-- User Controls Toolbar -->
-        <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-            <div class="relative flex-1 min-w-[220px]">
-              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-              <input type="text" id="users-search-input" oninput="filterUsersTable()" placeholder="ค้นหาด้วย Username, Discord ID หรือ User UUID..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
-            </div>
-            <select id="users-role-filter" onchange="filterUsersTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
-              <option value="">ทุกบทบาท (Roles)</option>
-              <option value="admin">แอดมิน (Admin)</option>
-              <option value="customer">ลูกค้าทั่วไป (Customer)</option>
-            </select>
-            <select id="users-status-filter" onchange="filterUsersTable()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-[var(--accent)]">
-              <option value="">สถานะทั้งหมด</option>
-              <option value="active">ปกติ (Active)</option>
-              <option value="blacklisted">ติดแบล็กลิสต์ (Blacklisted)</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="text-right">
-              <div class="text-[10px] text-slate-400">ยอดเงินในกระเป๋ารวมทุกยูสเซอร์</div>
-              <div id="users-total-balance-liability" class="text-xs font-mono font-bold text-emerald-400">฿0.00</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Users Table -->
-        <div class="glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
+        <!-- ==============================================================================
+             PANE 7: WARRANTY CLAIMS
+             ============================================================================== -->
+        <div id="tab-pane-claims" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="users" class="w-4 h-4 text-[var(--accent)]"></i>
-              <span>รายชื่อสมาชิกที่ลงทะเบียน (User Profiles Directory)</span>
-            </h3>
-            <span id="users-count-badge" class="text-xs text-slate-400 font-mono">0 สมาชิก</span>
+            <div>
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-red-400"></i>
+                <span>คำร้องเคลมประกันสินค้า (Warranty Tickets)</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">ศูนย์ดูแลลูกค้าหลังการขาย ตรวจสอบและอนุมัติชดเชย 24 ชั่วโมง</p>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead>
                 <tr class="border-b border-slate-800 text-slate-400">
-                  <th class="py-2.5 px-3">สมาชิก (User)</th>
-                  <th class="py-2.5 px-3">Discord Snowflake ID</th>
-                  <th class="py-2.5 px-3 text-center">บทบาท</th>
-                  <th class="py-2.5 px-3 font-mono">ยอดเงินคงเหลือ</th>
-                  <th class="py-2.5 px-3">ประวัติซื้อ (Orders / ยอดรวม)</th>
-                  <th class="py-2.5 px-3 text-center">สถานะความปลอดภัย</th>
-                  <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  <th class="py-2.5 px-3">รหัสออเดอร์</th>
+                  <th class="py-2.5 px-3">เหตุผล / ปัญหาที่แจ้ง</th>
+                  <th class="py-2.5 px-3">วันที่ยื่นเรื่อง</th>
+                  <th class="py-2.5 px-3 text-center">สถานะ</th>
+                  <th class="py-2.5 px-3 text-right">ดำเนินการ</th>
                 </tr>
               </thead>
-              <tbody id="users-table-body" class="divide-y divide-slate-800/60">
+              <tbody id="claims-table-body" class="divide-y divide-slate-800/60">
                 <tr>
-                  <td colspan="7" class="py-6 text-center text-slate-500">กำลังโหลดรายชื่อสมาชิก...</td>
+                  <td colspan="5" class="py-6 text-center text-slate-500">ไม่มีคำร้องเคลมที่รอดำเนินการ</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-      </div>
-
-      <!-- ==============================================================================
-           TAB 4: ORDERS EXPLORER
-           ============================================================================== -->
-      <div id="tab-pane-orders" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="shopping-bag" class="w-4 h-4 text-[var(--accent)]"></i>
-              <span>ประวัติคำสั่งซื้อล่าสุด (Orders Explorer)</span>
-            </h3>
-            <p class="text-xs text-slate-400 mt-0.5">ตรวจสอบสถานะการชำระเงินและประวัติการส่งมอบสินค้า</p>
+        <!-- ==============================================================================
+             PANE 8: DISCORD WEBHOOK & SYSTEM SETTINGS
+             ============================================================================== -->
+        <div id="tab-pane-discord" class="hidden glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="send" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>ตั้งค่าและทดสอบ Discord Webhook 24 ชม.</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">ระบบจะส่งข้อความแจ้งเตือนอัตโนมัติเข้าสู่ Channel Discord เมื่อมีออเดอร์หรือการเติมคีย์</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-400 border border-purple-500/30">Rich Embed</span>
           </div>
-          <div class="flex items-center gap-3">
-            <button onclick="exportOrdersToCSV()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
-              <i data-lucide="download" class="w-3.5 h-3.5"></i>
-              <span>📥 ดาวน์โหลดรายงานยอดขาย (.CSV)</span>
-            </button>
-          </div>
-        </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400">
-                <th class="py-2.5 px-3">Order ID</th>
-                <th class="py-2.5 px-3">ผู้สั่งซื้อ</th>
-                <th class="py-2.5 px-3">ยอดเงินสุทธิ</th>
-                <th class="py-2.5 px-3">ช่องทาง</th>
-                <th class="py-2.5 px-3">วันที่ / เวลา</th>
-                <th class="py-2.5 px-3 text-right">สถานะ</th>
-              </tr>
-            </thead>
-            <tbody id="orders-table-body" class="divide-y divide-slate-800/60">
-              <tr>
-                <td colspan="6" class="py-6 text-center text-slate-500">กำลังโหลดรายการออเดอร์...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <div class="space-y-4 max-w-2xl">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord Webhook URL:</label>
+              <input type="url" id="discord-webhook-input" placeholder="https://discord.com/api/webhooks/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+              <p class="text-[11px] text-slate-500 mt-1">สามารถสร้าง Webhook ได้ใน Discord: Edit Channel -> Integrations -> Webhooks</p>
+            </div>
 
-      <!-- ==============================================================================
-           TAB 5: TOPUPS EXPLORER
-           ============================================================================== -->
-      <div id="tab-pane-topups" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
-              <span>ประวัติการทำรายการเติมเงิน (Top-Up Logs)</span>
-            </h3>
-            <p class="text-xs text-slate-400 mt-0.5">บันทึกป้องกันสลิปซ้ำ & ซองอั่งเปา (Anti-Double-Spend Protection)</p>
+            <div class="flex gap-3">
+              <button onclick="saveDiscordWebhook()" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>บันทึก Webhook URL</span>
+              </button>
+              <button onclick="testDiscordWebhook()" id="btn-test-webhook" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white font-bold flex items-center gap-2 transition-all cursor-pointer">
+                <i data-lucide="bell" class="w-4 h-4 text-yellow-400"></i>
+                <span>ยิงทดสอบข้อความเข้า Discord ทันที</span>
+              </button>
+            </div>
+
+            <div id="discord-test-feedback" class="hidden text-xs p-3 rounded-xl"></div>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400">
-                <th class="py-2.5 px-3">ช่องทาง (Gateway)</th>
-                <th class="py-2.5 px-3">ยอดเติม (บาท)</th>
-                <th class="py-2.5 px-3">รหัสอ้างอิง (TransRef)</th>
-                <th class="py-2.5 px-3">วันที่ / เวลา</th>
-                <th class="py-2.5 px-3 text-right">สถานะ</th>
-              </tr>
-            </thead>
-            <tbody id="topups-table-body" class="divide-y divide-slate-800/60">
-              <tr>
-                <td colspan="5" class="py-6 text-center text-slate-500">กำลังโหลดรายการเติมเงิน...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </main>
+    </div>
 
-      <!-- ==============================================================================
-           TAB 6: WARRANTY CLAIMS
-           ============================================================================== -->
-      <div id="tab-pane-claims" class="hidden glass-panel p-5 rounded-3xl border border-slate-800 space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-4 h-4 text-red-400"></i>
-              <span>คำร้องเคลมประกันสินค้า (Warranty Tickets)</span>
-            </h3>
-            <p class="text-xs text-slate-400 mt-0.5">ศูนย์ดูแลลูกค้าหลังการขาย ตรวจสอบและอนุมัติชดเชย 24 ชั่วโมง</p>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400">
-                <th class="py-2.5 px-3">รหัสออเดอร์</th>
-                <th class="py-2.5 px-3">เหตุผล / ปัญหาที่แจ้ง</th>
-                <th class="py-2.5 px-3">วันที่ยื่นเรื่อง</th>
-                <th class="py-2.5 px-3 text-center">สถานะ</th>
-                <th class="py-2.5 px-3 text-right">ดำเนินการ</th>
-              </tr>
-            </thead>
-            <tbody id="claims-table-body" class="divide-y divide-slate-800/60">
-              <tr>
-                <td colspan="5" class="py-6 text-center text-slate-500">ไม่มีคำร้องเคลมที่รอดำเนินการ</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ==============================================================================
-           TAB 7: DISCORD WEBHOOK & SYSTEM SETTINGS
-           ============================================================================== -->
-      <div id="tab-pane-discord" class="hidden glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-          <div>
-            <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="send" class="w-4 h-4 text-[var(--accent)]"></i>
-              <span>ตั้งค่าและทดสอบ Discord Webhook 24 ชม.</span>
-            </h3>
-            <p class="text-xs text-slate-400 mt-0.5">ระบบจะส่งข้อความแจ้งเตือนอัตโนมัติเข้าสู่ Channel Discord เมื่อมีออเดอร์หรือการเติมคีย์</p>
-          </div>
-          <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-400 border border-purple-500/30">Rich Embed</span>
-        </div>
-
-        <div class="space-y-4 max-w-2xl">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord Webhook URL:</label>
-            <input type="url" id="discord-webhook-input" placeholder="https://discord.com/api/webhooks/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
-            <p class="text-[11px] text-slate-500 mt-1">สามารถสร้าง Webhook ได้ใน Discord: Edit Channel -> Integrations -> Webhooks</p>
-          </div>
-
-          <div class="flex gap-3">
-            <button onclick="saveDiscordWebhook()" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>บันทึก Webhook URL</span>
-            </button>
-            <button onclick="testDiscordWebhook()" id="btn-test-webhook" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white font-bold flex items-center gap-2 transition-all cursor-pointer">
-              <i data-lucide="bell" class="w-4 h-4 text-yellow-400"></i>
-              <span>ยิงทดสอบข้อความเข้า Discord ทันที</span>
-            </button>
-          </div>
-
-          <div id="discord-test-feedback" class="hidden text-xs p-3 rounded-xl"></div>
-        </div>
-      </div>
-
-    </main>
   </div>
 
   <!-- ==============================================================================
-       MODAL 1: PRODUCT CREATE / EDIT MODAL
+       MODALS: PRODUCT FORM, KEY VAULT, BULK RESTOCK, WALLET ADJUSTER
        ============================================================================== -->
+
+  <!-- MODAL 1: PRODUCT CREATE / EDIT -->
   <div id="modal-product" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-panel max-w-2xl w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -815,81 +1053,7 @@
     </div>
   </div>
 
-  <!-- ==============================================================================
-       MODAL 2: KEY VAULT INSPECTOR & MANAGER
-       ============================================================================== -->
-  <div id="modal-key-vault" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="glass-panel max-w-3xl w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div>
-          <h3 class="text-base font-heading font-extrabold text-white flex items-center gap-2">
-            <i data-lucide="key" class="w-5 h-5 text-amber-400"></i>
-            <span>คลังคีย์สินค้า (Inventory Key Vault)</span>
-          </h3>
-          <p id="vault-product-subtitle" class="text-xs text-cyan-400 font-mono mt-0.5">สินค้า: Loading...</p>
-        </div>
-        <button onclick="closeKeyVaultModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Quick Add Inside Vault -->
-      <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>เติมคีย์ด่วนเข้าสินค้านี้:</span>
-          </span>
-          <span class="text-[10px] text-slate-500 font-mono">(1 บรรทัด = 1 คีย์)</span>
-        </div>
-        <div class="flex gap-2">
-          <textarea id="vault-quick-keys-input" rows="2" placeholder="mailpass_key_1&#10;mailpass_key_2..." class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-emerald-300 focus:outline-none focus:border-[var(--accent)]"></textarea>
-          <button onclick="handleQuickAddKeys()" id="btn-vault-quick-add" class="btn-cyber-primary px-4 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer">
-            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-            <span>เติมคีย์</span>
-          </button>
-        </div>
-        <div id="vault-quick-feedback" class="hidden text-[11px] p-2 rounded-lg"></div>
-      </div>
-
-      <!-- Vault Tabs (Unsold vs Sold) -->
-      <div class="flex border-b border-slate-800 space-x-2">
-        <button onclick="switchVaultSubtab('unsold')" id="btn-vault-tab-unsold" class="px-4 py-2 text-xs font-bold font-heading border-b-2 border-emerald-400 text-emerald-400 flex items-center gap-2 cursor-pointer">
-          <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
-          <span>คีย์พร้อมขาย (<span id="vault-unsold-count">0</span>)</span>
-        </button>
-        <button onclick="switchVaultSubtab('sold')" id="btn-vault-tab-sold" class="px-4 py-2 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer">
-          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-          <span>คีย์ที่ขายแล้ว (<span id="vault-sold-count">0</span>)</span>
-        </button>
-      </div>
-
-      <!-- Subpane Unsold Keys -->
-      <div id="vault-pane-unsold" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[160px]">
-        <div id="vault-unsold-list" class="space-y-1.5">
-          <!-- Dynamically populated keys -->
-          <div class="text-center py-6 text-slate-500 text-xs">กำลังโหลดคีย์...</div>
-        </div>
-      </div>
-
-      <!-- Subpane Sold Keys -->
-      <div id="vault-pane-sold" class="hidden flex-1 overflow-y-auto space-y-2 pr-1 min-h-[160px]">
-        <div id="vault-sold-list" class="space-y-1.5">
-          <!-- Dynamically populated keys -->
-          <div class="text-center py-6 text-slate-500 text-xs">กำลังโหลดคีย์ที่ขายแล้ว...</div>
-        </div>
-      </div>
-
-      <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-500">
-        <span>🔒 คีย์ทั้งหมดถูกจัดเก็บด้วยระดับความปลอดภัยสูงสุด</span>
-        <button onclick="closeKeyVaultModal()" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium cursor-pointer">ปิดหน้าต่าง</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==============================================================================
-       MODAL 3: BULK RESTOCK MODAL
-       ============================================================================== -->
+  <!-- MODAL 2: BULK RESTOCK -->
   <div id="modal-bulk-restock" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-panel max-w-lg w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -931,9 +1095,7 @@
     </div>
   </div>
 
-  <!-- ==============================================================================
-       MODAL 4: ADJUST USER WALLET MODAL
-       ============================================================================== -->
+  <!-- MODAL 3: ADJUST USER WALLET -->
   <div id="modal-adjust-wallet" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-panel max-w-md w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -995,7 +1157,7 @@
             <span>หมายเหตุ / เหตุผลการปรับยอด:</span>
             <span class="text-red-400">*</span>
           </label>
-          <input type="text" id="adjust-reason-input" placeholder="e.g. ชดเชยกรณีเคลมสินค้า #1234, เติมตามสลิป" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          <input type="text" id="adjust-reason-input" placeholder="e.g. ชดเชยกรณีเคลมสินค้า #1234, เติมตามสลิป" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
         </div>
 
         <div id="adjust-wallet-feedback" class="hidden text-xs p-3 rounded-xl"></div>
@@ -1021,7 +1183,6 @@
     let currentProductsList = [];
     let currentUsersList = [];
     let currentAnalyticsData = null;
-    let currentVaultProductId = null;
     let activeTimespanDays = 14;
 
     // Chart.js Instances
@@ -1105,6 +1266,19 @@
 
       await checkAdminSession();
     });
+
+    // Mobile Sidebar Drawer Toggle
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById("admin-sidebar");
+      const backdrop = document.getElementById("mobile-sidebar-backdrop");
+      if (sidebar.classList.contains("-translate-x-full")) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
 
     // 2. Discord Admin 1-Click OAuth
     async function loginWithDiscordAdmin() {
@@ -1191,7 +1365,7 @@
       }
     }
 
-    // 4. Check Session & Verify Whitelist (4-Tier Resilient Session Discovery)
+    // 4. Check Session & Verify Whitelist
     async function checkAdminSession() {
       initSupabase();
       if (!supabaseClient) return;
@@ -1259,15 +1433,12 @@
     }
 
     function setAdminBadge(username, avatarUrl, discordId) {
-      const badge = document.getElementById("admin-profile-pill");
       const name = document.getElementById("admin-profile-name");
       const avatar = document.getElementById("admin-profile-avatar");
-      if (badge) {
-        badge.classList.remove("hidden");
-        badge.classList.add("flex");
-      }
+      const idEl = document.getElementById("admin-profile-id");
       if (name) name.textContent = username;
       if (avatar && avatarUrl) avatar.src = avatarUrl;
+      if (idEl) idEl.textContent = discordId || "Verified Admin";
     }
 
     function showAuthError(msg) {
@@ -1369,14 +1540,18 @@
     }
 
     // ==============================================================================
-    // 5. MASTER DATA LOADER & DASHBOARD SYNCHRONIZER
+    // 5. MASTER DATA LOADER
     // ==============================================================================
     async function loadDashboardData() {
       if (!currentAdminSecret) return;
       initSupabase();
 
+      const refreshBtn = document.getElementById("btn-refresh-dashboard");
+      if (refreshBtn) {
+        refreshBtn.classList.add("animate-spin");
+      }
+
       try {
-        // Parallel fetch for optimal latency
         const [metricsRes, analyticsRes, usersRes, productsRes] = await Promise.all([
           supabaseClient.rpc("admin_get_metrics", { p_admin_secret: currentAdminSecret }),
           supabaseClient.rpc("admin_get_analytics", { p_admin_secret: currentAdminSecret }),
@@ -1401,6 +1576,7 @@
           currentProductsList = productsRes.data;
           renderProductsTable();
           populateRestockSelect();
+          populateVaultViewSelect();
         }
 
         if (usersRes.data && usersRes.data.success) {
@@ -1408,7 +1584,6 @@
           renderUsersTable();
         }
 
-        // Webhook URL load
         const savedWebhook = localStorage.getItem("nyx9_discord_webhook");
         if (savedWebhook) {
           document.getElementById("discord-webhook-input").value = savedWebhook;
@@ -1417,6 +1592,9 @@
       } catch (err) {
         console.error("[LOAD DASHBOARD ERROR]", err);
       } finally {
+        if (refreshBtn) {
+          setTimeout(() => refreshBtn.classList.remove("animate-spin"), 400);
+        }
         lucide.createIcons();
       }
     }
@@ -1430,7 +1608,7 @@
     }
 
     // ==============================================================================
-    // 6. ANALYTICS & INTERACTIVE CHART.JS CONTROLLERS
+    // 6. ANALYTICS & INTERACTIVE CHARTS
     // ==============================================================================
     function setChartTimespan(days) {
       activeTimespanDays = days;
@@ -1470,7 +1648,6 @@
         chartSalesInstance.destroy();
       }
 
-      // Generate continuous dates for the timeline
       const timeline = [];
       const today = new Date();
       for (let i = days - 1; i >= 0; i--) {
@@ -1481,7 +1658,6 @@
         timeline.push({ iso, label, revenue: 0, count: 0 });
       }
 
-      // Map raw data onto continuous timeline
       const dataMap = {};
       (rawTimeseries || []).forEach(row => {
         if (row.order_date) {
@@ -1503,7 +1679,6 @@
       const revenueData = timeline.map(t => t.revenue);
       const countData = timeline.map(t => t.count);
 
-      // Create glowing gradient
       const canvasCtx = ctx.getContext("2d");
       const gradient = canvasCtx.createLinearGradient(0, 0, 0, 260);
       gradient.addColorStop(0, "rgba(25, 186, 255, 0.4)");
@@ -1549,16 +1724,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          interaction: {
-            mode: "index",
-            intersect: false
-          },
+          interaction: { mode: "index", intersect: false },
           plugins: {
             legend: {
-              labels: {
-                color: "#94A3B8",
-                font: { family: "Prompt", size: 11 }
-              }
+              labels: { color: "#94A3B8", font: { family: "Prompt", size: 11 } }
             },
             tooltip: {
               backgroundColor: "rgba(14, 19, 29, 0.95)",
@@ -1666,7 +1835,6 @@
         }
       });
 
-      // Render rank list
       topProducts.slice(0, 4).forEach((prod, i) => {
         const row = document.createElement("div");
         row.className = "flex items-center justify-between p-2 rounded-xl bg-slate-900/40 border border-slate-800/60";
@@ -1740,7 +1908,6 @@
         }
       });
 
-      // Render 3 stat cards
       const allMethods = [
         { key: "wallet", name: "👛 วอลเล็ต", color: "purple" },
         { key: "promptpay", name: "💸 พร้อมเพย์", color: "emerald" },
@@ -1863,7 +2030,7 @@
           </td>
           <td class="py-3 px-3 text-right">
             <div class="flex items-center justify-end gap-1.5">
-              <button onclick="openKeyVaultModal('${p.id}', '${escapeHtml(p.title)}')" class="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 cursor-pointer" title="จัดการคลังคีย์ (Key Vault)">
+              <button onclick="navigateToProductVault('${p.id}')" class="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 cursor-pointer" title="เปิดคลังคีย์สินค้า (Vault)">
                 <i data-lucide="key" class="w-3.5 h-3.5"></i>
               </button>
               <button onclick="openProductModal('edit', '${p.id}')" class="p-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 cursor-pointer" title="แก้ไขข้อมูลสินค้า">
@@ -2037,32 +2204,47 @@
     }
 
     // ==============================================================================
-    // 8. KEY VAULT INSPECTOR CONTROLLERS
+    // 8. DEDICATED KEY VAULT VIEW CONTROLLER
     // ==============================================================================
-    async function openKeyVaultModal(productId, productTitle) {
-      currentVaultProductId = productId;
-      const modal = document.getElementById("modal-key-vault");
-      document.getElementById("vault-product-subtitle").textContent = `สินค้า: ${productTitle} (${productId})`;
-      document.getElementById("vault-quick-keys-input").value = "";
-      document.getElementById("vault-quick-feedback").classList.add("hidden");
-
-      switchVaultSubtab("unsold");
-      modal.classList.remove("hidden");
-      lucide.createIcons();
-
-      await loadVaultKeys(productId);
+    function populateVaultViewSelect() {
+      const select = document.getElementById("vault-view-product-select");
+      if (!select) return;
+      const currentVal = select.value;
+      select.innerHTML = "";
+      currentProductsList.forEach(p => {
+        const inStock = getProductStockCount(p.id);
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = `${p.title} (คลัง: ${inStock} ชิ้น)`;
+        select.appendChild(opt);
+      });
+      if (currentVal && currentProductsList.some(p => p.id === currentVal)) {
+        select.value = currentVal;
+      } else if (currentProductsList.length > 0) {
+        select.value = currentProductsList[0].id;
+      }
     }
 
-    function closeKeyVaultModal() {
-      document.getElementById("modal-key-vault").classList.add("hidden");
-      currentVaultProductId = null;
+    function navigateToProductVault(productId) {
+      switchAdminTab("vault");
+      const select = document.getElementById("vault-view-product-select");
+      if (select) {
+        select.value = productId;
+        onVaultProductSelectChange();
+      }
     }
 
-    function switchVaultSubtab(tab) {
-      const btnUnsold = document.getElementById("btn-vault-tab-unsold");
-      const btnSold = document.getElementById("btn-vault-tab-sold");
-      const paneUnsold = document.getElementById("vault-pane-unsold");
-      const paneSold = document.getElementById("vault-pane-sold");
+    async function onVaultProductSelectChange() {
+      const select = document.getElementById("vault-view-product-select");
+      if (!select || !select.value) return;
+      await loadVaultViewKeys(select.value);
+    }
+
+    function switchVaultViewSubtab(tab) {
+      const btnUnsold = document.getElementById("btn-vault-view-tab-unsold");
+      const btnSold = document.getElementById("btn-vault-view-tab-sold");
+      const paneUnsold = document.getElementById("vault-view-pane-unsold");
+      const paneSold = document.getElementById("vault-view-pane-sold");
 
       if (tab === "unsold") {
         btnUnsold.className = "px-4 py-2 text-xs font-bold font-heading border-b-2 border-emerald-400 text-emerald-400 flex items-center gap-2 cursor-pointer";
@@ -2078,14 +2260,14 @@
       lucide.createIcons();
     }
 
-    async function loadVaultKeys(productId) {
-      const unsoldList = document.getElementById("vault-unsold-list");
-      const soldList = document.getElementById("vault-sold-list");
-      const unsoldCount = document.getElementById("vault-unsold-count");
-      const soldCount = document.getElementById("vault-sold-count");
+    async function loadVaultViewKeys(productId) {
+      const unsoldList = document.getElementById("vault-view-unsold-list");
+      const soldList = document.getElementById("vault-view-sold-list");
+      const unsoldCount = document.getElementById("vault-view-unsold-count");
+      const soldCount = document.getElementById("vault-view-sold-count");
 
-      unsoldList.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">กำลังดึงรายการคีย์จากคลัง...</div>`;
-      soldList.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">กำลังดึงรายการคีย์ที่ขายแล้ว...</div>`;
+      unsoldList.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">กำลังดึงรายการคีย์จากคลัง...</div>`;
+      soldList.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">กำลังดึงรายการคีย์ที่ขายแล้ว...</div>`;
 
       try {
         const { data, error } = await supabaseClient.rpc("admin_get_inventory_keys", {
@@ -2104,24 +2286,24 @@
         unsoldCount.textContent = unsoldKeys.length;
         soldCount.textContent = soldKeys.length;
 
-        // Render Unsold Keys
+        // Render Unsold
         unsoldList.innerHTML = "";
         if (unsoldKeys.length === 0) {
           unsoldList.innerHTML = `<div class="text-center py-8 text-amber-400/80 text-xs">คลังสินค้านี้ยังไม่มีคีย์พร้อมขาย (กรุณาเติมคีย์ด้านบน)</div>`;
         } else {
           unsoldKeys.forEach((k, idx) => {
             const item = document.createElement("div");
-            item.className = "p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between gap-2 hover:border-slate-700 transition-colors";
+            item.className = "p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between gap-2 hover:border-slate-700 transition-colors";
             item.innerHTML = `
-              <div class="flex items-center gap-2 min-w-0 flex-1">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
                 <span class="text-slate-500 font-mono text-[10px] w-6 shrink-0">#${idx + 1}</span>
-                <span class="font-mono text-emerald-300 text-xs truncate select-all" id="key-val-${k.id}">${escapeHtml(k.key_data)}</span>
+                <span class="font-mono text-emerald-300 text-xs truncate select-all">${escapeHtml(k.key_data)}</span>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
                 <button onclick="copyToClipboard('${escapeJs(k.key_data)}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer" title="คัดลอกคีย์">
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                 </button>
-                <button onclick="handleDeleteKey('${k.id}')" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 cursor-pointer" title="ลบคีย์ที่หมดอายุ/ใช้งานไม่ได้ทิ้ง">
+                <button onclick="handleDeleteVaultKey('${k.id}', '${productId}')" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 cursor-pointer" title="ลบคีย์ที่หมดอายุทิ้ง">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
@@ -2130,16 +2312,16 @@
           });
         }
 
-        // Render Sold Keys
+        // Render Sold
         soldList.innerHTML = "";
         if (soldKeys.length === 0) {
           soldList.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">ยังไม่มีประวัติการขายคีย์สำหรับสินค้านี้</div>`;
         } else {
           soldKeys.forEach((k, idx) => {
             const item = document.createElement("div");
-            item.className = "p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/80 flex items-center justify-between gap-2";
+            item.className = "p-3 rounded-xl bg-slate-900/40 border border-slate-800/80 flex items-center justify-between gap-2";
             item.innerHTML = `
-              <div class="flex items-center gap-2 min-w-0 flex-1">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
                 <span class="text-slate-500 font-mono text-[10px] w-6 shrink-0">#${idx + 1}</span>
                 <div class="min-w-0">
                   <div class="font-mono text-slate-300 text-xs truncate select-all">${escapeHtml(k.key_data)}</div>
@@ -2164,7 +2346,7 @@
       }
     }
 
-    async function handleDeleteKey(keyId) {
+    async function handleDeleteVaultKey(keyId, productId) {
       if (!confirm("⚠️ ยืนยันการลบคีย์นี้ออกจากคลัง? (ไม่สามารถกู้คืนได้)")) return;
       try {
         const { data, error } = await supabaseClient.rpc("admin_delete_inventory_key", {
@@ -2172,7 +2354,7 @@
           p_key_id: keyId
         });
         if (data && data.success) {
-          await loadVaultKeys(currentVaultProductId);
+          await loadVaultViewKeys(productId);
           await loadDashboardData();
         } else {
           alert("ไม่สามารถลบคีย์ได้: " + (data?.message || error?.message));
@@ -2182,14 +2364,15 @@
       }
     }
 
-    async function handleQuickAddKeys() {
-      if (!currentVaultProductId) return;
-      const textarea = document.getElementById("vault-quick-keys-input");
-      const feedback = document.getElementById("vault-quick-feedback");
-      const btn = document.getElementById("btn-vault-quick-add");
+    async function handleVaultViewQuickAdd() {
+      const select = document.getElementById("vault-view-product-select");
+      const textarea = document.getElementById("vault-view-quick-input");
+      const feedback = document.getElementById("vault-view-feedback");
+      const btn = document.getElementById("btn-vault-view-quick-add");
 
+      const productId = select.value;
       const raw = textarea.value.trim();
-      if (!raw) return;
+      if (!raw || !productId) return;
 
       const keysArray = raw.split("\n").map(k => k.trim()).filter(k => k.length > 0);
       if (keysArray.length === 0) return;
@@ -2201,26 +2384,26 @@
       try {
         const { data, error } = await supabaseClient.rpc("admin_bulk_restock", {
           p_admin_secret: currentAdminSecret,
-          p_product_id: currentVaultProductId,
+          p_product_id: productId,
           p_keys: keysArray
         });
 
         if (error || !data || !data.success) {
-          feedback.className = "text-[11px] p-2 rounded-lg bg-red-950/70 border border-red-500/40 text-red-200";
+          feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
           feedback.textContent = data?.message || error?.message || "เติมคีย์ไม่สำเร็จ";
           feedback.classList.remove("hidden");
           return;
         }
 
-        feedback.className = "text-[11px] p-2 rounded-lg bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
+        feedback.className = "text-xs p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
         feedback.textContent = `✅ ${data.message}`;
         feedback.classList.remove("hidden");
         textarea.value = "";
 
-        await loadVaultKeys(currentVaultProductId);
+        await loadVaultViewKeys(productId);
         await loadDashboardData();
       } catch (err) {
-        feedback.className = "text-[11px] p-2 rounded-lg bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
         feedback.textContent = err.message;
         feedback.classList.remove("hidden");
       } finally {
@@ -2302,7 +2485,6 @@
         feedback.classList.remove("hidden");
         textarea.value = "";
 
-        // Reload data
         await loadDashboardData();
 
         setTimeout(() => {
@@ -2493,10 +2675,7 @@
           p_admin_secret: currentAdminSecret,
           p_action: "adjust_balance",
           p_user_id: userId,
-          p_data: {
-            amount: finalAmount,
-            reason: reason
-          }
+          p_data: { amount: finalAmount, reason: reason }
         });
 
         if (error || !data || !data.success) {
@@ -2690,21 +2869,74 @@
     }
 
     // ==============================================================================
-    // 12. TAB SWITCHING
+    // 12. SIDEBAR TAB SWITCHING CONTROLLER
     // ==============================================================================
+    const TAB_METADATA = {
+      analytics: {
+        title: "📊 สถิติ & ภาพรวมธุรกิจ (Analytics)",
+        desc: "สรุปยอดขาย คำสั่งซื้อ สต็อก และแนวโน้ม 24 ชม."
+      },
+      products: {
+        title: "📦 จัดการสินค้าหน้าเว็บ (Products Catalog CRUD)",
+        desc: "เพิ่ม แก้ไข ลบ และเปิด-ปิดวางจำหน่ายสินค้าบนสโตร์"
+      },
+      vault: {
+        title: "🔑 คลังคีย์สินค้า (Inventory Key Vault)",
+        desc: "ตรวจสอบคีย์คงเหลือ ลบคีย์เสีย และเติมคีย์เข้าคลังแยกรายสินค้า"
+      },
+      users: {
+        title: "👥 รายชื่อสมาชิก & วอลเล็ต (User Management)",
+        desc: "ตรวจสอบยอดเงินคงเหลือ ปรับยอดวอลเล็ต และจัดการสิทธิ์ผู้ใช้"
+      },
+      orders: {
+        title: "📑 รายการคำสั่งซื้อ (Orders Explorer)",
+        desc: "ประวัติคำสั่งซื้อทั้งหมด พร้อมส่งออกรายงานยอดขาย .CSV สำหรับ Excel"
+      },
+      topups: {
+        title: "💸 ประวัติการเติมเงิน (Top-Up Logs)",
+        desc: "บันทึกป้องกันสลิปซ้ำผ่านพร้อมเพย์และซองอั่งเปาทรูมันนี่"
+      },
+      claims: {
+        title: "🛡️ เคลมประกันสินค้า (Warranty Claims)",
+        desc: "ศูนย์ดูแลหลังการขาย ตรวจสอบและอนุมัติการเคลมประกัน"
+      },
+      discord: {
+        title: "⚙️ Discord Webhook & แจ้งเตือน 24 ชม.",
+        desc: "ตั้งค่าและยิงทดสอบ Rich Embed เข้า Channel Discord ของทีมงาน"
+      }
+    };
+
     function switchAdminTab(tabKey) {
-      const tabs = ["analytics", "products", "users", "orders", "topups", "claims", "discord"];
+      const tabs = ["analytics", "products", "vault", "users", "orders", "topups", "claims", "discord"];
       tabs.forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
+        const btn = document.getElementById(`nav-btn-${t}`);
         const pane = document.getElementById(`tab-pane-${t}`);
         if (t === tabKey) {
-          if (btn) btn.className = "px-4 py-2.5 text-xs font-bold font-heading border-b-2 border-[var(--accent)] text-[var(--accent)] flex items-center gap-2 whitespace-nowrap cursor-pointer";
+          if (btn) btn.classList.add("active");
           if (pane) pane.classList.remove("hidden");
         } else {
-          if (btn) btn.className = "px-4 py-2.5 text-xs font-semibold font-heading border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap cursor-pointer";
+          if (btn) btn.classList.remove("active");
           if (pane) pane.classList.add("hidden");
         }
       });
+
+      // Update Header Title & Description
+      const meta = TAB_METADATA[tabKey] || TAB_METADATA.analytics;
+      document.getElementById("page-current-title").textContent = meta.title;
+      document.getElementById("page-current-desc").textContent = meta.desc;
+
+      // Close mobile drawer if open
+      const sidebar = document.getElementById("admin-sidebar");
+      const backdrop = document.getElementById("mobile-sidebar-backdrop");
+      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains("-translate-x-full")) {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+
+      // If switching to vault tab, trigger initial load
+      if (tabKey === "vault") {
+        onVaultProductSelectChange();
+      }
 
       // Resize charts if switching to analytics
       if (tabKey === "analytics" && currentAnalyticsData) {
@@ -2810,7 +3042,6 @@
           return;
         }
 
-        // CSV Headers
         const headers = [
           'ลำดับ',
           'รหัสคำสั่งซื้อ (Order ID)',
@@ -2851,7 +3082,6 @@
           ].join(',');
         });
 
-        // Prepend UTF-8 BOM (\uFEFF) so Excel on Windows opens Thai characters correctly
         const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
