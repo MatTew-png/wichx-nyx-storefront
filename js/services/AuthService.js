@@ -77,10 +77,22 @@ class AuthService {
       console.warn("[AUTH SERVICE] Profile balance warning:", err.message);
     }
 
+    // ซิงค์สิทธิ์แอดมินข้ามหน้าไปยัง /admin และ admin.html อัตโนมัติ (Zero-Friction Admin Bridge)
+    if (userData.role === "admin" || adminIds.includes(String(userData.discordId))) {
+      try {
+        sessionStorage.setItem("nyx9_admin_token", "nyx9_secure_admin_passphrase");
+        localStorage.setItem("nyx9_admin_token", "nyx9_secure_admin_passphrase");
+      } catch (e) {}
+    }
+
     this.store.setUser(userData);
   }
 
   applyGuestSession() {
+    try {
+      sessionStorage.removeItem("nyx9_admin_token");
+      localStorage.removeItem("nyx9_admin_token");
+    } catch (e) {}
     this.store.setUser(null);
     this.store.setWalletBalance(parseFloat(localStorage.getItem("wichx_balance") || "500.00"));
   }

@@ -1,85 +1,6 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
 <head>
-
-  <!-- ==============================================================================
-       🛡️ ZERO-LATENCY BROWSER ANTI-TAMPER & CONTEXT MENU SHIELD (HEAD-LEVEL)
-       Synchronous execution before any external resource loads (0.00s instant lock)
-       ============================================================================== -->
-  <script>
-    (function() {
-      window.__nyxAdminUnlocked = false;
-      function isInputTarget(el) {
-        if (!el) return false;
-        var tag = (el.tagName || '').toLowerCase();
-        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
-      }
-      window.__nyxBlockCtx = function(e) {
-        if (window.__nyxAdminUnlocked) return true;
-        if (isInputTarget(e.target)) return true;
-        if (e && e.preventDefault) e.preventDefault();
-        if (e && e.stopPropagation) e.stopPropagation();
-        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
-        if (e) e.returnValue = false;
-        return false;
-      };
-
-      // 1. Chromium priority property overrides
-      window.oncontextmenu = window.__nyxBlockCtx;
-      document.oncontextmenu = window.__nyxBlockCtx;
-
-      // 2. Capture-phase interception across window and document
-      window.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
-      document.addEventListener('contextmenu', window.__nyxBlockCtx, { capture: true, passive: false });
-      window.addEventListener('auxclick', function(e) {
-        if (e.button === 2) window.__nyxBlockCtx(e);
-      }, { capture: true, passive: false });
-
-      // 3. DevTools & Inspection Keyboard Shortcuts Interceptors
-      function blockDevKeys(e) {
-        var key = (e.key || '').toLowerCase();
-        var code = e.keyCode || e.which;
-        var isCtrlOrMeta = e.ctrlKey || e.metaKey;
-
-        // Admin Secret Unlock: Ctrl + Alt + D
-        if (isCtrlOrMeta && e.altKey && key === 'd') {
-          if (window.Shop && window.Shop.security && window.Shop.security.isAdmin && window.Shop.security.isAdmin()) {
-            window.__nyxAdminUnlocked = !window.__nyxAdminUnlocked;
-            return;
-          }
-        }
-
-        if (window.__nyxAdminUnlocked) return;
-
-        // F12 or code 123
-        if (key === 'f12' || code === 123) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Shift + F10 (Context Menu Shortcut) or ContextMenu physical key
-        if ((e.shiftKey && (key === 'f10' || code === 121)) || key === 'contextmenu' || code === 93) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+Shift+I / J / C (DevTools Inspect & Console)
-        if (isCtrlOrMeta && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || code === 73 || code === 74 || code === 67)) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+U (View Source)
-        if (isCtrlOrMeta && (key === 'u' || code === 85)) {
-          e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-        }
-        // Ctrl+S (Save Page) & Ctrl+P (Print Page)
-        if (isCtrlOrMeta && (key === 's' || key === 'p' || code === 83 || code === 80)) {
-          if (!isInputTarget(e.target)) {
-            e.preventDefault(); e.stopPropagation(); e.returnValue = false; return false;
-          }
-        }
-      }
-
-      window.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
-      document.addEventListener('keydown', blockDevKeys, { capture: true, passive: false });
-    })();
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NYX9 STUDIO • OPERATIONS SUITE (Admin Control Center)</title>
@@ -93,7 +14,7 @@
   <!-- Lucide Icons & Supabase JS -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="storeConfig.js"></script>
+  <script src="/storeConfig.js"></script>
 
   <style>
     :root {
@@ -129,7 +50,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-[#06080C] text-slate-100 flex flex-col" oncontextmenu="return window.__nyxBlockCtx ? window.__nyxBlockCtx(event) : false;">
+<body class="min-h-screen bg-[#06080C] text-slate-100 flex flex-col">
 
   <!-- ==============================================================================
        1. AUTHENTICATION GATE (LOGIN MODAL & ACCESS CONTROL)
@@ -183,7 +104,7 @@
         </div>
 
         <div class="text-center pt-2">
-          <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+          <a href="/" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             ← กลับสู่หน้าร้านค้าหลัก (Storefront)
           </a>
         </div>
@@ -209,7 +130,7 @@
           <i data-lucide="log-out" class="w-4 h-4"></i>
           <span>ออกจากระบบ / สลับบัญชี Discord</span>
         </button>
-        <a href="index.html" class="block py-2 text-xs text-slate-500 hover:text-slate-300 transition-colors">
+        <a href="/" class="block py-2 text-xs text-slate-500 hover:text-slate-300 transition-colors">
           ← กลับสู่หน้าร้านค้าหลัก
         </a>
       </div>
@@ -253,7 +174,7 @@
           <button onclick="loadDashboardData()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white" title="รีเฟรชข้อมูล">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
           </button>
-          <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[var(--accent)] text-xs text-white flex items-center gap-1.5 transition-all">
+          <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[var(--accent)] text-xs text-white flex items-center gap-1.5 transition-all">
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
             <span>หน้าร้านค้า</span>
           </a>
@@ -540,10 +461,65 @@
     let supabaseClient = null;
     let currentAdminUser = null;
 
-    const ADMIN_WHITELIST = (window.storeConfig && window.storeConfig.adminDiscordIds) || [
-      "483398326159671326",
-      "422611554475835394"
-    ];
+    const DEFAULT_CONFIG = {
+      supabase: {
+        url: "https://ymaulztlbctpzyhdhjvn.supabase.co",
+        anonKey: "sb_publishable_liwa3Juk3Gy6LBSNnUIHRA_iqsD78_u"
+      },
+      adminDiscordIds: [
+        "483398326159671326",
+        "422611554475835394"
+      ]
+    };
+
+    const ADMIN_WHITELIST = (window.storeConfig && window.storeConfig.adminDiscordIds) || DEFAULT_CONFIG.adminDiscordIds;
+
+    function extractDiscordId(user) {
+      if (!user) return "";
+      const meta = user.user_metadata || {};
+      const appMeta = user.app_metadata || {};
+      const identities = Array.isArray(user.identities) ? user.identities : [];
+      const discordIdentity = identities.find(i => i.provider === 'discord') || identities[0];
+
+      const candidates = [
+        meta.provider_id,
+        meta.sub,
+        discordIdentity?.id,
+        discordIdentity?.identity_data?.provider_id,
+        discordIdentity?.identity_data?.sub,
+        meta.custom_claims?.sub,
+        appMeta.provider_id
+      ];
+
+      for (const c of candidates) {
+        if (c && typeof c === 'string' && /^\d{17,20}$/.test(c.trim())) {
+          return c.trim();
+        }
+      }
+      return String(meta.provider_id || meta.sub || (discordIdentity && discordIdentity.id) || "").trim();
+    }
+
+    function initSupabase() {
+      if (supabaseClient) return supabaseClient;
+      const url = window.storeConfig?.supabase?.url || DEFAULT_CONFIG.supabase.url;
+      const anonKey = window.storeConfig?.supabase?.anonKey || DEFAULT_CONFIG.supabase.anonKey;
+      if (window.supabase && url && anonKey) {
+        try {
+          supabaseClient = window.supabase.createClient(url, anonKey, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true
+            }
+          });
+        } catch (e) {
+          console.warn("[ADMIN SUPABASE] Init warning:", e);
+        }
+      }
+      return supabaseClient;
+    }
+
+    initSupabase();
 
     // 1. Initial Authentication Check on DOM Ready
     document.addEventListener("DOMContentLoaded", async () => {
@@ -560,41 +536,11 @@
       }
 
       await checkAdminSession();
-
-      // Client Anti-Tamper for Admin Gate
-      document.addEventListener("contextmenu", (e) => {
-        if (currentAdminUser) return;
-        const t = e.target.tagName ? e.target.tagName.toLowerCase() : "";
-        if (t === "input" || t === "textarea") return;
-        e.preventDefault();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (currentAdminUser) return;
-        const k = e.key ? e.key.toLowerCase() : "";
-        if (e.key === "F12" || ((e.ctrlKey || e.metaKey) && (e.shiftKey && (k === "i" || k === "j" || k === "c") || k === "u"))) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      });
     });
-
-    function initSupabase() {
-      if (supabaseClient) return supabaseClient;
-      if (window.supabase && window.storeConfig?.supabase) {
-        supabaseClient = window.supabase.createClient(
-          window.storeConfig.supabase.url,
-          window.storeConfig.supabase.anonKey
-        );
-      }
-      return supabaseClient;
-    }
-
-    // Initialize client early
-    initSupabase();
 
     // 2. Discord Admin 1-Click OAuth
     async function loginWithDiscordAdmin() {
-      if (!supabaseClient) initSupabase();
+      initSupabase();
       const btn = document.getElementById("btn-discord-admin-login");
       if (btn) {
         btn.disabled = true;
@@ -602,15 +548,18 @@
         lucide.createIcons();
       }
       const redirectTo = window.location.origin + window.location.pathname;
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: "discord",
-        options: { redirectTo }
-      });
-      if (error) {
-        showAuthError("ไม่สามารถเชื่อมต่อ Discord: " + error.message);
+      try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+          provider: "discord",
+          options: { redirectTo }
+        });
+        if (error) throw error;
+      } catch (err) {
+        showAuthError("ไม่สามารถเชื่อมต่อ Discord: " + err.message);
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = `<span>เข้าสู่ระบบด้วย Discord แอดมิน</span>`;
+          btn.innerHTML = `<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.195.373.288a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.893a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> <span>เข้าสู่ระบบด้วย Discord แอดมิน</span>`;
+          lucide.createIcons();
         }
       }
     }
@@ -623,27 +572,57 @@
 
       try {
         const meta = user.user_metadata || {};
-        const discordId = String(meta.provider_id || meta.sub || (user.identities && user.identities[0] && user.identities[0].id) || "");
-        const username = meta.custom_claims?.global_name || meta.full_name || meta.user_name || "Admin Member";
-        const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
+        const discordId = extractDiscordId(user);
+        let username = meta.custom_claims?.global_name || meta.full_name || meta.user_name || "Admin Member";
+        let avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
+        let isAuthorized = ADMIN_WHITELIST.includes(discordId);
+
+        // Database-level Profile Verification
+        if (!isAuthorized && supabaseClient) {
+          try {
+            const { data: profile } = await supabaseClient
+              .from("profiles")
+              .select("role, discord_id, username, avatar_url")
+              .eq("id", user.id)
+              .maybeSingle();
+
+            if (profile) {
+              if (profile.role === "admin" || ADMIN_WHITELIST.includes(String(profile.discord_id))) {
+                isAuthorized = true;
+                if (profile.username) username = profile.username;
+                if (profile.avatar_url) avatarUrl = profile.avatar_url;
+              }
+            }
+          } catch (e) {
+            console.warn("[ADMIN AUTH] Database profile check warning:", e);
+          }
+        }
 
         // ตรวจสอบ Discord ID เทียบกับรายชื่อแอดมินที่ได้รับอนุญาต
-        if (ADMIN_WHITELIST.includes(discordId)) {
+        if (isAuthorized) {
           currentAdminUser = { id: user.id, discordId, username, avatarUrl };
           currentAdminSecret = "nyx9_secure_admin_passphrase";
+          try {
+            sessionStorage.setItem("nyx9_admin_token", currentAdminSecret);
+            localStorage.setItem("nyx9_admin_token", currentAdminSecret);
+          } catch (e) {}
+
           setAdminBadge(username, avatarUrl, discordId);
+
+          // Unlock UI immediately for authorized administrator
+          document.getElementById("admin-auth-overlay").classList.add("hidden");
+          document.getElementById("admin-dashboard-container").classList.remove("hidden");
 
           const { data, error } = await supabaseClient.rpc("admin_get_metrics", {
             p_admin_secret: currentAdminSecret
           });
 
           if (data && data.success) {
-            document.getElementById("admin-auth-overlay").classList.add("hidden");
-            document.getElementById("admin-dashboard-container").classList.remove("hidden");
             renderDashboard(data);
           } else {
             console.error("[ADMIN RPC ERROR]", error);
-            showAuthError("ไม่สามารถดึงข้อมูลระบบได้: " + (error ? error.message : "RPC Failed"));
+            // Fallback load
+            loadDashboardData();
           }
         } else {
           // ล็อกอิน Discord แล้ว แต่ไม่ใช่ ID แอดมิน
@@ -656,9 +635,9 @@
       }
     }
 
-    // 4. Check Session & Verify Whitelist (Auto-Unlock from Storefront Session)
+    // 4. Check Session & Verify Whitelist (4-Tier Resilient Session Discovery)
     async function checkAdminSession() {
-      if (!supabaseClient) initSupabase();
+      initSupabase();
       if (!supabaseClient) return;
 
       try {
@@ -669,21 +648,43 @@
           if (currentAdminUser) return;
         }
 
-        // 4.2 Real-time auth listener (catches session restored from localStorage without delay)
+        // 4.2 Recover session directly from localStorage if GoTrue internal load has delay
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith("sb-") || k.includes("auth-token"))) {
+            const raw = localStorage.getItem(k);
+            if (raw && raw.includes("access_token")) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.access_token && parsed.user) {
+                  await supabaseClient.auth.setSession({
+                    access_token: parsed.access_token,
+                    refresh_token: parsed.refresh_token || ""
+                  });
+                  await handleAdminUser(parsed.user);
+                  if (currentAdminUser) return;
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
+        // 4.3 Fallback: Saved Secret in sessionStorage or localStorage (Storefront Bridge)
+        if (!currentAdminUser) {
+          const savedSecret = sessionStorage.getItem("nyx9_admin_token") || localStorage.getItem("nyx9_admin_token");
+          if (savedSecret) {
+            currentAdminSecret = savedSecret;
+            await verifyAndLoad(savedSecret);
+            if (currentAdminUser) return;
+          }
+        }
+
+        // 4.4 Real-time auth listener (catches session restored from background or OAuth return)
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
-          if (session && session.user) {
+          if (session && session.user && !currentAdminUser) {
             await handleAdminUser(session.user);
           }
         });
-
-        // 4.3 Fallback: Saved Secret in sessionStorage
-        if (!currentAdminUser) {
-          const savedSecret = sessionStorage.getItem("nyx9_admin_token");
-          if (savedSecret) {
-            currentAdminSecret = savedSecret;
-            verifyAndLoad(savedSecret);
-          }
-        }
 
       } catch (err) {
         console.warn("[ADMIN AUTH] Session verification warning:", err);
@@ -766,6 +767,7 @@
 
         currentAdminSecret = secret;
         sessionStorage.setItem("nyx9_admin_token", secret);
+        localStorage.setItem("nyx9_admin_token", secret);
         document.getElementById("admin-auth-overlay").classList.add("hidden");
         document.getElementById("admin-dashboard-container").classList.remove("hidden");
 
@@ -782,7 +784,9 @@
 
     async function handleAdminLogout() {
       sessionStorage.removeItem("nyx9_admin_token");
+      localStorage.removeItem("nyx9_admin_token");
       currentAdminSecret = "";
+      currentAdminUser = null;
       if (supabaseClient) {
         await supabaseClient.auth.signOut();
       }
@@ -794,11 +798,15 @@
         if (!supabaseClient) initSupabase();
         const { data } = await supabaseClient.rpc("admin_get_metrics", { p_admin_secret: secret });
         if (data && data.success) {
+          currentAdminSecret = secret;
+          sessionStorage.setItem("nyx9_admin_token", secret);
+          localStorage.setItem("nyx9_admin_token", secret);
           document.getElementById("admin-auth-overlay").classList.add("hidden");
           document.getElementById("admin-dashboard-container").classList.remove("hidden");
           renderDashboard(data);
         } else {
           sessionStorage.removeItem("nyx9_admin_token");
+          localStorage.removeItem("nyx9_admin_token");
         }
       } catch (e) {
         console.warn("Auto-login failed:", e);
