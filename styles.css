@@ -542,7 +542,7 @@ input, textarea {
 }
 
 /* ==============================================================================
-   🎬 INTRO LOADER OVERLAY (WEBFLOW PARITY WITH SVG MASK & CURTAIN SLIDE)
+   🎬 INTRO LOADER OVERLAY (ZERO-JANK 120FPS GPU COMPOSITED)
    ============================================================================== */
 html.nyx-intro-active,
 html.nyx-intro-active body {
@@ -560,12 +560,14 @@ html.nyx-intro-active body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Holds fully revealed logo for ~0.8s, then smoothly slides curtain up */
-  animation: 0.7s cubic-bezier(0.77, 0, 0.175, 1) 2.4s 1 forwards moveLoader;
+  /* Silky curtain slide: starts at 2.5s, lasts 0.7s */
+  animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) 2.5s 1 forwards moveLoader;
   will-change: transform;
   pointer-events: all;
   user-select: none;
   -webkit-user-select: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes moveLoader {
@@ -574,7 +576,6 @@ html.nyx-intro-active body {
   }
   100% {
     transform: translateY(-100%);
-    visibility: hidden;
   }
 }
 
@@ -585,6 +586,31 @@ html.nyx-intro-active body {
   display: flex;
   align-items: center;
   justify-content: center;
+  contain: layout paint;
+}
+
+.intro-glow {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 178, 255, 0.45) 0%, rgba(0, 178, 255, 0) 70%);
+  filter: blur(25px);
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity, transform;
+  animation: 0.9s ease-out 0.7s 1 forwards glowFadeIn;
+}
+
+@keyframes glowFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .intro-logo-svg {
@@ -592,24 +618,50 @@ html.nyx-intro-active body {
   inset: 0;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 35px rgba(0, 178, 255, 0.35));
+  display: block;
 }
 
 .intro-logo-back {
   opacity: 0.22;
 }
 
-@keyframes slideMask {
+/* ⚡ 100% GPU COMPOSITOR SLIDING WINDOW (ZERO CPU MASK JANK) */
+.intro-reveal-window {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform;
+  transform: translateY(100%);
+  animation: 1.3s cubic-bezier(0.25, 1, 0.5, 1) 0.25s 1 forwards windowSlide;
+  contain: paint;
+}
+
+.intro-reveal-content {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  transform: translateY(-100%);
+  animation: 1.3s cubic-bezier(0.25, 1, 0.5, 1) 0.25s 1 forwards contentCounterSlide;
+}
+
+@keyframes windowSlide {
   0% {
-    y: 100%;
+    transform: translateY(100%);
   }
   100% {
-    y: 0%;
+    transform: translateY(0%);
   }
 }
 
-#nyx-logo-mask-rect {
-  animation: 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.2s 1 forwards slideMask;
+@keyframes contentCounterSlide {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
 }
 
 .intro-brand-text {
@@ -622,7 +674,8 @@ html.nyx-intro-active body {
   color: #FFFFFF;
   opacity: 0;
   transform: translateY(10px);
-  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s 1 forwards textFadeIn;
+  will-change: opacity, transform;
+  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.85s 1 forwards textFadeIn;
 }
 
 .intro-sub-text {
@@ -635,7 +688,8 @@ html.nyx-intro-active body {
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(10px);
-  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.0s 1 forwards textFadeIn;
+  will-change: opacity, transform;
+  animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.05s 1 forwards textFadeIn;
 }
 
 .intro-skip-hint {
@@ -644,7 +698,8 @@ html.nyx-intro-active body {
   font-size: 11px;
   color: #64748B;
   opacity: 0;
-  animation: 0.5s ease-out 1.2s 1 forwards textFadeIn;
+  will-change: opacity;
+  animation: 0.5s ease-out 1.25s 1 forwards textFadeIn;
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -663,4 +718,3 @@ html.nyx-intro-active body {
     transform: translateY(0);
   }
 }
-
