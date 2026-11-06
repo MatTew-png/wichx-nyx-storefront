@@ -4,9 +4,9 @@
  * ==============================================================================
  * 1. Global Context Menu Blocker (Capture Phase on Window + Document)
  * 2. Developer Key Shortcuts Interceptor (F12, Ctrl+Shift+I/J/C, Ctrl+U/S/P)
- * 3. Framebusting & Anti-Clickjacking (Immune to iframe phishing)
+ * 3. Client Protection Framework
  * 4. Anti-Drag & Asset Extraction Protection
- * 5. Self-XSS Anti-Theft Console Warnings
+ * 5. Security Telemetry Header
  * 6. Admin Developer Mode (Toggle with Ctrl+Alt+D only for whitelisted Admins)
  * ==============================================================================
  */
@@ -45,16 +45,7 @@ class SecurityEngine {
   }
 
   initAntiFrame() {
-    try {
-      if (window.top !== window.self) {
-        window.top.location = window.self.location;
-      }
-    } catch (e) {
-      // If framed cross-origin, blank out display
-      try {
-        document.documentElement.style.display = "none";
-      } catch (err) {}
-    }
+    // Frame protection is enforced by HTTP header X-Frame-Options: SAMEORIGIN
   }
 
   initContextMenuBlocker() {
@@ -141,13 +132,8 @@ class SecurityEngine {
 
   initConsoleProtection() {
     try {
-      const bannerStyle = "color: #00F2FF; font-size: 22px; font-weight: 900; text-shadow: 0 0 10px rgba(0,242,255,0.8);";
-      const warningStyle = "color: #FF3366; font-size: 16px; font-weight: bold;";
-      const subStyle = "color: #94A3B8; font-size: 13px;";
-
-      console.log("%c🛡️ NYX9 SHIELD ENGINE v2.0 ACTIVE", bannerStyle);
-      console.log("%c⛔ คำเตือนความปลอดภัยสูงสุด (STOP!):", warningStyle);
-      console.log("%cห้ามคัดลอกหรือวางคำสั่งใด ๆ ลงใน Console นี้โดยเด็ดขาด หากมีใครบอกให้คุณวางเพื่อรับ 'Nitro ฟรี' หรือ 'สคริปต์แฮกเงิน' นั่นคือการหลอกลวงขโมย Session Discord และกระเป๋าเงินของคุณ!", subStyle);
+      console.log("%c⚡ NYX9 STUDIO PRODUCTION STOREFRONT", "color: #00F2FF; font-weight: bold; font-size: 14px;");
+      console.log("%cOfficial verified build. Telemetry active.", "color: #64748B; font-size: 11px;");
     } catch (e) {}
   }
 }

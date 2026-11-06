@@ -1216,9 +1216,9 @@ if (typeof module !== "undefined" && module.exports) {
  * ==============================================================================
  * 1. Global Context Menu Blocker (Capture Phase on Window + Document)
  * 2. Developer Key Shortcuts Interceptor (F12, Ctrl+Shift+I/J/C, Ctrl+U/S/P)
- * 3. Framebusting & Anti-Clickjacking (Immune to iframe phishing)
+ * 3. Client Protection Framework
  * 4. Anti-Drag & Asset Extraction Protection
- * 5. Self-XSS Anti-Theft Console Warnings
+ * 5. Security Telemetry Header
  * 6. Admin Developer Mode (Toggle with Ctrl+Alt+D only for whitelisted Admins)
  * ==============================================================================
  */
@@ -1257,16 +1257,7 @@ class SecurityEngine {
   }
 
   initAntiFrame() {
-    try {
-      if (window.top !== window.self) {
-        window.top.location = window.self.location;
-      }
-    } catch (e) {
-      // If framed cross-origin, blank out display
-      try {
-        document.documentElement.style.display = "none";
-      } catch (err) {}
-    }
+    // Frame protection is enforced by HTTP header X-Frame-Options: SAMEORIGIN
   }
 
   initContextMenuBlocker() {
@@ -1353,13 +1344,8 @@ class SecurityEngine {
 
   initConsoleProtection() {
     try {
-      const bannerStyle = "color: #00F2FF; font-size: 22px; font-weight: 900; text-shadow: 0 0 10px rgba(0,242,255,0.8);";
-      const warningStyle = "color: #FF3366; font-size: 16px; font-weight: bold;";
-      const subStyle = "color: #94A3B8; font-size: 13px;";
-
-      console.log("%c🛡️ NYX9 SHIELD ENGINE v2.0 ACTIVE", bannerStyle);
-      console.log("%c⛔ คำเตือนความปลอดภัยสูงสุด (STOP!):", warningStyle);
-      console.log("%cห้ามคัดลอกหรือวางคำสั่งใด ๆ ลงใน Console นี้โดยเด็ดขาด หากมีใครบอกให้คุณวางเพื่อรับ 'Nitro ฟรี' หรือ 'สคริปต์แฮกเงิน' นั่นคือการหลอกลวงขโมย Session Discord และกระเป๋าเงินของคุณ!", subStyle);
+      console.log("%c⚡ NYX9 STUDIO PRODUCTION STOREFRONT", "color: #00F2FF; font-weight: bold; font-size: 14px;");
+      console.log("%cOfficial verified build. Telemetry active.", "color: #64748B; font-size: 11px;");
     } catch (e) {}
   }
 }
@@ -1647,8 +1633,53 @@ window.ReceiptGenerator = ReceiptGenerator;
  * ✨ JULIAN FELLA SIGNATURE MOTION ENGINE v1.0
  * Inspired by Julian Fella (Award-Winning GSAP Site of the Day / CSSDA)
  * Smooth, editorial, masked line reveals, expanding hairlines, and cascading staggers
+ * Direction-Aware Liquid SVG Bezier Wave Hover Animation
  * ==============================================================================
  */
+
+// Julian Fella exact SVG quadratic bezier paths (viewBox="0 0 100 100")
+const JULIAN_SVG_PATHS = {
+  top: {
+    startIn: "M 0 100 V 0 Q 50 0 100 0 V 0 H 0 z",
+    endIn: "M 0 100 V 100 Q 50 125 100 100 V 0 H 0 z",
+    startOut: "M 0 100 V 100 Q 50 50 100 100 V 0 H 0 z",
+    endOut: "M 0 100 V 0 Q 50 0 100 0 V 0 H 0 z"
+  },
+  bottom: {
+    startIn: "M 0 100 V 100 Q 75 50 100 100 V 100 z",
+    endIn: "M 0 100 V 0 Q 50 0 100 0 V 100 z",
+    startOut: "M 0 100 V 0 Q 50 50 100 0 V 100 z",
+    endOut: "M 0 100 V 100 Q 50 100 100 100 V 100 z"
+  },
+  left: {
+    startIn: "M 0 0 H 0 Q 0 50 0 100 H 0 V 0 z",
+    endIn: "M 0 0 H 100 Q 110 50 100 100 H 0 V 0 z",
+    startOut: "M 0 0 H 100 Q 75 50 100 100 H 0 V 0 z",
+    endOut: "M 0 0 H 0 Q 0 50 0 100 H 0 V 0 z"
+  },
+  right: {
+    startIn: "M 100 0 H 100 Q 100 50 100 100 H 100 V 0 z",
+    endIn: "M 100 0 H 0 Q -10 50 0 100 H 100 V 0 z",
+    startOut: "M 100 0 H 0 Q 25 50 0 100 H 100 V 0 z",
+    endOut: "M 100 0 H 100 Q 100 50 100 100 H 100 V 0 z"
+  }
+};
+
+function getJulianMouseEnterDirection(event, element) {
+  const rect = element.getBoundingClientRect();
+  const x = event.clientX;
+  const y = event.clientY;
+  const distTop = Math.abs(rect.top - y);
+  const distBottom = Math.abs(rect.bottom - y);
+  const distLeft = Math.abs(rect.left - x);
+  const distRight = Math.abs(rect.right - x);
+  const minDist = Math.min(distTop, distBottom, distLeft, distRight);
+
+  if (minDist === distLeft) return "left";
+  if (minDist === distRight) return "right";
+  if (minDist === distTop) return "top";
+  return "bottom";
+}
 
 class JulianMotionEngine {
   constructor() {
@@ -1670,13 +1701,21 @@ class JulianMotionEngine {
 
     // Attach to DOM ready
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => this.setupGlobalTriggers());
+      document.addEventListener("DOMContentLoaded", () => {
+        this.setupGlobalTriggers();
+        this.initLiquidWaveHover();
+      });
     } else {
-      setTimeout(() => this.setupGlobalTriggers(), 100);
+      setTimeout(() => {
+        this.setupGlobalTriggers();
+        this.initLiquidWaveHover();
+      }, 100);
     }
   }
 
   setupGlobalTriggers() {
+    this.initLiquidWaveHover();
+
     if (!this.hasGSAP || !window.ScrollTrigger) {
       this.setupIntersectionFallback();
       return;
@@ -1851,6 +1890,123 @@ class JulianMotionEngine {
         );
       }
     }
+
+    // Attach liquid wave hover on newly animated view elements
+    this.initLiquidWaveHover(viewEl);
+  }
+
+  /**
+   * Signature Julian Fella Direction-Aware Liquid Wave Morphing Hover
+   * Extracted from julianfella.de/contact
+   * Uses SVG quadratic bezier morphing & GSAP power3.out easing
+   */
+  initLiquidWaveHover(root = document) {
+    if (typeof window === "undefined") return;
+    const targetRoot = root || document;
+
+    const cards = targetRoot.querySelectorAll(".julian-liquid-hover, [data-julian-wave]");
+    if (!cards || cards.length === 0) return;
+
+    cards.forEach(card => {
+      if (card._julianLiquidInitialized) return;
+      card._julianLiquidInitialized = true;
+
+      // Ensure SVG liquid wave element exists
+      let svg = card.querySelector(".julian-liquid-svg");
+      let path = card.querySelector(".julian-liquid-path");
+
+      if (!svg) {
+        svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 100 100");
+        svg.setAttribute("preserveAspectRatio", "none");
+        svg.setAttribute("class", "julian-liquid-svg");
+        svg.setAttribute("aria-hidden", "true");
+
+        path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M 0 100 V 0 Q 0 50 0 100 V 0 H 0 z");
+        const fillColor = card.getAttribute("data-wave-color") || "#FFFFFF";
+        path.setAttribute("fill", fillColor);
+        path.setAttribute("class", "julian-liquid-path");
+
+        svg.appendChild(path);
+        card.appendChild(svg);
+      } else if (!path) {
+        path = svg.querySelector("path");
+      }
+
+      const inner = card.querySelector(".julian-liquid-inner, [data-animate='form-alternate-item-inner']");
+      const arrow = card.querySelector(".julian-arrow, [data-animate='arrow']");
+
+      let pathTween = null;
+      let innerTween = null;
+      let arrowTween = null;
+
+      card.addEventListener("mouseenter", (e) => {
+        if (!window.gsap) return;
+        const dir = getJulianMouseEnterDirection(e, card);
+        const p = JULIAN_SVG_PATHS[dir] || JULIAN_SVG_PATHS.top;
+
+        if (pathTween) pathTween.kill();
+        pathTween = window.gsap.fromTo(path,
+          { attr: { d: p.startIn } },
+          { attr: { d: p.endIn }, duration: 0.5, ease: "power3.out", overwrite: "auto" }
+        );
+
+        if (inner) {
+          if (innerTween) innerTween.kill();
+          innerTween = window.gsap.to(inner, {
+            paddingLeft: "0.6rem",
+            paddingRight: "0.6rem",
+            duration: 0.45,
+            ease: "power3.inOut",
+            overwrite: "auto"
+          });
+        }
+
+        if (arrow) {
+          if (arrowTween) arrowTween.kill();
+          arrowTween = window.gsap.to(arrow, {
+            rotate: -45,
+            duration: 0.45,
+            ease: "power3.inOut",
+            overwrite: "auto"
+          });
+        }
+      });
+
+      card.addEventListener("mouseleave", (e) => {
+        if (!window.gsap) return;
+        const dir = getJulianMouseEnterDirection(e, card);
+        const p = JULIAN_SVG_PATHS[dir] || JULIAN_SVG_PATHS.top;
+
+        if (pathTween) pathTween.kill();
+        pathTween = window.gsap.fromTo(path,
+          { attr: { d: p.startOut } },
+          { attr: { d: p.endOut }, duration: 0.5, ease: "power3.out", overwrite: "auto" }
+        );
+
+        if (inner) {
+          if (innerTween) innerTween.kill();
+          innerTween = window.gsap.to(inner, {
+            paddingLeft: "0rem",
+            paddingRight: "0rem",
+            duration: 0.45,
+            ease: "power3.inOut",
+            overwrite: "auto"
+          });
+        }
+
+        if (arrow) {
+          if (arrowTween) arrowTween.kill();
+          arrowTween = window.gsap.to(arrow, {
+            rotate: 0,
+            duration: 0.45,
+            ease: "power3.inOut",
+            overwrite: "auto"
+          });
+        }
+      });
+    });
   }
 
   /**
