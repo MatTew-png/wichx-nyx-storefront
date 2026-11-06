@@ -148,4 +148,10 @@ class NavbarComponent {
   }
 }
 
-window.NavbarComponent = NavbarComponent;
+if (typeof window !== "undefined") {
+  window.NavbarComponent = NavbarComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = NavbarComponent;
+}

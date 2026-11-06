@@ -239,15 +239,21 @@ class CartDrawerComponent {
   }
 }
 
-window.CartDrawerComponent = CartDrawerComponent;
+if (typeof window !== "undefined") {
+  window.CartDrawerComponent = CartDrawerComponent;
 
-window.applyDirectCoupon = (code) => {
-  if (window.Shop?.cartManager) {
-    try {
-      const promo = window.Shop.checkoutService.applyCoupon(code);
-      window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
-    } catch (err) {
-      window.UI?.toast(err.message, "error");
+  window.applyDirectCoupon = (code) => {
+    if (window.Shop?.cartManager) {
+      try {
+        const promo = window.Shop.checkoutService.applyCoupon(code);
+        window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
+      } catch (err) {
+        window.UI?.toast(err.message, "error");
+      }
     }
-  }
-};
+  };
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CartDrawerComponent;
+}

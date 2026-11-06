@@ -59,17 +59,31 @@ class UIManager {
     };
 
     toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-2xl border backdrop-blur-md shadow-2xl text-xs font-semibold animate-in slide-in-from-top-4 duration-200 ${colors[type] || colors.info}`;
-    toast.innerHTML = `
-      <i data-lucide="${icons[type] || 'info'}" class="w-4 h-4 shrink-0"></i>
-      <span class="flex-1">${message}</span>
-    `;
+    
+    // XSS-Safe DOM construction
+    const iconEl = document.createElement("i");
+    iconEl.setAttribute("data-lucide", icons[type] || "info");
+    iconEl.className = "w-4 h-4 shrink-0";
+    
+    const msgEl = document.createElement("span");
+    msgEl.className = "flex-1";
+    msgEl.textContent = String(message || "");
+
+    toast.appendChild(iconEl);
+    toast.appendChild(msgEl);
 
     container.appendChild(toast);
     if (window.lucide) lucide.createIcons();
 
     setTimeout(() => {
       toast.classList.add("opacity-0", "transition-opacity", "duration-300");
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => {
+        if (typeof toast.remove === "function") {
+          toast.remove();
+        } else if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
     }, 3500);
   }
 
@@ -85,4 +99,10 @@ class UIManager {
   }
 }
 
-window.UI = new UIManager();
+if (typeof window !== "undefined") {
+  window.UI = new UIManager();
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = UIManager;
+}

@@ -270,4 +270,10 @@ class AmbientWavesEngine {
 }
 
 // Global Export
-window.AmbientWavesEngine = AmbientWavesEngine;
+if (typeof window !== "undefined") {
+  window.AmbientWavesEngine = AmbientWavesEngine;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = AmbientWavesEngine;
+}

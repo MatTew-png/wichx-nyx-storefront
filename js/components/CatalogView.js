@@ -358,4 +358,10 @@ class CatalogViewComponent {
   }
 }
 
-window.CatalogViewComponent = CatalogViewComponent;
+if (typeof window !== "undefined") {
+  window.CatalogViewComponent = CatalogViewComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CatalogViewComponent;
+}

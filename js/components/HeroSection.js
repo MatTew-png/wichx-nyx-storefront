@@ -145,4 +145,10 @@ class HeroSectionComponent {
   }
 }
 
-window.HeroSectionComponent = HeroSectionComponent;
+if (typeof window !== "undefined") {
+  window.HeroSectionComponent = HeroSectionComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = HeroSectionComponent;
+}

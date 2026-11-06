@@ -161,4 +161,10 @@ class RestockModalComponent {
   }
 }
 
-window.RestockModalComponent = RestockModalComponent;
+if (typeof window !== "undefined") {
+  window.RestockModalComponent = RestockModalComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = RestockModalComponent;
+}

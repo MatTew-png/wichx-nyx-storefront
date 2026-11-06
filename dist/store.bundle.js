@@ -619,23 +619,23 @@ if (typeof module !== "undefined" && module.exports) {
 /* ============================================================================== */
 /**
  * ==============================================================================
- * COMMERCIAL MULTI-NICHE CATALOG DATA
+ * COMMERCIAL CATALOG DATA (NOVAPE SHOP & NYX9 STUDIO)
  * ==============================================================================
- * ข้อมูลสินค้าครอบคลุมทุกหมวดตามสเปก พร้อมระบบ Dual-Fulfillment
- * (Instant Delivery / Custom Order Form) และ SVG Artwork อัตราส่วน 16:9
+ * ข้อมูลสินค้าเฉพาะ 2 เครือข่ายหลัก:
+ * 1. NOVAPE SHOP: Discord Goods, Nitro, Boosts & Services
+ * 2. NYX9 STUDIO: Roblox Systems, Scripts, GFX & 3D Assets
  * ==============================================================================
  */
 
-// ฟังก์ชันสร้าง Artwork SVG สไตล์ Cyberpunk 1:1 Square (Base 450x450) คมชัด รองรับเรตินา
 function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) {
   const icons = {
     nitro: `<path d="M12 2L4 14h6l-2 8 10-12h-6l4-8z" fill="${primaryColor}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>`,
     boost: `<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m0 0l8.5-8.5a2.12 2.12 0 1 1 3 3L12 15m-3-3v3h3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
     discord: `<path d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.2.35-.4.8-.56 1.18a16.8 16.8 0 0 0-5.14 0 9.87 9.87 0 0 0-.57-1.18 18.15 18.15 0 0 0-4.6 1.44A19.12 19.12 0 0 0 .96 17.7a18.43 18.43 0 0 0 5.63 2.87c.46-.62.86-1.28 1.2-1.98a12.16 12.16 0 0 1-1.92-.93c.16-.12.32-.24.47-.37a13.1 13.1 0 0 0 11.32 0c.16.13.31.25.47.37-.62.37-1.26.68-1.92.93.35.7.75 1.36 1.2 1.98 2.02-.62 3.92-1.6 5.63-2.87.5-5.46-1.3-10.22-3.3-12.83zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.4 0-1.33.95-2.4 2.15-2.4 1.21 0 2.17 1.08 2.15 2.4 0 1.32-.95 2.4-2.15 2.4zm7.97 0c-1.18 0-2.15-1.08-2.15-2.4 0-1.33.95-2.4 2.15-2.4 1.21 0 2.17 1.08 2.15 2.4 0 1.32-.94 2.4-2.15 2.4z" fill="${primaryColor}"/>`,
+    code: `<polyline points="16 18 22 12 16 6" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="8 6 2 12 8 18" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+    cube: `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="${primaryColor}" stroke-width="2" fill="none"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="${primaryColor}" stroke-width="2" fill="none"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="${primaryColor}" stroke-width="2"/>`,
     game: `<rect x="2" y="6" width="20" height="12" rx="3" stroke="${primaryColor}" stroke-width="2" fill="none"/><path d="M6 12h4m-2-2v4m9-2h.01m3 0h.01" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
-    stream: `<polygon points="5 3 19 12 5 21 5 3" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="1.5"/>`,
-    key: `<path d="M21 2l-2 2m-1.5 1.5L14 9l-3-3L3.5 13.5a5 5 0 1 0 7 7L18 13l2-2 1.5-1.5M16 5l3 3" stroke="${primaryColor}" stroke-width="2" stroke-linecap="round"/>`,
-    ai: `<path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" stroke="${primaryColor}" stroke-width="2"/>`
+    palette: `<circle cx="13.5" cy="6.5" r=".5" fill="${primaryColor}"/><circle cx="17.5" cy="10.5" r=".5" fill="${primaryColor}"/><circle cx="8.5" cy="7.5" r=".5" fill="${primaryColor}"/><circle cx="6.5" cy="12.5" r=".5" fill="${primaryColor}"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z" stroke="${primaryColor}" stroke-width="2" fill="none"/>`
   };
 
   const escapeXml = (str) => String(str || "").replace(/[<>&'"]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]));
@@ -652,30 +652,23 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
         <stop offset="50%" stop-color="#0B1220" />
         <stop offset="100%" stop-color="#05080E" />
       </linearGradient>
-      <linearGradient id="glow-${safeId}" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="${primaryColor}" stop-opacity="0.8"/>
-        <stop offset="100%" stop-color="${secondaryColor}" stop-opacity="0.2"/>
-      </linearGradient>
-      <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+      <pattern id="grid-${safeId}" width="25" height="25" patternUnits="userSpaceOnUse">
         <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
       </pattern>
     </defs>
     <rect width="450" height="450" fill="url(#bg-${safeId})"/>
-    <rect width="450" height="450" fill="url(#grid)"/>
+    <rect width="450" height="450" fill="url(#grid-${safeId})"/>
     <circle cx="225" cy="210" r="130" fill="${primaryColor}" fill-opacity="0.10" filter="blur(45px)"/>
     <circle cx="350" cy="90" r="80" fill="${secondaryColor}" fill-opacity="0.08" filter="blur(35px)"/>
     
-    <!-- Cyber Geometric Square Frame (1:1 Base) -->
-    <path d="M 24 48 L 48 24 L 402 24 L 426 48 L 426 402 L 402 426 L 48 426 L 24 402 Z" fill="none" stroke="rgba(25, 186, 255, 0.18)" stroke-width="1.5"/>
+    <path d="M 24 48 L 48 24 L 402 24 L 426 48 L 426 402 L 402 426 L 48 426 L 24 402 Z" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5"/>
     <line x1="48" y1="24" x2="150" y2="24" stroke="${primaryColor}" stroke-width="3"/>
     <line x1="300" y1="426" x2="402" y2="426" stroke="${secondaryColor}" stroke-width="3"/>
 
-    <!-- Center Holo Symbol -->
     <g transform="translate(165, 125) scale(5)">
       ${selectedIcon}
     </g>
 
-    <!-- Typography -->
     <text x="225" y="325" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="16" letter-spacing="0.5">
       ${safeTitle}
     </text>
@@ -683,9 +676,8 @@ function createCyberArtwork(title, sub, iconType, primaryColor, secondaryColor) 
       // ${safeSub} //
     </text>
 
-    <!-- Top Badge Corner -->
-    <rect x="34" y="32" width="95" height="20" rx="4" fill="rgba(25, 186, 255, 0.15)" stroke="${primaryColor}" stroke-width="1"/>
-    <text x="81" y="46" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700">VERIFIED AUTH</text>
+    <rect x="34" y="32" width="105" height="20" rx="4" fill="rgba(255, 255, 255, 0.06)" stroke="${primaryColor}" stroke-width="1"/>
+    <text x="86" y="46" text-anchor="middle" fill="${primaryColor}" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700">VERIFIED AUTH</text>
   </svg>`;
 
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
@@ -695,9 +687,9 @@ const categoriesData = [
   {
     id: "cat-discord-nitro",
     name: "Discord Nitro & บูสต์",
-    subName: "ไนโตรแท้ บูสต์เซิร์ฟเวอร์ & ไอเทมตกแต่งโปรไฟล์",
+    subName: "ไนโตรแท้ บูสต์เซิร์ฟเวอร์ & ไอเทมตกแต่งโปรไฟล์ (NOVAPE SHOP)",
     icon: "zap",
-    badge: "INSTANT KEY / AUTO",
+    badge: "NOVAPE SHOP",
     visible: true,
     collapsed: false,
     products: [
@@ -710,9 +702,9 @@ const categoriesData = [
         stock: 45,
         status: "SALE",
         discountPercent: 32,
-        chips: ["ส่งทันที", "ประกันเต็ม", "2 บูส"],
+        chips: ["ส่งทันที", "ประกันเต็ม", "2 บูสต์"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("NITRO BOOSTER 1M", "MAILPASS FULL WARRANTY", "nitro", "#6366F1", "#A855F7"),
         sampleDelivery: "NITRO-1M-ACTIVE-KEY-9921",
         warrantyDays: 30
       },
@@ -725,29 +717,29 @@ const categoriesData = [
         stock: 20,
         status: "SALE",
         discountPercent: 48,
-        chips: ["ยกเมลแท้", "2 บูส", "เปลี่ยนรหัสได้"],
+        chips: ["ยกเมลแท้", "2 บูสต์", "เปลี่ยนรหัสได้"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("NITRO 3 MONTHS", "FULL EMAIL ACCESS", "nitro", "#8B5CF6", "#EC4899"),
         sampleDelivery: "NITRO-3M-ACTIVE-KEY-8812",
         warrantyDays: 90
       },
       {
         id: "nitro-boost-1m-2x",
-        title: "บูสเซิร์ฟเวอร์ 1 เดือน (2 บูส)",
+        title: "บูสต์เซิร์ฟเวอร์ 1 เดือน (2 บูสต์)",
         category: "cat-discord-nitro",
         price: 50,
         originalPrice: 90,
         stock: 80,
         status: "SALE",
         discountPercent: 44,
-        chips: ["2 บูสแท้", "ใน 1 นาที"],
+        chips: ["2 บูสต์แท้", "ใน 1 นาที"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: "",
-        instructions: "กรอกลิงก์เซิร์ฟเวอร์ Discord ที่ต้องการให้บอทเข้าไปบูส (ต้องไม่หมดอายุ)"
+        imageUrl: createCyberArtwork("SERVER BOOST 1M", "2X GUILD BOOSTS", "boost", "#EC4899", "#F43F5E"),
+        instructions: "กรอกลิงก์เซิร์ฟเวอร์ Discord ที่ต้องการให้บอทเข้าไปบูสต์ (ต้องไม่หมดอายุ)"
       },
       {
         id: "nitro-boost-3m-2x",
-        title: "บูสเซิร์ฟเวอร์ 3 เดือน (2 บูส)",
+        title: "บูสต์เซิร์ฟเวอร์ 3 เดือน (2 บูสต์)",
         category: "cat-discord-nitro",
         price: 100,
         originalPrice: 180,
@@ -756,8 +748,8 @@ const categoriesData = [
         discountPercent: 44,
         chips: ["90 วันเต็ม", "ยอดนิยม"],
         fulfillmentType: "custom_discord_boost",
-        imageUrl: "",
-        instructions: "ระบบจะดำเนินการส่งบูสเข้าเซิร์ฟเวอร์ภายใน 1-5 นาทีหลังชำระเงิน"
+        imageUrl: createCyberArtwork("SERVER BOOST 3M", "90 DAYS GUARANTEED", "boost", "#F43F5E", "#FB923C"),
+        instructions: "ระบบจะดำเนินการส่งบูสต์เข้าเซิร์ฟเวอร์ภายใน 1-5 นาทีหลังชำระเงิน"
       },
       {
         id: "nitro-promo-link-3m",
@@ -770,7 +762,7 @@ const categoriesData = [
         discountPercent: 58,
         chips: ["กิฟต์ลิงก์", "ไอดีใหม่"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("NITRO PROMO LINK", "3 MONTHS ACTIVATION", "nitro", "#6366F1", "#3B82F6"),
         sampleDelivery: "https://discord.com/billing/promotions/xbox-game-pass-promo-key-83749204812",
         warrantyDays: 14
       },
@@ -785,7 +777,7 @@ const categoriesData = [
         discountPercent: 47,
         chips: ["ถาวร", "ของแต่งแท้"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("PROFILE DECORATIONS", "PERMANENT AVATAR FX", "discord", "#06B6D4", "#3B82F6"),
         sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-WICHX",
         warrantyDays: 365
       }
@@ -794,9 +786,9 @@ const categoriesData = [
   {
     id: "cat-discord-services",
     name: "บริการดิสคอร์ด & ไอดี",
-    subName: "เควสต์อัตโนมัติ บอท & ไอดีพร้อมใช้งาน",
+    subName: "เควสต์อัตโนมัติ บอท & ไอดีพร้อมใช้งาน (NOVAPE SHOP)",
     icon: "bot",
-    badge: "CUSTOM FLOW & FORM",
+    badge: "NOVAPE SHOP",
     visible: true,
     collapsed: false,
     products: [
@@ -804,7 +796,7 @@ const categoriesData = [
         id: "service-discord-members",
         title: "ปั๊มคนเข้า Discord (มีโปรไฟล์จริง)",
         category: "cat-discord-services",
-        price: 0.50, // ราคาต่อคน
+        price: 0.50,
         unit: "คน",
         minQuantity: 100,
         maxQuantity: 1000,
@@ -814,7 +806,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["มีรูปโปรไฟล์", "เริ่มใน 5 นาที"],
         fulfillmentType: "custom_discord_members",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("DISCORD MEMBERS", "REAL LOOKING PROFILES", "discord", "#3B82F6", "#6366F1"),
         instructions: "ระบบปั๊มเมมเบอร์อัตโนมัติ กรอกลิงก์ Discord Invite และเลือกจำนวนสมาชิกที่ต้องการ"
       },
       {
@@ -827,7 +819,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["เบอร์ไทย/นอก", "ส่งรหัสใน 30 วิ"],
         fulfillmentType: "custom_phone_otp",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("PHONE OTP SERVICE", "INSTANT SMS CODE", "discord", "#10B981", "#06B6D4"),
         instructions: "เลือกประเทศเพื่อขอรับเบอร์เสมือน และรอรับรหัส OTP สดได้ทันทีที่หน้าจอ"
       },
       {
@@ -840,7 +832,7 @@ const categoriesData = [
         status: "SERVICE",
         chips: ["รับตราทันที", "ไม่ต้องเปิดเกม"],
         fulfillmentType: "custom_quest_badge",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("QUEST BADGE", "INSTANT BADGE UNLOCK", "discord", "#F59E0B", "#EF4444"),
         instructions: "กรอก Discord User ID เพื่อให้ระบบออโต้ส่งตราเควสต์เข้าโปรไฟล์ของคุณ"
       },
       {
@@ -853,7 +845,7 @@ const categoriesData = [
         status: "STOCK",
         chips: ["พร้อมใช้งาน", "ไม่ติดบอท"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("DISCORD ACCOUNT 1M", "CLEAN REGISTERED", "discord", "#64748B", "#94A3B8"),
         sampleDelivery: "DISCORD-VERIFIED-AUTH-TOKEN-7721",
         warrantyDays: 7
       },
@@ -867,146 +859,120 @@ const categoriesData = [
         status: "HOT",
         chips: ["ปีเก่าหายาก", "ยกเมลหลัก"],
         fulfillmentType: "instant",
-        imageUrl: "",
+        imageUrl: createCyberArtwork("VINTAGE ACCOUNT", "AGED 2015-2020", "discord", "#F59E0B", "#D97706"),
         sampleDelivery: "DISCORD-VINTAGE-AUTH-TOKEN-2016",
         warrantyDays: 30
       }
     ]
   },
   {
-    id: "cat-gaming-apps",
-    name: "FiveM, Steam & เกมมิ่ง",
-    subName: "ไอดีสะอาด ปลดแบน FiveM, GTAV & สตรีมมิ่ง",
-    icon: "gamepad-2",
-    badge: "WICHX SPECIALS",
+    id: "cat-roblox-scripts",
+    name: "สคริปต์ & ระบบเกม Roblox",
+    subName: "สคริปต์ Blox Fruits, Auto-Farm & UI สำหรับครีเอเตอร์ (NYX9 STUDIO)",
+    icon: "code-2",
+    badge: "NYX9 STUDIO",
     visible: true,
     collapsed: false,
     products: [
       {
-        id: "rockstar-fivem-fresh",
-        title: "Rockstar FiveM สดใหม่ (2 ชั้น)",
-        category: "cat-gaming-apps",
-        price: 10,
-        originalPrice: 25,
-        stock: 290,
-        status: "SALE",
-        discountPercent: 60,
-        chips: ["FiveM", "ส่งทันที"],
+        id: "roblox-bloxfruits-script",
+        title: "สคริปต์ Blox Fruits & GUI (Auto Farm / Raid / Mastery)",
+        category: "cat-roblox-scripts",
+        price: 150,
+        originalPrice: 250,
+        stock: 50,
+        status: "HOT",
+        discountPercent: 40,
+        chips: ["Auto Farm", "Raid/Mastery", "อัปเดตฟรี"],
         fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: "FIVEM-READY-CLEAN-AUTH-991",
-        warrantyDays: 7
-      },
-      {
-        id: "steam-gtav-unlinked",
-        title: "Steam GTAV ยังไม่ผูก Rockstar",
-        category: "cat-gaming-apps",
-        price: 399,
-        originalPrice: 699,
-        stock: 160,
-        status: "SALE",
-        discountPercent: 43,
-        chips: ["Steam แท้", "ยกไอดี"],
-        fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: "STEAM-GTAV-CLEAN-SERIAL-771",
+        imageUrl: createCyberArtwork("BLOX FRUITS SUITE", "AUTO FARM & RAID GUI", "code", "#00B2FF", "#3B82F6"),
+        sampleDelivery: "ROBLOX-SCRIPT-BLOXFRUITS-KEY-9281-NYX9",
         warrantyDays: 30
       },
       {
-        id: "netflix-private-30d",
-        title: "Netflix 30 วัน (ทุกอุปกรณ์)",
-        category: "cat-gaming-apps",
-        price: 109,
-        originalPrice: 169,
-        stock: 44,
-        status: "SALE",
-        discountPercent: 35,
-        chips: ["จอส่วนตัว", "ประกัน 30 วัน"],
-        fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: "NETFLIX-UHD-SLOT-TOKEN-291",
-        warrantyDays: 30
-      },
-      {
-        id: "youtube-premium-1m",
-        title: "YouTube Premium 1 เดือน (เมลเดิม)",
-        category: "cat-gaming-apps",
-        price: 49,
-        originalPrice: 89,
+        id: "roblox-autofarm-core",
+        title: "สคริปต์ฟาร์มอัตโนมัติ Roblox Multi-Game",
+        category: "cat-roblox-scripts",
+        price: 90,
+        originalPrice: 150,
         stock: 100,
         status: "SALE",
-        discountPercent: 45,
-        chips: ["ไร้โฆษณา", "อนุมัติไว"],
-        fulfillmentType: "custom_email_invite",
-        imageUrl: "",
-        instructions: "กรอก Gmail ของคุณเพื่อรับลิงก์คำเชิญเข้าร่วมครอบครัวพรีเมียม (ไม่จำเป็นต้องให้รหัสผ่าน)"
-      },
-      {
-        id: "cursor-pro-1m-preorder",
-        title: "Cursor Pro 1 เดือน (พรีออเดอร์)",
-        category: "cat-gaming-apps",
-        price: 490,
-        originalPrice: 750,
-        stock: 15,
-        status: "PRE-ORDER",
-        chips: ["AI Tool", "พรีออเดอร์"],
+        discountPercent: 40,
+        chips: ["Multi-Game", "Luau คลีน", "ลื่นไหล"],
         fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: "PREORDER-CONFIRMED: ระบบจะจัดส่งรหัสคีย์เข้าอีเมลของคุณภายใน 24 ชม.",
+        imageUrl: createCyberArtwork("AUTOFARM CORE", "MULTI-GAME LUAU ENGINE", "game", "#10B981", "#06B6D4"),
+        sampleDelivery: "ROBLOX-SCRIPT-AUTOFARM-CORE-4491-NYX9",
         warrantyDays: 30
       },
       {
-        id: "test-out-of-stock",
-        title: "สินค้าทดสอบหมด (Out of Stock)",
-        category: "cat-gaming-apps",
-        price: 0,
-        originalPrice: 99,
-        stock: 0,
-        status: "OUT OF STOCK",
-        chips: ["หมดชั่วคราว", "รอเติมของ"],
+        id: "roblox-store-gui",
+        title: "ระบบร้านค้า & UI สำเร็จรูปสำหรับเกม Roblox",
+        category: "cat-roblox-scripts",
+        price: 199,
+        originalPrice: 350,
+        stock: 35,
+        status: "NEW",
+        discountPercent: 43,
+        chips: ["Luau Studio", "Modern UI", "ติดตั้งง่าย"],
         fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: ""
+        imageUrl: createCyberArtwork("ROBLOX SHOP GUI", "STUDIO CLEAN INTERFACE", "code", "#8B5CF6", "#00B2FF"),
+        sampleDelivery: "ROBLOX-ASSET-RBXL-STOREGUI-8812-NYX9",
+        warrantyDays: 60
       }
     ]
   },
   {
-    id: "cat-uncategorized",
-    name: "ซอฟต์แวร์ & คีย์แท้",
-    subName: "Windows 11 Pro, Spotify Family & ดิจิทัลไอเทม",
-    icon: "sparkles",
-    badge: "STANDALONE ITEMS",
+    id: "cat-roblox-assets",
+    name: "Roblox GFX & โมเดล 3D",
+    subName: "ออกแบบปกเกม GFX, โมเดล 3D Props & Character Rigs (NYX9 STUDIO)",
+    icon: "box",
+    badge: "NYX9 STUDIO",
     visible: true,
     collapsed: false,
     products: [
       {
-        id: "windows-11-pro-key",
-        title: "Windows 11 Pro Retail Key (คีย์แท้)",
-        category: "cat-uncategorized",
+        id: "roblox-gfx-thumbnail",
+        title: "ออกแบบปกเกมและไอคอน Roblox GFX (ตามสั่ง)",
+        category: "cat-roblox-assets",
         price: 120,
-        originalPrice: 450,
-        stock: 50,
-        status: "SALE",
-        discountPercent: 73,
-        chips: ["คีย์แท้", "ถาวร", "ย้ายเครื่องได้"],
-        fulfillmentType: "instant",
-        imageUrl: "",
-        sampleDelivery: "W269N-WFGWX-YVC9B-4J6C9-T83GX",
-        warrantyDays: 365
+        originalPrice: 200,
+        stock: 20,
+        status: "CUSTOM",
+        discountPercent: 40,
+        chips: ["Blender 3D", "ความละเอียดสูง", "แก้ได้ 3 ครั้ง"],
+        fulfillmentType: "custom_order",
+        imageUrl: createCyberArtwork("ROBLOX GFX ART", "CUSTOM GAME THUMBNAIL", "palette", "#EC4899", "#8B5CF6"),
+        instructions: "กรอกชื่อเกม แนวเกม และรายละเอียดหรือสไตล์ภาพที่ต้องการ ให้ทีมงานเริ่มออกแบบทันที"
       },
       {
-        id: "spotify-family-3m",
-        title: "Spotify Family 3 เดือน (เมลเดิม)",
-        category: "cat-uncategorized",
-        price: 89,
-        originalPrice: 180,
-        stock: 30,
+        id: "roblox-3d-props-pack",
+        title: "แพ็กโมเดล 3D Props & Low-Poly Map Assets สำหรับ Studio",
+        category: "cat-roblox-assets",
+        price: 250,
+        originalPrice: 450,
+        stock: 40,
         status: "SALE",
-        discountPercent: 50,
-        chips: ["เมลเดิม", "ต่ออายุได้"],
-        fulfillmentType: "custom_email_invite",
-        imageUrl: "",
-        instructions: "กรอกอีเมล Spotify เพื่อรับลิงก์ Family Invite เข้าใช้งานทันที"
+        discountPercent: 44,
+        chips: ["Low-Poly", "FBX/RBXM", "พร้อมวาง"],
+        fulfillmentType: "instant",
+        imageUrl: createCyberArtwork("3D PROPS PACK", "LOW-POLY MAP ASSETS", "cube", "#F59E0B", "#10B981"),
+        sampleDelivery: "ROBLOX-3D-ASSETS-PACK-BUNDLE-LINK-5521",
+        warrantyDays: 90
+      },
+      {
+        id: "roblox-character-rig",
+        title: "โมเดลตัวละครและ Rig สำหรับทำอนิเมชั่น Roblox (R6 & R15)",
+        category: "cat-roblox-assets",
+        price: 180,
+        originalPrice: 300,
+        stock: 25,
+        status: "HOT",
+        discountPercent: 40,
+        chips: ["R6/R15 Rig", "Blender พร้อมใช้", "นำเข้า Studio ได้"],
+        fulfillmentType: "instant",
+        imageUrl: createCyberArtwork("CHARACTER RIGS", "AUTHENTIC R6 & R15", "cube", "#00B2FF", "#6366F1"),
+        sampleDelivery: "ROBLOX-RIG-ANIMATION-SUITE-KEY-1192",
+        warrantyDays: 90
       }
     ]
   }
@@ -2849,17 +2815,31 @@ class UIManager {
     };
 
     toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-2xl border backdrop-blur-md shadow-2xl text-xs font-semibold animate-in slide-in-from-top-4 duration-200 ${colors[type] || colors.info}`;
-    toast.innerHTML = `
-      <i data-lucide="${icons[type] || 'info'}" class="w-4 h-4 shrink-0"></i>
-      <span class="flex-1">${message}</span>
-    `;
+    
+    // XSS-Safe DOM construction
+    const iconEl = document.createElement("i");
+    iconEl.setAttribute("data-lucide", icons[type] || "info");
+    iconEl.className = "w-4 h-4 shrink-0";
+    
+    const msgEl = document.createElement("span");
+    msgEl.className = "flex-1";
+    msgEl.textContent = String(message || "");
+
+    toast.appendChild(iconEl);
+    toast.appendChild(msgEl);
 
     container.appendChild(toast);
     if (window.lucide) lucide.createIcons();
 
     setTimeout(() => {
       toast.classList.add("opacity-0", "transition-opacity", "duration-300");
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => {
+        if (typeof toast.remove === "function") {
+          toast.remove();
+        } else if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
     }, 3500);
   }
 
@@ -2875,7 +2855,13 @@ class UIManager {
   }
 }
 
-window.UI = new UIManager();
+if (typeof window !== "undefined") {
+  window.UI = new UIManager();
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = UIManager;
+}
 
 
 
@@ -3032,7 +3018,13 @@ class NavbarComponent {
   }
 }
 
-window.NavbarComponent = NavbarComponent;
+if (typeof window !== "undefined") {
+  window.NavbarComponent = NavbarComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = NavbarComponent;
+}
 
 
 
@@ -3186,7 +3178,13 @@ class HeroSectionComponent {
   }
 }
 
-window.HeroSectionComponent = HeroSectionComponent;
+if (typeof window !== "undefined") {
+  window.HeroSectionComponent = HeroSectionComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = HeroSectionComponent;
+}
 
 
 
@@ -3553,7 +3551,13 @@ class CatalogViewComponent {
   }
 }
 
-window.CatalogViewComponent = CatalogViewComponent;
+if (typeof window !== "undefined") {
+  window.CatalogViewComponent = CatalogViewComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CatalogViewComponent;
+}
 
 
 
@@ -3801,18 +3805,24 @@ class CartDrawerComponent {
   }
 }
 
-window.CartDrawerComponent = CartDrawerComponent;
+if (typeof window !== "undefined") {
+  window.CartDrawerComponent = CartDrawerComponent;
 
-window.applyDirectCoupon = (code) => {
-  if (window.Shop?.cartManager) {
-    try {
-      const promo = window.Shop.checkoutService.applyCoupon(code);
-      window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
-    } catch (err) {
-      window.UI?.toast(err.message, "error");
+  window.applyDirectCoupon = (code) => {
+    if (window.Shop?.cartManager) {
+      try {
+        const promo = window.Shop.checkoutService.applyCoupon(code);
+        window.UI?.toast(`ใช้โค้ดส่วนลด "${promo.code}" สำเร็จ!`, "success");
+      } catch (err) {
+        window.UI?.toast(err.message, "error");
+      }
     }
-  }
-};
+  };
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CartDrawerComponent;
+}
 
 
 
@@ -4103,7 +4113,13 @@ class TopUpModalComponent {
   }
 }
 
-window.TopUpModalComponent = TopUpModalComponent;
+if (typeof window !== "undefined") {
+  window.TopUpModalComponent = TopUpModalComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = TopUpModalComponent;
+}
 
 
 
@@ -4426,7 +4442,9 @@ class HistoryModalComponent {
   }
 }
 
-window.HistoryModalComponent = HistoryModalComponent;
+if (typeof window !== "undefined") {
+  window.HistoryModalComponent = HistoryModalComponent;
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = HistoryModalComponent;
@@ -4600,7 +4618,13 @@ class RestockModalComponent {
   }
 }
 
-window.RestockModalComponent = RestockModalComponent;
+if (typeof window !== "undefined") {
+  window.RestockModalComponent = RestockModalComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = RestockModalComponent;
+}
 
 
 
@@ -4982,7 +5006,9 @@ class DiscordServiceModalComponent {
   }
 }
 
-window.DiscordServiceModalComponent = DiscordServiceModalComponent;
+if (typeof window !== "undefined") {
+  window.DiscordServiceModalComponent = DiscordServiceModalComponent;
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = DiscordServiceModalComponent;
@@ -5184,7 +5210,13 @@ class ModalsComponent {
   }
 }
 
-window.ModalsComponent = ModalsComponent;
+if (typeof window !== "undefined") {
+  window.ModalsComponent = ModalsComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ModalsComponent;
+}
 
 
 
@@ -5247,7 +5279,13 @@ class SocialProofComponent {
   }
 }
 
-window.SocialProofComponent = SocialProofComponent;
+if (typeof window !== "undefined") {
+  window.SocialProofComponent = SocialProofComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = SocialProofComponent;
+}
 
 
 
@@ -5526,7 +5564,13 @@ class AmbientWavesEngine {
 }
 
 // Global Export
-window.AmbientWavesEngine = AmbientWavesEngine;
+if (typeof window !== "undefined") {
+  window.AmbientWavesEngine = AmbientWavesEngine;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = AmbientWavesEngine;
+}
 
 
 

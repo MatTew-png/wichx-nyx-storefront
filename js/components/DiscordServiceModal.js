@@ -373,7 +373,9 @@ class DiscordServiceModalComponent {
   }
 }
 
-window.DiscordServiceModalComponent = DiscordServiceModalComponent;
+if (typeof window !== "undefined") {
+  window.DiscordServiceModalComponent = DiscordServiceModalComponent;
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = DiscordServiceModalComponent;

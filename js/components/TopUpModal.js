@@ -282,4 +282,10 @@ class TopUpModalComponent {
   }
 }
 
-window.TopUpModalComponent = TopUpModalComponent;
+if (typeof window !== "undefined") {
+  window.TopUpModalComponent = TopUpModalComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = TopUpModalComponent;
+}

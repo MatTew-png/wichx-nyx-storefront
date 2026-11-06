@@ -54,4 +54,10 @@ class SocialProofComponent {
   }
 }
 
-window.SocialProofComponent = SocialProofComponent;
+if (typeof window !== "undefined") {
+  window.SocialProofComponent = SocialProofComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = SocialProofComponent;
+}

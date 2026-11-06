@@ -314,7 +314,9 @@ class HistoryModalComponent {
   }
 }
 
-window.HistoryModalComponent = HistoryModalComponent;
+if (typeof window !== "undefined") {
+  window.HistoryModalComponent = HistoryModalComponent;
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = HistoryModalComponent;

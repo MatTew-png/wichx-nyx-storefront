@@ -189,4 +189,10 @@ class ModalsComponent {
   }
 }
 
-window.ModalsComponent = ModalsComponent;
+if (typeof window !== "undefined") {
+  window.ModalsComponent = ModalsComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ModalsComponent;
+}
