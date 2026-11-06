@@ -98,7 +98,13 @@ const SupabaseAdapter = {
       const [catRes, prodRes, stockRes] = await Promise.all([
         this.client.from("categories").select("*").order("sort_order", { ascending: true }),
         this.client.from("products").select("*").eq("is_active", true),
-        this.client.rpc("get_product_stock_counts").catch(e => ({ data: null, error: e }))
+        (async () => {
+          try {
+            return await this.client.rpc("get_product_stock_counts");
+          } catch (e) {
+            return { data: null, error: e };
+          }
+        })()
       ]);
 
       if (catRes.error) throw catRes.error;
@@ -121,28 +127,42 @@ const SupabaseAdapter = {
         "cat-roblox-assets": { name: "Roblox GFX & โมเดล 3D", icon: "box" }
       };
 
-      // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน
-      return cats.map(cat => ({
-        id: cat.id,
-        name: CATEGORY_DISPLAY_MAP[cat.id]?.name || cat.name,
-        subName: cat.sub_name,
-        icon: CATEGORY_DISPLAY_MAP[cat.id]?.icon || cat.icon || "layers",
-        badge: cat.badge || "AUTO",
-        products: prods
-          .filter(p => p.category_id === cat.id)
-          .map(p => ({
-            id: p.id,
-            title: p.title,
-            price: parseFloat(p.price),
-            originalPrice: p.original_price ? parseFloat(p.original_price) : null,
-            unit: p.unit,
-            stock: stockMap[p.id] !== undefined ? stockMap[p.id] : 10,
-            status: stockMap[p.id] === 0 ? "OUT OF STOCK" : (p.status || "SALE"),
-            fulfillmentType: p.fulfillment_type || "instant",
-            chips: (p.chips || []).map(c => String(c).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{1FA00}-\u{1FAFF}\u{FE0F}]/gu, '').trim()),
-            imageUrl: p.image_url || ""
-          }))
-      }));
+      // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน (เฉพาะ 4 หมวดของเครือข่ายร้าน)
+      const allowedCategories = ['cat-discord-nitro', 'cat-discord-services', 'cat-roblox-scripts', 'cat-roblox-assets'];
+      const fallbackProducts = (window.categoriesData || []).flatMap(c => c.products || []);
+
+      return cats
+        .filter(cat => allowedCategories.includes(cat.id))
+        .map(cat => ({
+          id: cat.id,
+          name: CATEGORY_DISPLAY_MAP[cat.id]?.name || cat.name,
+          subName: cat.sub_name,
+          icon: CATEGORY_DISPLAY_MAP[cat.id]?.icon || cat.icon || "layers",
+          badge: cat.badge || "AUTO",
+          products: prods
+            .filter(p => p.category_id === cat.id)
+            .map(p => {
+              const fallback = fallbackProducts.find(x => x.id === p.id);
+              return {
+                id: p.id,
+                title: p.title,
+                price: parseFloat(p.price),
+                originalPrice: p.original_price ? parseFloat(p.original_price) : null,
+                unit: p.unit,
+                minQuantity: p.min_quantity || fallback?.minQuantity,
+                maxQuantity: p.max_quantity || fallback?.maxQuantity,
+                stepQuantity: p.step_quantity || fallback?.stepQuantity,
+                stock: stockMap[p.id] !== undefined ? stockMap[p.id] : (fallback?.stock || 10),
+                status: stockMap[p.id] === 0 ? "OUT OF STOCK" : (p.status || fallback?.status || "SALE"),
+                fulfillmentType: p.fulfillment_type || fallback?.fulfillmentType || "instant",
+                chips: (p.chips || fallback?.chips || []).map(c => String(c).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{1FA00}-\u{1FAFF}\u{FE0F}]/gu, '').trim()),
+                imageUrl: p.image_url || fallback?.imageUrl || "",
+                instructions: fallback?.instructions || "",
+                sampleDelivery: fallback?.sampleDelivery || "",
+                warrantyDays: fallback?.warrantyDays || 30
+              };
+            })
+        }));
     } catch (err) {
       console.warn("[SUPABASE] Fetch live products failed, using fallback:", err.message);
       return window.categoriesData || [];
