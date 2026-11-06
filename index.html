@@ -111,7 +111,7 @@
   <!-- jsQR Engine for Smart Slip Auto-Scan -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
-  <!-- Critical Inline Intro CSS (Zero-Flash, Blocks Viewport Instantly) -->
+  <!-- Critical Inline Intro CSS (Seamless Pure Vector Reveal - Zero Box) -->
   <style id="nyx-intro-critical-css">
     html.nyx-intro-active,
     html.nyx-intro-active body {
@@ -128,15 +128,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      animation: 0.7s cubic-bezier(0.77, 0, 0.175, 1) 2.4s 1 forwards moveLoader;
+      animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) 2.4s 1 forwards moveLoader;
       will-change: transform;
       pointer-events: all;
       user-select: none;
       -webkit-user-select: none;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     @keyframes moveLoader {
       0% { transform: translateY(0%); }
-      100% { transform: translateY(-100%); visibility: hidden; }
+      100% { transform: translateY(-100%); }
     }
     .intro-logo-container {
       position: relative;
@@ -151,15 +153,17 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 0 35px rgba(0, 178, 255, 0.35));
+      display: block;
     }
     .intro-logo-back { opacity: 0.22; }
-    @keyframes slideMask {
-      0% { y: 100%; }
-      100% { y: 0%; }
+    .intro-logo-front {
+      will-change: clip-path;
+      clip-path: inset(100% 0 0 0);
+      animation: 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.2s 1 forwards clipReveal;
     }
-    #nyx-logo-mask-rect {
-      animation: 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.2s 1 forwards slideMask;
+    @keyframes clipReveal {
+      0% { clip-path: inset(100% 0 0 0); }
+      100% { clip-path: inset(0% 0 0 0); }
     }
     .intro-brand-text {
       margin-top: 24px;
@@ -171,7 +175,8 @@
       color: #FFFFFF;
       opacity: 0;
       transform: translateY(10px);
-      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s 1 forwards textFadeIn;
+      will-change: opacity, transform;
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.85s 1 forwards textFadeIn;
     }
     .intro-sub-text {
       margin-top: 6px;
@@ -183,7 +188,8 @@
       text-transform: uppercase;
       opacity: 0;
       transform: translateY(10px);
-      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.0s 1 forwards textFadeIn;
+      will-change: opacity, transform;
+      animation: 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.05s 1 forwards textFadeIn;
     }
     .intro-skip-hint {
       margin-top: 28px;
@@ -191,7 +197,8 @@
       font-size: 11px;
       color: #64748B;
       opacity: 0;
-      animation: 0.5s ease-out 1.2s 1 forwards textFadeIn;
+      will-change: opacity;
+      animation: 0.5s ease-out 1.25s 1 forwards textFadeIn;
       cursor: pointer;
       transition: color 0.2s ease;
     }
@@ -203,18 +210,15 @@
   </style>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.2.2" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.2.2';}" />
+  <link rel="stylesheet" href="styles.css?v=3.2.3" onerror="if(!this.__retried){this.__retried=true;this.href='https://wichx-nyx-storefront.jansanga-new.workers.dev/styles.css?v=3.2.3';}" />
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
   <!-- ==============================================================================
-       🎬 INTRO ANIMATION LOADER (ZERO-JANK 120FPS GPU COMPOSITED)
+       🎬 INTRO ANIMATION LOADER (SEAMLESS PURE VECTOR REVEAL - ZERO BOX)
        ============================================================================== -->
   <div id="nyx-intro" class="nyx-intro-loader" onclick="dismissNyxIntro()">
     <div class="intro-logo-container">
-      <!-- Glow ambient backdrop -->
-      <div class="intro-glow"></div>
-
       <!-- LAYER 1: Silhouette / Back Logo (Dark Muted) -->
       <svg class="intro-logo-svg intro-logo-back" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#252A36" />
@@ -222,26 +226,22 @@
         <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#14324D" />
       </svg>
 
-      <!-- LAYER 2: GPU-Accelerated Sliding Reveal Window (Zero CPU Masking) -->
-      <div class="intro-reveal-window">
-        <div class="intro-reveal-content">
-          <svg class="intro-logo-svg" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Base White Body -->
-            <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
-            <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
-            <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
-            <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
-            <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+      <!-- LAYER 2: Foreground Vibrant Logo with Pure CSS clip-path (Seamless, Zero Box!) -->
+      <svg class="intro-logo-svg intro-logo-front" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base White Body -->
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+        <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+        <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+        <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+        <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
 
-            <!-- Base Electric Blue Segments -->
-            <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
-            <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
-            <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
-            <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
-            <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
-          </svg>
-        </div>
-      </div>
+        <!-- Base Electric Blue Segments -->
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+        <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+        <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+        <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+      </svg>
     </div>
 
     <!-- Typography Brand Intro -->
@@ -1930,12 +1930,12 @@
         if (!isFallback) {
           s.onerror = function() {
             console.warn('[HA-EDGE] Client network or local antivirus blocked primary bundle host. Activating high-availability edge mirror...');
-            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.2.2', true);
+            loadBundle('https://wichx-nyx-storefront.jansanga-new.workers.dev/dist/store.bundle.js?v=3.2.3', true);
           };
         }
         document.body.appendChild(s);
       }
-      loadBundle('dist/store.bundle.js?v=3.2.2', false);
+      loadBundle('dist/store.bundle.js?v=3.2.3', false);
     })();
   </script>
 </body>
