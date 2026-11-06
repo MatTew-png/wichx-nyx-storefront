@@ -5144,8 +5144,9 @@ window.SocialProofComponent = SocialProofComponent;
 /* ============================================================================== */
 /**
  * ==============================================================================
- * 🌊 SUBTLE AMBIENT ICE-VAPOR WAVES ENGINE v3.0 (DEEP ATMOSPHERIC SILK)
- * Ultra-subtle, non-distracting 60fps background waves tuned for high product contrast
+ * 🌊 SUBTLE AMBIENT SILK WAVES ENGINE v4.0 (LINEAR DARK EDITORIAL)
+ * Ultra-subtle, non-distracting 60fps atmospheric waves tuned for maximum contrast
+ * (Zero comet/particle distractions, pure calm silk waves)
  * ==============================================================================
  */
 
@@ -5160,24 +5161,14 @@ class AmbientWavesEngine {
     this.step = 0;
     this.pulseTime = 0;
 
-    // Mouse Physics (Ultra-damped)
+    // Mouse Physics (Ultra-damped gentle wave parallax)
     this.mouseX = 0;
     this.mouseY = 0;
-    this.rawMouseX = -999;
-    this.rawMouseY = -999;
     this.targetMouseX = 0;
     this.targetMouseY = 0;
     this.isRunning = false;
     this.isScrolling = false;
     this.scrollTimeout = null;
-
-    // ReactBits Warp Stars Acceleration Physics
-    this.stars = [];
-    this.warpBoost = 1.0;
-    this.targetWarpBoost = 1.0;
-    this.lastMouseX = 0;
-    this.lastMouseY = 0;
-    this.lastMouseMoveTime = 0;
 
     // Detect mobile or low-power device
     this.isMobile = typeof window !== "undefined" && (window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024));
@@ -5211,29 +5202,17 @@ class AmbientWavesEngine {
       return;
     }
 
-    this.initParticles();
-
     window.addEventListener("resize", () => {
       this.resize();
-      this.initParticles();
     }, { passive: true });
     
-    // Smooth mouse parallax + ReactBits Warp Stars Acceleration
+    // Smooth mouse parallax (Gentle and restrained)
     window.addEventListener("mousemove", (e) => {
-      this.targetMouseX = (e.clientX / (this.width || 1) - 0.5) * 30;
-      this.targetMouseY = (e.clientY / (this.height || 1) - 0.5) * 20;
-
-      const now = performance.now();
-      const dt = Math.max(1, now - (this.lastMouseMoveTime || now));
-      const dist = Math.hypot(e.clientX - (this.lastMouseX || e.clientX), e.clientY - (this.lastMouseY || e.clientY));
-      const speed = dist / dt; // px per ms
-      this.lastMouseX = e.clientX;
-      this.lastMouseY = e.clientY;
-      this.lastMouseMoveTime = now;
-      this.targetWarpBoost = Math.min(3.2, 1.0 + speed * 1.6);
+      this.targetMouseX = (e.clientX / (this.width || 1) - 0.5) * 20;
+      this.targetMouseY = (e.clientY / (this.height || 1) - 0.5) * 15;
     }, { passive: true });
 
-    // Scroll performance protector: Pause canvas redrawing during scroll!
+    // Scroll performance protector: Pause canvas redrawing during rapid scroll
     window.addEventListener("scroll", () => {
       this.isScrolling = true;
       if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
@@ -5254,29 +5233,6 @@ class AmbientWavesEngine {
     this.start();
   }
 
-  initParticles() {
-    this.starCount = this.isMobile ? 24 : 60;
-    this.stars = [];
-    const colors = [
-      { r: 0, g: 242, b: 255 },   // Cyan
-      { r: 168, g: 85, b: 247 },  // Neon Violet
-      { r: 56, g: 189, b: 248 }   // Ice Sky
-    ];
-    for (let i = 0; i < this.starCount; i++) {
-      const col = colors[i % colors.length];
-      this.stars.push({
-        x: Math.random() * (this.width || 1200),
-        y: Math.random() * (this.height || 800),
-        speed: 0.6 + Math.random() * 1.2,
-        trail: 10 + Math.random() * 20,
-        size: 0.9 + Math.random() * 1.3,
-        color: col,
-        alpha: 0.20 + Math.random() * 0.40,
-        twinkle: Math.random() * Math.PI * 2
-      });
-    }
-  }
-
   resize() {
     if (!this.canvas) return;
     this.width = window.innerWidth;
@@ -5288,22 +5244,18 @@ class AmbientWavesEngine {
   start() {
     if (this.isRunning || this.isMobile) return;
     this.isRunning = true;
-    let lastTime = 0;
-    const fpsInterval = 1000 / 30; // 30 FPS cap for maximum CPU/GPU efficiency
 
-    const render = (currentTime) => {
+    const render = () => {
       if (!this.isRunning) return;
-      this.animationFrameId = requestAnimationFrame(render);
 
-      // Skip redrawing during user scroll to give 100% GPU to buttery 120Hz smooth scrolling
-      if (this.isScrolling) return;
-
-      const elapsed = currentTime - lastTime;
-      if (elapsed > fpsInterval) {
-        lastTime = currentTime - (elapsed % fpsInterval);
+      // Don't render frames if user is fast-scrolling to prioritize DOM scroll smoothness
+      if (!this.isScrolling) {
         this.draw();
       }
+
+      this.animationFrameId = requestAnimationFrame(render);
     };
+
     this.animationFrameId = requestAnimationFrame(render);
   }
 
@@ -5318,66 +5270,63 @@ class AmbientWavesEngine {
   draw() {
     if (!this.ctx || !this.width || !this.height) return;
 
-    // Ultra-smooth mouse lerp
-    this.mouseX += (this.targetMouseX - this.mouseX) * 0.04;
-    this.mouseY += (this.targetMouseY - this.mouseY) * 0.04;
+    // Smooth lerp mouse physics
+    this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
+    this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
 
-    this.step += 0.007;
-    this.pulseTime += 0.009;
+    this.step += 0.006;
+    this.pulseTime += 0.008;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    // 1. Subtle Ambient Nebula pools (Very faint soft glow)
+    // 1. Subtle Ambient Nebula pools (Faint Linear Slate-Indigo glow)
     this.drawSubtleGlows();
 
-    // 2. Layered Faint Waves (Atmospheric Silk - No loud neon strokes)
-    // Wave 1: Deep Twilight Sapphire (Upper Hero Zone)
+    // 2. Layered Faint Waves (Atmospheric Silk - Pure smooth motion, zero particles)
+    // Wave 1: Deep Twilight Slate (Upper Hero Zone)
     this.renderWave({
-      yBase: this.height * 0.25 - this.mouseY * 0.4,
-      amplitude: 38,
+      yBase: this.height * 0.25 - this.mouseY * 0.3,
+      amplitude: 36,
       frequency: 0.0011,
-      speed: -this.step * 0.6,
+      speed: -this.step * 0.55,
       phase: 0.3,
-      gradientStart: "rgba(15, 38, 80, 0.07)",
-      gradientEnd: "rgba(15, 38, 80, 0.00)"
+      gradientStart: "rgba(20, 24, 40, 0.07)",
+      gradientEnd: "rgba(20, 24, 40, 0.00)"
     });
 
-    // Wave 2: Soft Ice Blue Silk (Matches Logo crystal accents)
+    // Wave 2: Soft Electric Indigo Silk (Linear Brand Accent)
     this.renderWave({
-      yBase: this.height * 0.42 + this.mouseY * 0.5,
-      amplitude: 32,
-      frequency: 0.0015,
-      speed: this.step * 0.75,
+      yBase: this.height * 0.42 + this.mouseY * 0.4,
+      amplitude: 30,
+      frequency: 0.0014,
+      speed: this.step * 0.7,
       phase: 0,
-      gradientStart: "rgba(0, 163, 255, 0.055)",
-      gradientEnd: "rgba(0, 163, 255, 0.00)",
-      hairlineStroke: "rgba(56, 189, 248, 0.08)"
+      gradientStart: "rgba(99, 102, 241, 0.045)",
+      gradientEnd: "rgba(99, 102, 241, 0.00)",
+      hairlineStroke: "rgba(99, 102, 241, 0.07)"
     });
 
     // Wave 3: Deep Slate Horizon (Flowing under Stats)
     this.renderWave({
-      yBase: this.height * 0.65 - this.mouseY * 0.3,
-      amplitude: 28,
-      frequency: 0.0017,
-      speed: this.step * 0.85,
+      yBase: this.height * 0.65 - this.mouseY * 0.25,
+      amplitude: 26,
+      frequency: 0.0016,
+      speed: this.step * 0.8,
       phase: Math.PI * 0.7,
-      gradientStart: "rgba(30, 41, 59, 0.06)",
-      gradientEnd: "rgba(30, 41, 59, 0.00)"
+      gradientStart: "rgba(30, 27, 75, 0.05)",
+      gradientEnd: "rgba(30, 27, 75, 0.00)"
     });
 
     // Wave 4: Deep Abyss Vapor (Catalog Lower Bed)
     this.renderWave({
-      yBase: this.height * 0.85 + this.mouseY * 0.3,
-      amplitude: 34,
-      frequency: 0.0013,
-      speed: -this.step * 0.65,
+      yBase: this.height * 0.85 + this.mouseY * 0.25,
+      amplitude: 32,
+      frequency: 0.0012,
+      speed: -this.step * 0.6,
       phase: Math.PI * 1.3,
-      gradientStart: "rgba(2, 132, 199, 0.045)",
-      gradientEnd: "rgba(2, 132, 199, 0.00)"
+      gradientStart: "rgba(15, 23, 42, 0.04)",
+      gradientEnd: "rgba(15, 23, 42, 0.00)"
     });
-
-    // 3. Draw Quiet Stardust Motes
-    this.drawQuietParticles();
   }
 
   drawSubtleGlows() {
@@ -5385,114 +5334,75 @@ class AmbientWavesEngine {
     const w = this.width;
     const h = this.height;
 
-    // Faint Ice Blue Pool (Top Left) - Bounded draw area for maximum GPU efficiency
-    const n1X = w * 0.3 + Math.sin(this.pulseTime * 0.6) * 50;
-    const n1Y = h * 0.2 + Math.cos(this.pulseTime * 0.4) * 30;
-    const g1 = ctx.createRadialGradient(n1X, n1Y, 20, n1X, n1Y, 400);
-    g1.addColorStop(0, "rgba(0, 163, 255, 0.055)");
-    g1.addColorStop(0.6, "rgba(0, 163, 255, 0.012)");
-    g1.addColorStop(1, "rgba(0, 163, 255, 0.00)");
+    // Faint Electric Indigo Pool (Top Left) - Bounded draw area
+    const n1X = w * 0.3 + Math.sin(this.pulseTime * 0.6) * 45;
+    const n1Y = h * 0.2 + Math.cos(this.pulseTime * 0.4) * 25;
+    const g1 = ctx.createRadialGradient(n1X, n1Y, 20, n1X, n1Y, 380);
+    g1.addColorStop(0, "rgba(99, 102, 241, 0.04)");
+    g1.addColorStop(0.6, "rgba(99, 102, 241, 0.008)");
+    g1.addColorStop(1, "rgba(99, 102, 241, 0.00)");
     ctx.fillStyle = g1;
-    ctx.fillRect(Math.max(0, n1X - 400), Math.max(0, n1Y - 400), Math.min(w, 800), Math.min(h, 800));
+    ctx.fillRect(Math.max(0, n1X - 380), Math.max(0, n1Y - 380), Math.min(w, 760), Math.min(h, 760));
 
-    // Faint Deep Indigo Pool (Mid Right) - Bounded draw area
-    const n2X = w * 0.75 + Math.cos(this.pulseTime * 0.5) * 50;
-    const n2Y = h * 0.45 + Math.sin(this.pulseTime * 0.7) * 40;
-    const g2 = ctx.createRadialGradient(n2X, n2Y, 20, n2X, n2Y, 420);
-    g2.addColorStop(0, "rgba(30, 58, 138, 0.045)");
-    g2.addColorStop(0.6, "rgba(30, 58, 138, 0.008)");
-    g2.addColorStop(1, "rgba(30, 58, 138, 0.00)");
+    // Faint Violet Slate Pool (Mid Right) - Bounded draw area
+    const n2X = w * 0.75 + Math.cos(this.pulseTime * 0.5) * 45;
+    const n2Y = h * 0.45 + Math.sin(this.pulseTime * 0.7) * 35;
+    const g2 = ctx.createRadialGradient(n2X, n2Y, 20, n2X, n2Y, 400);
+    g2.addColorStop(0, "rgba(79, 70, 229, 0.03)");
+    g2.addColorStop(0.6, "rgba(79, 70, 229, 0.006)");
+    g2.addColorStop(1, "rgba(79, 70, 229, 0.00)");
     ctx.fillStyle = g2;
-    ctx.fillRect(Math.max(0, n2X - 420), Math.max(0, n2Y - 420), Math.min(w, 840), Math.min(h, 840));
+    ctx.fillRect(Math.max(0, n2X - 400), Math.max(0, n2Y - 400), Math.min(w, 800), Math.min(h, 800));
   }
 
-  renderWave(opts) {
-    const { yBase, amplitude, frequency, speed, phase, gradientStart, gradientEnd, hairlineStroke } = opts;
+  renderWave(options) {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
-
-    ctx.save();
+    const { yBase, amplitude, frequency, speed, phase, gradientStart, gradientEnd, hairlineStroke } = options;
 
     ctx.beginPath();
     ctx.moveTo(0, h);
-    ctx.lineTo(0, yBase);
 
-    const stepX = 22;
-    const points = [];
+    // Dynamic horizontal sampling interval (30px on desktop = ~40-60 points total, very cheap)
+    const stepX = 30;
+
     for (let x = 0; x <= w + stepX; x += stepX) {
-      const angle = (x + this.mouseX * 1.2) * frequency + speed + phase;
-      const y = yBase + Math.sin(angle) * amplitude + Math.cos(angle * 0.6) * (amplitude * 0.35);
-      points.push({ x, y });
-      ctx.lineTo(x, y);
+      // 2 Harmonic waves combined for organic liquid curvature
+      const harmonic1 = Math.sin(x * frequency + speed + phase);
+      const harmonic2 = Math.cos(x * (frequency * 1.6) - speed * 0.7 + phase * 1.5) * 0.35;
+      const y = yBase + (harmonic1 + harmonic2) * amplitude;
+      
+      if (x === 0) {
+        ctx.lineTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
     }
 
     ctx.lineTo(w, h);
     ctx.closePath();
 
-    const grad = ctx.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude * 3);
+    // Vertical atmospheric gradient
+    const grad = ctx.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude * 3.5);
     grad.addColorStop(0, gradientStart);
     grad.addColorStop(1, gradientEnd);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Soft whisper-thin hairline crest (if specified, with low opacity)
+    // Subtle edge highlight hairline
     if (hairlineStroke) {
       ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) {
-        const xc = (points[i - 1].x + points[i].x) / 2;
-        const yc = (points[i - 1].y + points[i].y) / 2;
-        ctx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+      for (let x = 0; x <= w + stepX; x += stepX) {
+        const harmonic1 = Math.sin(x * frequency + speed + phase);
+        const harmonic2 = Math.cos(x * (frequency * 1.6) - speed * 0.7 + phase * 1.5) * 0.35;
+        const y = yBase + (harmonic1 + harmonic2) * amplitude;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.strokeStyle = hairlineStroke;
-      ctx.lineWidth = 0.8;
+      ctx.lineWidth = 1;
       ctx.stroke();
-    }
-
-    ctx.restore();
-  }
-
-  drawQuietParticles() {
-    const ctx = this.ctx;
-    const w = this.width;
-    const h = this.height;
-
-    // ReactBits Fading Stars: Smooth spring recovery for warp boost
-    this.warpBoost += (this.targetWarpBoost - this.warpBoost) * 0.12;
-    this.targetWarpBoost += (1.0 - this.targetWarpBoost) * 0.04;
-
-    for (let i = 0; i < this.stars.length; i++) {
-      const s = this.stars[i];
-      const vy = s.speed * this.warpBoost;
-      s.y -= vy;
-
-      if (s.y < -40) {
-        s.y = h + 20;
-        s.x = Math.random() * w;
-      }
-
-      s.twinkle += 0.04;
-      const alpha = s.alpha * (0.8 + 0.2 * Math.sin(s.twinkle));
-      const trailLen = s.trail * (0.7 + 0.3 * this.warpBoost);
-
-      // Star streak trail
-      const grad = ctx.createLinearGradient(s.x, s.y, s.x, s.y + trailLen);
-      grad.addColorStop(0, `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, ${alpha})`);
-      grad.addColorStop(1, `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, 0)`);
-
-      ctx.beginPath();
-      ctx.moveTo(s.x, s.y);
-      ctx.lineTo(s.x, s.y + trailLen);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = s.size;
-      ctx.stroke();
-
-      // Star core point
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size * 0.9, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${s.color.r}, ${s.color.g}, ${s.color.b}, ${alpha * 1.2})`;
-      ctx.fill();
     }
   }
 
@@ -5503,6 +5413,7 @@ class AmbientWavesEngine {
   }
 }
 
+// Global Export
 window.AmbientWavesEngine = AmbientWavesEngine;
 
 
