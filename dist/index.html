@@ -887,7 +887,1864 @@ html.nyx-intro-active body {
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
 
-  <!-- Unified Storefront Application Engine (Bundled for Production) -->
+  <!-- ==============================================================================
+       🎬 INTRO ANIMATION LOADER (SEAMLESS PURE VECTOR REVEAL - ZERO BOX)
+       ============================================================================== -->
+  <div id="nyx-intro" class="nyx-intro-loader" onclick="dismissNyxIntro()">
+    <div class="intro-logo-container">
+      <!-- LAYER 1: Silhouette / Back Logo (Dark Muted) -->
+      <svg class="intro-logo-svg intro-logo-back" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#252A36" />
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#14324D" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#14324D" />
+      </svg>
+
+      <!-- LAYER 2: Foreground Vibrant Logo with Pure CSS clip-path (Seamless, Zero Box!) -->
+      <svg class="intro-logo-svg intro-logo-front" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base White Body -->
+        <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+        <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+        <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+        <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+        <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+
+        <!-- Base Electric Blue Segments -->
+        <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+        <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+        <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+        <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+        <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+      </svg>
+    </div>
+
+    <!-- Typography Brand Intro -->
+    <div class="intro-brand-text">NYX9 STUDIO</div>
+    <div class="intro-sub-text">DISCORD & ROBLOX STUDIO</div>
+    <div class="intro-skip-hint">แตะที่ใดก็ได้เพื่อข้าม (Skip)</div>
+  </div>
+
+  <script>
+    function dismissNyxIntro() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        intro.style.opacity = '0';
+        intro.style.transform = 'translateY(-100%)';
+        setTimeout(function() {
+          if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+          document.documentElement.classList.remove('nyx-intro-active');
+        }, 260);
+      }
+    }
+    (function() {
+      var intro = document.getElementById('nyx-intro');
+      if (intro) {
+        intro.addEventListener('animationend', function(e) {
+          if (e.animationName === 'moveLoader') {
+            if (intro.parentNode) intro.parentNode.removeChild(intro);
+            document.documentElement.classList.remove('nyx-intro-active');
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- ==============================================================================
+       1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)
+       ============================================================================== -->
+  <header class="sticky top-0 z-40 w-full bg-[#070A0F]/90 backdrop-blur-2xl border-b border-[rgba(255,255,255,0.08)]">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 h-18 py-3 flex items-center justify-between gap-3 sm:gap-4">
+      
+      <!-- Store Branding & Dynamic Back Navigation -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <a href="javascript:void(0)" onclick="window.navigateToPage('home')" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div class="relative w-10 h-10 rounded-xl bg-[#090D15] border border-white/[0.1] flex items-center justify-center overflow-hidden p-1.5 shadow-[0_0_15px_rgba(0,163,255,0.2)] transition-all group-hover:scale-105 group-hover:border-[var(--accent)]/50">
+            <svg class="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,178,255,0.4)]" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NYX9 STUDIO Logo">
+              <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+              <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+              <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+              <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+              <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+              <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+              <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+              <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+              <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+              <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-base md:text-lg font-heading font-extrabold tracking-wider text-white group-hover:text-[var(--accent)] transition-colors" data-bind="storeName">
+              NYX9 STUDIO
+            </div>
+            <div class="text-[10px] font-mono-val text-slate-400 -mt-0.5 tracking-tight flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>ออนไลน์ 24 ชม.</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Back to Home Action Button (Shown on sub-pages) -->
+        <button id="nav-back-home-btn" onclick="window.navigateToPage('home')" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-[var(--accent)] transition-all cursor-pointer group active:scale-95 shadow-sm ml-1 sm:ml-2">
+          <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+          <span>กลับหน้าหลัก</span>
+        </button>
+      </div>
+
+      <!-- Quick Desktop Page Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-1 text-xs font-medium text-slate-300">
+        <button onclick="window.navigateToPage('home', '#category-filter-bar')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
+          สินค้าทั้งหมด
+        </button>
+        <button onclick="window.navigateToPage('topup')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
+          เติมเงิน
+        </button>
+        <button onclick="window.navigateToPage('history')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
+          ประวัติคำสั่งซื้อ
+        </button>
+        <button onclick="window.navigateToPage('claim')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
+          แจ้งเคลม
+        </button>
+        <button onclick="window.navigateToPage('faq')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
+          คำถามที่พบบ่อย
+        </button>
+      </nav>
+
+      <!-- Action Buttons & User Telemetry -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        
+        <!-- Shopping Cart -->
+        <button onclick="toggleCartDrawer()" class="relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group active:scale-95" title="ตะกร้าสินค้า">
+          <div class="relative flex items-center justify-center">
+            <i data-lucide="shopping-cart" class="w-4 h-4 text-[var(--accent)] group-hover:scale-110 transition-transform"></i>
+            <span id="cart-badge-count" class="hidden">0</span>
+          </div>
+          <span class="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors hidden sm:inline">ตะกร้า</span>
+        </button>
+
+        <!-- Wallet Balance & Top-Up Pill (Direct Navigation to /topup) -->
+        <button onclick="window.navigateToPage('topup')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[rgba(0,242,255,0.06)] hover:bg-[rgba(0,242,255,0.12)] border border-[rgba(0,242,255,0.15)] hover:border-[rgba(0,242,255,0.35)] transition-all group cursor-pointer active:scale-95 shadow-sm" title="คลิกเพื่อไปหน้าเติมเงิน">
+          <div class="w-5 h-5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] flex items-center justify-center">
+            <i data-lucide="wallet" class="w-3 h-3"></i>
+          </div>
+          <div class="text-left">
+            <div class="text-[9px] text-slate-400 font-mono-val leading-none">กระเป๋าเงิน</div>
+            <div id="user-wallet-balance" class="text-xs font-mono-val font-extrabold text-[var(--accent)] leading-tight">฿500.00</div>
+          </div>
+          <span class="w-4 h-4 rounded-md bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold flex items-center justify-center ml-0.5 group-hover:scale-110 transition-transform">+</span>
+        </button>
+
+        <!-- Subtle Dot Separator -->
+        <span class="inline-block w-1 h-1 rounded-full bg-slate-700/60 mx-0.5 sm:mx-1"></span>
+
+        <!-- Discord Auth Section (Login Button / Profile Dropdown) -->
+        <div id="auth-section" class="relative flex items-center">
+          <!-- Unauthenticated: Login with Discord -->
+          <button id="btn-discord-login" onclick="handleDiscordLogin()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white transition-all text-xs font-bold shadow-sm shadow-[#5865F2]/20 group cursor-pointer active:scale-95" title="เข้าสู่ระบบด้วย Discord">
+            <svg class="w-4 h-4 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.195.373.288a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.893a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <span class="hidden sm:inline">เข้าสู่ระบบ Discord</span>
+          </button>
+
+          <!-- Authenticated: Profile Badge Trigger Button -->
+          <button id="user-profile-badge" onclick="window.toggleUserMenu(event)" class="hidden items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] hover:border-white/[0.18] transition-all cursor-pointer group select-none">
+            <img id="user-avatar-img" src="" alt="Avatar" class="w-6 h-6 rounded-lg object-cover ring-1 ring-white/10 group-hover:ring-[var(--accent)] transition-all" />
+            <div class="text-left hidden md:block">
+              <div id="user-display-name" class="text-xs font-bold text-white leading-tight max-w-[110px] truncate">Discord</div>
+            </div>
+            <i data-lucide="chevron-down" id="user-menu-chevron" class="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-transform duration-200"></i>
+          </button>
+
+          <!-- Dropdown Menu Box -->
+          <div id="user-dropdown-menu" class="hidden absolute right-0 top-full mt-2 w-72 rounded-2xl bg-[#090D14]/95 backdrop-blur-2xl border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(0,242,255,0.1)] p-2 z-[200]">
+            <!-- User Info Card Header -->
+            <div class="p-3 rounded-xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.06] mb-1.5">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <img id="menu-avatar-img" src="" alt="Avatar" class="w-10 h-10 rounded-xl object-cover ring-2 ring-[#5865F2]/50" />
+                  <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#090D14]"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div id="menu-username" class="text-xs font-heading font-extrabold text-white truncate">Discord User</div>
+                  <div id="menu-discord-id" class="text-[10px] text-slate-400 font-mono truncate">ID: -</div>
+                </div>
+              </div>
+              <div class="mt-2.5 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+                <span class="text-[11px] text-slate-400 flex items-center gap-1.5 font-medium">
+                  <i data-lucide="wallet" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
+                  ยอดเงินคงเหลือ
+                </span>
+                <span id="menu-wallet-balance" class="text-xs font-mono font-bold text-[var(--accent)]">฿0.00</span>
+              </div>
+            </div>
+
+            <!-- Action Menu Items -->
+            <div class="space-y-0.5 text-xs font-medium">
+              <!-- ประวัติคำสั่งซื้อ -->
+              <button onclick="window.navigateToPage('history')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer text-left group">
+                <div class="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-white font-semibold">ประวัติคำสั่งซื้อ & คลังรหัส</div>
+                  <div class="text-[10px] text-slate-400">ดูรหัสสินค้าและใบเสร็จย้อนหลัง</div>
+                </div>
+              </button>
+
+              <!-- แจ้งเคลมสินค้า -->
+              <button onclick="window.navigateToPage('claim')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer text-left group">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-white font-semibold">แจ้งเคลมสินค้า (ประกัน)</div>
+                  <div class="text-[10px] text-slate-400">ส่งเคลมรหัสที่มีปัญหาได้ทันที</div>
+                </div>
+              </button>
+
+              <!-- เติมเงินเข้ากระเป๋า -->
+              <button onclick="window.navigateToPage('topup')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer text-left group">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-white font-semibold">เติมเงินเข้ากระเป๋า</div>
+                  <div class="text-[10px] text-slate-400">พร้อมเพย์, TrueMoney, ธนาคาร</div>
+                </div>
+              </button>
+
+              <!-- Admin Link -->
+              <a id="menu-admin-link" href="admin.html" class="hidden items-center gap-2.5 px-3 py-2 rounded-xl text-amber-300 hover:bg-amber-500/10 transition-all group">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-amber-300 font-bold">ระบบจัดการหลังบ้าน (Admin)</div>
+                  <div class="text-[10px] text-amber-400/70">จัดการสต็อกและสมาชิก</div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <div class="my-1.5 border-t border-white/[0.06]"></div>
+
+            <!-- Logout -->
+            <button onclick="window.handleMenuAction('logout')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all cursor-pointer text-left group font-medium">
+              <div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              </div>
+              <span>ออกจากระบบ</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Search Bar (Only visible on mobile screens) -->
+  <div class="md:hidden px-4 max-w-7xl mx-auto w-full mt-3">
+    <div class="relative">
+      <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+      <input 
+        type="text" 
+        oninput="handleSearchInput(event)" 
+        placeholder="ค้นหาไอดี, คีย์ Nitro, บริการปั๊ม..." 
+        class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/70 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-all"
+      />
+    </div>
+  </div>
+
+  <!-- ==============================================================================
+       2. HERO PROMO BANNER CAROUSEL (WICHX STYLE)
+       ============================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 md:px-8 py-6 w-full flex-1 relative z-10">
+    <!-- ============================================================================
+         VIEW 1: HOME CATALOG (STOREFRONT)
+         ============================================================================ -->
+    <div id="view-home" class="view-panel block">
+      <section class="relative mb-10 px-5 sm:px-0">
+      <!-- Carousel Outer Container -->
+      <div class="overflow-hidden rounded-2xl relative border border-white/[0.08]">
+        <div id="hero-carousel-track" class="flex transition-transform duration-500 ease-out">
+          <!-- Instant Static Skeleton / Fallback Banner (Hydrated by js/components/HeroSection.js) -->
+          <div class="w-full flex-shrink-0 relative rounded-3xl overflow-hidden p-6 sm:p-8 md:p-12 border border-white/[0.08] bg-gradient-to-br from-[#0D1017]/95 via-[#0A0C13]/95 to-[#06080C]/95 backdrop-blur-2xl">
+            <div class="relative z-10 max-w-3xl space-y-4 text-left">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-indigo-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                <span>✦ FLASH DEAL • ลดพิเศษ 48%</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-heading font-black text-white tracking-wide leading-tight">
+                DISCORD NITRO &amp; BOOSTS
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-slate-100 mt-1">
+                  ราคาเริ่มต้นเพียง ฿150
+                </span>
+              </h2>
+              <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal">
+                รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Navigation Arrows (Positioned OUTSIDE the hero card - Zero overlap with content) -->
+      <button onclick="prevCarouselSlide()" class="absolute left-0 sm:-left-5 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A0E17]/95 border border-white/20 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black hover:border-[var(--accent)] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.6)] active:scale-95 cursor-pointer backdrop-blur-md" title="สไลด์ก่อนหน้า" aria-label="Previous slide">
+        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      </button>
+      <button onclick="nextCarouselSlide()" class="absolute right-0 sm:-right-5 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A0E17]/95 border border-white/20 text-white flex items-center justify-center hover:bg-[var(--accent)] hover:text-black hover:border-[var(--accent)] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.6)] active:scale-95 cursor-pointer backdrop-blur-md" title="สไลด์ถัดไป" aria-label="Next slide">
+        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Carousel Indicators Dots -->
+      <div id="hero-carousel-dots" class="flex items-center justify-center gap-1.5 mt-3">
+        <!-- Dots rendered via app.js?v=2.0.1 -->
+      </div>
+    </section>
+
+    <!-- ==============================================================================
+         3. PRO STORE VALUE PROPOSITIONS & VERIFIED TRUST TICKER
+         ============================================================================== -->
+    <div class="mb-8 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+      
+            <!-- Value 1: Instant Bot Fulfillment -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.14] transition-all flex items-center gap-3 group cursor-default">
+        <div class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[var(--accent)] flex items-center justify-center shrink-0">
+          <i data-lucide="zap" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">จัดส่งออโต้ 1-3 วินาที</div>
+          <div class="text-[10px] text-slate-400 truncate">รหัสเข้าคลังทันทีไม่ต้องรอแอดมิน</div>
+        </div>
+      </div>
+
+      <!-- Value 2: 100% Buyer Protection (Clean Static Icon) -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.14] transition-all flex items-center gap-3 group cursor-default">
+        <div class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-emerald-400 flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">รับประกันคุ้มครอง 100%</div>
+          <div class="text-[10px] text-slate-400 truncate">เคลมเปลี่ยนตัวใหม่ใน 10 นาที</div>
+        </div>
+      </div>
+
+      <!-- Value 3: 0% Fee Top-Up -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.14] transition-all flex items-center gap-3 group cursor-default">
+        <div class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-amber-400 flex items-center justify-center shrink-0">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">เติมเงินฟรีค่าธรรมเนียม 0%</div>
+          <div class="text-[10px] text-slate-400 truncate">พร้อมเพย์, TrueMoney, ธนาคาร</div>
+        </div>
+      </div>
+
+      <!-- Value 4: 24/7 Discord Live Support -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.14] transition-all flex items-center gap-3 group cursor-default">
+        <div class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[var(--accent)] flex items-center justify-center shrink-0">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">แอดมินสแตนด์บาย 24 ชม.</div>
+          <div class="text-[10px] text-slate-400 truncate">เปิดทิคเก็ตใน Discord ได้ตลอดเวลา</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==============================================================================
+         4. PRO STORE FILTER & NAVIGATION BAR (PINNED FLOATING ISLAND)
+         ============================================================================== -->
+    <section class="sticky top-[72px] z-30 mb-8">
+      <div class="p-2 sm:p-2.5 rounded-2xl bg-[#0A0E17]/85 backdrop-blur-xl border border-white/[0.08] shadow-[0_12px_36px_rgba(0,0,0,0.5)]">
+        <div id="category-filter-bar" class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <!-- Instant Static Categories (Hydrated by js/components/CatalogView.js) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth flex-nowrap">
+            <span class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-[#0A0D14] border border-white font-bold shadow-md">ทั้งหมด</span>
+            <span class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.03] border border-white/[0.06] text-slate-300">Discord Nitro &amp; บูสต์</span>
+            <span class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.03] border border-white/[0.06] text-slate-300">บริการดิสคอร์ด &amp; ไอดี</span>
+            <span class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.03] border border-white/[0.06] text-slate-300">สคริปต์ Roblox</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================================
+         5. MULTI-NICHE PRODUCT CATALOG (DYNAMIC SECTIONS & CARDS)
+         ============================================================================== -->
+    <div id="catalog-container">
+      <!-- Instant Skeleton Shimmer (Hydrated by js/components/CatalogView.js) -->
+      <div class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="rounded-2xl bg-[#0C111A] border border-white/[0.06] p-4 flex flex-col justify-between animate-pulse min-h-[260px]">
+            <div class="w-full aspect-square rounded-xl bg-white/[0.03] mb-3"></div>
+            <div class="h-4 w-3/4 rounded bg-white/[0.08] mb-2"></div>
+            <div class="h-3 w-1/2 rounded bg-white/[0.04] mb-3"></div>
+            <div class="h-8 rounded-xl bg-white/[0.06]"></div>
+          </div>
+          <div class="rounded-2xl bg-[#0C111A] border border-white/[0.06] p-4 flex flex-col justify-between animate-pulse min-h-[260px]">
+            <div class="w-full aspect-square rounded-xl bg-white/[0.03] mb-3"></div>
+            <div class="h-4 w-3/4 rounded bg-white/[0.08] mb-2"></div>
+            <div class="h-3 w-1/2 rounded bg-white/[0.04] mb-3"></div>
+            <div class="h-8 rounded-xl bg-white/[0.06]"></div>
+          </div>
+          <div class="rounded-2xl bg-[#0C111A] border border-white/[0.06] p-4 flex flex-col justify-between animate-pulse min-h-[260px] hidden md:flex">
+            <div class="w-full aspect-square rounded-xl bg-white/[0.03] mb-3"></div>
+            <div class="h-4 w-3/4 rounded bg-white/[0.08] mb-2"></div>
+            <div class="h-3 w-1/2 rounded bg-white/[0.04] mb-3"></div>
+            <div class="h-8 rounded-xl bg-white/[0.06]"></div>
+          </div>
+          <div class="rounded-2xl bg-[#0C111A] border border-white/[0.06] p-4 flex flex-col justify-between animate-pulse min-h-[260px] hidden lg:flex">
+            <div class="w-full aspect-square rounded-xl bg-white/[0.03] mb-3"></div>
+            <div class="h-4 w-3/4 rounded bg-white/[0.08] mb-2"></div>
+            <div class="h-3 w-1/2 rounded bg-white/[0.04] mb-3"></div>
+            <div class="h-8 rounded-xl bg-white/[0.06]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================================================================
+         6. NYX9 GUARANTEE & SERVICE ASSURANCE BANNER
+         ============================================================================== -->
+    <section class="mt-8 mb-14 p-6 md:p-8 rounded-2xl border border-[rgba(0,242,255,0.2)] bg-gradient-to-r from-[#070D18]/95 via-[#0A1220]/95 to-[#080E1B]/95 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_12px_36px_rgba(0,0,0,0.5)] relative overflow-hidden">
+      <div class="absolute -right-20 -top-20 w-64 h-64 bg-[var(--accent)]/10 blur-3xl pointer-events-none rounded-full"></div>
+      <div class="flex items-center gap-4 relative z-10">
+        <div class="w-12 h-12 rounded-2xl bg-white/[0.04] text-white flex items-center justify-center flex-shrink-0 border border-white/[0.1] shadow-sm">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[rgba(0,242,255,0.08)] border border-[rgba(0,242,255,0.2)] text-[10px] font-mono-val text-[var(--accent)] font-bold mb-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+            <span>NYX9 BUYER PROTECTION</span>
+          </div>
+          <h4 class="text-base md:text-lg font-heading font-extrabold text-white tracking-wide">รับประกันคุ้มครอง 100% • เคลมใหม่ได้ทันที</h4>
+          <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">สินค้าแท้ทุกรายการ ไม่มีความเสี่ยง หากพบปัญหาแจ้งเรื่องเคลมรับสินค้าใหม่ได้ตลอด 24 ชั่วโมง</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 relative z-10 flex-shrink-0">
+        <button onclick="openClaimModal()" class="px-5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-slate-500 text-xs text-white font-semibold flex items-center gap-2 transition-all active:scale-95 cursor-pointer shadow-md">
+          <i data-lucide="life-buoy" class="w-4 h-4 text-amber-400"></i>
+          <span>ยื่นเรื่องเคลม</span>
+        </button>
+        <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform cursor-pointer">
+          <span>ติดต่อแอดมิน</span>
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </section>
+    </div>
+
+    <!-- ============================================================================
+         VIEW 2: DEDICATED TOP-UP FINTECH DASHBOARD (/topup)
+         ============================================================================ -->
+    <div id="view-topup" class="view-panel hidden py-4 sm:py-6">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="wallet" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white flex items-center gap-2">
+              เติมเงินเข้ากระเป๋า
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-mono font-bold tracking-wider">AUTO 24/7 ONLINE</span>
+            </h2>
+            <p class="text-xs text-slate-400">ระบบตัดยอดอัตโนมัติ เครดิตเข้ากระเป๋าทันทีใน 5-10 วินาที</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับไปเลือกสินค้า</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2-Column Responsive Fintech Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Column: Payment Gateways (7 Cols) -->
+        <div class="lg:col-span-7 bg-[#090D15]/95 rounded-3xl border border-white/[0.1] shadow-2xl p-5 sm:p-7 relative overflow-hidden backdrop-blur-2xl">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-70"></div>
+
+          <!-- Segmented Gateway Tab Track (100% Equal Heights & Alignment) -->
+          <div class="bg-[#05080E] p-1.5 rounded-2xl border border-white/[0.08] grid grid-cols-3 gap-1.5 mb-6 shadow-inner">
+            <button id="tab-btn-promptpay" onclick="switchTopUpGateway('promptpay')" class="topup-tab-btn active h-12 w-full rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-white/[0.08] text-white border border-white/[0.18] shadow-sm">
+              <i data-lucide="qr-code" class="w-4 h-4 text-cyan-400"></i>
+              <span>พร้อมเพย์</span>
+            </button>
+            <button id="tab-btn-truemoney" onclick="switchTopUpGateway('truemoney')" class="topup-tab-btn h-12 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent">
+              <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
+              <span>ทรูมันนี่</span>
+            </button>
+            <button id="tab-btn-bank_transfer" onclick="switchTopUpGateway('bank_transfer')" class="topup-tab-btn h-12 w-full rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer select-none bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent">
+              <i data-lucide="landmark" class="w-4 h-4 text-emerald-400"></i>
+              <span>ธนาคาร</span>
+            </button>
+          </div>
+
+          <!-- PANEL 1: PROMPTPAY -->
+          <div id="gateway-panel-promptpay" class="space-y-4">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-300 font-semibold mb-2">
+                <span>เลือกจำนวนเงินที่ต้องการเติม:</span>
+                <span class="text-[11px] text-slate-500 font-mono">ขั้นต่ำ ฿1 • ฟรีค่าธรรมเนียม</span>
+              </div>
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 mb-2.5">
+                <button type="button" onclick="setPromptPayPreset(50)" data-amount="50" class="promptpay-preset-btn h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿50</button>
+                <button type="button" onclick="setPromptPayPreset(100)" data-amount="100" class="promptpay-preset-btn active h-10 rounded-xl bg-white text-[#0A0D14] font-bold border border-white shadow-sm text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿100</button>
+                <button type="button" onclick="setPromptPayPreset(150)" data-amount="150" class="promptpay-preset-btn h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿150</button>
+                <button type="button" onclick="setPromptPayPreset(300)" data-amount="300" class="promptpay-preset-btn h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿300</button>
+                <button type="button" onclick="setPromptPayPreset(500)" data-amount="500" class="promptpay-preset-btn h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿500</button>
+                <button type="button" onclick="setPromptPayPreset(1000)" data-amount="1000" class="promptpay-preset-btn h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white font-medium border border-white/[0.08] text-xs font-mono transition-all flex items-center justify-center cursor-pointer">฿1,000</button>
+              </div>
+              <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[var(--accent)] font-mono font-bold">฿</span>
+                <input type="number" id="promptpay-amount-input" oninput="handlePromptPayAmountInput(this.value)" value="100" min="1" step="1" placeholder="ระบุจำนวนเงินเอง" class="w-full h-11 pl-9 pr-4 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-[var(--accent)] text-sm font-mono font-bold text-white focus:outline-none transition-all shadow-inner" />
+              </div>
+            </div>
+
+            <!-- PromptPay QR Card -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#070B12] to-[#04060A] border border-white/[0.08] shadow-xl flex flex-col items-center">
+              <div class="w-full flex items-center justify-between text-xs pb-3 border-b border-white/[0.06] mb-3">
+                <div class="flex items-center gap-1.5 font-bold text-slate-300">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  พร้อมเพย์ QR พร้อมสแกน
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-slate-500 uppercase">ยอดชำระ: </span>
+                  <span id="promptpay-qr-amount-text" class="text-base font-mono font-extrabold text-[var(--accent)]">฿100.00</span>
+                </div>
+              </div>
+
+              <!-- QR Frame -->
+              <div class="p-3.5 rounded-2xl bg-white shadow-2xl relative">
+                <div id="promptpay-qr-display" class="w-44 h-44 flex items-center justify-center">
+                  <img id="promptpay-qr-img" src="" alt="PromptPay QR" class="w-full h-full object-contain" />
+                </div>
+              </div>
+
+              <div class="mt-3 text-center space-y-1">
+                <div class="text-xs font-semibold text-white flex items-center justify-center gap-1.5">
+                  <span>ชื่อบัญชี:</span>
+                  <span class="text-[var(--accent)] font-bold">NYX9 STUDIO</span>
+                  <i data-lucide="badge-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                </div>
+                <div class="text-[11px] font-mono text-slate-300">
+                  พร้อมเพย์: <span class="font-bold text-white select-all">1-4599-01184-41-4</span>
+                </div>
+              </div>
+
+              <!-- Anti-ABC Protection Warning Box -->
+              <div class="mt-3 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-[10px] text-rose-300 leading-relaxed text-center max-w-sm">
+                <div class="font-bold text-rose-400 flex items-center justify-center gap-1 mb-0.5">
+                  <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                  <span>ข้อความเตือนป้องกันกลโกง ABC</span>
+                </div>
+                QR นี้มีลายน้ำระบุใช้สำหรับเติมเงินเข้าเว็บไซต์ <b class="text-white underline">nyxning.shop</b> เท่านั้น หากมีบุคคลอื่นส่ง QR นี้ให้คุณสแกน <b>ห้ามโอนเด็ดขาด!</b>
+              </div>
+            </div>
+
+            <!-- Slip Input -->
+            <div class="space-y-2 pt-2 border-t border-white/[0.06]">
+              <div class="flex items-center justify-between text-[11px]">
+                <label class="text-slate-300 font-semibold">ตรวจสอบสลิปโอนเงิน (TransRef / รหัสอ้างอิง):</label>
+              </div>
+              <div class="relative">
+                <input type="text" id="promptpay-trans-ref-input" placeholder="กรอกเลขสลิป หรือ TransRef (เช่น 014022511...)" class="w-full h-11 px-3.5 pr-20 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-[var(--accent)] text-xs text-white font-mono focus:outline-none transition-all" />
+                <button type="button" onclick="navigator.clipboard.readText().then(t => { if(t) document.getElementById('promptpay-trans-ref-input').value = t.trim(); })" class="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white text-[11px] font-semibold transition-all cursor-pointer">
+                  วางรหัส
+                </button>
+              </div>
+              <div id="promptpay-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+              <button id="btn-verify-promptpay" onclick="verifyPromptPaySlip()" class="btn-cyber-primary w-full h-11 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[var(--accent)]/20 active:scale-95 transition-all">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>ตรวจสอบสลิปและปรับยอดทันที</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PANEL 2: TRUEMONEY -->
+          <div id="gateway-panel-truemoney" class="hidden space-y-4">
+            <div class="p-4 rounded-2xl bg-amber-500/[0.04] border border-amber-500/20 text-xs space-y-3">
+              <div class="flex items-center gap-2 font-bold text-amber-300 text-sm">
+                <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
+                <span>เติมเงินผ่านซองของขวัญ TrueMoney (ฟรีค่าธรรมเนียม)</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-[11px] text-slate-400">
+                <div class="p-2.5 rounded-xl bg-black/40 border border-white/[0.04] text-center">
+                  <div class="text-white font-bold mb-0.5">1. สร้างซอง</div>
+                  <div class="text-[10px]">เลือกแบ่ง 1 คน</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-black/40 border border-white/[0.04] text-center">
+                  <div class="text-white font-bold mb-0.5">2. คัดลอกลิงก์</div>
+                  <div class="text-[10px]">gift.truemoney.com</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-black/40 border border-white/[0.04] text-center">
+                  <div class="text-white font-bold mb-0.5">3. รับเงินทันที</div>
+                  <div class="text-[10px]">บอทตัดยอดออโต้</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-[11px] font-semibold text-slate-300">วางลิงก์ซองของขวัญที่นี่:</label>
+              <div class="relative">
+                <input type="text" id="truemoney-voucher-input" placeholder="https://gift.truemoney.com/campaign/?v=..." class="w-full h-11 px-3.5 pr-20 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-amber-400 text-xs text-white font-mono focus:outline-none transition-all" />
+                <button type="button" onclick="navigator.clipboard.readText().then(t => { if(t) document.getElementById('truemoney-voucher-input').value = t.trim(); })" class="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 text-[11px] font-semibold transition-all cursor-pointer">
+                  วางลิงก์
+                </button>
+              </div>
+              <div id="truemoney-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+              <button id="btn-redeem-truemoney" onclick="redeemTrueMoneyVoucher()" class="w-full h-11 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/25 active:scale-95 transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>รับเงินเข้ากระเป๋าทันที</span>
+              </button>
+            </div>
+
+            <div class="pt-2 border-t border-white/[0.06]">
+              <div class="p-3.5 rounded-xl bg-[#060910] border border-white/[0.06] flex items-center justify-between text-xs">
+                <div>
+                  <div class="text-[10px] text-slate-400">โอนตรงเข้าเบอร์ TrueMoney Wallet:</div>
+                  <div class="text-sm font-mono font-bold text-amber-300">083-828-6508</div>
+                  <div class="text-[10px] text-slate-400">ชื่อบัญชี: NYX9 WALLET AUTO</div>
+                </div>
+                <button type="button" onclick="copyTrueMoneyPhone()" class="px-3.5 py-2 rounded-lg bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>คัดลอกเบอร์</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL 3: BANK TRANSFER -->
+          <div id="gateway-panel-bank_transfer" class="hidden space-y-4">
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-sky-950/30 via-[#070D14] to-[#04080D] border border-sky-500/30 text-xs text-white space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-[#00A3E0] flex items-center justify-center font-bold text-xs text-white shadow-md">KTB</div>
+                  <div>
+                    <div class="font-bold text-sm text-white">ธนาคารกรุงไทย (Krungthai Bank)</div>
+                    <div class="text-[10px] text-sky-400 font-mono font-bold">ร้านรับ บช เดียวเท่านั้น</div>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[10px] font-bold">บอทเช็คยอด 24 ชม.</span>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-black/50 border border-white/[0.06] flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] text-slate-400">เลขที่บัญชี (รับบัญชีเดียวเท่านั้น):</div>
+                  <div id="bank-acc-number" class="text-base sm:text-lg font-mono font-extrabold text-sky-300 tracking-wider select-all">414-0-81012-2</div>
+                  <div class="text-[10px] text-slate-300 mt-0.5">ชื่อบัญชี: <span class="font-bold text-white">NYX9 STUDIO (กรุงไทย)</span></div>
+                </div>
+                <button type="button" onclick="copyBankAccount()" class="px-3.5 py-2 rounded-lg bg-sky-500/20 hover:bg-sky-500 text-sky-300 hover:text-black font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>คัดลอก</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">ยอดเงินที่โอน (บาท):</label>
+                  <input type="number" id="bank-transfer-amount" value="100" min="1" step="1" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-sky-400 text-xs text-white font-mono font-bold focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">เลขสลิป / TransRef:</label>
+                  <input type="text" id="bank-transfer-transref" placeholder="เช่น 014022511..." class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-sky-400 text-xs text-white font-mono focus:outline-none" />
+                </div>
+              </div>
+              <div id="bank-transfer-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+              <button id="btn-verify-bank" onclick="verifyBankTransferSlip()" class="w-full h-11 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-cyan-500 text-slate-950 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-sky-500/20 active:scale-95 transition-all">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>ตรวจสอบยอดโอนธนาคาร</span>
+              </button>
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <!-- Right Column: Wallet Telemetry & Service Status (5 Cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Wallet Card -->
+          <div class="p-6 rounded-3xl bg-gradient-to-br from-[#0C1220] via-[#090D17] to-[#060910] border border-white/[0.1] shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-36 h-36 bg-cyan-500/10 blur-3xl rounded-full pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs text-slate-400 font-medium">ยอดเงินคงเหลือในกระเป๋า</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 font-mono text-[10px]">LIVE WALLET</span>
+            </div>
+            
+            <div class="text-3xl font-heading font-black text-white mb-4">
+              <span id="page-wallet-balance" class="text-[var(--accent)] font-mono">฿0.00</span>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-slate-300">ความปลอดภัยของยอดเงิน</span>
+              </div>
+              <span class="text-emerald-400 font-bold font-mono">100% PROTECTED</span>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
+              <button onclick="window.navigateToPage('history')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer">
+                <i data-lucide="history" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>ดูประวัติการสั่งซื้อ</span>
+              </button>
+              <button onclick="window.navigateToPage('claim')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer">
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>แจ้งเคลมสินค้า</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Auto-Fulfillment Feature Card -->
+          <div class="p-5 rounded-3xl bg-[#090D15]/80 border border-white/[0.08] space-y-3 text-xs">
+            <h4 class="font-heading font-bold text-white flex items-center gap-2">
+              <i data-lucide="zap" class="w-4 h-4 text-[var(--accent)]"></i>
+              <span>ข้อดีของการเติมเงินเข้ากระเป๋า</span>
+            </h4>
+            <ul class="space-y-2 text-slate-400 text-[11px] leading-relaxed">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5"></i>
+                <span>กดซื้อสินค้าได้ใน 1 วินาที ไม่ต้องรอสแกนจ่ายทีละชิ้น</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5"></i>
+                <span>ยอดเงินไม่มีวันหมดอายุ ใช้งานได้ตลอด 24 ชั่วโมง</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5"></i>
+                <span>บอทเช็คยอดเงินและสลิปอัตโนมัติ 0 วินาที</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Need Help Card -->
+          <div class="p-4 rounded-2xl bg-[var(--accent)]/[0.06] border border-[var(--accent)]/20 text-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-[#5865F2]/20 text-[#5865F2] flex items-center justify-center font-bold">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <div class="text-white font-bold">พบปัญหายอดเงินไม่เข้า?</div>
+                <div class="text-[10px] text-slate-400">ทักหาแอดมินใน Discord ได้ตลอด 24 ชม.</div>
+              </div>
+            </div>
+            <button onclick="window.navigateToPage('contact')" class="px-3 py-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs transition-all cursor-pointer">
+              ติดต่อแอดมิน
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 3: DEDICATED ORDER HISTORY & KEY VAULT (/history)
+         ============================================================================ -->
+    <div id="view-history" class="view-panel hidden py-4 sm:py-6">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="history" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white flex items-center gap-2">
+              ประวัติการสั่งซื้อ & คลังคีย์
+              <span id="history-total-badge" class="px-2.5 py-0.5 rounded-full bg-white/[0.04] text-slate-300 border border-white/[0.08] text-[10px] font-mono font-bold tracking-wider">0 รายการ</span>
+            </h2>
+            <p class="text-xs text-slate-400">ตรวจสอบคีย์ รหัสไอดีเกม และดาวน์โหลดใบเสร็จย้อนหลังได้ตลอด 24 ชั่วโมง</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Cloud Lookup Bar -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-[#090D15]/95 border border-white/[0.1] shadow-xl mb-6 flex flex-col sm:flex-row items-center gap-2.5">
+        <div class="relative flex-1 w-full">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input 
+            type="text" 
+            id="history-search-input"
+            oninput="window.handleHistorySearch(event)"
+            onkeydown="if(event.key==='Enter') window.Shop?.historyModal?.searchCloudOrder()"
+            placeholder="ค้นหาด้วยรหัสออเดอร์ (เช่น WX-371156) หรือชื่อสินค้า..." 
+            class="w-full h-11 pl-10 pr-4 rounded-xl bg-[#060910] border border-white/[0.08] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-all font-mono"
+          />
+        </div>
+        <button 
+          onclick="window.Shop?.historyModal?.searchCloudOrder()" 
+          class="w-full sm:w-auto h-11 px-5 rounded-xl bg-[var(--accent)]/15 hover:bg-[var(--accent)]/25 border border-[var(--accent)]/40 text-[var(--accent)] text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-sm"
+          title="ค้นหาออเดอร์จากฐานข้อมูลเซิร์ฟเวอร์"
+        >
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+          <span>ค้นหาในระบบคลาวด์</span>
+        </button>
+      </div>
+
+      <!-- Orders List Container -->
+      <div id="history-orders-container" class="space-y-4">
+        <!-- Rendered via HistoryModalComponent or renderFullHistoryPage -->
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 4: DEDICATED WARRANTY CLAIMS PORTAL (/claim)
+         ============================================================================ -->
+    <div id="view-claim" class="view-panel hidden py-4 sm:py-6 max-w-4xl mx-auto">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)] shrink-0">
+            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white flex items-center gap-2">
+              ศูนย์บริการแจ้งเคลม & ประกันสินค้า
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[10px] font-mono font-bold tracking-wider">WARRANTY 24/7</span>
+            </h2>
+            <p class="text-xs text-slate-400">ระบบส่งเรื่องเคลมสินค้าอัตโนมัติ รวดเร็ว ติดตามสถานะได้ตลอด 24 ชม.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Warranty Guarantee Alert -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent border border-emerald-500/20 mb-6 flex items-start gap-3.5 text-xs text-slate-300">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <div class="font-bold text-white mb-0.5">การันตีคุ้มครอง 100% • เคลมเปลี่ยนตัวใหม่ไวใน 10 นาที</div>
+          <div class="text-[11px] text-slate-400 leading-relaxed">
+            หากรหัสหรือบัญชีมีปัญหาภายในระยะเวลารับประกัน กรอกเลขออเดอร์เพื่อส่งเรื่องตรวจสอบ แอดมินสแตนด์บายตรวจและเปลี่ยนรหัสใหม่ให้ทันทีตลอด 24 ชม.
+          </div>
+        </div>
+      </div>
+
+      <!-- Claim Form Card -->
+      <div class="bg-[#090D15]/95 rounded-3xl border border-white/[0.1] shadow-2xl p-6 sm:p-8 space-y-5 backdrop-blur-2xl">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">รหัสคำสั่งซื้อ (Order ID):</label>
+          <input type="text" id="claim-order-id" placeholder="เช่น WX-371156" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-amber-400 text-xs text-white font-mono focus:outline-none transition-all" />
+          <p class="text-[10px] text-slate-500 mt-1">สามารถดูรหัสออเดอร์ได้จากหน้า "ประวัติคำสั่งซื้อ"</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">หมวดหมู่ปัญหา:</label>
+          <select id="claim-reason" class="w-full h-11 px-3.5 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-amber-400 text-xs text-white focus:outline-none transition-all">
+            <option value="รหัสใช้งานไม่ได้ / รหัสไม่ถูกต้อง">รหัสใช้งานไม่ได้ / รหัสไม่ถูกต้อง (Invalid Key)</option>
+            <option value="สินค้าโดนดึงคืนก่อนหมดอายุ">สินค้าโดนดึงคืนก่อนหมดอายุ (Account Revoked)</option>
+            <option value="ลิงก์ Nitro ไม่สามารถเปิดรับได้">ลิงก์ Nitro ไม่สามารถเปิดรับได้ (Invalid Gift Link)</option>
+            <option value="บริการปั๊ม / บูสต์ไม่ครบตามจำนวน">บริการปั๊ม / บูสต์ไม่ครบตามจำนวน (Service Incomplete)</option>
+            <option value="ปัญหาด้านการชำระเงิน / ยอดเงิน">ปัญหาด้านการชำระเงิน / ยอดเงิน (Payment Issue)</option>
+            <option value="อื่นๆ">อื่นๆ (โปรดระบุรายละเอียดเพิ่มเติม)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">รายละเอียดปัญหาที่พบ:</label>
+          <textarea id="claim-details" rows="4" placeholder="โปรดอธิบายปัญหาที่พบ เช่น รหัสขึ้นแจ้งเตือนว่าอย่างไร เพื่อให้ทีมงานแก้ไขได้รวดเร็วที่สุด..." class="w-full p-3.5 rounded-xl bg-[#060910] border border-white/[0.08] focus:border-amber-400 text-xs text-white focus:outline-none transition-all resize-none"></textarea>
+        </div>
+
+        <button onclick="window.Shop?.modals?.submitClaim()" class="btn-cyber-primary w-full h-12 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/25 active:scale-95 transition-all">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>ส่งเรื่องเคลมประกันทันที</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 5: FREQUENTLY ASKED QUESTIONS (/faq)
+         ============================================================================ -->
+    <div id="view-faq" class="view-panel hidden py-4 sm:py-6 max-w-4xl mx-auto">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="help-circle" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white">คำถามที่พบบ่อย (FAQ)</h2>
+            <p class="text-xs text-slate-400">รวบรวมคำตอบสำหรับทุกข้อสงสัยเกี่ยวกับการใช้งาน การชำระเงิน และการรับประกัน</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ Accordions -->
+      <div class="space-y-3.5 text-xs">
+        
+        <details class="group p-5 rounded-2xl bg-[#090D15]/90 border border-white/[0.08] transition-all open:border-white/[0.18] open:bg-[#0D121F]">
+          <summary class="flex items-center justify-between font-bold text-white cursor-pointer list-none">
+            <span class="flex items-center gap-2.5">
+              <i data-lucide="zap" class="w-4 h-4 text-[var(--accent)]"></i>
+              <span>สั่งซื้อสินค้าแล้วได้รับสินค้าอย่างไร และใช้เวลานานแค่ไหน?</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
+            <p>ระบบของ NYX9 STUDIO เป็นระบบตัดยอดและจัดส่งอัตโนมัติ (Instant Auto-Delivery) 100%</p>
+            <p>เมื่อทำรายการชำระเงินเรียบร้อย รหัสคีย์ ดิจิทัลไอดี หรือลิงก์รับสินค้าจะปรากฏขึ้นบนหน้าจอทันทีใน 1-3 วินาที และจะถูกบันทึกไว้ในหน้า <b>"ประวัติการสั่งซื้อ"</b> ของคุณตลอดไป สามารถกลับมาคัดลอกได้ตลอด 24 ชม.</p>
+          </div>
+        </details>
+
+        <details class="group p-5 rounded-2xl bg-[#090D15]/90 border border-white/[0.08] transition-all open:border-white/[0.18] open:bg-[#0D121F]">
+          <summary class="flex items-center justify-between font-bold text-white cursor-pointer list-none">
+            <span class="flex items-center gap-2.5">
+              <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
+              <span>เติมเงินรองรับช่องทางใดบ้าง และมีค่าธรรมเนียมหรือไม่?</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
+            <p>เรารองรับ 3 ช่องทางหลัก ได้แก่ <b>พร้อมเพย์ QR Code</b>, <b>ซองของขวัญ TrueMoney Wallet</b> และ <b>โอนผ่านบัญชีธนาคาร (กรุงไทย ร้านรับบัญชีเดียวเท่านั้น)</b></p>
+            <p>ทุกช่องทาง <b>ฟรีค่าธรรมเนียม 0%</b> ยอดเงินเข้ากระเป๋าเต็มจำนวนไม่มีหัก</p>
+          </div>
+        </details>
+
+        <details class="group p-5 rounded-2xl bg-[#090D15]/90 border border-white/[0.08] transition-all open:border-white/[0.18] open:bg-[#0D121F]">
+          <summary class="flex items-center justify-between font-bold text-white cursor-pointer list-none">
+            <span class="flex items-center gap-2.5">
+              <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+              <span>การรับประกันสินค้าครอบคลุมอะไรบ้าง และเคลมได้อย่างไร?</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
+            <p>สินค้าทุกรายการรับประกันของแท้ 100% ตลอดระยะเวลาที่ระบุไว้ในรายละเอียดสินค้า หากได้รับรหัสที่ใช้งานไม่ได้ หรือเกิดปัญหาจากการทำงานของระบบ สามารถเข้าไปที่หน้า <b>"แจ้งเคลม & ประกัน"</b> เพื่อระบุ Order ID และรับการเปลี่ยนสินค้าใหม่ได้ทันที</p>
+          </div>
+        </details>
+
+        <details class="group p-5 rounded-2xl bg-[#090D15]/90 border border-white/[0.08] transition-all open:border-white/[0.18] open:bg-[#0D121F]">
+          <summary class="flex items-center justify-between font-bold text-white cursor-pointer list-none">
+            <span class="flex items-center gap-2.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-[var(--accent)]"></i>
+              <span>Discord Nitro และบริการปั๊มคน ต้องให้รหัสผ่านบัญชีหรือไม่?</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="mt-3.5 pt-3.5 border-t border-white/[0.06] text-slate-300 leading-relaxed text-[11px] space-y-1.5">
+            <p><b>ไม่ต้องให้รหัสผ่านบัญชีเด็ดขาด!</b> ปลอดภัยต่อบัญชี 100%</p>
+            <p>Discord Nitro จะจัดส่งในรูปแบบ Gift Link อย่างเป็นทางการ ลูกค้าสามารถกดรับเข้าบัญชีตัวเองได้โดยตรง ส่วนบริการบูสต์หรือดึงคนเข้าเซิร์ฟเวอร์ ใช้เพียงลิงก์คำเชิญ (Invite Link) เท่านั้น</p>
+          </div>
+        </details>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 6: TERMS & CONDITIONS (/terms)
+         ============================================================================ -->
+    <div id="view-terms" class="view-panel hidden py-4 sm:py-6 max-w-4xl mx-auto">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="file-text" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white">เงื่อนไขและข้อตกลง (Terms of Service)</h2>
+            <p class="text-xs text-slate-400">ข้อกำหนดในการสั่งซื้อและการใช้งานระบบของ NYX9 STUDIO</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-[#090D15]/95 rounded-3xl border border-white/[0.1] p-6 sm:p-8 space-y-6 text-xs text-slate-300 leading-relaxed backdrop-blur-2xl">
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-[var(--accent)]">1. บทนำและขอบเขตการให้บริการ</h4>
+          <p class="text-slate-400">การเข้าถึงหรือใช้งานเว็บไซต์ NYX9 STUDIO ถือว่าท่านตกลงและยอมรับข้อกำหนดทั้งหมดในเอกสารฉบับนี้ หากท่านไม่เห็นด้วย โปรดยุติการทำรายการบนระบบ</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-[var(--accent)]">2. การจัดส่งสินค้าดิจิทัลและการชำระเงิน</h4>
+          <p class="text-slate-400">สินค้าทั้งหมดในระบบเป็นสินค้าดิจิทัล (Digital Goods) จัดส่งผ่านระบบคลังคีย์อัตโนมัติทันทีหลังยืนยันการชำระเงิน เมื่อสินค้าได้รับการส่งมอบและเข้าสู่คลังรหัสของท่านแล้ว จะไม่สามารถยกเลิกคำสั่งซื้อได้ เว้นแต่สินค้าชำรุดและอยู่ภายใต้เงื่อนไขการรับประกัน</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-[var(--accent)]">3. นโยบายการรับประกันและการเปลี่ยนสินค้า</h4>
+          <p class="text-slate-400">สินค้ามีระยะเวลารับประกันตามที่ระบุไว้ในหน้ารายการสินค้าแต่ละชนิด การเคลมต้องยื่นผ่านระบบ "แจ้งเคลม & ประกัน" พร้อมระบุ Order ID ที่ถูกต้อง ทางร้านขอสงวนสิทธิ์ไม่รับเคลมในกรณีที่ลูกค้านำรหัสไปแจกจ่าย หรือใช้งานผิดวัตถุประสงค์จนถูกระงับจากทางผู้ให้บริการภายนอก</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-[var(--accent)]">4. การป้องกันการทุจริต (Anti-Fraud Policy)</h4>
+          <p class="text-slate-400">ห้ามมิให้ผู้ใช้งานนำสลิปปลอม สลิปซ้ำ หรือพยายามใช้สคริปต์อัตโนมัติในการโจมตีระบบ ระบบมีกลไกตรวจสอบรหัสอ้างอิงธุรกรรม (TransRef) แบบ Real-time การพยายามทุจริตจะส่งผลให้ถูกระงับบัญชีถาวรและดำเนินคดีตามกฎหมาย</p>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 7: PRIVACY POLICY (/privacy)
+         ============================================================================ -->
+    <div id="view-privacy" class="view-panel hidden py-4 sm:py-6 max-w-4xl mx-auto">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] shrink-0">
+            <i data-lucide="lock" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white">นโยบายความเป็นส่วนตัว (Privacy Policy)</h2>
+            <p class="text-xs text-slate-400">มาตรฐานการปกป้องและคุ้มครองข้อมูลส่วนบุคคลของลูกค้า</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-[#090D15]/95 rounded-3xl border border-white/[0.1] p-6 sm:p-8 space-y-6 text-xs text-slate-300 leading-relaxed backdrop-blur-2xl">
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-emerald-400">1. ข้อมูลที่เราจัดเก็บ</h4>
+          <p class="text-slate-400">เมื่อท่านเข้าสู่ระบบด้วย Discord เราจะจัดเก็บเฉพาะ Discord Username, Discord ID, และ Avatar URL สำหรับแสดงผลเท่านั้น เราไม่มีสิทธิ์เข้าถึงรหัสผ่านหรือข้อความส่วนตัวของท่าน และสำหรับข้อมูลการชำระเงิน เราจัดเก็บเฉพาะรหัสอ้างอิงสลิป (TransRef) เพื่อตรวจสอบความถูกต้อง</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-emerald-400">2. วัตถุประสงค์ในการประมวลผลข้อมูล</h4>
+          <p class="text-slate-400">ข้อมูลของท่านถูกนำไปใช้เพื่อ: (1) ยืนยันคำสั่งซื้อและจัดส่งสินค้าดิจิทัลไปยังคลังรหัสของท่าน (2) จัดการยอดเงินในกระเป๋าเงิน (Wallet) (3) ให้บริการหลังการขายและการเคลมประกันสินค้า</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-emerald-400">3. การรักษาความปลอดภัยของข้อมูล</h4>
+          <p class="text-slate-400">ระบบทำงานบนมาตรฐานความปลอดภัยระดับสูง การเชื่อมต่อทั้งหมดเข้ารหัสผ่าน SSL/TLS 256-bit และข้อมูลในฐานข้อมูลถูกจำกัดสิทธิ์การเข้าถึงผ่าน Row Level Security (RLS) อย่างเข้มงวด</p>
+        </section>
+
+        <section class="space-y-2">
+          <h4 class="font-bold text-white text-sm text-emerald-400">4. การไม่เปิดเผยข้อมูลแก่บุคคลภายนอก</h4>
+          <p class="text-slate-400">เรายึดมั่นในนโยบายไม่ขาย ไม่เผยแพร่ และไม่ส่งต่อข้อมูลส่วนบุคคลของท่านให้แก่บุคคลภายนอกโดยเด็ดขาด</p>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ============================================================================
+         VIEW 8: CONTACT & COMMUNITY (/contact)
+         Inspired by Julian Fella (Award-Winning Direction-Aware Liquid Hover)
+         ============================================================================ -->
+    <div id="view-contact" class="view-panel hidden py-6 sm:py-10 max-w-6xl mx-auto px-4">
+      
+      <!-- Top Title Strip -->
+      <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-mono tracking-widest text-[var(--accent)] uppercase font-semibold">Support & Community Hub</div>
+            <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white tracking-tight">ติดต่อเรา & ศูนย์ช่วยเหลือ</h2>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('home')" class="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-2 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Two-Column Layout (Julian Fella SOTD Architecture) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT COLUMN: Interactive Service Request & Inquiry Box (lg:col-span-7) -->
+        <div class="lg:col-span-7 rounded-3xl bg-[#090D15]/90 border border-white/[0.08] p-6 sm:p-8 backdrop-blur-2xl shadow-2xl relative overflow-hidden space-y-6">
+          <div class="space-y-1.5">
+            <div class="text-[10px] font-mono uppercase tracking-widest text-[var(--accent)] font-semibold">GET IN TOUCH</div>
+            <h3 class="text-lg sm:text-xl font-heading font-bold text-white">ต้องการความช่วยเหลือด้านใดเป็นพิเศษ?</h3>
+            <p class="text-xs text-slate-400">เลือกหัวข้อและระบุข้อมูลเบื้องต้น เพื่อให้แอดมินดูแลท่านได้อย่างรวดเร็วที่สุด</p>
+          </div>
+
+          <!-- Section 1: Services Selector Chips -->
+          <div class="space-y-2.5">
+            <label class="text-[11px] font-mono text-slate-300 font-medium uppercase tracking-wider block">
+              หัวข้อที่ต้องการสอบถาม <span class="text-rose-400">*</span>
+            </label>
+            <div class="flex flex-wrap gap-2" id="contact-service-chips">
+              <button type="button" class="contact-pill active px-3.5 py-2 rounded-xl text-xs font-medium border border-white/30 bg-white/[0.08] text-white transition-all cursor-pointer">
+                🎮 บริการสคริปต์ &amp; โมเดล Roblox
+              </button>
+              <button type="button" class="contact-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                💎 Discord Nitro & บูสต์
+              </button>
+              <button type="button" class="contact-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                🛡️ แจ้งเคลม & รับประกัน
+              </button>
+              <button type="button" class="contact-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                💳 ปัญหาการเติมเงิน
+              </button>
+              <button type="button" class="contact-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                💬 สอบถามทั่วไป
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: Urgency Chips -->
+          <div class="space-y-2.5">
+            <label class="text-[11px] font-mono text-slate-300 font-medium uppercase tracking-wider block">
+              ระดับความเร่งด่วน <span class="text-rose-400">*</span>
+            </label>
+            <div class="flex flex-wrap gap-2" id="contact-urgency-chips">
+              <button type="button" class="urgency-pill active px-3.5 py-2 rounded-xl text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 transition-all cursor-pointer">
+                ⚡ ด่วนที่สุด (ภายใน 5-15 นาที)
+              </button>
+              <button type="button" class="urgency-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                🕒 ภายในวันนี้
+              </button>
+              <button type="button" class="urgency-pill px-3.5 py-2 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:border-white/20 hover:text-white transition-all cursor-pointer">
+                💤 ไม่เร่งด่วน
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 3: Order ID & Message Inputs -->
+          <div class="space-y-4">
+            <div>
+              <label class="text-[11px] font-mono text-slate-300 font-medium uppercase tracking-wider block mb-1.5">
+                เลขออเดอร์ / คำสั่งซื้อ (ถ้ามี)
+              </label>
+              <input type="text" id="contact-order-id" placeholder="ตัวอย่าง: WX-173889 หรือเลขอ้างอิง" class="w-full h-11 px-4 rounded-xl bg-black/40 border border-white/[0.08] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-colors">
+            </div>
+
+            <div>
+              <label class="text-[11px] font-mono text-slate-300 font-medium uppercase tracking-wider block mb-1.5">
+                รายละเอียดข้อความ / คำถามที่ต้องการให้ดูแล
+              </label>
+              <textarea id="contact-message-body" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแจ้งหรือขอความช่วยเหลือที่นี่..." class="w-full p-4 rounded-xl bg-black/40 border border-white/[0.08] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-colors resize-none"></textarea>
+            </div>
+          </div>
+
+          <!-- Section 4: Action Buttons with Instant Copy & Discord Forwarding -->
+          <div class="pt-2 flex flex-col sm:flex-row items-center gap-3">
+            <button id="btn-submit-contact-ticket" onclick="window.handleContactSubmit && window.handleContactSubmit()" class="julian-liquid-hover w-full sm:w-auto flex-1 h-12 rounded-xl px-6 flex items-center justify-between border border-white/20 font-bold text-xs cursor-pointer shadow-md">
+              <div class="julian-liquid-inner flex items-center justify-between w-full">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  <span>ส่งข้อมูล & เปิด Ticket Discord</span>
+                </span>
+                <span class="julian-arrow text-slate-400">
+                  <svg width="18" height="18" viewBox="0 0 21 18" fill="none">
+                    <path d="M1 9H19.6667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 17L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 1L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </div>
+            </button>
+            <div id="contact-status-toast" class="text-[11px] text-emerald-400 font-mono hidden">
+              ✓ คัดลอกรายละเอียดแล้ว พร้อมเปิด Discord Ticket!
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Signature Julian Fella Liquid Wave Action Cards (lg:col-span-5) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="space-y-1">
+            <div class="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-semibold">OTHER WAYS</div>
+            <h3 class="text-lg font-heading font-bold text-white">ช่องทางติดต่อโดยตรง</h3>
+          </div>
+
+          <!-- Stack of Julian Liquid Cards with Direction-Aware SVG Bezier Waves -->
+          <div class="rounded-3xl bg-[#090D15]/90 border border-white/[0.08] overflow-hidden backdrop-blur-2xl shadow-2xl divide-y divide-white/[0.08]">
+            
+            <!-- Card 1: Discord Official Server -->
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="julian-liquid-hover group block p-5 transition-all">
+              <div class="julian-liquid-inner flex items-center justify-between w-full">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-bold tracking-tight">เข้าร่วม Discord Official</div>
+                  <div class="text-[11px] opacity-70">เปิด Ticket สอบถามและดูแลปัญหาตลอด 24 ชม.</div>
+                </div>
+                <div class="julian-arrow w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 ml-3">
+                  <svg width="16" height="16" viewBox="0 0 21 18" fill="none">
+                    <path d="M1 9H19.6667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 17L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 1L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 2: Direct Admin Live Chat -->
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="julian-liquid-hover group block p-5 transition-all">
+              <div class="julian-liquid-inner flex items-center justify-between w-full">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-bold tracking-tight">แชทกับแอดมินโดยตรง (Live Chat)</div>
+                  <div class="text-[11px] opacity-70">ติดต่อฝ่ายซัพพอร์ต ตอบกลับเฉลี่ยภายใน 5-15 นาที</div>
+                </div>
+                <div class="julian-arrow w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 ml-3">
+                  <svg width="16" height="16" viewBox="0 0 21 18" fill="none">
+                    <path d="M1 9H19.6667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 17L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 1L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 3: Claim & Insurance System -->
+            <div onclick="window.navigateToPage('claim')" class="julian-liquid-hover group block p-5 transition-all cursor-pointer">
+              <div class="julian-liquid-inner flex items-center justify-between w-full">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-bold tracking-tight">แจ้งเคลม & ประกันสินค้า</div>
+                  <div class="text-[11px] opacity-70">ส่งหลักฐานและตรวจสอบสิทธิ์การรับประกันออเดอร์</div>
+                </div>
+                <div class="julian-arrow w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 ml-3">
+                  <svg width="16" height="16" viewBox="0 0 21 18" fill="none">
+                    <path d="M1 9H19.6667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 17L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 1L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: FAQ / Help Center -->
+            <div onclick="window.navigateToPage('faq')" class="julian-liquid-hover group block p-5 transition-all cursor-pointer">
+              <div class="julian-liquid-inner flex items-center justify-between w-full">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-bold tracking-tight">คำถามที่พบบ่อย (FAQ)</div>
+                  <div class="text-[11px] opacity-70">วิธีรับสินค้า, การเปลี่ยนรหัสผ่าน, เงื่อนไขบริการ</div>
+                </div>
+                <div class="julian-arrow w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 ml-3">
+                  <svg width="16" height="16" viewBox="0 0 21 18" fill="none">
+                    <path d="M1 9H19.6667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 17L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.6665 1L19.6665 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Direct Metadata List (Editorial Style matching Julian Fella) -->
+          <div class="p-5 rounded-2xl bg-[#090D15]/80 border border-white/[0.06] space-y-2.5 text-xs">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="font-mono text-[11px]">Discord</span>
+              <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="text-white hover:text-[var(--accent)] font-medium select-all">discord.gg/NTPcxKHrag</a>
+            </div>
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="font-mono text-[11px]">E-Mail</span>
+              <a href="mailto:sanaseeriri@gmail.com" class="text-white hover:text-[var(--accent)] font-medium select-all" data-bind="supportEmail">sanaseeriri@gmail.com</a>
+            </div>
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="font-mono text-[11px]">เวลาทำการ</span>
+              <span class="text-emerald-400 font-medium">ทุกวัน 24 ชั่วโมง</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==============================================================================
+       7. GLOBAL HIGH-ACTION FOOTER
+       ============================================================================== -->
+  <footer class="border-t border-white/[0.08] bg-[#05080E]/95 backdrop-blur-2xl pt-12 pb-8 px-4 md:px-8 mt-auto text-xs text-slate-400 relative overflow-hidden">
+    <!-- Ambient Flare -->
+    <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-40 bg-[var(--accent)]/5 blur-3xl pointer-events-none rounded-full"></div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 mb-10 relative z-10">
+      
+      <!-- Col 1 (md:col-span-4): Store Brand, Human Contact & Trust Status -->
+      <div class="md:col-span-4 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="relative w-10 h-10 rounded-xl bg-[#090D15] border border-white/[0.12] flex items-center justify-center p-1.5 shadow-sm">
+            <svg class="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,178,255,0.4)]" viewBox="0 0 497 704" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NYX9 STUDIO Logo">
+              <path d="M 11 181 L 55 229 L 19 458 L 0 515 L 89 600 L 125 299 L 278 487 L 303 566 L 443 685 L 380 465 L 368 218 L 377 155 L 318 208 L 302 359 L 177 231 L 113 115 Z" fill="#FFFFFF" />
+              <path d="M 361 374 L 339 488 L 431 665 L 364 470 Z" fill="#DDE1E8" />
+              <path d="M 148 309 L 317 519 L 205 364 L 204 321 L 185 339 Z" fill="#DDE1E8" />
+              <path d="M 375 162 L 326 234 L 340 265 L 360 368 L 355 220 Z" fill="#DDE1E8" />
+              <path d="M 106 127 L 39 188 L 67 218 L 32 458 L 10 508 L 77 573 L 30 508 L 54 461 L 121 210 L 83 170 Z" fill="#DDE1E8" />
+              <path d="M 260 495 L 190 618 L 161 639 L 187 662 L 242 642 L 293 579 Z" fill="#00B2FF" />
+              <path d="M 362 0 L 260 109 L 238 200 L 253 256 L 294 307 L 304 259 L 304 185 L 378 120 L 418 180 L 424 247 L 385 307 L 400 435 L 496 268 L 480 127 Z" fill="#00B2FF" />
+              <path d="M 260 514 L 217 587 L 212 579 L 190 618 L 161 639 L 187 662 L 242 642 L 256 624 L 221 591 L 260 541 L 282 569 Z" fill="#7AE0FF" />
+              <path d="M 479 281 L 415 367 L 398 335 L 405 406 Z" fill="#7AE0FF" />
+              <path d="M 363 34 L 277 110 L 250 192 L 297 109 Z" fill="#7AE0FF" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-heading font-extrabold text-white text-base tracking-wider" data-bind="storeName">NYX9 STUDIO</span>
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[10px] font-mono-val text-emerald-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>ระบบออโต้ 24/7 ONLINE</span>
+            </div>
+          </div>
+        </div>
+        
+        <p class="text-[12px] text-slate-400 leading-relaxed font-body" data-bind="subTagline">
+          เครือข่ายพันธมิตร 2 ร้านค้า NOVAPE SHOP (บริการ Discord ครบวงจร) และ NYX9 STUDIO (บริการสคริปต์ &amp; โมเดล Roblox) ระบบจัดส่งอัตโนมัติ 24 ชม.
+        </p>
+
+        <!-- Direct Quick Human Status (เหมือนของเก่า สบายใจ ปลอดภัย) -->
+        <div class="space-y-1.5 pt-1 text-[11px]">
+          <div class="flex items-center gap-2 text-slate-300">
+            <span class="text-rose-400">📍</span>
+            <span>ติดต่อสอบถาม: <strong class="text-white">ผ่านระบบ Discord ตลอด 24 ชม.</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-slate-300">
+            <span class="text-amber-400">⚡</span>
+            <span>สถานะระบบ: <span class="text-emerald-400 font-mono-val font-semibold">พร้อมให้บริการ 24 ชม.</span></span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 pt-2 text-slate-300 text-xs font-mono-val">
+          <span class="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center gap-1.5">
+            <i data-lucide="network" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
+            <span>2 เซิร์ฟเวอร์ในเครือ</span>
+          </span>
+          <span class="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>ประกันแท้ 100%</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Col 2 (md:col-span-4): เมนูลัดและบริการ (Direct SPA Route Links) -->
+      <div class="md:col-span-4">
+        <div class="flex items-center gap-2 mb-3.5">
+          <i data-lucide="compass" class="w-4 h-4 text-[var(--accent)]"></i>
+          <h5 class="text-white font-heading font-extrabold uppercase tracking-wider text-[12px]">เมนูลัดและบริการ</h5>
+        </div>
+        <div class="grid grid-cols-2 gap-4 text-[12px]">
+          <!-- Sub-Col 1: เมนูบริการหลัก -->
+          <div class="space-y-2.5 font-medium">
+            <button onclick="window.navigateToPage('home')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>หน้าหลัก</span>
+            </button>
+            <button onclick="window.navigateToPage('home', '#category-filter-bar')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>รายการสินค้าทั้งหมด</span>
+            </button>
+            <button onclick="window.navigateToPage('topup')" class="w-full text-left text-slate-400 hover:text-[var(--accent)] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>เติมเงินเข้าระบบ</span>
+            </button>
+            <button onclick="window.navigateToPage('history')" class="w-full text-left text-slate-400 hover:text-[var(--accent)] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>ประวัติการสั่งซื้อ</span>
+            </button>
+            <button onclick="window.navigateToPage('claim')" class="w-full text-left text-slate-400 hover:text-amber-300 hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-amber-400 text-[10px]">&rsaquo;</span>
+              <span>แจ้งเคลม &amp; ประกัน</span>
+            </button>
+          </div>
+
+          <!-- Sub-Col 2: ช่วยเหลือ & ข้อตกลง -->
+          <div class="space-y-2.5 font-medium">
+            <button onclick="window.navigateToPage('faq')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>คำถามที่พบบ่อย (FAQ)</span>
+            </button>
+            <button onclick="window.navigateToPage('terms')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>เงื่อนไขและข้อตกลง</span>
+            </button>
+            <button onclick="window.navigateToPage('contact')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>ติดต่อแอดมิน</span>
+            </button>
+            <button onclick="window.navigateToPage('privacy')" class="w-full text-left text-slate-400 hover:text-white hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>นโยบายความเป็นส่วนตัว</span>
+            </button>
+            <a href="admin.html" class="w-full text-left text-slate-400 hover:text-[var(--accent)] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="text-[var(--accent)] text-[10px]">&rsaquo;</span>
+              <span>ระบบหลังบ้านแอดมิน</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Col 3 (md:col-span-4): ศูนย์ช่วยเหลือ & ช่องทางติดต่อจริง -->
+      <div class="md:col-span-4 space-y-3.5">
+        <div class="flex items-center gap-2 mb-1">
+          <i data-lucide="headset" class="w-4 h-4 text-[var(--accent)]"></i>
+          <h5 class="text-white font-heading font-extrabold uppercase tracking-wider text-[12px]">ศูนย์ช่วยเหลือ &amp; ติดต่อเรา</h5>
+        </div>
+
+        <!-- Banner Discord หลัก (กดได้จริง เด่นชัด) -->
+        <a href="https://discord.gg/NTPcxKHrag" target="_blank" data-bind="discordCommunityUrl" class="group p-3 rounded-2xl bg-[#5865F2]/15 hover:bg-[#5865F2]/25 border border-[#5865F2]/40 flex items-center justify-between transition-all shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#5865F2] text-white flex items-center justify-center shrink-0 shadow-sm">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold text-white group-hover:text-[var(--accent)] transition-colors">Discord Community หลัก</div>
+              <div class="text-[10px] text-emerald-400 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>NYX9 STUDIO • มีทีมงานพร้อมดูแลตลอด 24 ชม.</span>
+              </div>
+            </div>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
+        </a>
+
+        <!-- ช่องทางเสริม (Email ติดต่อจริง - LINE ตัดออกตามคำขอ) -->
+        <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-white/[0.05] text-slate-400 flex items-center justify-center shrink-0 border border-white/[0.08]">
+            <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[9px] text-slate-400 font-body">อีเมลฝ่ายบริการลูกค้า</div>
+            <a href="mailto:sanaseeriri@gmail.com" class="text-[11px] font-bold font-mono-val text-slate-300 hover:text-white truncate block" data-bind="supportEmail">sanaseeriri@gmail.com</a>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-slate-500 font-mono-val pt-0.5">
+          * ปลอดภัยด้วย SSL 256-Bit • ดูแลด้วยความใส่ใจ 100%
+        </p>
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         DISCORD SERVERS IN OUR NETWORK (Alliance Matrix Banner)
+         ========================================================================= -->
+    <div class="max-w-7xl mx-auto mb-8 pt-8 border-t border-white/[0.06] relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="network" class="w-4 h-4 text-[var(--accent)]"></i>
+          <h4 class="text-white font-heading font-extrabold uppercase tracking-wider text-[13px]">
+            DISCORD SERVERS IN OUR NETWORK (ศูนย์รวมคอมมูนิตี้ในเครือ)
+          </h4>
+        </div>
+        <span class="text-[10px] font-mono-val px-2.5 py-0.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] self-start sm:self-auto">
+          ALLIANCE NETWORK
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        <!-- CARD 1: NOVAPE SHOP (Discord Authentic Embed Card) -->
+        <div class="rounded-[20px] bg-[#18191c] border border-[#2b2d31] overflow-hidden shadow-2xl transition-all hover:border-white/20 flex flex-col justify-between">
+          <div>
+            <!-- Banner -->
+            <div class="h-24 w-full bg-cover bg-center relative" style="background-image: url('https://cdn.discordapp.com/banners/1399056573535621163/568a60b2515d257c1cd06a93445cea29.png?size=480');">
+              <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#18191c]"></div>
+            </div>
+
+            <!-- Avatar & Content -->
+            <div class="px-4 pt-0">
+              <!-- Floating Avatar -->
+              <div class="relative -mt-10 mb-2.5 inline-block">
+                <div class="w-[66px] h-[66px] rounded-[18px] bg-[#18191c] p-1 shadow-xl">
+                  <img src="https://cdn.discordapp.com/icons/1399056573535621163/d662b6579010a8b341cef8555f532e75.png?size=128" alt="NOVAPE SHOP" class="w-full h-full rounded-[14px] object-cover bg-black" />
+                </div>
+              </div>
+
+              <!-- Server Title & Badges -->
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <h3 class="text-white font-extrabold text-base tracking-wide font-sans">NOVAPE SHOP</h3>
+                <!-- Discord Community Home Badge -->
+                <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#ec62ff] text-white p-0.5 shadow-sm" title="Discord Community">
+                  <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </span>
+                <!-- Custom Guild Clan Badge -->
+                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#2b2d31] border border-white/10 text-[10px] font-bold text-white leading-none">
+                  <span>🌸</span><span>✨</span>
+                </span>
+              </div>
+
+              <!-- Online & Member Count -->
+              <div class="flex items-center gap-3 text-xs text-slate-300 font-medium mb-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#23a55a] animate-pulse"></span>
+                  <span class="novape-live-online">73</span> ออนไลน์
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#80848e]"></span>
+                  <span class="novape-live-members">314</span> คน
+                </span>
+              </div>
+
+              <!-- Created Date -->
+              <div class="text-[11px] text-slate-400 font-medium mb-2.5">
+                สร้างเมื่อ ก.ค. 2568
+              </div>
+
+              <!-- Description -->
+              <p class="text-xs text-slate-300 leading-relaxed line-clamp-3 mb-4">
+                ร้านจำหน่ายสินค้าเกี่ยวกับดิสคอร์ดครบวงจร ไม่ว่าจะเป็น แอคเคาท์ / เม็ดบูสต์ / ไนโตร / รับยืนยันเบอร์ดิสคอร์ด / ของตกแต่ง / แบนเนอร์ / รับซื้อแอคดิส / รับทำเซิร์ฟเวอร์ / แก้ไขบอท+เซ็ตบอท / รับทำสติกเกอร์ ร้านมีบัตรสะสมแต้ม ของแลกจุกๆ เปิดร้าน 24 ชั่วโมง มีแอดมินตอบตลอด
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="px-4 pb-4 pt-1">
+            <a href="https://discord.gg/T44Up4cfy" target="_blank" class="w-full h-10 rounded-xl bg-[#23a55a] hover:bg-[#1f934f] text-white font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.98] cursor-pointer">
+              เข้าร่วม
+            </a>
+          </div>
+        </div>
+
+        <!-- CARD 2: NYX9 STUDIO (Discord Authentic Embed Card) -->
+        <div class="rounded-[20px] bg-[#18191c] border border-[#2b2d31] overflow-hidden shadow-2xl transition-all hover:border-white/20 flex flex-col justify-between">
+          <div>
+            <!-- Banner (Vivid Cyan-Blue Gradient) -->
+            <div class="h-24 w-full relative" style="background: linear-gradient(180deg, #00A8FC 0%, #0077c8 70%, #18191c 100%);">
+              <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#18191c]"></div>
+            </div>
+
+            <!-- Avatar & Content -->
+            <div class="px-4 pt-0">
+              <!-- Floating Avatar -->
+              <div class="relative -mt-10 mb-2.5 inline-block">
+                <div class="w-[66px] h-[66px] rounded-[18px] bg-[#18191c] p-1 shadow-xl">
+                  <img src="https://cdn.discordapp.com/icons/1562600577311973438/d0a466347c88cd48e997c24b5949e3a0.png?size=128" alt="NYX9 STUDIO" class="w-full h-full rounded-[14px] object-cover bg-black" />
+                </div>
+              </div>
+
+              <!-- Server Title & Badges -->
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <h3 class="text-white font-extrabold text-base tracking-wide font-sans">NYX9 STUDIO</h3>
+                <!-- Discord Community Home Badge -->
+                <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#ec62ff] text-white p-0.5 shadow-sm" title="Discord Community">
+                  <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </span>
+                <!-- Clan Tag Badge -->
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#2b2d31] border border-white/10 text-[10px] font-bold text-white leading-none">
+                  <span>🐰</span><span>9Y!x</span>
+                </span>
+              </div>
+
+              <!-- Online & Member Count -->
+              <div class="flex items-center gap-3 text-xs text-slate-300 font-medium mb-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#23a55a] animate-pulse"></span>
+                  <span class="nyx9-live-online">5</span> ออนไลน์
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#80848e]"></span>
+                  <span class="nyx9-live-members">13</span> คน
+                </span>
+              </div>
+
+              <!-- Created Date -->
+              <div class="text-[11px] text-slate-400 font-medium mb-2.5">
+                สร้างเมื่อ ต.ค. 2569
+              </div>
+
+              <!-- Tags / Traits Chips -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Script Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Graphic</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">GFX Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">Model Roblox</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#2b2d31] text-slate-300 text-[11px] font-medium border border-white/5">อื่นๆสอบถาม 24 HR</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="px-4 pb-4 pt-1">
+            <a href="https://discord.gg/NTPcxKHrag" target="_blank" class="w-full h-10 rounded-xl bg-[#23a55a] hover:bg-[#1f934f] text-white font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.98] cursor-pointer">
+              เข้าร่วม
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         Sub-Footer Bar (สงวนลิขสิทธิ์ & แถบชำระเงินเรียบหรูสไตล์ของเก่า)
+         ========================================================================= -->
+    <div class="max-w-7xl mx-auto pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400 relative z-10">
+      
+      <!-- Copyright & Real Human Assurance (เหมือนของเก่า) -->
+      <div class="flex flex-wrap items-center gap-1.5 text-center md:text-left">
+        <span>สงวนลิขสิทธิ์ &copy; 2025-2026</span>
+        <span class="font-bold text-white" data-bind="storeName">NYX9 STUDIO</span>
+        <span class="text-slate-600">|</span>
+        <span>Discord Partner Alliance Network</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300">ให้บริการด้วยความใส่ใจและปลอดภัย 100%</span>
+      </div>
+
+      <!-- Payment Badges (สไตล์ของเก่า สะอาดตา) -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-[10px] font-medium text-amber-300">
+          <i data-lucide="wallet" class="w-3 h-3 text-amber-400"></i>
+          <span>TrueMoney</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-[10px] font-medium text-cyan-300">
+          <i data-lucide="qr-code" class="w-3 h-3 text-cyan-400"></i>
+          <span>PromptPay</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-[10px] font-medium text-emerald-300">
+          <i data-lucide="landmark" class="w-3 h-3 text-emerald-400"></i>
+          <span>Bank Transfer</span>
+        </span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==============================================================================
+       8. MODAL 1: SLIDE-OUT CART & CHECKOUT DRAWER
+       ============================================================================== -->
+  <div id="cart-drawer-container" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop Overlay -->
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm drawer-backdrop opacity-0" onclick="toggleCartDrawer()"></div>
+
+    <!-- Slide Drawer Content -->
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#080D18] border-l border-slate-800 shadow-2xl flex flex-col drawer-content translate-x-full">
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-[rgba(25,186,255,0.15)] text-[var(--accent)] flex items-center justify-center">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+          </div>
+          <h4 class="text-base font-heading font-bold text-white">ตะกร้าสินค้าของคุณ</h4>
+        </div>
+        <button onclick="toggleCartDrawer()" class="p-1.5 text-slate-400 hover:text-white rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Drawer Items List -->
+      <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 space-y-3">
+        <!-- Cart Items Injected Dynamically via app.js?v=2.0.1 -->
+      </div>
+
+      <!-- Drawer Checkout Footer -->
+      <div class="p-5 border-t border-slate-800 bg-[#05080E] space-y-4">
+        <!-- Shopee / TikTok Style Voucher List (1-Click Apply) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+              <i data-lucide="ticket" class="w-3.5 h-3.5 text-pink-400"></i>
+              <span>โค้ดส่วนลดร้านค้า (Vouchers)</span>
+            </span>
+            <span class="text-[10px] text-pink-400/80 font-mono flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
+              <span>1-Click Apply</span>
+            </span>
+          </div>
+
+          <!-- Dynamic Voucher Tickets Container -->
+          <div id="cart-vouchers-container" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+            <!-- Rendered dynamically by CartDrawer.js -->
+          </div>
+        </div>
+
+        <!-- Manual Promo Code Input (For Exclusive / Secret Codes) -->
+        <div class="flex gap-2">
+          <input 
+            type="text" 
+            id="coupon-input" 
+            placeholder="กรอกโค้ดส่วนลด (เช่น NYX9VIP)" 
+            class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono uppercase"
+          />
+          <button onclick="applyCouponCode()" class="btn-cyber-secondary px-4 py-2 rounded-xl text-xs font-semibold">
+            ใช้โค้ด
+          </button>
+        </div>
+        <div id="coupon-applied-tag" class="hidden text-xs text-emerald-400 flex items-center justify-between font-mono bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30">
+          <span id="coupon-label">ลด 10%</span>
+          <button onclick="removeCouponCode()" class="text-slate-400 hover:text-rose-400">ยกเลิก</button>
+        </div>
+
+        <!-- Price Summary Breakdown -->
+        <div class="space-y-1.5 text-xs font-mono">
+          <div class="flex items-center justify-between text-slate-400">
+            <span>ยอดรวมสินค้า:</span>
+            <span id="cart-subtotal" class="font-bold text-white">฿0.00</span>
+          </div>
+          <div id="cart-discount-row" class="hidden flex items-center justify-between text-emerald-400">
+            <span>ส่วนลด:</span>
+            <span id="cart-discount">-฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-slate-400">
+            <span>ยอดคงเหลือในกระเป๋า:</span>
+            <span id="cart-wallet-balance" class="text-[var(--accent)] font-bold">฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-sm font-extrabold text-white pt-2 border-t border-slate-800">
+            <span>ยอดสุทธิที่ต้องชำระ:</span>
+            <span id="cart-total" class="text-xl text-[var(--accent)]">฿0.00</span>
+          </div>
+        </div>
+
+        <!-- Checkout Action Button -->
+        <button id="btn-checkout-submit" onclick="executeCheckout()" class="btn-cyber-primary w-full py-3.5 rounded-xl font-heading font-extrabold text-sm flex items-center justify-center gap-2">
+          <span>ยืนยันการสั่งซื้อทันที</span>
+          <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+        </button>
+
+        <div class="text-[11px] text-center text-slate-500">
+          ระบบจะหักเงินจากกระเป๋าและส่งมอบสินค้าเข้าหน้าจอทันที
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================================
+       9. MODAL 2: INSTANT KEY & CREDENTIAL DELIVERY POPUP
+       ============================================================================== -->
+  <div id="instant-delivery-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 modal-overlay" onclick="closeInstantModal()"></div>
+    <div class="relative z-10 modal-spring-dialog glass-panel rounded-3xl max-w-lg w-full p-6 md:p-8 border border-[rgba(25,186,255,0.4)] shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-3 shadow-lg">
+          <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+        </div>
+        <h4 class="text-xl font-heading font-extrabold text-white">การสั่งซื้อสำเร็จ 100%!</h4>
+        <p class="text-xs text-slate-400 mt-1">รหัสคำสั่งซื้อ: <b id="delivery-order-id" class="text-[var(--accent)] font-mono">WX-893120</b></p>
+      </div>
+
+      <!-- Credential Delivery Box -->
+      <div class="space-y-4">
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-semibold text-white flex items-center gap-1.5">
+              <i data-lucide="key" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>ข้อมูลรหัสสินค้า / ข้อมูลส่งมอบ:</span>
+            </span>
+            <button type="button" onclick="copyDeliveredKey()" class="text-[var(--accent)] hover:text-white flex items-center gap-1 font-mono text-[11px] font-bold">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>คัดลอกรหัส</span>
+            </button>
+          </div>
+          <textarea id="delivered-content" readonly class="w-full h-36 p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-300 break-all select-all focus:outline-none resize-none leading-relaxed"></textarea>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 flex items-start gap-2.5">
+          <i data-lucide="shield-alert" class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-400"></i>
+          <span>โปรดบันทึกรหัสของท่านไว้ทันที สินค้ารับประกันคุณภาพ หากพบปัญหาให้กดปุ่ม <b>"ยื่นเรื่องเคลม"</b> เพื่อรับการดูแล 24 ชม.</span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-2">
+        <!-- Cyberpunk Receipt Image Generator Button -->
+        <button type="button" onclick="window.saveOrderReceiptPNG()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--accent)]/20 via-emerald-500/20 to-[var(--accent)]/20 hover:from-[var(--accent)]/30 hover:to-emerald-500/30 border border-[var(--accent)]/60 text-[var(--accent)] hover:text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[var(--accent)]/20 active:scale-95 mb-1">
+          <i data-lucide="image-down" class="w-4 h-4"></i>
+          <span>📸 บันทึกใบเสร็จเป็นรูปภาพ PNG สวยงาม (Story Ready)</span>
+        </button>
+
+        <div class="flex gap-2">
+          <button type="button" onclick="copyDeliveredKey()" class="btn-cyber-primary flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>คัดลอกรหัส</span>
+          </button>
+          <button type="button" onclick="downloadCurrentReceiptTxt()" class="btn-cyber-secondary flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            <span>สำรอง .TXT</span>
+          </button>
+        </div>
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" onclick="closeInstantModal(); openClaimModal();" class="text-[11px] text-slate-400 hover:text-white underline">
+            สินค้ามีปัญหา? ยื่นเรื่องเคลมประกัน
+          </button>
+          <button type="button" onclick="closeInstantModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200">
+            ปิด
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================================
+       10. MODAL 3: CUSTOM SERVICE SPECIFICATION FORM (DISCORD BOOST / CUSTOM SERVICES)
+       ============================================================================== -->
+  <div id="custom-service-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 modal-overlay" onclick="closeCustomServiceModal()"></div>
+    <div class="relative z-10 modal-spring-dialog glass-panel rounded-3xl max-w-md w-full p-6 md:p-8 border border-[rgba(25,186,255,0.3)] shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h4 id="service-modal-title" class="text-lg font-heading font-extrabold text-white">กรอกข้อมูลสั่งทำบริการ</h4>
+          <p class="text-xs text-slate-400">ระบบจะส่งคิวงานไปยังบอทอัตโนมัติ 24 ชั่วโมง</p>
+        </div>
+        <button onclick="closeCustomServiceModal()" class="p-1 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="service-form-fields" class="space-y-3.5 text-xs">
+        <!-- Rendered dynamically based on fulfillment type -->
+      </div>
+
+      <div class="mt-6">
+        <button onclick="submitCustomServiceOrder()" class="btn-cyber-primary w-full py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+          <span>ดำเนินการสั่งซื้อ</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================================
+       13. SOCIAL PROOF LIVE ORDER TOAST (BOTTOM-LEFT)
+       ============================================================================== -->
+  <div id="social-proof-feed" class="social-proof-exit">
+    <!-- Cycled via app.js?v=2.0.1 -->
+  </div>
+
+  <!-- ==============================================================================
+       14. TOAST NOTIFICATION CONTAINER (BOTTOM-RIGHT)
+       ============================================================================== -->
+  <div id="toast-container">
+    <!-- Toasts pushed via showToast() -->
+  </div>
+
+  <!-- External Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ==============================================================================
+       🚀 NYX9 STUDIO MODULAR ARCHITECTURE (OOP & COMPONENT-BASED)
+       - Edit UI Components in: js/components/*.js
+       - Edit Business Services in: js/services/*.js
+       - Edit State & Core Engines in: js/core/*.js
+       - Edit Configuration & Products in: storeConfig.js / productsData.js
+       - Edit Global Styles in: styles.css
+       ============================================================================== -->
+  <!-- NYX_MODULAR_SCRIPTS_START -->
+  <!-- Unified Storefront Application Engine (Bundled for Antivirus Immunity & Zero-Latency) -->
   <script id="nyx-store-bundle">
 
 /* ============================================================================== */
@@ -3953,7 +5810,25 @@ class HeroSectionComponent {
     if (!container) return;
 
     const banners = window.storeConfig?.heroBanners || [];
-    if (banners.length === 0) return;
+    if (banners.length === 0) {
+      container.innerHTML = `
+        <div class="w-full flex-shrink-0 relative rounded-3xl overflow-hidden p-6 sm:p-8 md:p-12 border border-white/[0.08] bg-gradient-to-br from-[#0D1017]/95 via-[#0A0C13]/95 to-[#06080C]/95 backdrop-blur-2xl shadow-2xl">
+          <div class="relative z-10 max-w-3xl space-y-3 text-left">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-indigo-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+              <span>NYX9 STUDIO OFFICIAL</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-heading font-black text-white tracking-wide">
+              DISCORD &amp; ROBLOX STUDIO
+            </h2>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-2xl">
+              ศูนย์รวมบริการ Discord Nitro, Server Boosts และระบบเกม Roblox จัดส่งอัตโนมัติ 24 ชม.
+            </p>
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     container.innerHTML = banners.map((banner, idx) => {
       const glowColor = banner.themeColor === 'amber' ? 'rgba(245,158,11,0.06)' : (banner.themeColor === 'emerald' ? 'rgba(16,185,129,0.06)' : 'rgba(99,102,241,0.08)');
@@ -6685,13 +8560,21 @@ class ShopApp {
   async init() {
     console.info("⚡ [NYX9 STUDIO] Initializing Modular OOP Storefront...");
     
-    // 1. เรนเดอร์ UI ทันทีไม่ต้องรอ Network (Optimistic Instant Rendering)
-    this.hero.render();
-    this.catalogView.render();
-    this.navbar.updateWalletUI();
-    this.navbar.updateCartBadge();
-    this.renderAcceptedPaymentsFooter();
-    if (window.lucide) lucide.createIcons();
+    // 1. เรนเดอร์ UI ทันทีไม่ต้องรอ Network (Defensive Component Isolation)
+    const safeRun = (name, fn) => {
+      try {
+        fn();
+      } catch (err) {
+        console.error(`[COMP_INIT_ERROR] ${name} failed to render:`, err);
+      }
+    };
+
+    safeRun("HeroSection", () => this.hero?.render());
+    safeRun("CatalogView", () => this.catalogView?.render());
+    safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
+    safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
+    safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
+    safeRun("LucideIcons", () => { if (window.lucide) lucide.createIcons(); });
 
     // 2. เชื่อมต่อ Supabase
     if (window.storeConfig?.supabase && window.SupabaseAdapter) {
@@ -6767,14 +8650,25 @@ class ShopApp {
   }
 }
 
-// Global Application Instance
-window.Shop = new ShopApp();
+// Global Application Instance with safe boot
+try {
+  window.Shop = new ShopApp();
+} catch (e) {
+  console.error("❌ [ShopApp] Constructor failed:", e);
+}
 
 // Boot immediately or on DOM Ready (Guaranteed Execution)
 function bootShopApp() {
-  if (window.Shop && !window.Shop._hasBooted) {
-    window.Shop._hasBooted = true;
-    window.Shop.init();
+  try {
+    if (!window.Shop) {
+      window.Shop = new ShopApp();
+    }
+    if (window.Shop && !window.Shop._hasBooted) {
+      window.Shop._hasBooted = true;
+      window.Shop.init();
+    }
+  } catch (err) {
+    console.error("❌ [ShopApp] Boot failed:", err);
   }
 }
 
@@ -7277,5 +9171,6 @@ if (document.readyState === 'loading') {
 }
 
   </script>
+  <!-- NYX_MODULAR_SCRIPTS_END -->
 </body>
 </html>

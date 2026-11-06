@@ -3062,7 +3062,25 @@ class HeroSectionComponent {
     if (!container) return;
 
     const banners = window.storeConfig?.heroBanners || [];
-    if (banners.length === 0) return;
+    if (banners.length === 0) {
+      container.innerHTML = `
+        <div class="w-full flex-shrink-0 relative rounded-3xl overflow-hidden p-6 sm:p-8 md:p-12 border border-white/[0.08] bg-gradient-to-br from-[#0D1017]/95 via-[#0A0C13]/95 to-[#06080C]/95 backdrop-blur-2xl shadow-2xl">
+          <div class="relative z-10 max-w-3xl space-y-3 text-left">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-medium text-indigo-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+              <span>NYX9 STUDIO OFFICIAL</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-heading font-black text-white tracking-wide">
+              DISCORD &amp; ROBLOX STUDIO
+            </h2>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-2xl">
+              ศูนย์รวมบริการ Discord Nitro, Server Boosts และระบบเกม Roblox จัดส่งอัตโนมัติ 24 ชม.
+            </p>
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     container.innerHTML = banners.map((banner, idx) => {
       const glowColor = banner.themeColor === 'amber' ? 'rgba(245,158,11,0.06)' : (banner.themeColor === 'emerald' ? 'rgba(16,185,129,0.06)' : 'rgba(99,102,241,0.08)');
@@ -5794,13 +5812,21 @@ class ShopApp {
   async init() {
     console.info("⚡ [NYX9 STUDIO] Initializing Modular OOP Storefront...");
     
-    // 1. เรนเดอร์ UI ทันทีไม่ต้องรอ Network (Optimistic Instant Rendering)
-    this.hero.render();
-    this.catalogView.render();
-    this.navbar.updateWalletUI();
-    this.navbar.updateCartBadge();
-    this.renderAcceptedPaymentsFooter();
-    if (window.lucide) lucide.createIcons();
+    // 1. เรนเดอร์ UI ทันทีไม่ต้องรอ Network (Defensive Component Isolation)
+    const safeRun = (name, fn) => {
+      try {
+        fn();
+      } catch (err) {
+        console.error(`[COMP_INIT_ERROR] ${name} failed to render:`, err);
+      }
+    };
+
+    safeRun("HeroSection", () => this.hero?.render());
+    safeRun("CatalogView", () => this.catalogView?.render());
+    safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
+    safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
+    safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
+    safeRun("LucideIcons", () => { if (window.lucide) lucide.createIcons(); });
 
     // 2. เชื่อมต่อ Supabase
     if (window.storeConfig?.supabase && window.SupabaseAdapter) {
@@ -5876,14 +5902,25 @@ class ShopApp {
   }
 }
 
-// Global Application Instance
-window.Shop = new ShopApp();
+// Global Application Instance with safe boot
+try {
+  window.Shop = new ShopApp();
+} catch (e) {
+  console.error("❌ [ShopApp] Constructor failed:", e);
+}
 
 // Boot immediately or on DOM Ready (Guaranteed Execution)
 function bootShopApp() {
-  if (window.Shop && !window.Shop._hasBooted) {
-    window.Shop._hasBooted = true;
-    window.Shop.init();
+  try {
+    if (!window.Shop) {
+      window.Shop = new ShopApp();
+    }
+    if (window.Shop && !window.Shop._hasBooted) {
+      window.Shop._hasBooted = true;
+      window.Shop.init();
+    }
+  } catch (err) {
+    console.error("❌ [ShopApp] Boot failed:", err);
   }
 }
 
