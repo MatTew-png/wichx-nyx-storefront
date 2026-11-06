@@ -391,14 +391,41 @@ window.addDiscordServiceToCart = () => {
 window.prevCarouselSlide = () => window.Shop?.hero?.prevSlide();
 window.nextCarouselSlide = () => window.Shop?.hero?.nextSlide();
 window.setCarouselSlide = (idx) => window.Shop?.hero?.goToSlide(idx);
-window.handleBannerCta = (catId, action) => {
+window.handleBannerCta = (catId, action, productId) => {
   if (action === "openTopUp") {
-    window.openTopUpModal();
+    window.navigateToPage('topup');
+  } else if (action === "openHistory") {
+    window.navigateToPage('history');
+  } else if (action === "openProduct" && productId) {
+    window.quickBuyProduct(productId);
   } else if (catId) {
-    const target = document.getElementById(catId);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    window.navigateToPage('home');
+    setTimeout(() => {
+      const target = document.getElementById(catId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 150);
+  }
+};
+
+window.handleBannerSecondaryCta = (catId, action) => {
+  if (action === "discordCalculator") {
+    window.openDiscordServicesModal();
+  } else if (action === "openHistory") {
+    window.navigateToPage('history');
+  } else if (action === "openTopUp") {
+    window.navigateToPage('topup');
+  } else if (catId) {
+    window.navigateToPage('home');
+    setTimeout(() => {
+      const target = document.getElementById(catId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 150);
+  } else {
+    window.navigateToPage('home', '#category-filter-bar');
   }
 };
 
@@ -494,17 +521,7 @@ window.navigateToPage = function(page, hash = '') {
     }
   });
 
-  // 2. Toggle Back-to-Home Button in Header
-  const backBtn = document.getElementById('nav-back-home-btn');
-  if (backBtn) {
-    if (target === 'home') {
-      backBtn.classList.add('hidden');
-      backBtn.classList.remove('flex');
-    } else {
-      backBtn.classList.remove('hidden');
-      backBtn.classList.add('flex');
-    }
-  }
+  // 2. Nav Back Home Cleaned (User prefers direct branding click)
 
   // 3. Update Browser URL
   const targetPath = target === 'home' ? '/' : '/' + target;

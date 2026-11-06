@@ -85,34 +85,85 @@ const storeConfig = {
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
     heroBanners: [
     {
-      id: "banner-1",
-      badge: "AUTO FULFILLMENT",
-      title: "ศูนย์รวมบริการ Discord, FiveM & แอปพรีเมียม 24 ชม.",
-      description: "กดสั่งปุ๊บรับรหัสทันทีในระบบคลังคีย์ ไม่ต้องรอแอดมินตอบแชท • รับประกันไอดีแท้ 100% มีปัญหาเคลมใหม่ได้ทันที",
-      ctaText: "เลือกซื้อสินค้าพร้อมส่ง",
+      id: "banner-nitro",
+      themeColor: "cyan",
+      badge: "🔥 FLASH DEAL • ลดพิเศษ 48%",
+      title: "DISCORD NITRO & BOOSTS",
+      highlight: "ราคาเริ่มต้นเพียง ฿150",
+      description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB คุ้มค่าที่สุด",
+      perks: ["ไม่ต้องให้รหัสผ่าน", "2x Server Boosts ในตัว", "รับประกันแท้ 30-90 วัน"],
+      ctaText: "เลือกซื้อ Nitro ทันที",
       ctaCategory: "cat-discord-nitro",
-      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "ระบบออโต้ 24/7"
+      secondaryText: "คำนวณราคาบูสต์",
+      secondaryAction: "discordCalculator",
+      // Right Hologram Card Data
+      cardBadge: "SALE -48%",
+      cardBadgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+      cardTitle: "Nitro Booster (Mailpass 3 เดือน)",
+      cardSub: "ยกเมลเปลี่ยนรหัสได้แท้ 100%",
+      cardPrice: "฿150.00",
+      cardOriginalPrice: "฿290.00",
+      cardStock: "พร้อมส่ง 20 ชิ้น",
+      cardPerks: [
+        { icon: "smile", text: "ใช้อิโมจิ & สติ๊กเกอร์เคลื่อนไหวได้ทุกเซิร์ฟเวอร์" },
+        { icon: "rocket", text: "รับ 2x Server Boosts ฟรี ยกระดับเซิร์ฟเวอร์" },
+        { icon: "upload", text: "สตรีมภาพ HD 60FPS + ส่งไฟล์สูงสุด 500MB" }
+      ],
+      productId: "nitro-3m-mailpass"
     },
     {
-      id: "banner-2",
-      badge: "สต็อกพร้อมส่ง",
-      title: "FIVEM READY & STEAM GTA V ไอดีสะอาดแท้",
-      description: "รหัสยกเมลเปลี่ยนได้ 100% ปลดแบน HWID สะอาด ไร้ประวัติแบน คัดเกรดก่อนลงคลังส่งมอบ",
-      ctaText: "ดูรายการไอดี FiveM",
+      id: "banner-fivem",
+      themeColor: "amber",
+      badge: "🎮 GAMING READY • ปลดแบน HWID",
+      title: "FIVEM READY & STEAM แท้",
+      highlight: "ไอดีสะอาดแท้ ยกเมล 100%",
+      description: "ไอดีสดใหม่ยกเมลเปลี่ยนรหัสและอีเมลหลักได้ทันที ไร้ประวัติแบน คัดเกรดก่อนลงคลัง พร้อมโดดเข้าทุกเซิร์ฟเวอร์ดังได้ทันที ไร้ปัญหากวนใจ",
+      perks: ["ยกเมลเปลี่ยนได้ 100%", "เข้าได้ทุกเมืองดัง", "HWID Clean ปลอดภัย"],
+      ctaText: "ดูไอดี FiveM พร้อมส่ง",
       ctaCategory: "cat-gaming-apps",
-      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "ประกันไอดีสะอาด"
+      secondaryText: "ไอดีเกมมิ่งทั้งหมด",
+      secondaryCategory: "cat-gaming-apps",
+      // Right Hologram Card Data
+      cardBadge: "HOT DEAL",
+      cardBadgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+      cardTitle: "Rockstar FiveM สดใหม่",
+      cardSub: "ไอดีสะอาดแท้ 2 ชั้น • พร้อมเล่นทันที",
+      cardPrice: "฿10.00",
+      cardOriginalPrice: "฿50.00",
+      cardStock: "พร้อมส่งในระบบ",
+      cardPerks: [
+        { icon: "shield", text: "ไอดีสะอาด ไร้ประวัติโดนแบนจากระบบ Global" },
+        { icon: "globe", text: "เชื่อมโยงเซิร์ฟเวอร์ FiveM ได้ทุกประเทศ ทุกเมือง" },
+        { icon: "key", text: "เปลี่ยนรหัสผ่านและเมลสำรองได้อิสระ 100%" }
+      ],
+      productId: "rockstar-fivem-fresh"
     },
     {
-      id: "banner-3",
-      badge: "เติมเงินออโต้",
-      title: "ชำระเงินง่ายทุกช่องทาง ฟรีค่าธรรมเนียม 0%",
-      description: "รองรับ PromptPay QR สแกนฟรี, TrueMoney Wallet, โอนผ่านธนาคาร และบัตรเครดิต ปลอดภัย 3D Secure",
-      ctaText: "เติมเงินเข้ากระเป๋า",
+      id: "banner-wallet",
+      themeColor: "emerald",
+      badge: "⚡ AUTO 24/7 • ตัดยอด Real-time",
+      title: "ระบบเติมเงินอัตโนมัติ",
+      highlight: "ฟรีค่าธรรมเนียม 0% เข้าใน 5 วิ",
+      description: "รองรับทั้ง พร้อมเพย์ QR Code, ซองของขวัญ TrueMoney, บัญชีธนาคารกสิกร และบัตรเครดิต บอทเช็คยอดอัตโนมัติตลอด 24 ชม. เครดิตเข้ากระเป๋าทันที",
+      perks: ["ฟรีค่าธรรมเนียม 0%", "ตัดยอดใน 5-10 วินาที", "เครดิตไม่มีวันหมดอายุ"],
+      ctaText: "เติมเงินเข้ากระเป๋าเลย",
       ctaAction: "openTopUp",
-      bgGradient: "from-[#0B101A] via-[#080C14] to-[#06080D]",
-      accentTag: "เติมเงิน 24 ชม."
+      secondaryText: "ดูประวัติคำสั่งซื้อ",
+      secondaryAction: "openHistory",
+      // Right Hologram Card Data
+      cardBadge: "0% FEE",
+      cardBadgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+      cardTitle: "NYX9 WALLET DEPOSIT",
+      cardSub: "ระบบเติมเงินกระเป๋าอัตโนมัติ 24 ชม.",
+      cardPrice: "฿0.00 ค่าธรรมเนียม",
+      cardOriginalPrice: "",
+      cardStock: "บอทออนไลน์ 100%",
+      cardPerks: [
+        { icon: "qr-code", text: "PromptPay QR สแกนได้ทุกแอปธนาคาร ฟรี" },
+        { icon: "gift", text: "ซองของขวัญ TrueMoney บอทรับเงินออโต้" },
+        { icon: "lock", text: "ระบบป้องกันสลิปซ้ำด้วย TransRef Security" }
+      ],
+      productId: null
     }
   ],
 

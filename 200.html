@@ -215,11 +215,7 @@
           </div>
         </a>
 
-        <!-- Back to Home Action Button (Shown on sub-pages) -->
-        <button id="nav-back-home-btn" onclick="window.navigateToPage('home')" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-[var(--accent)] transition-all cursor-pointer group active:scale-95 shadow-sm ml-1 sm:ml-2">
-          <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
-          <span>กลับหน้าหลัก</span>
-        </button>
+        
       </div>
 
       <!-- Quick Desktop Page Navigation Links -->
@@ -417,72 +413,57 @@
     </section>
 
     <!-- ==============================================================================
-         3. LIVE TRUST & TELEMETRY STRIP (COMPACT RESPONSIVE: 3-COL MOBILE / 1-LINE DESKTOP)
+         3. PRO STORE VALUE PROPOSITIONS & VERIFIED TRUST TICKER
          ============================================================================== -->
-    <div class="mb-8 py-2.5 px-3 md:px-5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+    <div class="mb-8 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
       
-      <!-- Mobile Micro-Grid (< md): 3 Columns, Zero Horizontal Scroll, No Text Wrapping -->
-      <div class="grid grid-cols-3 divide-x divide-white/[0.06] text-center md:hidden">
-        <div class="px-1 flex flex-col items-center justify-center">
-          <span id="live-visitors-today-m" class="text-xs font-mono-val font-extrabold text-white">12,450</span>
-          <span class="text-[10px] text-slate-400 font-medium">ผู้เยี่ยมชมวันนี้</span>
+      <!-- Value 1: Instant Bot Fulfillment -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] transition-all flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[var(--accent)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+          <i data-lucide="zap" class="w-5 h-5"></i>
         </div>
-        <div class="px-1 flex flex-col items-center justify-center">
-          <span class="inline-flex items-center gap-1"><span id="live-orders-today-m" class="text-xs font-mono-val font-extrabold text-[var(--accent)]">850</span><span class="inline-block w-1 h-1 rounded-full bg-[var(--accent)] animate-pulse"></span></span>
-          <span class="text-[10px] text-slate-400 font-medium">ออเดอร์สำเร็จ</span>
-        </div>
-        <div class="px-1 flex flex-col items-center justify-center">
-          <span id="live-total-members-m" class="text-xs font-mono-val font-extrabold text-white">45,000+</span>
-          <span class="text-[10px] text-slate-400 font-medium">สมาชิกทั้งหมด</span>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white flex items-center gap-1.5 truncate">
+            <span>จัดส่งออโต้ 1-3 วินาที</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          </div>
+          <div class="text-[10px] text-slate-400 truncate">รหัสเข้าคลังทันทีไม่ต้องรอแอดมิน</div>
         </div>
       </div>
 
-      <!-- Desktop 1-Line Strip (>= md): Elegant Row with SVG Icons & Micro-Dots -->
-      <div class="hidden md:flex items-center justify-around w-full gap-4">
-        
-        <!-- Metric 1: ผู้เยี่ยมชมวันนี้ -->
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-lg bg-[rgba(0,242,255,0.08)] flex items-center justify-center text-[var(--accent)] shrink-0">
-            <i data-lucide="activity" class="w-3.5 h-3.5"></i>
-          </div>
-          <div class="flex items-baseline gap-1.5 whitespace-nowrap">
-            <span class="text-xs text-slate-400 font-medium">ผู้เยี่ยมชมวันนี้:</span>
-            <span id="live-visitors-today" class="text-xs md:text-sm font-mono-val font-extrabold text-white">12,450</span><span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" title="Live Pulse"></span>
-            <span class="text-[11px] text-slate-500 font-medium">คน</span>
-          </div>
+      <!-- Value 2: 100% Buyer Protection -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] transition-all flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
         </div>
-
-        <!-- Dot Divider -->
-        <span class="w-1 h-1 rounded-full bg-slate-700/60 shrink-0"></span>
-
-        <!-- Metric 2: ออเดอร์ส่งสำเร็จวันนี้ -->
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-lg bg-[rgba(0,242,255,0.08)] flex items-center justify-center text-[var(--accent)] shrink-0">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
-          </div>
-          <div class="flex items-baseline gap-1.5 whitespace-nowrap">
-            <span class="text-xs text-slate-400 font-medium">ออเดอร์ส่งสำเร็จวันนี้:</span>
-            <span id="live-orders-today" class="text-xs md:text-sm font-mono-val font-extrabold text-white">850</span><span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse ml-0.5" title="Live Activity"></span>
-            <span class="text-[11px] text-slate-500 font-medium">ออเดอร์</span>
-          </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">รับประกันคุ้มครอง 100%</div>
+          <div class="text-[10px] text-slate-400 truncate">มีปัญหาเคลมเปลี่ยนตัวใหม่ทันที</div>
         </div>
-
-        <!-- Dot Divider -->
-        <span class="w-1 h-1 rounded-full bg-slate-700/60 shrink-0"></span>
-
-        <!-- Metric 3: สมาชิกทั้งหมดในระบบ -->
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-lg bg-[rgba(0,242,255,0.08)] flex items-center justify-center text-[var(--accent)] shrink-0">
-            <i data-lucide="users" class="w-3.5 h-3.5"></i>
-          </div>
-          <div class="flex items-baseline gap-1.5 whitespace-nowrap">
-            <span class="text-xs text-slate-400 font-medium">สมาชิกทั้งหมดในระบบ:</span>
-            <span id="live-total-members" class="text-xs md:text-sm font-mono-val font-extrabold text-white">45,000+</span>
-            <span class="text-[11px] text-slate-500 font-medium">ผู้ใช้งาน</span>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Value 3: 0% Fee Top-Up -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] transition-all flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">เติมเงินฟรีค่าธรรมเนียม 0%</div>
+          <div class="text-[10px] text-slate-400 truncate">พร้อมเพย์, TrueMoney, ธนาคาร</div>
+        </div>
+      </div>
+
+      <!-- Value 4: 24/7 Discord Live Support -->
+      <div class="p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] transition-all flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(99,102,241,0.1)]">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white truncate">แอดมินสแตนด์บาย 24 ชม.</div>
+          <div class="text-[10px] text-slate-400 truncate">เปิดทิคเก็ตใน Discord ได้ตลอดเวลา</div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ==============================================================================
