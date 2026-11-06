@@ -132,4 +132,10 @@ class PaymentService {
   }
 }
 
-window.PaymentService = PaymentService;
+if (typeof window !== "undefined") {
+  window.PaymentService = PaymentService;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = PaymentService;
+}

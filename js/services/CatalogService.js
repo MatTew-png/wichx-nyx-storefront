@@ -92,4 +92,10 @@ class CatalogService {
   }
 }
 
-window.CatalogService = CatalogService;
+if (typeof window !== "undefined") {
+  window.CatalogService = CatalogService;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CatalogService;
+}

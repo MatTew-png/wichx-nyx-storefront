@@ -11,7 +11,8 @@ class CheckoutService {
 
   calculateTotals() {
     const cart = this.store.get("cart") || [];
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    subtotal = Math.round(subtotal * 100) / 100;
     const promo = this.store.get("appliedPromo");
 
     let discount = 0;
@@ -27,8 +28,9 @@ class CheckoutService {
       }
       discount = Math.min(discount, subtotal);
     }
+    discount = Math.round(discount * 100) / 100;
 
-    const total = Math.max(0, subtotal - discount);
+    const total = Math.round(Math.max(0, subtotal - discount) * 100) / 100;
     return { subtotal, discount, total };
   }
 
@@ -188,4 +190,10 @@ class CheckoutService {
   }
 }
 
-window.CheckoutService = CheckoutService;
+if (typeof window !== "undefined") {
+  window.CheckoutService = CheckoutService;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CheckoutService;
+}

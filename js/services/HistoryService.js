@@ -14,7 +14,7 @@ class HistoryService {
    */
   async getOrderHistory() {
     const user = this.store.get("user");
-    const localRaw = localStorage.getItem("wichx_orders");
+    const localRaw = typeof localStorage !== "undefined" ? localStorage.getItem("wichx_orders") : null;
     let localOrders = [];
 
     try {
@@ -107,7 +107,9 @@ class HistoryService {
   }
 }
 
-window.HistoryService = HistoryService;
+if (typeof window !== "undefined") {
+  window.HistoryService = HistoryService;
+}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = HistoryService;
