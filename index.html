@@ -1419,15 +1419,24 @@ html.nyx-intro-active body {
                 </div>
               </div>
 
-              <!-- QR Frame -->
-              <div class="p-3.5 rounded-2xl bg-white shadow-2xl relative">
-                <div id="promptpay-qr-display" class="w-44 h-44 flex items-center justify-center">
-                  <img id="promptpay-qr-img" src="" alt="PromptPay QR" class="w-full h-full object-contain" />
+              <!-- QR Frame with Authentic NYX9 Watermark Overlay -->
+              <div class="p-3.5 rounded-2xl bg-white shadow-2xl relative overflow-hidden group">
+                <div id="promptpay-qr-display" class="w-52 h-52 sm:w-60 sm:h-60 relative flex items-center justify-center">
+                  <img id="promptpay-qr-img" src="" alt="PromptPay QR with Anti-ABC Protection" class="w-full h-full object-contain" />
+                  <!-- Authentic NYX9 Studio Anti-ABC Watermark Layer (Red text + Silhouette) -->
+                  <img id="promptpay-watermark-layer" src="assets/qr-watermark-overlay.png" class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-10" alt="ใช้เพื่อสแกนจ่ายเงิน ร้าน NYX9 STUDIO เท่านั้น" />
                 </div>
               </div>
 
-              <div class="mt-3 text-center space-y-1">
-                <div class="text-xs font-semibold text-white flex items-center justify-center gap-1.5">
+              <!-- Real Shop Instructions (from Official Payment Notice) -->
+              <div class="mt-3.5 text-center space-y-1.5 w-full">
+                <!-- Note Slip Badge (โน๊ตสลิป 'ซื้อขายกับร้าน NYX9 สตูดิโอ') -->
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] font-bold">
+                  <span>โน๊ตสลิป:</span>
+                  <span class="text-white font-extrabold select-all">‘ ซื้อขายกับร้าน NYX9 สตูดิโอ ’</span>
+                </div>
+
+                <div class="text-xs font-semibold text-white flex items-center justify-center gap-1.5 pt-1">
                   <span>ชื่อบัญชี:</span>
                   <span class="text-[var(--accent)] font-bold">NYX9 STUDIO</span>
                   <i data-lucide="badge-check" class="w-3.5 h-3.5 text-cyan-400"></i>
@@ -1435,15 +1444,21 @@ html.nyx-intro-active body {
                 <div class="text-[11px] font-mono text-slate-300">
                   พร้อมเพย์: <span class="font-bold text-white select-all">1-4599-01184-41-4</span>
                 </div>
+
+                <div class="text-[10px] text-slate-400 pt-0.5">
+                  ✓ สแกนได้ทั้งแอปธนาคาร และ TrueMoney Wallet
+                </div>
               </div>
 
-              <!-- Anti-ABC Protection Warning Box -->
-              <div class="mt-3 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-[10px] text-rose-300 leading-relaxed text-center max-w-sm">
-                <div class="font-bold text-rose-400 flex items-center justify-center gap-1 mb-0.5">
-                  <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-                  <span>ข้อความเตือนป้องกันกลโกง ABC</span>
+              <!-- Anti-ABC Protection & Single Owner Notice Box -->
+              <div class="mt-3 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-[11px] text-rose-300 leading-relaxed text-center max-w-md space-y-1">
+                <div class="font-bold text-rose-400 flex items-center justify-center gap-1">
+                  <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                  <span>ลายน้ำป้องกันกลโกง ABC • ใช้เพื่อสแกนจ่ายเงิน ร้าน NYX9 STUDIO เท่านั้น</span>
                 </div>
-                QR นี้มีลายน้ำระบุใช้สำหรับเติมเงินเข้าเว็บไซต์ <b class="text-white underline">nyxning.shop</b> เท่านั้น หากมีบุคคลอื่นส่ง QR นี้ให้คุณสแกน <b>ห้ามโอนเด็ดขาด!</b>
+                <div class="text-[10px] text-slate-300 leading-normal">
+                  เนื่องจากร้าน <b>NOVAPE</b> และ <b>NYX9</b> เป็นเจ้าของร้านเดียวกันนะคะ จึงใช้โอนเข้าบัญชีนี้เท่านั้น หากมีบุคคลภายนอกนำ QR ไปแอบอ้าง <b>ห้ามโอนเด็ดขาด!</b>
+                </div>
               </div>
             </div>
 
@@ -6698,69 +6713,33 @@ class TopUpModalComponent {
     const rawQrUrl = this.paymentService.getPromptPayQrUrl(val);
     qrImg.src = rawQrUrl;
 
-    // Render Canvas Anti-ABC Fraud Watermarked QR
+    // Render Canvas with authentic NYX9 STUDIO Anti-ABC Watermark Image
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
         try {
           const canvas = document.createElement("canvas");
-          const width = 360;
-          const height = 440;
-          canvas.width = width;
-          canvas.height = height;
+          const size = 500;
+          canvas.width = size;
+          canvas.height = size;
           const ctx = canvas.getContext("2d");
 
-          // 1. Background (White Card)
-          ctx.fillStyle = "#FFFFFF";
-          ctx.fillRect(0, 0, width, height);
+          // 1. Draw PromptPay QR Code
+          ctx.drawImage(img, 0, 0, size, size);
 
-          // 2. Official Thai QR Payment Top Bar
-          ctx.fillStyle = "#0056B3"; // PromptPay Blue
-          ctx.fillRect(0, 0, width, 48);
-
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = "bold 15px 'IBM Plex Sans Thai', sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText("THAI QR PAYMENT", width / 2, 22);
-
-          ctx.fillStyle = "#7AE0FF";
-          ctx.font = "bold 11px 'IBM Plex Sans Thai', sans-serif";
-          ctx.fillText("NYX9 STUDIO • nyxning.shop", width / 2, 40);
-
-          // 3. Draw PromptPay QR Code
-          const qrSize = 300;
-          const qrX = (width - qrSize) / 2;
-          const qrY = 54;
-          ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
-
-          // 4. ANTI-ABC FRAUD WATERMARK OVERLAY
-          ctx.save();
-          ctx.translate(width / 2, qrY + qrSize / 2);
-          ctx.rotate(-28 * Math.PI / 180);
-
-          ctx.fillStyle = "rgba(220, 38, 38, 0.22)"; // Semi-transparent security red
-          ctx.font = "900 13px 'IBM Plex Sans Thai', sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText("🔒 ใช้เติมเงิน nyxning.shop เท่านั้น", 0, -18);
-          ctx.fillText("⚠️ ระวังกลโกง ABC • ห้ามโอนตามคำสั่งผู้อื่น", 0, 4);
-          ctx.fillText("NYX9 STUDIO • 1459901184414", 0, 24);
-          ctx.restore();
-
-          // 5. Bottom Security Bar
-          ctx.fillStyle = "#0B111E";
-          ctx.fillRect(0, height - 42, width, 42);
-
-          ctx.fillStyle = "#00B2FF";
-          ctx.font = "bold 12px 'JetBrains Mono', monospace";
-          ctx.textAlign = "center";
-          ctx.fillText(`ยอดชำระ ฿${val.toFixed(2)} • พร้อมเพย์: 145-990-118-4414`, width / 2, height - 24);
-
-          ctx.fillStyle = "#F59E0B";
-          ctx.font = "bold 10px 'IBM Plex Sans Thai', sans-serif";
-          ctx.fillText("⚠️ หากมีบุคคลอื่นส่ง QR นี้ให้คุณ โปรดระวังมิจฉาชีพ", width / 2, height - 9);
-
-          qrImg.src = canvas.toDataURL("image/png");
+          // 2. Draw Authentic Shop Anti-ABC Watermark Image (with Logo silhouette + 3-line text)
+          const wm = new Image();
+          wm.crossOrigin = "anonymous";
+          wm.onload = () => {
+            try {
+              ctx.drawImage(wm, 0, 0, size, size);
+              qrImg.src = canvas.toDataURL("image/png");
+            } catch (err) {
+              console.warn("[QR WATERMARK] Composite error:", err);
+            }
+          };
+          wm.src = "assets/qr-watermark-overlay.png";
         } catch (canvasErr) {
           console.warn("[QR WATERMARK] Canvas compositing fallback:", canvasErr);
         }
