@@ -79,6 +79,8 @@ class NavbarComponent {
   updateAuthUI() {
     const user = this.store.get("user");
     const loginBtn = document.getElementById("btn-discord-login");
+    const signupBtn = document.getElementById("btn-nav-signup");
+    const unauthGroup = document.getElementById("auth-unauthenticated");
     const profileBadge = document.getElementById("user-profile-badge");
     const avatarImg = document.getElementById("user-avatar-img");
     const nameEl = document.getElementById("user-display-name");
@@ -95,7 +97,9 @@ class NavbarComponent {
     const balance = this.store.get("walletBalance") || 0;
 
     if (user) {
+      if (unauthGroup) unauthGroup.classList.add("hidden");
       if (loginBtn) loginBtn.classList.add("hidden");
+      if (signupBtn) signupBtn.classList.add("hidden");
       if (profileBadge) {
         profileBadge.classList.remove("hidden");
         profileBadge.classList.add("flex");
@@ -128,7 +132,9 @@ class NavbarComponent {
         }
       }
     } else {
+      if (unauthGroup) unauthGroup.classList.remove("hidden");
       if (loginBtn) loginBtn.classList.remove("hidden");
+      if (signupBtn) signupBtn.classList.remove("hidden");
       if (profileBadge) {
         profileBadge.classList.add("hidden");
         profileBadge.classList.remove("flex");

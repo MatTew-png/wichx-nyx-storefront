@@ -41,6 +41,7 @@ class ShopApp {
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
     this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
+    this.authModal = window.AuthModalComponent ? new window.AuthModalComponent(this.store, this.auth) : null;
     this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
@@ -64,6 +65,7 @@ class ShopApp {
     safeRun("HeroSection", () => this.hero?.render());
     safeRun("CatalogView", () => this.catalogView?.render());
     safeRun("ReviewsSection", () => this.reviewsSection?.render());
+    safeRun("AuthModal", () => this.authModal?.initDOM());
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());

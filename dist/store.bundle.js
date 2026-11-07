@@ -3355,6 +3355,8 @@ class NavbarComponent {
   updateAuthUI() {
     const user = this.store.get("user");
     const loginBtn = document.getElementById("btn-discord-login");
+    const signupBtn = document.getElementById("btn-nav-signup");
+    const unauthGroup = document.getElementById("auth-unauthenticated");
     const profileBadge = document.getElementById("user-profile-badge");
     const avatarImg = document.getElementById("user-avatar-img");
     const nameEl = document.getElementById("user-display-name");
@@ -3371,7 +3373,9 @@ class NavbarComponent {
     const balance = this.store.get("walletBalance") || 0;
 
     if (user) {
+      if (unauthGroup) unauthGroup.classList.add("hidden");
       if (loginBtn) loginBtn.classList.add("hidden");
+      if (signupBtn) signupBtn.classList.add("hidden");
       if (profileBadge) {
         profileBadge.classList.remove("hidden");
         profileBadge.classList.add("flex");
@@ -3404,7 +3408,9 @@ class NavbarComponent {
         }
       }
     } else {
+      if (unauthGroup) unauthGroup.classList.remove("hidden");
       if (loginBtn) loginBtn.classList.remove("hidden");
+      if (signupBtn) signupBtn.classList.remove("hidden");
       if (profileBadge) {
         profileBadge.classList.add("hidden");
         profileBadge.classList.remove("flex");
@@ -5306,6 +5312,7 @@ class AuthModalComponent {
     this.authService = authService;
     this.currentMode = "signin"; // 'signin', 'signup', 'magiclink'
     this.initDOM();
+    this.initGlobalBindings();
   }
 
   initDOM() {
@@ -5328,7 +5335,7 @@ class AuthModalComponent {
               <i data-lucide="shield-check" class="w-5 h-5"></i>
             </div>
             <div>
-              <h3 class="text-base font-bold font-heading text-white tracking-wide">เข้าสู่ระบบ / บัญชีผู้ใช้</h3>
+              <h3 class="text-base font-bold font-heading text-white tracking-wide">เข้าสู่ระบบ / สมัครสมาชิก</h3>
               <p class="text-[11px] text-slate-400">เลือกช่องทางเพื่อสะสมยอดกระเป๋าเงินและดูประวัติคีย์</p>
             </div>
           </div>
@@ -5441,14 +5448,139 @@ class AuthModalComponent {
     if (window.lucide) lucide.createIcons();
   }
 
-  open() {
-    const modal = document.getElementById("auth-modal");
+  initGlobalBindings() {
+    window.openAuthModal = (mode = "signin") => this.open(mode);
+    window.openSignUpModal = () => this.open("signup");
+    window.closeAuthModal = () => this.close();
+    window.switchAuthMode = (mode) => this.setMode(mode);
+
+    window.loginWithDiscord = () => {
+      if (this.authService && typeof this.authService.loginWithDiscord === "function") {
+        this.authService.loginWithDiscord();
+      } else if (typeof window.handleDiscordLogin === "function") {
+        window.handleDiscordLogin();
+      }
+    };
+
+    window.loginWithGoogle = () => {
+      if (this.authService && typeof this.authService.loginWithGoogle === "function") {
+        this.authService.loginWithGoogle();
+      } else if (window.SupabaseAdapter && typeof window.SupabaseAdapter.loginWithGoogle === "function") {
+        window.SupabaseAdapter.loginWithGoogle();
+      }
+    };
+
+    window.loginWithGitHub = () => {
+      if (this.authService && typeof this.authService.loginWithGitHub === "function") {
+        this.authService.loginWithGitHub();
+      } else if (window.SupabaseAdapter && typeof window.SupabaseAdapter.loginWithGitHub === "function") {
+        window.SupabaseAdapter.loginWithGitHub();
+      }
+    };
+
+    window.handleForgotPassword = async () => {
+      const emailInput = document.getElementById("auth-input-email");
+      const email = emailInput ? emailInput.value.trim() : "";
+      if (!email) {
+        window.UI?.toast("กรุณากรอกอีเมลในช่องด้านล่างก่อนกดลืมรหัสผ่าน", "warning");
+        if (emailInput) emailInput.focus();
+        return;
+      }
+      try {
+        if (this.authService && typeof this.authService.resetPassword === "function") {
+          await this.authService.resetPassword(email);
+        } else if (window.SupabaseAdapter) {
+          await window.SupabaseAdapter.resetPassword(email);
+          window.UI?.toast(`ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง ${email} แล้ว!`, "success");
+        }
+      } catch (err) {
+        window.UI?.toast(err.message || "ส่งคำขอรีเซ็ตรหัสผ่านไม่สำเร็จ", "error");
+      }
+    };
+
+    window.handleEmailAuthSubmit = async (e) => {
+      if (e) e.preventDefault();
+      const emailEl = document.getElementById("auth-input-email");
+      const passEl = document.getElementById("auth-input-password");
+      const userEl = document.getElementById("auth-input-username");
+      const submitBtn = document.getElementById("btn-auth-submit");
+      const submitLabel = document.getElementById("btn-auth-submit-label");
+
+      const email = emailEl ? emailEl.value.trim() : "";
+      const password = passEl ? passEl.value : "";
+      const username = userEl ? userEl.value.trim() : "";
+
+      if (!email) {
+        window.UI?.toast("กรุณาระบุที่อยู่อีเมล", "warning");
+        return;
+      }
+
+      const origText = submitLabel ? submitLabel.textContent : "ยืนยัน";
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitLabel) submitLabel.textContent = "กำลังดำเนินการ...";
+
+      try {
+        if (this.currentMode === "signin") {
+          if (!password) throw new Error("กรุณาระบุรหัสผ่าน");
+          if (this.authService) {
+            await this.authService.loginWithPassword(email, password);
+          } else if (window.SupabaseAdapter) {
+            const res = await window.SupabaseAdapter.loginWithPassword(email, password);
+            if (res?.user && this.store) {
+              this.store.set("user", {
+                username: res.user.user_metadata?.full_name || email.split("@")[0],
+                email: res.user.email,
+                avatarUrl: "assets/logo.png",
+                provider: "email"
+              });
+            }
+          }
+          this.close();
+        } else if (this.currentMode === "signup") {
+          if (!password || password.length < 6) throw new Error("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+          if (this.authService) {
+            await this.authService.signUpWithPassword(email, password, username);
+          } else if (window.SupabaseAdapter) {
+            await window.SupabaseAdapter.signUpWithPassword(email, password, username);
+          }
+          this.close();
+        } else if (this.currentMode === "magiclink") {
+          if (this.authService) {
+            await this.authService.loginWithOtp(email);
+          } else if (window.SupabaseAdapter) {
+            await window.SupabaseAdapter.loginWithOtp(email);
+            window.UI?.toast(`ส่ง Magic Link ไปยัง ${email} เรียบร้อยแล้ว!`, "success");
+          }
+          this.close();
+        }
+      } catch (err) {
+        console.error("[AUTH_SUBMIT_ERROR]", err);
+        window.UI?.toast(err.message || "การยืนยันตัวตนไม่สำเร็จ", "error");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitLabel) submitLabel.textContent = origText;
+      }
+    };
+  }
+
+  open(mode = "signin") {
+    let modal = document.getElementById("auth-modal");
+    if (!modal) {
+      this.initDOM();
+      modal = document.getElementById("auth-modal");
+    }
     if (modal) {
+      this.setMode(mode);
       modal.classList.remove("hidden");
       if (window.lucide) lucide.createIcons();
       setTimeout(() => {
-        const emailInput = document.getElementById("auth-input-email");
-        if (emailInput) emailInput.focus();
+        if (mode === "signup") {
+          const userInp = document.getElementById("auth-input-username");
+          if (userInp) userInp.focus();
+        } else {
+          const emailInput = document.getElementById("auth-input-email");
+          if (emailInput) emailInput.focus();
+        }
       }, 100);
     }
   }
@@ -6590,6 +6722,7 @@ class ShopApp {
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
     this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
+    this.authModal = window.AuthModalComponent ? new window.AuthModalComponent(this.store, this.auth) : null;
     this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
@@ -6613,6 +6746,7 @@ class ShopApp {
     safeRun("HeroSection", () => this.hero?.render());
     safeRun("CatalogView", () => this.catalogView?.render());
     safeRun("ReviewsSection", () => this.reviewsSection?.render());
+    safeRun("AuthModal", () => this.authModal?.initDOM());
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
