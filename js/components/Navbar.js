@@ -91,7 +91,7 @@ class NavbarComponent {
     const menuAdminLink = document.getElementById("menu-admin-link");
 
     const adminIds = (window.storeConfig && window.storeConfig.adminDiscordIds) || ["483398326159671326", "422611554475835394"];
-    const isAdmin = user && (user.role === "admin" || adminIds.includes(String(user.discordId)));
+    const isAdmin = user && (user.role === "admin" || adminIds.includes(String(user.discordId)) || (user.email && user.email.toLowerCase() === "sanaseeriri@gmail.com"));
     const balance = this.store.get("walletBalance") || 0;
 
     if (user) {
@@ -108,7 +108,14 @@ class NavbarComponent {
 
       if (menuAvatar) menuAvatar.src = avatarUrl;
       if (menuUsername) menuUsername.textContent = username;
-      if (menuDiscordId) menuDiscordId.textContent = user.discordId ? `ID: ${user.discordId}` : (user.email || "Discord Member");
+      const provTag = (user.provider || "user").toUpperCase();
+      if (menuDiscordId) {
+        if (user.discordId) {
+          menuDiscordId.textContent = `[${provTag}] ID: ${user.discordId}`;
+        } else {
+          menuDiscordId.textContent = `[${provTag}] ${user.email || 'Member'}`;
+        }
+      }
       if (menuWallet) menuWallet.textContent = `฿${balance.toFixed(2)}`;
 
       if (menuAdminLink) {

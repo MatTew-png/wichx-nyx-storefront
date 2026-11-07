@@ -7,3 +7,11 @@ scratch/
 scripts/bin/
 load-test-report.html
 
+# Obsidian Vault ephemeral files
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace*
+.obsidian/cache/
+.trash/
+
+

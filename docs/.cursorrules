@@ -1,0 +1,7 @@
+# Cursor Rules for Docs Vault
+# Ref: docs/.agent/rules.md
+
+1. Maintain valid YAML frontmatter on all markdown files.
+2. Use [[wikilinks]] for cross-references between notes.
+3. Place newly generated unverified features or draft docs in 10_Inbox/.
+4. Keep MOC.md synchronized with new primary notes.

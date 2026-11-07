@@ -24,23 +24,87 @@ const SupabaseAdapter = {
     }
   },
 
-  // --- DISCORD OAUTH & SUPABASE AUTH SUITE ---
-  async loginWithDiscord() {
+    // --- MULTI-PROVIDER OAUTH & SUPABASE AUTH SUITE ---
+  async loginWithOAuth(provider = "discord") {
     if (!this.isLive || !this.client) {
       alert("ระบบเชื่อมต่อฐานข้อมูลยังไม่พร้อมใช้งาน");
       return;
     }
     const redirectTo = window.location.origin + window.location.pathname;
     const { data, error } = await this.client.auth.signInWithOAuth({
-      provider: "discord",
+      provider: provider,
       options: {
         redirectTo: redirectTo
       }
     });
     if (error) {
-      console.error("[SUPABASE AUTH] Discord login failed:", error.message);
+      console.error(`[SUPABASE AUTH] ${provider} login failed:`, error.message);
       throw error;
     }
+    return data;
+  },
+
+  async loginWithDiscord() {
+    return this.loginWithOAuth("discord");
+  },
+
+  async loginWithGoogle() {
+    return this.loginWithOAuth("google");
+  },
+
+  async loginWithGitHub() {
+    return this.loginWithOAuth("github");
+  },
+
+  async loginWithPassword(email, password) {
+    if (!this.isLive || !this.client) throw new Error("ระบบฐานข้อมูลยังไม่พร้อมใช้งาน");
+    const { data, error } = await this.client.auth.signInWithPassword({
+      email: (email || "").trim(),
+      password: password
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async signUpWithPassword(email, password, username = "") {
+    if (!this.isLive || !this.client) throw new Error("ระบบฐานข้อมูลยังไม่พร้อมใช้งาน");
+    const cleanEmail = (email || "").trim();
+    const cleanName = (username || "").trim() || cleanEmail.split("@")[0];
+    const { data, error } = await this.client.auth.signUp({
+      email: cleanEmail,
+      password: password,
+      options: {
+        data: {
+          full_name: cleanName,
+          name: cleanName,
+          user_name: cleanName
+        }
+      }
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async loginWithOtp(email) {
+    if (!this.isLive || !this.client) throw new Error("ระบบฐานข้อมูลยังไม่พร้อมใช้งาน");
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { data, error } = await this.client.auth.signInWithOtp({
+      email: (email || "").trim(),
+      options: {
+        emailRedirectTo: redirectTo
+      }
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async resetPassword(email) {
+    if (!this.isLive || !this.client) throw new Error("ระบบฐานข้อมูลยังไม่พร้อมใช้งาน");
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { data, error } = await this.client.auth.resetPasswordForEmail((email || "").trim(), {
+      redirectTo: redirectTo
+    });
+    if (error) throw error;
     return data;
   },
 
@@ -123,18 +187,18 @@ const SupabaseAdapter = {
         "cat-roblox-assets": { name: "Roblox GFX & โมเดล 3D", icon: "box" }
       };
 
-      // แมปเข้าโครงสร้าง categoriesData ที่หน้าร้านใช้งาน (เฉพาะ 4 หมวดของเครือข่ายร้าน)
-      const allowedCategories = ['cat-discord-nitro', 'cat-discord-services', 'cat-roblox-scripts', 'cat-roblox-assets'];
+      // กรองเฉพาะหมวดหมู่ที่ไม่ถูก Archived ให้แสดงผลแบบไดนามิก 100%
       const fallbackProducts = (window.categoriesData || []).flatMap(c => c.products || []);
 
       return cats
-        .filter(cat => allowedCategories.includes(cat.id))
+        .filter(cat => cat.badge !== 'ARCHIVED' && cat.is_active !== false)
         .map(cat => ({
           id: cat.id,
           name: CATEGORY_DISPLAY_MAP[cat.id]?.name || cat.name,
-          subName: cat.sub_name,
+          subName: cat.sub_name || "",
           icon: CATEGORY_DISPLAY_MAP[cat.id]?.icon || cat.icon || "layers",
           badge: cat.badge || "AUTO",
+          sortOrder: cat.sort_order || 99,
           products: prods
             .filter(p => p.category_id === cat.id)
             .map(p => {
@@ -162,6 +226,21 @@ const SupabaseAdapter = {
     } catch (err) {
       console.warn("[SUPABASE] Fetch live products failed, using fallback:", err.message);
       return window.categoriesData || [];
+    }
+  },
+
+  // 1.1 ดึงการตั้งค่าร้านค้าแบบไดนามิกจากฐานข้อมูล (Dynamic System Settings)
+  async getSystemSettings() {
+    if (!this.isLive || !this.client) {
+      return null;
+    }
+    try {
+      const { data, error } = await this.client.rpc("get_system_settings");
+      if (error) throw error;
+      return data || null;
+    } catch (err) {
+      console.warn("[SUPABASE] getSystemSettings error:", err.message);
+      return null;
     }
   },
 

@@ -24,6 +24,7 @@ const SOURCE_FILES = [
   'js/components/TopUpModal.js',
   'js/components/HistoryModal.js',
   'js/components/RestockModal.js',
+  'js/components/AuthModal.js',
   'js/components/DiscordServiceModal.js',
   'js/components/Modals.js',
   'js/components/SocialProof.js',

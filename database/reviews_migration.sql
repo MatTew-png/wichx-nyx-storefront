@@ -268,7 +268,7 @@ BEGIN
     NEW.raw_user_meta_data->>'sub'
   );
   v_username := COALESCE(
-    NEW.raw_user_meta_data->>'custom_claims'->>'global_name',
+    (NEW.raw_user_meta_data->'custom_claims')->>'global_name',
     NEW.raw_user_meta_data->>'full_name',
     NEW.raw_user_meta_data->>'user_name',
     NEW.raw_user_meta_data->>'name',

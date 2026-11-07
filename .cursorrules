@@ -1,0 +1,7 @@
+# Cursor Rules for WebShop Repo
+# Documentation Vault Root: docs/
+
+1. Strictly follow docs/.agent/rules.md.
+2. New documentation proposals or unreviewed features must be staged in docs/10_Inbox/.
+3. All markdown files in docs/ must adhere to frontmatter schemas in docs/.agent/schema.md.
+4. Internal documentation cross-references must use [[wikilinks]].

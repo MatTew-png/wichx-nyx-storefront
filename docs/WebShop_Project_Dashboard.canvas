@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": "group-hub",
+      "type": "group",
+      "label": "📑 Executive Vault Hub",
+      "x": 40,
+      "y": 40,
+      "width": 380,
+      "height": 520,
+      "color": "5"
+    },
+    {
+      "id": "node-moc",
+      "type": "file",
+      "file": "MOC.md",
+      "x": 70,
+      "y": 100,
+      "width": 320,
+      "height": 200
+    },
+    {
+      "id": "node-master-index",
+      "type": "file",
+      "file": "00_Index/00_Master_Index.md",
+      "x": 70,
+      "y": 320,
+      "width": 320,
+      "height": 210
+    },
+    {
+      "id": "group-features",
+      "type": "group",
+      "label": "🚀 Storefront Core Features",
+      "x": 480,
+      "y": 40,
+      "width": 780,
+      "height": 520,
+      "color": "4"
+    },
+    {
+      "id": "node-feat-matrix",
+      "type": "file",
+      "file": "00_Index/02_Feature_Matrix.md",
+      "x": 510,
+      "y": 100,
+      "width": 340,
+      "height": 200
+    },
+    {
+      "id": "node-feat-instant",
+      "type": "file",
+      "file": "01_Features/FEAT_01_Instant_Credential_Delivery.md",
+      "x": 880,
+      "y": 100,
+      "width": 350,
+      "height": 200
+    },
+    {
+      "id": "node-feat-topup",
+      "type": "file",
+      "file": "01_Features/FEAT_03_Tri_Gateway_TopUp.md",
+      "x": 510,
+      "y": 320,
+      "width": 340,
+      "height": 210
+    },
+    {
+      "id": "node-feat-catalog",
+      "type": "file",
+      "file": "01_Features/FEAT_07_Product_Catalog_Matrix.md",
+      "x": 880,
+      "y": 320,
+      "width": 350,
+      "height": 210
+    },
+    {
+      "id": "group-arch",
+      "type": "group",
+      "label": "🏛️ Architecture & Security Core",
+      "x": 1320,
+      "y": 40,
+      "width": 780,
+      "height": 520,
+      "color": "6"
+    },
+    {
+      "id": "node-arch-security",
+      "type": "file",
+      "file": "02_Architecture/ARCH_03_Enterprise_Security_Vault.md",
+      "x": 1350,
+      "y": 100,
+      "width": 350,
+      "height": 200
+    },
+    {
+      "id": "node-arch-db",
+      "type": "file",
+      "file": "02_Architecture/ARCH_04_Database_Schema_Cluster.md",
+      "x": 1720,
+      "y": 100,
+      "width": 350,
+      "height": 200
+    },
+    {
+      "id": "node-kanban",
+      "type": "file",
+      "file": "02_Architecture/KANBAN_Board.md",
+      "x": 1350,
+      "y": 320,
+      "width": 350,
+      "height": 210
+    },
+    {
+      "id": "node-roadmap",
+      "type": "file",
+      "file": "02_Architecture/ARCH_02_Refactoring_Roadmap.md",
+      "x": 1720,
+      "y": 320,
+      "width": 350,
+      "height": 210
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-moc-to-matrix",
+      "fromNode": "node-moc",
+      "fromSide": "right",
+      "toNode": "node-feat-matrix",
+      "toSide": "left",
+      "label": "Navigates"
+    },
+    {
+      "id": "edge-matrix-to-instant",
+      "fromNode": "node-feat-matrix",
+      "fromSide": "right",
+      "toNode": "node-feat-instant",
+      "toSide": "left",
+      "label": "Specifies"
+    },
+    {
+      "id": "edge-matrix-to-topup",
+      "fromNode": "node-feat-matrix",
+      "fromSide": "bottom",
+      "toNode": "node-feat-topup",
+      "toSide": "top"
+    },
+    {
+      "id": "edge-instant-to-security",
+      "fromNode": "node-feat-instant",
+      "fromSide": "right",
+      "toNode": "node-arch-security",
+      "toSide": "left",
+      "label": "Guarded by"
+    },
+    {
+      "id": "edge-topup-to-db",
+      "fromNode": "node-feat-topup",
+      "fromSide": "right",
+      "toNode": "node-arch-db",
+      "toSide": "bottom",
+      "label": "Persists to"
+    },
+    {
+      "id": "edge-security-to-db",
+      "fromNode": "node-arch-security",
+      "fromSide": "right",
+      "toNode": "node-arch-db",
+      "toSide": "left",
+      "label": "Enforces RLS"
+    }
+  ]
+}

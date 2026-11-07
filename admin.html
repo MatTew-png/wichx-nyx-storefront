@@ -295,6 +295,10 @@
               Catalog & Inventory
             </div>
             <nav class="space-y-1">
+              <button onclick="switchAdminTab('categories')" id="nav-btn-categories" class="nav-item w-full text-left">
+                <i data-lucide="layers" class="w-4 h-4 text-violet-400"></i>
+                <span>จัดการหมวดหมู่สินค้า (Categories)</span>
+              </button>
               <button onclick="switchAdminTab('products')" id="nav-btn-products" class="nav-item w-full text-left">
                 <i data-lucide="boxes" class="w-4 h-4 text-indigo-400"></i>
                 <span>จัดการสินค้าหน้าเว็บ (CRUD)</span>
@@ -360,6 +364,13 @@
               Automation & Alerts
             </div>
             <nav class="space-y-1">
+              <button onclick="switchAdminTab('settings')" id="nav-btn-settings" class="nav-item w-full text-left justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+                  <span>ตั้งค่าระบบร้านค้า (Store Settings)</span>
+                </div>
+                <span class="px-1.5 py-0.5 text-[9px] rounded-md bg-cyan-500/10 text-cyan-400 font-mono font-bold">100% DIY</span>
+              </button>
               <button onclick="switchAdminTab('discord')" id="nav-btn-discord" class="nav-item w-full text-left">
                 <i data-lucide="bell-ring" class="w-4 h-4 text-purple-400"></i>
                 <span>Discord Webhook</span>
@@ -1238,6 +1249,476 @@
 
       
         <!-- ==============================================================================
+             PANE: CATEGORIES MANAGEMENT (DYNAMIC FULL CRUD)
+             ============================================================================== -->
+        <div id="tab-pane-categories" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-violet-400"></i>
+                <span>จัดการหมวดหมู่สินค้าบนหน้าสโตร์ (Categories Manager)</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">เพิ่ม แก้ไข ปรับไอคอน ป้าย Badge หรือเรียงลำดับหมวดหมู่ โดยไม่ต้องแตะไฟล์โค้ด</p>
+            </div>
+            <button onclick="openCategoryModal('create')" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer active:scale-95 transition-all self-start sm:self-auto">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>เพิ่มหมวดหมู่ใหม่</span>
+            </button>
+          </div>
+
+          <!-- Category Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 font-mono">หมวดหมู่ทั้งหมด</span>
+              <div id="stat-cat-total" class="text-2xl font-bold font-mono text-white mt-1">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 font-mono">หมวดที่เปิดขาย</span>
+              <div id="stat-cat-active" class="text-2xl font-bold font-mono text-emerald-400 mt-1">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 font-mono">สินค้าในระบบทั้งหมด</span>
+              <div id="stat-cat-products" class="text-2xl font-bold font-mono text-cyan-400 mt-1">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 font-mono">หมวดหมู่ว่าง (0 ชิ้น)</span>
+              <div id="stat-cat-empty" class="text-2xl font-bold font-mono text-slate-500 mt-1">0</div>
+            </div>
+          </div>
+
+          <!-- Categories Table -->
+          <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/80 text-slate-400 font-mono border-b border-slate-800">
+                  <tr>
+                    <th class="py-3 px-4">ลำดับ</th>
+                    <th class="py-3 px-4">รหัส (ID)</th>
+                    <th class="py-3 px-4">ชื่อหมวดหมู่ & คำอธิบายย่อย</th>
+                    <th class="py-3 px-4">ไอคอน & ป้าย</th>
+                    <th class="py-3 px-4 text-center">จำนวนสินค้า</th>
+                    <th class="py-3 px-4 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="categories-table-body" class="divide-y divide-slate-800/60 font-sans">
+                  <tr>
+                    <td colspan="6" class="py-8 text-center text-slate-500">
+                      <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-violet-400"></i>
+                      <span>กำลังโหลดหมวดหมู่สินค้า...</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================================
+             PANE: STORE & FRONTEND SYSTEM SETTINGS (100% ADMIN HANDOVER SUITE)
+             ============================================================================== -->
+        <div id="tab-pane-settings" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+                <span>ศูนย์ควบคุมและตั้งค่าระบบร้านค้า (Storefront Control Engine)</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Admin สามารถปรับเปลี่ยนเนื้อหา, ช่องทางชำระเงิน, แบนเนอร์, ป้ายประกาศได้เองทันที 100%</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="exportStoreConfigBackup()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-mono font-medium flex items-center gap-1.5 cursor-pointer transition-all">
+                <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Export storeConfig.js</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Settings Subtabs Navigation -->
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 border-b border-slate-800">
+            <button onclick="switchSettingsSubtab('profile')" id="btn-subtab-profile" class="px-4 py-2 rounded-xl text-xs font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="store" class="w-3.5 h-3.5"></i>
+              <span>ข้อมูลร้านค้า & แบรนดิ้ง</span>
+            </button>
+            <button onclick="switchSettingsSubtab('payments')" id="btn-subtab-payments" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/[0.04] flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+              <span>ช่องทางชำระเงิน & บัญชีรับเงิน</span>
+            </button>
+            <button onclick="switchSettingsSubtab('announcements')" id="btn-subtab-announcements" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/[0.04] flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="megaphone" class="w-3.5 h-3.5"></i>
+              <span>แถบวิ่งประกาศ (Marquee Ticker)</span>
+            </button>
+            <button onclick="switchSettingsSubtab('banners')" id="btn-subtab-banners" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/[0.04] flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="image" class="w-3.5 h-3.5"></i>
+              <span>แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel)</span>
+            </button>
+            <button onclick="switchSettingsSubtab('alliance')" id="btn-subtab-alliance" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/[0.04] flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="users" class="w-3.5 h-3.5"></i>
+              <span>เครือข่ายร้านพันธมิตร (Alliance Hubs)</span>
+            </button>
+            <button onclick="switchSettingsSubtab('discord_webhook')" id="btn-subtab-discord_webhook" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/[0.04] flex items-center gap-2 cursor-pointer transition-all whitespace-nowrap">
+              <i data-lucide="bell" class="w-3.5 h-3.5"></i>
+              <span>Discord Webhook</span>
+            </button>
+          </div>
+
+          <!-- SUBTAB 1: STORE PROFILE & BRANDING -->
+          <div id="settings-pane-profile" class="space-y-6">
+            <form onsubmit="handleSaveStoreProfile(event)" class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-6">
+              
+              <!-- Maintenance Mode Banner Toggle -->
+              <div class="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-4">
+                <div class="space-y-0.5">
+                  <div class="text-xs font-bold text-amber-300 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+                    <span>โหมดปิดปรับปรุงร้านค้าชั่วคราว (Maintenance Mode)</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400">เมื่อเปิดใช้งาน หน้าร้านจะแสดงป้ายแจ้งเตือนการปรับปรุงระบบ และป้องกันคำสั่งซื้อชั่วคราว</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="setting-maintenance-mode" class="sr-only peer" />
+                  <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                </label>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">ข้อความแจ้งเตือนขณะปิดปรับปรุง:</label>
+                <input type="text" id="setting-maintenance-message" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-sans" placeholder="ระบบกำลังปิดปรับปรุงชั่วคราวเพื่ออัปเกรดความเร็ว กรุณากลับมาใหม่อีกครั้งในไม่กี่นาที" />
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/80">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อร้านค้า (Store Name):</label>
+                  <input type="text" id="setting-store-name" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-heading font-bold" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อย่อแบรนด์ (Brand Short):</label>
+                  <input type="text" id="setting-brand-short" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">สโลแกนหลัก (Tagline):</label>
+                  <input type="text" id="setting-tagline" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">สโลแกนรอง (Sub-Tagline):</label>
+                  <input type="text" id="setting-sub-tagline" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">ลิงก์รูปโลโก้ (Logo URL):</label>
+                  <input type="text" id="setting-logo-url" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" placeholder="assets/logo.png หรือ URL รูปภาพ" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">ลิงก์ไอคอน Favicon URL:</label>
+                  <input type="text" id="setting-favicon-url" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" placeholder="assets/logo.png" />
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-800/80">
+                <h4 class="text-xs font-bold text-white mb-3 flex items-center gap-2">
+                  <i data-lucide="phone-call" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>ช่องทางติดต่อและคอมมูนิตี้ (Social & Community Links)</span>
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord Community URL (หลัก):</label>
+                    <input type="url" id="setting-discord-url" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord ชุมชนสำรอง (เครือข่าย):</label>
+                    <input type="url" id="setting-discord-secondary-url" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">อีเมลซัพพอร์ต (Support Email):</label>
+                    <input type="email" id="setting-support-email" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">LINE Official Account (ถ้ามี):</label>
+                    <input type="text" id="setting-contact-line" placeholder="@lineid หรือ ลิงก์ LINE" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4 Trust Metrics -->
+              <div class="pt-4 border-t border-slate-800/80">
+                <h4 class="text-xs font-bold text-white mb-3 flex items-center gap-2">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>ข้อความสถิติความน่าเชื่อถือ 4 จุด (Trust Metrics)</span>
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-[11px] text-slate-400 mb-1">จุดที่ 1 (จัดส่ง):</label>
+                    <input type="text" id="setting-metric-delivery" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] text-slate-400 mb-1">จุดที่ 2 (ซัพพอร์ต):</label>
+                    <input type="text" id="setting-metric-support" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] text-slate-400 mb-1">จุดที่ 3 (เครือข่าย):</label>
+                    <input type="text" id="setting-metric-alliance" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] text-slate-400 mb-1">จุดที่ 4 (รับประกัน):</label>
+                    <input type="text" id="setting-metric-warranty" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 flex justify-end">
+                <button type="submit" id="btn-save-profile" class="btn-cyber-primary px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  <span>บันทึกข้อมูลร้านค้า</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- SUBTAB 2: PAYMENT GATEWAYS & ACCOUNTS -->
+          <div id="settings-pane-payments" class="hidden space-y-6">
+            <form onsubmit="handleSavePaymentConfig(event)" class="space-y-6">
+              
+              <!-- PromptPay Section -->
+              <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold">
+                      <i data-lucide="qr-code" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-xs font-bold text-white">พร้อมเพย์ QR Code (PromptPay Instant Slip)</h4>
+                      <p class="text-[11px] text-slate-400">ระบบสร้าง QR ไดนามิกตัดยอดเงินอัตโนมัติ 24 ชม.</p>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="setting-pp-enabled" checked class="sr-only peer" />
+                    <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+                  </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">เบอร์โทรศัพท์ / เลขพร้อมเพย์ 13 หลัก:</label>
+                    <input type="text" id="setting-pp-number" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อบัญชีรับเงิน (Account Name):</label>
+                    <input type="text" id="setting-pp-name" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ยอดเติมเงินขั้นต่ำ (฿):</label>
+                    <input type="number" id="setting-pp-min" min="1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- TrueMoney Section -->
+              <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+                      <i data-lucide="wallet" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-xs font-bold text-white">ทรูมันนี่วอลเล็ท & ซองของขวัญ (TrueMoney Voucher)</h4>
+                      <p class="text-[11px] text-slate-400">ระบบรับซองของขวัญตัดยอดเครดิตทันที 0% ค่าธรรมเนียม</p>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="setting-tm-enabled" checked class="sr-only peer" />
+                    <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                  </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">เบอร์โทรศัพท์ TrueMoney (เบอร์รับเงิน):</label>
+                    <input type="text" id="setting-tm-phone" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อบัญชี TrueMoney:</label>
+                    <input type="text" id="setting-tm-name" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bank Transfer Section -->
+              <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
+                      <i data-lucide="landmark" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-xs font-bold text-white">โอนผ่านบัญชีธนาคาร (Direct Bank Transfer)</h4>
+                      <p class="text-[11px] text-slate-400">ข้อมูลบัญชีธนาคารสำหรับลูกค้าโอนตรงและแนบสลิป</p>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="setting-bank-enabled" checked class="sr-only peer" />
+                    <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                  </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อธนาคาร:</label>
+                    <input type="text" id="setting-bank-name" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">รหัสธนาคาร (เช่น KTB, KBANK, SCB):</label>
+                    <input type="text" id="setting-bank-code" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">เลขที่บัญชี:</label>
+                    <input type="text" id="setting-bank-acc-no" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ชื่อบัญชีธนาคาร:</label>
+                    <input type="text" id="setting-bank-acc-name" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">สาขา:</label>
+                    <input type="text" id="setting-bank-branch" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">หมายเหตุ/คำเตือน:</label>
+                    <input type="text" id="setting-bank-notice" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button type="submit" id="btn-save-payments" class="btn-cyber-primary px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  <span>บันทึกช่องทางชำระเงิน</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- SUBTAB 3: ANNOUNCEMENTS TICKER -->
+          <div id="settings-pane-announcements" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                    <i data-lucide="megaphone" class="w-4 h-4 text-emerald-400"></i>
+                    <span>จัดการข้อความแถบวิ่งด้านบนสุด (Marquee Ticker Announcements)</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">ป้ายประกาศวิ่งแคปซูลแก้ว มีป้ายสี และข้อความเน้นหนา</p>
+                </div>
+                <button onclick="openAnnouncementModal('create')" class="btn-cyber-primary px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>เพิ่มประกาศใหม่</span>
+                </button>
+              </div>
+
+              <!-- Announcements List -->
+              <div id="announcements-admin-list" class="space-y-2.5 pt-1">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 4: HERO BANNERS CAROUSEL -->
+          <div id="settings-pane-banners" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                    <i data-lucide="image" class="w-4 h-4 text-indigo-400"></i>
+                    <span>จัดการแบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel Banners)</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">สไลด์การ์ดแบนเนอร์ขนาดใหญ่หน้าแรก พร้อมจุดเด่นและปุ่มสั่งซื้อตรงเข้าหมวดหมู่</p>
+                </div>
+                <button onclick="openHeroBannerModal('create')" class="btn-cyber-primary px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>เพิ่มแบนเนอร์ใหม่</span>
+                </button>
+              </div>
+
+              <!-- Banners List -->
+              <div id="hero-banners-admin-list" class="space-y-3 pt-1">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 5: ALLIANCE DISCORD STORES -->
+          <div id="settings-pane-alliance" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
+                    <span>เครือข่ายร้านค้าพันธมิตร DISCORD (Multi-Hub Alliance)</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">ร้านค้าในเครือข่ายพันธมิตรที่แสดงในหน้าต่างสลับร้านหรือเมนูแนะนำ</p>
+                </div>
+                <button onclick="openAllianceShopModal('create')" class="btn-cyber-primary px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>เพิ่มร้านพันธมิตร</span>
+                </button>
+              </div>
+
+              <!-- Alliance List -->
+              <div id="alliance-stores-admin-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 6: DISCORD WEBHOOK INTEGRATION -->
+          <div id="settings-pane-discord_webhook" class="hidden space-y-6">
+            <form onsubmit="handleSaveDiscordWebhookSettings(event)" class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4 max-w-2xl">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Discord Webhook URL (บันทึกลง Database จริง):</label>
+                <input type="url" id="setting-discord-webhook-url" placeholder="https://discord.com/api/webhooks/..." required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+                <p class="text-[11px] text-slate-500 mt-1">Webhook นี้จะถูกบันทึกลง Supabase Database ปลอดภัย และทุกคำสั่งซื้อจากหน้าร้านจะส่งแจ้งเตือนทันที</p>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <span class="block text-xs font-semibold text-slate-300">เลือกประเภทการแจ้งเตือน (Notification Events):</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer text-slate-300">
+                    <input type="checkbox" id="setting-notify-order" checked class="rounded accent-[var(--accent)]" />
+                    <span>แจ้งเตือนคำสั่งซื้อใหม่ (New Order)</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer text-slate-300">
+                    <input type="checkbox" id="setting-notify-topup" checked class="rounded accent-[var(--accent)]" />
+                    <span>แจ้งเตือนเติมเงินสำเร็จ (New Top-Up)</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer text-slate-300">
+                    <input type="checkbox" id="setting-notify-claim" checked class="rounded accent-[var(--accent)]" />
+                    <span>แจ้งเตือนการเคลมประกัน (Claim)</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer text-slate-300">
+                    <input type="checkbox" id="setting-notify-review" checked class="rounded accent-[var(--accent)]" />
+                    <span>แจ้งเตือนรีวิวจากลูกค้า (Review)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex gap-3 pt-3">
+                <button type="submit" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  <span>บันทึกลง Database</span>
+                </button>
+                <button type="button" onclick="testDiscordWebhook()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white font-bold flex items-center gap-2 cursor-pointer transition-all">
+                  <i data-lucide="send" class="w-4 h-4 text-yellow-400"></i>
+                  <span>ยิงทดสอบข้อความเข้า Discord</span>
+                </button>
+              </div>
+
+              <div id="discord-settings-feedback" class="hidden text-xs p-3 rounded-xl"></div>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- ==============================================================================
              PANE 10: CUSTOMER REVIEWS & RATINGS MODERATION
              ============================================================================== -->
         <div id="tab-pane-reviews" class="hidden space-y-6">
@@ -1311,6 +1792,208 @@
   <!-- ==============================================================================
        MODALS: PRODUCT FORM, KEY VAULT, BULK RESTOCK, WALLET ADJUSTER
        ============================================================================== -->
+
+  <!-- MODAL: CATEGORY CREATE / EDIT -->
+  <div id="modal-category" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-panel max-w-lg w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="modal-category-title" class="text-base font-heading font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="layers" class="w-5 h-5 text-violet-400"></i>
+          <span>เพิ่มหมวดหมู่สินค้าใหม่</span>
+        </h3>
+        <button onclick="closeCategoryModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveCategory(event)" class="space-y-4">
+        <input type="hidden" id="cat-form-mode" value="create" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">
+            <span>รหัสหมวดหมู่ (Category ID / Slug):</span>
+            <span class="text-red-400">*</span>
+          </label>
+          <input type="text" id="cat-form-id" placeholder="e.g. cat-steam-keys" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+          <p class="text-[10px] text-slate-500 mt-1">ใช้ตัวอักษรพิมพ์เล็ก เช่น cat-steam, cat-minecraft (แก้ไขไม่ได้หลังสร้าง)</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">
+            <span>ชื่อหมวดหมู่ที่แสดงหน้าเว็บ (Name):</span>
+            <span class="text-red-400">*</span>
+          </label>
+          <input type="text" id="cat-form-name" placeholder="e.g. Steam Wallet & เกมแท้" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-bold" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">คำอธิบายย่อย (Sub-name):</label>
+          <input type="text" id="cat-form-subname" placeholder="e.g. คีย์เกมแท้ 100% บอทส่งออโต้ใน 1 นาที" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ไอคอน Lucide:</label>
+            <input type="text" id="cat-form-icon" placeholder="zap, bot, code-2, box, gamepad-2" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ป้ายกำกับ (Badge):</label>
+            <input type="text" id="cat-form-badge" placeholder="AUTO, HOT, NEW" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ลำดับ (Sort):</label>
+            <input type="number" id="cat-form-sort" min="1" max="99" value="1" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+        </div>
+
+        <div id="cat-form-feedback" class="hidden text-xs p-3 rounded-xl"></div>
+
+        <div class="flex justify-end gap-2.5 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 cursor-pointer">ยกเลิก</button>
+          <button type="submit" id="btn-submit-category" class="btn-cyber-primary px-5 py-2 rounded-xl text-xs font-bold cursor-pointer">บันทึกหมวดหมู่</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ANNOUNCEMENT TICKER CREATE / EDIT -->
+  <div id="modal-announcement" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-panel max-w-md w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="modal-announcement-title" class="text-base font-heading font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="megaphone" class="w-5 h-5 text-emerald-400"></i>
+          <span>เพิ่มประกาศแถบวิ่งใหม่</span>
+        </h3>
+        <button onclick="closeAnnouncementModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveAnnouncement(event)" class="space-y-4">
+        <input type="hidden" id="ann-form-index" value="-1" />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ป้ายหมวด (Tag):</label>
+            <input type="text" id="ann-form-tag" placeholder="FLASH SALE, AUTO 24/7" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono uppercase focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">สีป้าย (Color):</label>
+            <select id="ann-form-color" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]">
+              <option value="indigo">Indigo (ม่วงคราม)</option>
+              <option value="emerald">Emerald (เขียวมรกต)</option>
+              <option value="amber">Amber (ส้มอำพัน)</option>
+              <option value="blue">Blue (น้ำเงินไซเบอร์)</option>
+              <option value="rose">Rose (แดงกุหลาบ)</option>
+              <option value="cyan">Cyan (ฟ้าสว่าง)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">ข้อความประกาศ (Text):</label>
+          <input type="text" id="ann-form-text" placeholder="Discord Nitro 1 เดือน ลดพิเศษเหลือเพียง" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">คำเน้นหนาสีขาว (Highlight):</label>
+          <input type="text" id="ann-form-highlight" placeholder="฿169 หรือ ใน 1 นาที" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="ann-form-active" checked class="rounded accent-[var(--accent)]" />
+          <label for="ann-form-active" class="text-xs text-slate-300 cursor-pointer">เปิดแสดงผลบนหน้าร้าน</label>
+        </div>
+
+        <div class="flex justify-end gap-2.5 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeAnnouncementModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 cursor-pointer">ยกเลิก</button>
+          <button type="submit" class="btn-cyber-primary px-5 py-2 rounded-xl text-xs font-bold cursor-pointer">บันทึกประกาศ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: HERO BANNER CREATE / EDIT -->
+  <div id="modal-hero-banner" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-panel max-w-xl w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="modal-hero-banner-title" class="text-base font-heading font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="image" class="w-5 h-5 text-indigo-400"></i>
+          <span>เพิ่มแบนเนอร์โปรโมชั่นสไลด์</span>
+        </h3>
+        <button onclick="closeHeroBannerModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveHeroBanner(event)" class="space-y-4">
+        <input type="hidden" id="banner-form-index" value="-1" />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ป้ายบน (Badge):</label>
+            <input type="text" id="banner-form-badge" placeholder="✦ FLASH DEAL • ลดพิเศษ 48%" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">สีธีมเรืองแสง:</label>
+            <select id="banner-form-color" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]">
+              <option value="indigo">Indigo (สีม่วงคราม)</option>
+              <option value="emerald">Emerald (สีเขียวออโต้)</option>
+              <option value="amber">Amber (สีส้มทอง)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">หัวข้อแบนเนอร์ (Title):</label>
+          <input type="text" id="banner-form-title" placeholder="DISCORD NITRO & BOOSTS" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-heading font-bold focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">คำไฮไลท์ (Highlight):</label>
+          <input type="text" id="banner-form-highlight" placeholder="ราคาเริ่มต้นเพียง ฿150" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-bold text-indigo-300 focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">คำอธิบายรายละเอียด (Description):</label>
+          <textarea id="banner-form-desc" rows="2" placeholder="รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที..." class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">จุดเด่นที่ 1:</label>
+            <input type="text" id="banner-form-perk1" placeholder="ไม่ต้องให้รหัสผ่าน" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">จุดเด่นที่ 2:</label>
+            <input type="text" id="banner-form-perk2" placeholder="2x Server Boosts" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">จุดเด่นที่ 3:</label>
+            <input type="text" id="banner-form-perk3" placeholder="รับประกันแท้ 30 วัน" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ข้อความปุ่มสั่งซื้อ (CTA 1):</label>
+            <input type="text" id="banner-form-cta-text" placeholder="เลือกซื้อ Nitro ทันที" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ลิงก์หมวดหมู่ (Category ID):</label>
+            <input type="text" id="banner-form-cta-cat" placeholder="cat-discord-nitro" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="banner-form-active" checked class="rounded accent-[var(--accent)]" />
+          <label for="banner-form-active" class="text-xs text-slate-300 cursor-pointer">เปิดแสดงผลบนสไลด์หน้าแรก</label>
+        </div>
+
+        <div class="flex justify-end gap-2.5 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeHeroBannerModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 cursor-pointer">ยกเลิก</button>
+          <button type="submit" class="btn-cyber-primary px-5 py-2 rounded-xl text-xs font-bold cursor-pointer">บันทึกแบนเนอร์</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- MODAL 1: PRODUCT CREATE / EDIT -->
   <div id="modal-product" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -1934,11 +2617,13 @@
       }
 
       try {
-        const [metricsRes, analyticsRes, usersRes, productsRes] = await Promise.all([
+        const [metricsRes, analyticsRes, usersRes, productsRes, categoriesRes, settingsRes] = await Promise.all([
           supabaseClient.rpc("admin_get_metrics", { p_admin_secret: currentAdminSecret }),
           supabaseClient.rpc("admin_get_analytics", { p_admin_secret: currentAdminSecret }),
           supabaseClient.rpc("admin_get_users", { p_admin_secret: currentAdminSecret }),
-          supabaseClient.from("products").select("*").order("created_at", { ascending: false })
+          supabaseClient.from("products").select("*").order("created_at", { ascending: false }),
+          supabaseClient.rpc("admin_manage_category", { p_admin_secret: currentAdminSecret, p_action: "list" }),
+          supabaseClient.rpc("get_system_settings")
         ]);
 
         if (metricsRes.data && metricsRes.data.success) {
@@ -1952,6 +2637,17 @@
         if (analyticsRes.data) {
           currentAnalyticsData = analyticsRes.data;
           renderAnalyticsDashboard(analyticsRes.data);
+        }
+
+        if (categoriesRes && categoriesRes.data && categoriesRes.data.success) {
+          currentCategoriesList = categoriesRes.data.categories || [];
+          renderCategoriesTable();
+          populateCategoryDropdowns();
+        }
+
+        if (settingsRes && settingsRes.data) {
+          currentSystemSettings = settingsRes.data || {};
+          populateSettingsForm(currentSystemSettings);
         }
 
         if (productsRes.data) {
@@ -2434,6 +3130,8 @@
     }
 
     function getCategoryName(catId) {
+      const found = (currentCategoriesList || []).find(c => c.id === catId);
+      if (found) return found.name;
       const map = {
         "cat-discord-nitro": "Discord Nitro & บูสต์",
         "cat-discord-services": "บริการดิสคอร์ด & ไอดี",
@@ -3261,6 +3959,14 @@
         title: "📊 สถิติ & ภาพรวมธุรกิจ (Analytics)",
         desc: "สรุปยอดขาย คำสั่งซื้อ สต็อก และแนวโน้ม 24 ชม."
       },
+      categories: {
+        title: "📁 จัดการหมวดหมู่สินค้าบนหน้าสโตร์ (Categories Manager)",
+        desc: "สร้าง แก้ไข จัดลำดับ หรือลบหมวดหมู่สินค้าบนหน้าเว็บ พร้อมไอคอนและป้าย Badge แบบไดนามิก 100%"
+      },
+      settings: {
+        title: "⚙️ ตั้งค่าระบบร้านค้า & มอบหมายงาน Admin (Storefront Control Suite)",
+        desc: "ปรับแต่งแบรนดิ้ง, ข้อมูลติดต่อ, ช่องทางชำระเงิน, แถบวิ่งประกาศ, แบนเนอร์สไลด์ และสำรองข้อมูลได้เอง 100%"
+      },
       visitors: {
         title: "🌐 ผู้เข้าชม & บันทึก IP (Visitor Logs & Telemetry)",
         desc: "ตรวจสอบ IP จริง ประเทศ อุปกรณ์ และสถิติการเข้าชมเว็บ nyxning.shop แบบเรียลไทม์"
@@ -3304,7 +4010,7 @@
     };
 
     function switchAdminTab(tabKey) {
-      const tabs = ["analytics", "visitors", "products", "vault", "vouchers", "users", "orders", "topups", "claims", "discord", "reviews"];
+      const tabs = ["analytics", "visitors", "categories", "products", "vault", "vouchers", "users", "orders", "topups", "claims", "reviews", "discord", "settings"];
       tabs.forEach(t => {
         const btn = document.getElementById(`nav-btn-${t}`);
         const pane = document.getElementById(`tab-pane-${t}`);
@@ -3333,6 +4039,10 @@
       // If switching to visitors tab, trigger initial load
       if (tabKey === "visitors") {
         loadVisitorLogs();
+      } else if (tabKey === "categories") {
+        loadCategoriesList();
+      } else if (tabKey === "settings") {
+        loadSystemSettings();
       }
 
       // If switching to vault tab, trigger initial load

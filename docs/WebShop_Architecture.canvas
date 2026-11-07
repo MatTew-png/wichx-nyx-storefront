@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "tier-client",
+      "type": "group",
+      "label": "🌐 Client Edge Runtime (Vanilla JS ESM)",
+      "x": 40,
+      "y": 40,
+      "width": 460,
+      "height": 560,
+      "color": "5"
+    },
+    {
+      "id": "node-spa-ui",
+      "type": "text",
+      "text": "### Storefront UI & Modals\n- **index.html / app.js**\n- Masked System Marquee Ticker\n- Instant Delivery Modal\n- Custom Service Sliders\n- Tri-Gateway Top-Up Modal",
+      "x": 70,
+      "y": 100,
+      "width": 400,
+      "height": 210
+    },
+    {
+      "id": "node-spa-store",
+      "type": "text",
+      "text": "### Client Reactive Store & Config\n- **storeConfig.js**: Whitelabel Engine\n- **productsData.js**: Fast local cache\n- **AppStore**: Reactive event bus",
+      "x": 70,
+      "y": 340,
+      "width": 400,
+      "height": 220
+    },
+    {
+      "id": "tier-api",
+      "type": "group",
+      "label": "⚡ Serverless API Boundary (/api)",
+      "x": 560,
+      "y": 40,
+      "width": 460,
+      "height": 560,
+      "color": "6"
+    },
+    {
+      "id": "node-api-payment",
+      "type": "text",
+      "text": "### Payment & Verification Handlers\n- **verify-slip.js**: PromptPay Slip Verification\n- **truemoney-redeem.js**: Gift link redemption\n- **crypto-ltc.js**: Litecoin ledger polling",
+      "x": 590,
+      "y": 100,
+      "width": 400,
+      "height": 210
+    },
+    {
+      "id": "node-api-discord",
+      "type": "text",
+      "text": "### Staff & Community Integration\n- **discord-notify.js**: Webhook rich embeds\n- Transaction notifications\n- Warranty ticket dispatch alerts",
+      "x": 590,
+      "y": 340,
+      "width": 400,
+      "height": 220
+    },
+    {
+      "id": "tier-database",
+      "type": "group",
+      "label": "🗄️ Supabase PostgreSQL Platform",
+      "x": 1080,
+      "y": 40,
+      "width": 520,
+      "height": 560,
+      "color": "4"
+    },
+    {
+      "id": "node-db-rpc",
+      "type": "text",
+      "text": "### Atomic Stored Procedures\n- `execute_order_checkout` (FOR UPDATE SKIP LOCKED)\n- `process_topup` (Idempotent lock)\n- `lookup_order_by_ref`\n- AES-256-GCM Crypto Vault Functions",
+      "x": 1110,
+      "y": 100,
+      "width": 460,
+      "height": 210
+    },
+    {
+      "id": "node-db-tables",
+      "type": "text",
+      "text": "### 12-Table Cluster (RLS 100%)\n- `profiles` | `categories` | `products`\n- `inventory_keys` (Zero anon leak)\n- `orders` | `order_items`\n- `topup_transactions` | `used_payment_slips`\n- `promo_code_usages` | `warranty_claims`\n- `blacklists` | `system_audit_logs`",
+      "x": 1110,
+      "y": 340,
+      "width": 460,
+      "height": 220
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-ui-to-api",
+      "fromNode": "node-spa-ui",
+      "fromSide": "right",
+      "toNode": "node-api-payment",
+      "toSide": "left",
+      "label": "HTTP POST (JSON)"
+    },
+    {
+      "id": "edge-api-to-rpc",
+      "fromNode": "node-api-payment",
+      "fromSide": "right",
+      "toNode": "node-db-rpc",
+      "toSide": "left",
+      "label": "Service Role JWT"
+    },
+    {
+      "id": "edge-rpc-to-tables",
+      "fromNode": "node-db-rpc",
+      "fromSide": "bottom",
+      "toNode": "node-db-tables",
+      "toSide": "top",
+      "label": "ACID Row Mutations"
+    },
+    {
+      "id": "edge-spa-direct-read",
+      "fromNode": "node-spa-store",
+      "fromSide": "right",
+      "toNode": "node-db-tables",
+      "toSide": "bottom",
+      "label": "Direct Read (RLS Anon)"
+    }
+  ]
+}

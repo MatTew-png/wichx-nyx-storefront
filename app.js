@@ -67,6 +67,7 @@ class ShopApp {
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
+    safeRun("AnnouncementsTicker", () => this.renderAnnouncementsTicker(window.storeConfig?.announcements || []));
     safeRun("LucideIcons", () => { if (window.lucide) lucide.createIcons(); });
 
     // 2. เชื่อมต่อ Supabase
@@ -114,6 +115,125 @@ class ShopApp {
 
   animateMetricsCountUp() {
     // Telemetry count-up disabled per unslop policy
+  }
+
+  applyDynamicSettings(settings) {
+    if (!settings || typeof settings !== 'object') return;
+
+    if (settings.store_profile) {
+      const sp = settings.store_profile;
+      if (sp.storeName) window.storeConfig.storeName = sp.storeName;
+      if (sp.brandShort) window.storeConfig.brandShort = sp.brandShort;
+      if (sp.tagline) window.storeConfig.tagline = sp.tagline;
+      if (sp.subTagline) window.storeConfig.subTagline = sp.subTagline;
+      if (sp.logoUrl) window.storeConfig.logoUrl = sp.logoUrl;
+      if (sp.faviconUrl) window.storeConfig.faviconUrl = sp.faviconUrl;
+      if (sp.discordCommunityUrl) window.storeConfig.discordCommunityUrl = sp.discordCommunityUrl;
+      if (sp.discordCommunitySecondaryUrl) window.storeConfig.discordCommunitySecondaryUrl = sp.discordCommunitySecondaryUrl;
+      if (sp.contactLine !== undefined) window.storeConfig.contactLine = sp.contactLine;
+      if (sp.contactFacebook !== undefined) window.storeConfig.contactFacebook = sp.contactFacebook;
+      if (sp.supportEmail) window.storeConfig.supportEmail = sp.supportEmail;
+      if (sp.metrics) window.storeConfig.metrics = { ...window.storeConfig.metrics, ...sp.metrics };
+
+      document.title = `${window.storeConfig.storeName} — ${window.storeConfig.tagline || ''}`;
+      document.querySelectorAll("[data-bind='storeName']").forEach(el => el.textContent = window.storeConfig.storeName);
+      document.querySelectorAll("[data-bind='brandShort']").forEach(el => el.textContent = window.storeConfig.brandShort || window.storeConfig.storeName);
+      document.querySelectorAll("[data-bind='tagline']").forEach(el => el.textContent = window.storeConfig.tagline);
+      document.querySelectorAll("[data-bind='subTagline']").forEach(el => el.textContent = window.storeConfig.subTagline);
+      if (window.storeConfig.discordCommunityUrl) {
+        document.querySelectorAll("[data-bind='discordCommunityUrl']").forEach(el => {
+          if (el.tagName === 'A') el.href = window.storeConfig.discordCommunityUrl;
+        });
+      }
+      if (window.storeConfig.supportEmail) {
+        document.querySelectorAll("[data-bind='supportEmail']").forEach(el => {
+          el.textContent = window.storeConfig.supportEmail;
+          if (el.tagName === 'A') el.href = `mailto:${window.storeConfig.supportEmail}`;
+        });
+      }
+
+      if (sp.maintenanceMode) {
+        this.renderMaintenanceBanner(sp.maintenanceMessage || 'ร้านค้ากำลังปิดปรับปรุงชั่วคราว');
+      }
+    }
+
+    if (settings.payment_config) {
+      const pc = settings.payment_config;
+      if (pc.acceptedPayments) window.storeConfig.acceptedPayments = pc.acceptedPayments;
+      if (pc.promptpay) window.storeConfig.paymentDetails.promptpay = { ...window.storeConfig.paymentDetails.promptpay, ...pc.promptpay };
+      if (pc.truemoney) window.storeConfig.paymentDetails.truemoney = { ...window.storeConfig.paymentDetails.truemoney, ...pc.truemoney };
+      if (pc.bank_transfer) window.storeConfig.paymentDetails.bank_transfer = { ...window.storeConfig.paymentDetails.bank_transfer, ...pc.bank_transfer };
+      if (pc.crypto_ltc) window.storeConfig.paymentDetails.crypto_ltc = pc.crypto_ltc;
+    }
+
+    if (Array.isArray(settings.announcements) && settings.announcements.length > 0) {
+      window.storeConfig.announcements = settings.announcements;
+      this.renderAnnouncementsTicker(settings.announcements);
+    }
+
+    if (Array.isArray(settings.hero_banners) && settings.hero_banners.length > 0) {
+      window.storeConfig.heroBanners = settings.hero_banners;
+      this.hero?.renderCarousel();
+    }
+
+    if (Array.isArray(settings.discord_stores) && settings.discord_stores.length > 0) {
+      window.storeConfig.discordStores = settings.discord_stores;
+    }
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  renderAnnouncementsTicker(announcements) {
+    const track = document.getElementById('announcements-track');
+    if (!track) return;
+    const active = (announcements || []).filter(a => a.active !== false);
+    if (active.length === 0) return;
+
+    const renderItems = (items) => items.map(item => {
+      const colorMap = {
+        indigo: 'border-indigo-500/30 bg-indigo-500/10 text-indigo-300',
+        emerald: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+        amber: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
+        blue: 'border-blue-500/30 bg-blue-500/10 text-blue-300',
+        rose: 'border-rose-500/30 bg-rose-500/10 text-rose-300',
+        cyan: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300'
+      };
+      const badgeStyle = colorMap[item.color] || colorMap.indigo;
+      return `
+        <div class="marquee-capsule inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono select-none">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeStyle}">
+            ${item.tag}
+          </span>
+          <span class="text-slate-300">${item.text}</span>
+          ${item.highlight ? `<span class="font-bold text-white font-mono-val">${item.highlight}</span>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    track.innerHTML = renderItems(active) + renderItems(active);
+    if (window.lucide) lucide.createIcons();
+  }
+
+  renderMaintenanceBanner(message) {
+    const existing = document.getElementById('maintenance-banner-overlay');
+    if (existing) return;
+    const div = document.createElement('div');
+    div.id = 'maintenance-banner-overlay';
+    div.className = 'fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 p-4 rounded-2xl bg-amber-950/95 border border-amber-500/50 shadow-2xl backdrop-blur-xl text-amber-100 flex items-start gap-3';
+    div.innerHTML = `
+      <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+      </div>
+      <div class="flex-1 text-xs">
+        <div class="font-bold text-amber-300 flex items-center justify-between">
+          <span>⚠️ ร้านค้ากำลังปิดปรับปรุงชั่วคราว</span>
+          <button onclick="this.closest('#maintenance-banner-overlay').remove()" class="text-amber-400 hover:text-white cursor-pointer">&times;</button>
+        </div>
+        <p class="mt-1 text-amber-200/90 leading-relaxed font-sans">${message}</p>
+      </div>
+    `;
+    document.body.appendChild(div);
+    if (window.lucide) lucide.createIcons();
   }
 
   renderAcceptedPaymentsFooter() {
