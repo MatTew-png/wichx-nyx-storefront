@@ -129,7 +129,7 @@ class TopUpModalComponent {
               console.warn("[QR WATERMARK] Composite error:", err);
             }
           };
-          wm.src = "assets/qr-watermark-overlay.png";
+          wm.src = (window.storeConfig?.paymentDetails?.promptpay?.qrWatermarkDataUrl) || "/assets/qr-watermark-overlay.png";
         } catch (canvasErr) {
           console.warn("[QR WATERMARK] Canvas compositing fallback:", canvasErr);
         }
