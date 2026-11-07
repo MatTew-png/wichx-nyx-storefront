@@ -31,11 +31,13 @@ class ShopApp {
     this.paymentService = new window.PaymentService(this.store);
     this.checkoutService = new window.CheckoutService(this.store);
     this.historyService = new window.HistoryService(this.store);
+    this.reviewService = window.ReviewService ? new window.ReviewService(this.store) : null;
 
     // Components
     this.navbar = new window.NavbarComponent(this.store);
     this.hero = new window.HeroSectionComponent(this.store);
     this.catalogView = new window.CatalogViewComponent(this.store);
+    this.reviewsSection = window.ReviewsSectionComponent ? new window.ReviewsSectionComponent(this.store, this.reviewService) : null;
     this.cartManager = new window.CartDrawerComponent(this.store, this.checkoutService);
     this.topupModal = new window.TopUpModalComponent(this.store, this.paymentService);
     this.historyModal = new window.HistoryModalComponent(this.store, this.historyService);
@@ -61,6 +63,7 @@ class ShopApp {
 
     safeRun("HeroSection", () => this.hero?.render());
     safeRun("CatalogView", () => this.catalogView?.render());
+    safeRun("ReviewsSection", () => this.reviewsSection?.render());
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
@@ -659,3 +662,166 @@ if (document.readyState === 'loading') {
 } else {
   initLiveDiscordWidgets();
 }
+
+// ==============================================================================
+// ⭐ VERIFIED CUSTOMER REVIEW GLOBAL BRIDGES
+// ==============================================================================
+window.currentReviewRating = 5;
+
+window.openReviewModal = function(orderId, productId, productTitle) {
+  let modal = document.getElementById("product-review-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "product-review-modal";
+    modal.className = "fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md";
+    modal.innerHTML = `
+      <div class="relative z-10 modal-spring-dialog glass-panel rounded-3xl max-w-md w-full p-6 border border-amber-500/30 shadow-2xl shadow-amber-500/10">
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-lg font-bold">
+              ★
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-white">เขียนรีวิวสินค้า (Verified Buyer)</h4>
+              <p id="review-modal-prod-title" class="text-[11px] text-slate-400 truncate max-w-[240px]"></p>
+            </div>
+          </div>
+          <button onclick="window.closeReviewModal()" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <form onsubmit="window.handleReviewSubmit(event)" class="space-y-4">
+          <input type="hidden" id="review-modal-order-id" />
+          <input type="hidden" id="review-modal-prod-id" />
+          <input type="hidden" id="review-modal-rating-val" value="5" />
+
+          <!-- Star Rating Selector -->
+          <div class="text-center py-2 bg-slate-950/60 rounded-2xl border border-white/[0.05]">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ให้คะแนนความพึงพอใจ:</label>
+            <div id="review-stars-container" class="flex items-center justify-center gap-1.5 text-3xl cursor-pointer select-none">
+              <span class="star-item text-amber-400 hover:scale-110 transition-transform" onclick="window.setReviewRating(1)">★</span>
+              <span class="star-item text-amber-400 hover:scale-110 transition-transform" onclick="window.setReviewRating(2)">★</span>
+              <span class="star-item text-amber-400 hover:scale-110 transition-transform" onclick="window.setReviewRating(3)">★</span>
+              <span class="star-item text-amber-400 hover:scale-110 transition-transform" onclick="window.setReviewRating(4)">★</span>
+              <span class="star-item text-amber-400 hover:scale-110 transition-transform" onclick="window.setReviewRating(5)">★</span>
+            </div>
+            <div id="review-rating-label" class="text-[11px] font-mono text-amber-400 mt-1">5 ดาว — ยอดเยี่ยมมากที่สุด</div>
+          </div>
+
+          <!-- Author Display Name -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ชื่อที่แสดงในรีวิว:</label>
+            <input type="text" id="review-modal-author" placeholder="เช่น Krit_Discord (เว้นว่างเพื่อใช้ชื่อสมาชิก)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none" />
+          </div>
+
+          <!-- Comment Textarea -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">ข้อความรีวิว / ความเห็น:</label>
+            <textarea id="review-modal-comment" rows="3" placeholder="ระบุความประทับใจของคุณ เช่น สั่งซื้อง่าย ได้รับรหัสทันที ใช้งานได้จริง..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none resize-none leading-relaxed" required></textarea>
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button type="button" onclick="window.closeReviewModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 cursor-pointer">
+              ยกเลิก
+            </button>
+            <button type="submit" id="btn-submit-review" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black text-xs font-bold transition-all shadow-lg shadow-amber-500/20 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>ส่งรีวิว</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById("review-modal-order-id").value = orderId || "";
+  document.getElementById("review-modal-prod-id").value = productId || "";
+  document.getElementById("review-modal-prod-title").textContent = productTitle || productId || "สินค้าดิจิทัล";
+
+  const user = window.Shop?.store?.get?.("user");
+  const authorInput = document.getElementById("review-modal-author");
+  if (authorInput && user?.username) {
+    authorInput.value = user.username;
+  }
+
+  window.setReviewRating(5);
+  modal.classList.remove("hidden");
+  if (window.lucide) lucide.createIcons();
+};
+
+window.closeReviewModal = function() {
+  const modal = document.getElementById("product-review-modal");
+  if (modal) modal.classList.add("hidden");
+};
+
+window.setReviewRating = function(rating) {
+  window.currentReviewRating = rating;
+  const ratingInput = document.getElementById("review-modal-rating-val");
+  if (ratingInput) ratingInput.value = rating;
+
+  const stars = document.querySelectorAll("#review-stars-container .star-item");
+  stars.forEach((s, idx) => {
+    if (idx < rating) {
+      s.className = "star-item text-amber-400 hover:scale-110 transition-transform";
+      s.textContent = "★";
+    } else {
+      s.className = "star-item text-slate-600 hover:scale-110 transition-transform";
+      s.textContent = "☆";
+    }
+  });
+
+  const labels = {
+    1: "1 ดาว — ควรปรับปรุง",
+    2: "2 ดาว — พอใช้ได้",
+    3: "3 ดาว — ปานกลาง",
+    4: "4 ดาว — ดีมาก",
+    5: "5 ดาว — ยอดเยี่ยมมากที่สุด"
+  };
+  const labelEl = document.getElementById("review-rating-label");
+  if (labelEl) labelEl.textContent = labels[rating] || `${rating} ดาว`;
+};
+
+window.handleReviewSubmit = async function(e) {
+  if (e) e.preventDefault();
+  const orderId = document.getElementById("review-modal-order-id")?.value;
+  const productId = document.getElementById("review-modal-prod-id")?.value;
+  const rating = parseInt(document.getElementById("review-modal-rating-val")?.value || "5", 10);
+  const author = document.getElementById("review-modal-author")?.value;
+  const comment = document.getElementById("review-modal-comment")?.value;
+
+  const submitBtn = document.getElementById("btn-submit-review");
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> <span>กำลังบันทึก...</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  try {
+    if (window.Shop?.reviewService) {
+      await window.Shop.reviewService.submitReview({
+        orderId,
+        productId,
+        rating,
+        comment,
+        authorName: author
+      });
+      window.UI?.toast("⭐ ขอบคุณสำหรับรีวิวของคุณ! ระบบได้บันทึกเรียบร้อยแล้ว", "success");
+      window.UI?.confetti();
+      window.closeReviewModal();
+      // Re-render reviews section if visible
+      if (window.Shop?.reviewsSection) {
+        window.Shop.reviewsSection.render();
+      }
+    }
+  } catch (err) {
+    window.UI?.toast(err.message, "error");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> <span>ส่งรีวิว</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+};

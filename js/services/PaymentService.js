@@ -113,7 +113,7 @@ class PaymentService {
       });
     } else {
       // Local fallback with dupe check
-      const usedSlips = JSON.parse(localStorage.getItem("nyx_used_slips") || localStorage.getItem("wichx_used_slips") || "[]");
+      const usedSlips = JSON.parse(localStorage.getItem("nyx_used_slips") || "[]");
       if (usedSlips.includes(transRef)) {
         throw new Error("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้ซ้ำได้ (Anti-Double-Spend Triggered)");
       }

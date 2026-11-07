@@ -168,7 +168,7 @@ const SupabaseAdapter = {
   // 2. ดึงยอดเงินในกระเป๋าของผู้ใช้
   async getUserBalance(userId) {
     if (!this.isLive || !this.client || !userId) {
-      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
+      return parseFloat(localStorage.getItem("nyx_balance") || "0.00");
     }
 
     try {
@@ -181,7 +181,7 @@ const SupabaseAdapter = {
       if (error) throw error;
       return parseFloat(data.balance);
     } catch (e) {
-      return parseFloat((localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance")) || "500.00");
+      return parseFloat(localStorage.getItem("nyx_balance") || "0.00");
     }
   },
 

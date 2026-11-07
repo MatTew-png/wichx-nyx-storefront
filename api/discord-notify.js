@@ -130,6 +130,25 @@ module.exports = async (req, res) => {
         break;
       }
 
+      case "REVIEW_SUBMITTED": {
+        const { rating = 5, comment = "", authorName = "ลูกค้าผู้มีอุปการคุณ" } = req.body || {};
+        const stars = "⭐".repeat(Math.min(5, Math.max(1, rating)));
+        embed = {
+          title: `🌟 ลูกค้ารีวิวสินค้าใหม่ (${stars})`,
+          description: `มีการส่งรีวิวใหม่สำหรับคำสั่งซื้อ \`${orderId || "N/A"}\``,
+          color: 0xF59E0B, // Amber Gold
+          fields: [
+            { name: "สินค้า", value: `\`${productId || "สินค้าดิจิทัล"}\``, inline: true },
+            { name: "คะแนน", value: `**${stars} (${rating}/5)**`, inline: true },
+            { name: "ผู้รีวิว", value: `👤 ${authorName}`, inline: true },
+            { name: "ความคิดเห็น", value: comment ? `"${comment}"` : "*(ไม่ได้ระบุข้อความ)*", inline: false }
+          ],
+          footer: { text: "NYX9 STUDIO VERIFIED CUSTOMER REVIEWS" },
+          timestamp: new Date().toISOString()
+        };
+        break;
+      }
+
       case "TEST_PING":
       default: {
         embed = {

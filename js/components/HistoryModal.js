@@ -51,7 +51,7 @@ class HistoryModalComponent {
                 id="history-search-input"
                 oninput="window.handleHistorySearch(event)"
                 onkeydown="if(event.key==='Enter') window.Shop?.historyModal?.searchCloudOrder()"
-                placeholder="ค้นหาด้วยรหัสออเดอร์ (เช่น WX-371156) หรือชื่อสินค้า..." 
+                placeholder="ค้นหาด้วยรหัสออเดอร์ (เช่น NYX-371156) หรือชื่อสินค้า..." 
                 class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--accent)] transition-all font-body font-mono"
               />
             </div>
@@ -110,7 +110,7 @@ class HistoryModalComponent {
     const input = document.getElementById("history-search-input");
     const query = (input?.value || "").trim().toUpperCase();
     if (!query) {
-      window.UI?.toast("กรุณาระบุรหัสออเดอร์ที่ต้องการค้นหา (เช่น WX-371156)", "warning");
+      window.UI?.toast("กรุณาระบุรหัสออเดอร์ที่ต้องการค้นหา (เช่น NYX-371156)", "warning");
       return;
     }
 
@@ -216,7 +216,17 @@ class HistoryModalComponent {
                 <i data-lucide="package" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
                 ${item.title}
               </span>
-              <span class="text-slate-400 font-mono text-[11px]">จำนวน: x${item.quantity || 1}</span>
+              <div class="flex items-center gap-2">
+                <button 
+                  onclick="window.openReviewModal('${order.orderId}', '${item.id || item.productId || 'prod'}', '${(item.title || 'สินค้าดิจิทัล').replace(/'/g, "\\'")}')"
+                  class="px-2 py-0.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer"
+                  title="เขียนรีวิวสินค้านี้"
+                >
+                  <i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i>
+                  <span>รีวิว</span>
+                </button>
+                <span class="text-slate-400 font-mono text-[11px]">x${item.quantity || 1}</span>
+              </div>
             </div>
 
             ${hasKeys ? `

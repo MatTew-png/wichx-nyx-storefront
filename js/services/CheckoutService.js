@@ -115,7 +115,7 @@ class CheckoutService {
       throw new Error(`ยอดเงินในกระเป๋าไม่พอ (ขาดอีก ฿${diff}) กรุณาเติมเงินก่อนสั่งซื้อ`);
     }
 
-    const orderId = `WX-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderId = `NYX-${Math.floor(100000 + Math.random() * 900000)}`;
     const user = this.store.get("user");
     const promo = this.store.get("appliedPromo");
     const { discount } = this.calculateTotals();
@@ -171,7 +171,7 @@ class CheckoutService {
       totalAmount: total,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem("nyx_orders", JSON.stringify(history.slice(0, 30))); localStorage.setItem("wichx_orders", JSON.stringify(history.slice(0, 30)));
+    localStorage.setItem("nyx_orders", JSON.stringify(history.slice(0, 30)));
 
     return result;
   }

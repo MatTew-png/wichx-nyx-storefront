@@ -22,7 +22,7 @@ class ReceiptGenerator {
       throw new Error("เบราว์เซอร์ไม่รองรับ HTML5 Canvas");
     }
 
-    const orderId = orderData.orderId || orderData.order_id || `WX-${Date.now().toString().slice(-6)}`;
+    const orderId = orderData.orderId || orderData.order_id || `NYX-${Date.now().toString().slice(-6)}`;
     const dateStr = orderData.timestamp 
       ? new Date(orderData.timestamp).toLocaleString("th-TH", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
       : new Date().toLocaleString("th-TH", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });

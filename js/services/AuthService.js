@@ -94,7 +94,7 @@ class AuthService {
       localStorage.removeItem("nyx9_admin_token");
     } catch (e) {}
     this.store.setUser(null);
-    this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || localStorage.getItem("wichx_balance") || "500.00"));
+    this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || "0.00"));
   }
 
   async loginWithDiscord() {

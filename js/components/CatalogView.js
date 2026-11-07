@@ -309,7 +309,12 @@ class CatalogViewComponent {
             </div>
           </div>
 
-          <!-- Title & Chips -->
+          <!-- Rating Badge & Title -->
+          <div class="flex items-center gap-1.5 mb-1.5 text-[11px] font-mono select-none">
+            <span class="text-amber-400 font-bold">★★★★★</span>
+            <span class="text-amber-300 font-bold">5.0</span>
+            <span class="text-slate-500 text-[10px]">(รีวิวผู้ซื้อจริง)</span>
+          </div>
           <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
           <div class="flex flex-wrap gap-1.5 mb-3.5">

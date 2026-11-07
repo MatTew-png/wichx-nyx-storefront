@@ -159,7 +159,7 @@ const categoriesData = [
         chips: ["ถาวร", "ของแต่งแท้"],
         fulfillmentType: "instant",
         imageUrl: createCyberArtwork("PROFILE DECORATIONS", "PERMANENT AVATAR FX", "discord", "#06B6D4", "#3B82F6"),
-        sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-WICHX",
+        sampleDelivery: "GIFT-DECO-PERM-DISCORD-TOKEN-9283-NOVAPE",
         warrantyDays: 365
       }
     ]

@@ -20,7 +20,7 @@ class ModalsComponent {
     if (!modal) return;
 
     window.lastDeliveredOrder = result;
-    const orderId = result.order_id || result.orderId || `WX-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderId = result.order_id || result.orderId || `NYX-${Math.floor(100000 + Math.random() * 900000)}`;
     if (orderIdEl) orderIdEl.textContent = orderId;
 
     const items = result.dispensed_items || result.items || [];

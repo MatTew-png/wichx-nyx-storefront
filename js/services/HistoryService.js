@@ -14,7 +14,7 @@ class HistoryService {
    */
   async getOrderHistory() {
     const user = this.store.get("user");
-    const localRaw = typeof localStorage !== "undefined" ? (localStorage.getItem("nyx_orders") || localStorage.getItem("wichx_orders")) : null;
+    const localRaw = typeof localStorage !== "undefined" ? localStorage.getItem("nyx_orders") : null;
     let localOrders = [];
 
     try {
