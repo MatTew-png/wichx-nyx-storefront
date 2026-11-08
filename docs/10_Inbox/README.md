@@ -32,3 +32,4 @@ This directory serves as the **quarantine and staging zone** for all unverified 
 ## 📑 Current Active Drafts
 
 - [[10_Inbox/DRAFT_20261109_Vexzy_Feature_Gap_Analysis|DRAFT_20261109_Vexzy_Feature_Gap_Analysis]] — Benchmark Audit & 21-Feature Gap Analysis (Vexzy Model V vs WebShop NYX9).
+- [[10_Inbox/DRAFT_20261109_NYX9_Signature_Moat_And_Vexzy_Fusion|DRAFT_20261109_NYX9_Signature_Moat_And_Vexzy_Fusion]] — Master Fusion Strategy: Vexzy Adaptation Suite & The 4 Signature Moat Features.
