@@ -26,3 +26,9 @@ This directory serves as the **quarantine and staging zone** for all unverified 
    - Validate empirical code links and diagrams.
    - Move approved document to its target permanent folder.
    - Delete or archive the draft record.
+
+---
+
+## 📑 Current Active Drafts
+
+- [[10_Inbox/DRAFT_20261109_Vexzy_Feature_Gap_Analysis|DRAFT_20261109_Vexzy_Feature_Gap_Analysis]] — Benchmark Audit & 21-Feature Gap Analysis (Vexzy Model V vs WebShop NYX9).
