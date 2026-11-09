@@ -543,8 +543,8 @@ const storeConfig = {
   announcements: [
     { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบจัดส่งรหัสและสินค้าอัตโนมัติ 24 ชม.", highlight: "ใน 1 นาที", color: "emerald" },
-    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันสินค้าและไอดีแท้ 100% มีทีมงานซัพพอร์ต", highlight: "ดูแลผ่าน Discord", color: "blue" },
-    { tag: "ALLIANCE", icon: "users", text: "เครือข่าย 2 ร้านค้า NOVAPE SHOP & NYX9 STUDIO", highlight: "บริการครบวงจร", color: "indigo" }
+    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ มีทีมงานซัพพอร์ตดูแลทาง Discord", highlight: "ดูแลผ่าน Discord", color: "blue" },
+    { tag: "ALLIANCE", icon: "users", text: "เครือข่าย 2 ร้านค้า NOVAPE SHOP & NYX9 STUDIO", highlight: "สแตนด์บายดูแล 24 ชม.", color: "indigo" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
@@ -555,7 +555,7 @@ const storeConfig = {
       badge: "✦ FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
-      description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB คุ้มค่าที่สุด",
+      description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ใช้อิโมจิดุ๊กดิ๊กข้ามเซิร์ฟ ส่งไฟล์ขนาดใหญ่ 500MB ได้ทันที",
       perks: ["ไม่ต้องให้รหัสผ่าน", "2x Server Boosts ในตัว", "รับประกันแท้ 30-90 วัน"],
       ctaText: "เลือกซื้อ Nitro ทันที",
       ctaCategory: "cat-discord-nitro",
@@ -571,7 +571,7 @@ const storeConfig = {
       cardStock: "พร้อมส่ง 20 ชิ้น",
       cardPerks: [
         { icon: "smile", text: "ใช้อิโมจิ & สติ๊กเกอร์เคลื่อนไหวได้ทุกเซิร์ฟเวอร์" },
-        { icon: "rocket", text: "รับ 2x Server Boosts ฟรี ยกระดับเซิร์ฟเวอร์" },
+        { icon: "rocket", text: "รับ 2x Server Boosts ฟรี ดันเซิร์ฟเวอร์เลเวล 3 บูสต์เต็มแม็กซ์" },
         { icon: "upload", text: "สตรีมภาพ HD 60FPS + ส่งไฟล์สูงสุด 500MB" }
       ],
       productId: "nitro-3m-mailpass"
@@ -4429,7 +4429,12 @@ class CatalogViewComponent {
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            ${prods.map(p => this.createProductCardHTML(p, cat)).join("")}
+            ${prods.map((p, idx) => {
+              if (idx === 0 && prods.length >= 3) {
+                return this.createBentoSpotlightCardHTML(p, cat);
+              }
+              return this.createProductCardHTML(p, cat);
+            }).join("")}
           </div>
         </div>
       `;
@@ -4503,11 +4508,9 @@ class CatalogViewComponent {
             </div>
           </div>
 
-          <!-- Rating Badge & Title -->
+          <!-- Merchant Trust Indicator -->
           <div class="flex items-center gap-1.5 mb-1.5 text-[11px] font-mono select-none">
-            <span class="text-amber-400 font-bold">★★★★★</span>
-            <span class="text-amber-300 font-bold">5.0</span>
-            <span class="text-slate-500 text-[10px]">(รีวิวผู้ซื้อจริง)</span>
+            <span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i><span class="text-slate-300 text-[10px] font-mono-val font-semibold">ของแท้ 100% • บอทส่งทันที</span></span>
           </div>
           <h4 class="text-sm font-heading font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1 mb-2">${p.title}</h4>
           
@@ -4574,6 +4577,121 @@ class CatalogViewComponent {
               </button>
             </div>
           `)}
+        </div>
+      </div>
+    `;
+  }
+
+  createBentoSpotlightCardHTML(p, cat) {
+    const isOut = p.stock === 0;
+    const isCustom = p.fulfillmentType === "custom_form";
+    const user = this.store ? this.store.get("user") : null;
+    const isReseller = user?.role === "reseller" || user?.is_reseller;
+    const resellerPrice = p.reseller_price ? Number(p.reseller_price) : (p.price > 0 ? Math.round(p.price * 0.88) : p.price);
+    const activePrice = isReseller ? resellerPrice : p.price;
+
+    return `
+      <div class="bento-spotlight group col-span-1 sm:col-span-2 md:col-span-2 p-5 sm:p-6 flex flex-col sm:flex-row gap-5 sm:gap-6 items-stretch relative">
+        <!-- BEST SELLER BADGE -->
+        <div class="absolute top-3 left-3 z-20">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500/25 to-rose-500/25 border border-amber-500/50 text-amber-300 text-[10px] font-mono-val font-extrabold shadow-[0_0_16px_rgba(245,158,11,0.35)]">
+            <i data-lucide="flame" class="w-3 h-3 text-amber-400 fill-amber-400"></i>
+            <span>🔥 BEST SELLER • สินค้ายอดนิยม</span>
+          </span>
+        </div>
+
+        <!-- Artwork -->
+        <div class="w-full sm:w-[42%] aspect-square sm:aspect-auto rounded-2xl bg-white/[0.02] border border-white/[0.08] overflow-hidden relative flex items-center justify-center p-4">
+          ${p.imageUrl ? `
+            <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.classList.remove('hidden');" />
+            <div class="hidden flex-col items-center justify-center gap-2 select-none pointer-events-none">
+              <div class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500">
+                <i data-lucide="image" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[9px] font-mono-val uppercase tracking-widest text-slate-600">NO IMAGE</span>
+            </div>
+          ` : `
+            <div class="flex flex-col items-center justify-center gap-2 select-none pointer-events-none">
+              <div class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-500 group-hover:text-slate-400 group-hover:scale-105 group-hover:border-white/[0.12] transition-all">
+                <i data-lucide="image" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[9px] font-mono-val uppercase tracking-widest text-slate-600 group-hover:text-slate-500 transition-colors">NO IMAGE</span>
+            </div>
+          `}
+          <div class="absolute top-2 right-2 z-10">
+            ${isOut
+              ? `<span class="px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] font-mono-val font-bold">สินค้าหมดชั่วคราว</span>`
+              : `<span class="px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono-val font-bold">พร้อมส่ง: ${p.stock} ชิ้น</span>`
+            }
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            ${p.status ? `<span class="inline-block px-2 py-0.5 rounded-md bg-white/[0.04] text-sky-300 border border-white/[0.08] text-[10px] font-mono-val font-semibold uppercase tracking-wider mb-2">${p.status}</span>` : ""}
+            <h4 class="text-lg sm:text-xl font-heading font-extrabold text-white group-hover:text-sky-300 transition-colors mb-2.5">${p.title}</h4>
+
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              ${(p.chips || []).map(chip => `
+                <span class="px-2.5 py-1 rounded-lg bg-[#070A0F] border border-[rgba(255,255,255,0.08)] text-[11px] text-slate-300 font-mono-val">${chip}</span>
+              `).join("")}
+            </div>
+
+            <!-- Detailed Perks -->
+            <div class="space-y-2 mb-5">
+              <div class="flex items-center gap-2 text-xs font-mono-val text-slate-300">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span>ของแท้ 100% • รับประกันเต็มจำนวน</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-mono-val text-slate-300">
+                <i data-lucide="zap" class="w-4 h-4 text-[var(--accent)]"></i>
+                <span>บอทส่งอัตโนมัติทันทีหลังชำระเงิน</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-mono-val text-slate-300">
+                <i data-lucide="headset" class="w-4 h-4 text-amber-400"></i>
+                <span>ซัพพอร์ต 24 ชม. ผ่าน Discord พร้อมช่วยเหลือทุกขั้นตอน</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer & Action -->
+          <div class="pt-4 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-3">
+            <div>
+              <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
+              ${isReseller ? `
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl font-mono-val font-bold text-emerald-400 tracking-tight">฿${activePrice.toFixed(2)}</span>
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[9px] font-mono font-bold">RESELLER</span>
+                </div>
+              ` : `
+                <div class="text-2xl font-mono-val font-bold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
+                <div class="text-[9px] text-emerald-400/90 font-mono tracking-tight font-semibold">ราคาส่ง Reseller: ฿${resellerPrice.toFixed(2)}</div>
+              `}
+            </div>
+
+            ${isOut ? `
+              <button onclick="window.openRestockNotifyModal('${p.id}', '${p.title.replace(/'/g, "\\'")}')" class="btn-spring py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500/15 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-600/25 border border-amber-500/40 hover:border-amber-400 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md">
+                <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400"></i>
+                <span>แจ้งเตือนเมื่อของมาเติม</span>
+              </button>
+            ` : (isCustom ? `
+              <button onclick="window.Shop?.modals?.openCustomServiceForm('${p.id}')" class="btn-spring btn-cyber-primary px-4 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+                <span>สั่งทำ</span>
+              </button>
+            ` : `
+              <div class="flex items-center gap-2">
+                <button onclick="window.Shop?.cartManager?.addToCartById('${p.id}')" class="btn-spring p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white cursor-pointer" title="หยิบใส่ตะกร้า">
+                  <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-300"></i>
+                </button>
+                <button onclick="window.quickBuyProduct('${p.id}')" class="btn-spring btn-cyber-primary cursor-pointer px-5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-md">
+                  <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                  <span>ซื้อด่วน</span>
+                </button>
+              </div>
+            `)}
+          </div>
         </div>
       </div>
     `;

@@ -61,8 +61,8 @@ const storeConfig = {
   announcements: [
     { tag: "FLASH SALE", icon: "zap", text: "Discord Nitro Booster 1 เดือน ลดพิเศษเหลือเพียง", highlight: "฿169", color: "indigo" },
     { tag: "AUTO 24/7", icon: "bot", text: "ระบบจัดส่งรหัสและสินค้าอัตโนมัติ 24 ชม.", highlight: "ใน 1 นาที", color: "emerald" },
-    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันสินค้าและไอดีแท้ 100% มีทีมงานซัพพอร์ต", highlight: "ดูแลผ่าน Discord", color: "blue" },
-    { tag: "ALLIANCE", icon: "users", text: "เครือข่าย 2 ร้านค้า NOVAPE SHOP & NYX9 STUDIO", highlight: "บริการครบวงจร", color: "indigo" }
+    { tag: "VERIFIED", icon: "shield-check", text: "รับประกันไอดีและสินค้าแท้ มีทีมงานซัพพอร์ตดูแลทาง Discord", highlight: "ดูแลผ่าน Discord", color: "blue" },
+    { tag: "ALLIANCE", icon: "users", text: "เครือข่าย 2 ร้านค้า NOVAPE SHOP & NYX9 STUDIO", highlight: "สแตนด์บายดูแล 24 ชม.", color: "indigo" }
   ],
 
   // --- แบนเนอร์โปรโมชั่นสไลด์ (Hero Carousel) ---
@@ -73,7 +73,7 @@ const storeConfig = {
       badge: "✦ FLASH DEAL • ลดพิเศษ 48%",
       title: "DISCORD NITRO & BOOSTS",
       highlight: "ราคาเริ่มต้นเพียง ฿150",
-      description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ปลดล็อกทุกอิโมจิและส่งไฟล์ขนาดใหญ่ 500MB คุ้มค่าที่สุด",
+      description: "รหัสแท้ 100% บอทส่งเข้าคลังอัตโนมัติใน 3 วินาที ไม่ต้องให้รหัสผ่านบัญชี พร้อม 2 บูสต์ในตัว ใช้อิโมจิดุ๊กดิ๊กข้ามเซิร์ฟ ส่งไฟล์ขนาดใหญ่ 500MB ได้ทันที",
       perks: ["ไม่ต้องให้รหัสผ่าน", "2x Server Boosts ในตัว", "รับประกันแท้ 30-90 วัน"],
       ctaText: "เลือกซื้อ Nitro ทันที",
       ctaCategory: "cat-discord-nitro",
@@ -89,7 +89,7 @@ const storeConfig = {
       cardStock: "พร้อมส่ง 20 ชิ้น",
       cardPerks: [
         { icon: "smile", text: "ใช้อิโมจิ & สติ๊กเกอร์เคลื่อนไหวได้ทุกเซิร์ฟเวอร์" },
-        { icon: "rocket", text: "รับ 2x Server Boosts ฟรี ยกระดับเซิร์ฟเวอร์" },
+        { icon: "rocket", text: "รับ 2x Server Boosts ฟรี ดันเซิร์ฟเวอร์เลเวล 3 บูสต์เต็มแม็กซ์" },
         { icon: "upload", text: "สตรีมภาพ HD 60FPS + ส่งไฟล์สูงสุด 500MB" }
       ],
       productId: "nitro-3m-mailpass"
