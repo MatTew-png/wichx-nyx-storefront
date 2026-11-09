@@ -47,6 +47,11 @@ class ShopApp {
     this.luckyWheel = window.LuckyWheelComponent ? new window.LuckyWheelComponent(this.store) : null;
     this.memberCardModal = window.MemberCardModalComponent ? new window.MemberCardModalComponent(this.store) : null;
     this.keyAuthModal = window.KeyAuthModalComponent ? new window.KeyAuthModalComponent(this.store) : null;
+    this.dailyRewardModal = window.DailyRewardModal ? new window.DailyRewardModal(this.store) : null;
+    if (typeof window !== "undefined" && this.dailyRewardModal) {
+      window.DailyRewardModalInstance = this.dailyRewardModal;
+    }
+    this.supportWidget = window.SupportWidgetModal ? (window.SupportWidgetModalInstance || new window.SupportWidgetModal()) : null;
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
@@ -72,6 +77,16 @@ class ShopApp {
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
     safeRun("NavbarPoints", () => this.navbar?.updatePointsUI());
     safeRun("LuckyWheel", () => this.luckyWheel?.initDOM());
+    safeRun("DailyRewardModal", () => {
+      if (!window.DailyRewardModalInstance && window.DailyRewardModal) {
+        window.DailyRewardModalInstance = new window.DailyRewardModal(this.store);
+      }
+    });
+    safeRun("SupportWidget", () => {
+      if (!window.SupportWidgetModalInstance && window.SupportWidgetModal) {
+        window.SupportWidgetModalInstance = new window.SupportWidgetModal();
+      }
+    });
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
     safeRun("AnnouncementsTicker", () => this.renderAnnouncementsTicker(window.storeConfig?.announcements || []));

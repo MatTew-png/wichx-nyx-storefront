@@ -48,6 +48,12 @@ This document specifies the strict operational rules, naming conventions, and fi
 ## 4. 📋 Frontmatter Compliance
 - Every markdown note must include valid YAML frontmatter between `---` fences.
 - Metadata must conform to [[.agent/schema|Schema Definitions]].
+
+---
+
+## 5. 🚫 Zero External Session Probing (Strict Workspace Containment)
+- When asked to analyze, summarize, or extract skills from project sessions, **NEVER** inspect external session transcripts, global `brain/` folders, or past conversations from other workspaces.
+- All evidence and context must come strictly from the local repository: `git log`, `docs/`, codebase files, test scripts, and the active session.
 - Never duplicate metadata inside blockquotes (e.g. `> **Status:** Completed`) when already present in the YAML header.
 
 ---

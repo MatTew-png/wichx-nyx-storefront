@@ -9,6 +9,24 @@ class CheckoutService {
     this.store = store;
   }
 
+  static validateRequiredFormFields(item) {
+    if (!item) return true;
+    const formFields = item.form_fields || item.formFields || [];
+    if (Array.isArray(formFields)) {
+      for (const f of formFields) {
+        if (f && f.required) {
+          const fieldKey = f.id || f.name;
+          const val = (item.customFields && (item.customFields[fieldKey] !== undefined ? item.customFields[fieldKey] : item.customFields[f.id])) ||
+                      (item.field_values && (item.field_values[fieldKey] !== undefined ? item.field_values[fieldKey] : item.field_values[f.id])) || '';
+          if (!val || String(val).trim() === '') {
+            throw new Error(`กรุณากรอกข้อมูล "${f.label || f.name || f.id}" สำหรับสินค้า ${item.title || item.name || 'นี้'}`);
+          }
+        }
+      }
+    }
+    return true;
+  }
+
   calculateTotals() {
     const cart = this.store.get("cart") || [];
     let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -105,6 +123,11 @@ class CheckoutService {
     const cart = this.store.get("cart") || [];
     if (cart.length === 0) {
       throw new Error("ตะกร้าสินค้าว่างเปล่า กรุณาเลือกสินค้าก่อน");
+    }
+
+    // Validate required custom form fields (TC-ORD-01: Product Type ORDER)
+    for (const item of cart) {
+      CheckoutService.validateRequiredFormFields(item);
     }
 
     const { total } = this.calculateTotals();

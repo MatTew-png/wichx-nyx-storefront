@@ -159,15 +159,19 @@ class NavbarComponent {
   updateCartBadge() {
     const cart = this.store.get("cart") || [];
     const totalCount = cart.reduce((sum, i) => sum + i.quantity, 0);
-    const badge = document.getElementById("cart-badge-count");
-    if (!badge) return;
+    const badges = [
+      document.getElementById("cart-badge-count"),
+      document.getElementById("mobile-cart-badge-count")
+    ].filter(Boolean);
 
-    if (totalCount > 0) {
-      badge.textContent = totalCount;
-      badge.className = "absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-mono-val font-extrabold flex items-center justify-center animate-pulse shadow-md shadow-[var(--accent)]/40";
-    } else {
-      badge.className = "hidden";
-    }
+    badges.forEach(badge => {
+      if (totalCount > 0) {
+        badge.textContent = totalCount;
+        badge.className = "absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[var(--accent)] text-[#06080C] text-[10px] font-mono-val font-extrabold flex items-center justify-center animate-pulse shadow-md shadow-[var(--accent)]/40";
+      } else {
+        badge.className = "hidden";
+      }
+    });
   }
 }
 

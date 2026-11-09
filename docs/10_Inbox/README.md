@@ -38,3 +38,4 @@ This directory serves as the **quarantine and staging zone** for all unverified 
 - [[10_Inbox/DRAFT_20261109_Enterprise_Security_And_Defense_Roadmap|DRAFT_20261109_Enterprise_Security_And_Defense_Roadmap]] — แผนยกระดับความปลอดภัยระบบป้องกัน 7 เสาหลัก (Next-Gen Enterprise Security & Financial Defense Roadmap).
 - [[10_Inbox/DRAFT_20261109_NextGen_Security_Defense_Roadmap|DRAFT_20261109_NextGen_Security_Defense_Roadmap]] — สถาปัตยกรรมระบบป้องกันขั้นสูง 5 ชั้น (Next-Gen Security & Defense Roadmap).
 - [[10_Inbox/DRAFT_20261109_NextGen_Security_Defense_Architecture|DRAFT_20261109_NextGen_Security_Defense_Architecture]] — Next-Gen Enterprise Security & Financial Defense Architecture (6-Tier Defense Blueprint).
+- [[10_Inbox/DRAFT_20261109_Sprint7_Frontend_Craftsmanship_And_Theme_Studio|DRAFT_20261109_Sprint7_Frontend_Craftsmanship_And_Theme_Studio]] — Sprint 7 Frontend Craftsmanship, Theme Studio, Mobile HUD, Custom Orders & Gaming SFX.

@@ -66,6 +66,7 @@ tags:
 ---
 
 ## 🤖 AI Agent Governance
+- [[.agent/skills/gaming-storefront-architect/SKILL|SKILL: Gaming Storefront Architect]] — Distilled production playbook, financial shield, atomic stock dispensing, and gamer UX.
 - [[.agent/rules|AI Agent Governance Rules]] — Zero destructive overwrite, wikilink format, and review protocols.
 - [[.agent/schema|Formal YAML Schemas]] — Metadata standards for all note types.
 - [[.agent/mcp-setup|MCP Integration Setup]] — Connecting Claude, Cursor, and Antigravity to this vault.

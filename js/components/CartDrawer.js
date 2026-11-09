@@ -80,26 +80,56 @@ class CartDrawerComponent {
       return;
     }
 
-    list.innerHTML = cart.map((item, index) => `
-      <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between gap-3">
-        <div class="flex-1 min-w-0">
-          <div class="text-xs font-bold text-white truncate">${item.title}</div>
-          <div class="text-xs font-mono font-bold text-[var(--accent)] mt-0.5">฿${item.price.toFixed(2)}</div>
-          ${item.customData ? `<div class="text-[10px] text-slate-400 font-mono mt-1">${JSON.stringify(item.customData).substring(0, 30)}...</div>` : ""}
+    list.innerHTML = cart.map((item, index) => {
+      const formFields = item.form_fields || item.formFields || [];
+      const hasFormFields = Array.isArray(formFields) && formFields.length > 0;
+
+      return `
+      <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-bold text-white truncate">${item.title}</div>
+            <div class="text-xs font-mono font-bold text-[var(--accent)] mt-0.5">฿${item.price.toFixed(2)}</div>
+            ${item.customData ? `<div class="text-[10px] text-slate-400 font-mono mt-1">${JSON.stringify(item.customData).substring(0, 30)}...</div>` : ""}
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="flex items-center rounded-lg bg-slate-950 border border-slate-800 overflow-hidden">
+              <button onclick="window.Shop?.cartManager?.updateQty(${index}, ${item.quantity - 1})" class="px-2 py-1 text-slate-400 hover:text-white text-xs cursor-pointer">-</button>
+              <span class="px-2 text-xs font-mono font-bold text-white">${item.quantity}</span>
+              <button onclick="window.Shop?.cartManager?.updateQty(${index}, ${item.quantity + 1})" class="px-2 py-1 text-slate-400 hover:text-white text-xs cursor-pointer">+</button>
+            </div>
+            <button onclick="window.Shop?.cartManager?.removeItem(${index})" class="p-1.5 text-slate-500 hover:text-rose-400 cursor-pointer">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <div class="flex items-center rounded-lg bg-slate-950 border border-slate-800 overflow-hidden">
-            <button onclick="window.Shop?.cartManager?.updateQty(${index}, ${item.quantity - 1})" class="px-2 py-1 text-slate-400 hover:text-white text-xs cursor-pointer">-</button>
-            <span class="px-2 text-xs font-mono font-bold text-white">${item.quantity}</span>
-            <button onclick="window.Shop?.cartManager?.updateQty(${index}, ${item.quantity + 1})" class="px-2 py-1 text-slate-400 hover:text-white text-xs cursor-pointer">+</button>
+        ${hasFormFields ? `
+          <div class="pt-2 border-t border-slate-800/80 space-y-1.5">
+            <div class="text-[10px] font-bold text-amber-400 flex items-center gap-1">
+              <i data-lucide="file-text" class="w-3 h-3"></i>
+              <span>ข้อมูลสำหรับจัดส่ง (Custom Order):</span>
+            </div>
+            ${formFields.map(f => `
+              <div>
+                <label class="block text-[9px] text-slate-400 mb-0.5 font-semibold">
+                  ${f.label || f.name} ${f.required ? '<span class="text-rose-400">*</span>' : ''}
+                </label>
+                <input 
+                  type="${f.type || 'text'}" 
+                  placeholder="${f.placeholder || ''}" 
+                  value="${(item.customFields && item.customFields[f.id]) || ''}"
+                  oninput="window.updateCartItemField(${index}, '${f.id}', this.value)"
+                  class="w-full px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px] font-mono text-white focus:outline-none focus:border-[var(--accent)]"
+                />
+              </div>
+            `).join('')}
           </div>
-          <button onclick="window.Shop?.cartManager?.removeItem(${index})" class="p-1.5 text-slate-500 hover:text-rose-400 cursor-pointer">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
+        ` : ''}
       </div>
-    `).join("");
+      `;
+    }).join("");
 
     this.updateSummary();
     this.renderVouchers();
@@ -241,6 +271,17 @@ class CartDrawerComponent {
 
 if (typeof window !== "undefined") {
   window.CartDrawerComponent = CartDrawerComponent;
+
+  window.updateCartItemField = (itemIndex, fieldId, value) => {
+    const store = window.Shop?.store;
+    if (!store) return;
+    const cart = store.get("cart") || [];
+    if (cart[itemIndex]) {
+      if (!cart[itemIndex].customFields) cart[itemIndex].customFields = {};
+      cart[itemIndex].customFields[fieldId] = value;
+      store.set("cart", cart);
+    }
+  };
 
   window.applyDirectCoupon = (code) => {
     if (window.Shop?.cartManager) {
