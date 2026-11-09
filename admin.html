@@ -216,6 +216,44 @@
   </div>
 
   <!-- ==============================================================================
+       1.5 ADMIN 2FA PIN KEYPAD OVERLAY (DISCORD OTP SECURITY LAYER)
+       ============================================================================== -->
+  <div id="admin-pin-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4 hidden">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 max-w-sm w-full text-center space-y-5 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 bg-cyan-500/10 blur-3xl rounded-full pointer-events-none"></div>
+      
+      <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 mx-auto flex items-center justify-center shadow-lg">
+        <i data-lucide="shield-check" class="w-7 h-7"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-lg font-heading font-extrabold text-white">การยืนยันตัวตนแอดมิน 2FA</h3>
+        <p class="text-xs text-slate-400">กรุณากรอกรหัส PIN 6 หลักที่ส่งเข้า Discord Webhook</p>
+      </div>
+
+      <div class="space-y-3">
+        <input type="password" id="admin-pin-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" class="w-full text-center text-2xl tracking-[0.5em] font-mono py-3 rounded-2xl bg-slate-900 border border-slate-700 text-cyan-300 focus:outline-none focus:border-cyan-400 shadow-inner" autofocus onkeyup="if(event.key==='Enter')handleVerifyAdminPin()" />
+        
+        <button onclick="handleVerifyAdminPin()" id="btn-verify-pin" class="btn-cyber-primary w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20">
+          <i data-lucide="key-round" class="w-4 h-4"></i>
+          <span>ยืนยันรหัสความปลอดภัย</span>
+        </button>
+
+        <button onclick="handleRequestAdminPinOtp()" id="btn-request-pin-otp" type="button" class="w-full py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors">
+          <i data-lucide="send" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>ขอรหัส PIN ทาง Discord Webhook</span>
+        </button>
+
+        <div id="admin-pin-feedback" class="hidden text-xs p-2.5 rounded-xl"></div>
+      </div>
+
+      <div class="text-[10px] text-slate-500 pt-2 border-t border-slate-800">
+        NYX9 STUDIO Enterprise Vault Guard • PIN Valid for 5 Mins
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================================
        2. MAIN OPERATIONS DASHBOARD (AUTHENTICATED) WITH LEFT SIDEBAR LAYOUT
        ============================================================================== -->
   <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col lg:flex-row">
@@ -310,6 +348,10 @@
               <button onclick="switchAdminTab('vouchers')" id="nav-btn-vouchers" class="nav-item w-full text-left">
                 <i data-lucide="ticket" class="w-4 h-4 text-pink-400"></i>
                 <span>คูปองส่วนลด (Vouchers)</span>
+              </button>
+              <button onclick="switchAdminTab('status')" id="nav-btn-status" class="nav-item w-full text-left">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+                <span>สถานะโปรแกรม (Status Hub)</span>
               </button>
             </nav>
           </div>
@@ -1100,6 +1142,38 @@
             </div>
           </div>
 
+          </div>
+        </div>
+
+        <!-- ==============================================================================
+             PANE: PROGRAM STATUS HUB & SCRIPT MONITOR (SPRINT 2)
+             ============================================================================== -->
+        <div id="tab-pane-status" class="hidden space-y-6">
+          <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+              <div>
+                <h3 class="text-sm font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+                  <span>ศูนย์ควบคุมสถานะโปรแกรม & สคริปต์ (Program Status Hub)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">อัปเดตสถานะ Online, กำลังอัปเดต, บำรุงรักษา หรือติดสถานะตรวจสอบได้แบบเรียลไทม์</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="loadAdminProgramStatuses()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 border border-slate-700 cursor-pointer transition-all active:scale-95">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>รีเฟรช</span>
+                </button>
+                <button onclick="openAddProgramStatusModal()" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                  <span>เพิ่มโปรแกรม</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Program Status Cards & Table -->
+            <div id="admin-program-status-list" class="space-y-3">
+              <div class="text-center py-8 text-slate-500 text-xs">กำลังโหลดรายการโปรแกรม...</div>
+            </div>
           </div>
         </div>
 
@@ -2253,6 +2327,51 @@
     </div>
   </div>
 
+  <!-- Modal: Add / Edit Program Status -->
+  <div id="modal-program-status" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
+    <div class="glass-panel p-6 rounded-3xl border border-slate-700 max-w-md w-full space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h4 class="text-sm font-heading font-bold text-white flex items-center gap-2">
+          <i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>
+          <span id="modal-program-title">เพิ่มโปรแกรม / สคริปต์ใหม่</span>
+        </h4>
+        <button onclick="closeProgramStatusModal()" class="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">ชื่อโปรแกรม / สคริปต์ *</label>
+          <input type="text" id="status-input-name" placeholder="เช่น NOVAPE Blox Fruits Bypass" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">สถานะปัจจุบัน *</label>
+            <select id="status-input-status" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none focus:border-[var(--accent)]">
+              <option value="online">🟢 Online (พร้อมใช้)</option>
+              <option value="updating">🟡 Updating (อัปเดต)</option>
+              <option value="maintenance">🟠 Maintenance (ปิดปรับปรุง)</option>
+              <option value="detected">🔴 Detected (ตรวจสอบ)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">เวอร์ชัน (Version)</label>
+            <input type="text" id="status-input-version" placeholder="เช่น v3.4.1" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">ลิงก์ดาวน์โหลด (Download URL)</label>
+          <input type="url" id="status-input-download" placeholder="https://..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none focus:border-[var(--accent)]" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button onclick="closeProgramStatusModal()" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer">ยกเลิก</button>
+          <button onclick="handleSaveProgramStatus()" type="button" id="btn-save-program-status" class="btn-cyber-primary px-5 py-2 rounded-xl font-bold cursor-pointer">บันทึก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==============================================================================
        OPERATIONS ENGINE JAVASCRIPT
        ============================================================================== -->
@@ -2609,6 +2728,7 @@
           localStorage.setItem("nyx9_admin_token", secret);
           document.getElementById("admin-auth-overlay").classList.add("hidden");
           document.getElementById("admin-dashboard-container").classList.remove("hidden");
+          await checkAdminPin2FA();
           await loadDashboardData();
         } else {
           sessionStorage.removeItem("nyx9_admin_token");
@@ -4200,6 +4320,10 @@
         title: "🎫 จัดการคูปอง & โค้ดส่วนลด (Vouchers Engine)",
         desc: "สร้างโค้ดส่วนลดสไตล์ Shopee/TikTok กำหนดเงื่อนไขขั้นต่ำ และเปิด/ปิดการใช้งานได้ทันที"
       },
+      status: {
+        title: "⚡ ศูนย์ควบคุมสถานะโปรแกรม & สคริปต์ (Program Status Hub)",
+        desc: "อัปเดตสถานะ Online, กำลังอัปเดต, บำรุงรักษา หรือติดสถานะตรวจสอบได้แบบเรียลไทม์"
+      },
       discord: {
         title: "⚙️ Discord Webhook & แจ้งเตือน 24 ชม.",
         desc: "ตั้งค่าและยิงทดสอบ Rich Embed เข้า Channel Discord ของทีมงาน"
@@ -4211,7 +4335,7 @@
     };
 
     function switchAdminTab(tabKey) {
-      const tabs = ["analytics", "visitors", "categories", "products", "vault", "vouchers", "users", "orders", "topups", "claims", "reviews", "discord", "settings"];
+      const tabs = ["analytics", "visitors", "categories", "products", "vault", "vouchers", "status", "users", "orders", "topups", "claims", "reviews", "discord", "settings"];
       tabs.forEach(t => {
         const btn = document.getElementById(`nav-btn-${t}`);
         const pane = document.getElementById(`tab-pane-${t}`);
@@ -4254,6 +4378,11 @@
       // If switching to vouchers tab, trigger initial load
       if (tabKey === "vouchers") {
         loadAdminVouchers();
+      }
+
+      // If switching to status tab, trigger initial load
+      if (tabKey === "status") {
+        loadAdminProgramStatuses();
       }
 
       // Resize charts if switching to analytics
@@ -5017,6 +5146,304 @@
           btn.innerHTML = '<i data-lucide="play" class="w-3 h-3"></i> <span>ตรวจเช็กความพร้อมระบบ</span>';
           if (window.lucide) lucide.createIcons();
         }
+      }
+    }
+
+    // ==============================================================================
+    // SPRINT 2: ADMIN PIN 2FA SECURITY SUITE
+    // ==============================================================================
+    async function checkAdminPin2FA() {
+      const modal = document.getElementById("admin-pin-modal");
+      if (!modal) return;
+
+      const token = sessionStorage.getItem("admin_pin_session");
+      if (!token) {
+        modal.classList.remove("hidden");
+        document.getElementById("admin-pin-input")?.focus();
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/admin-pin?action=verify_token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token })
+        });
+        const data = await res.json();
+        if (data && data.authenticated) {
+          modal.classList.add("hidden");
+        } else {
+          sessionStorage.removeItem("admin_pin_session");
+          modal.classList.remove("hidden");
+          document.getElementById("admin-pin-input")?.focus();
+        }
+      } catch (err) {
+        modal.classList.add("hidden"); // In offline or development fallback
+      }
+    }
+
+    async function handleRequestAdminPinOtp() {
+      const btn = document.getElementById("btn-request-pin-otp");
+      const feedback = document.getElementById("admin-pin-feedback");
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> <span>กำลังส่ง OTP...</span>';
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/admin-pin?action=request_otp", { method: "POST" });
+        const data = await res.json();
+        feedback.className = "text-xs p-2.5 rounded-xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-200";
+        feedback.textContent = `📩 ${data.message || 'ส่งรหัส PIN เข้า Discord Webhook เรียบร้อยแล้ว'}`;
+        feedback.classList.remove("hidden");
+        document.getElementById("admin-pin-input")?.focus();
+      } catch (err) {
+        feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = `ข้อผิดพลาด: ${err.message}`;
+        feedback.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    async function handleVerifyAdminPin() {
+      const input = document.getElementById("admin-pin-input");
+      const btn = document.getElementById("btn-verify-pin");
+      const feedback = document.getElementById("admin-pin-feedback");
+      const modal = document.getElementById("admin-pin-modal");
+      const pin = input?.value.trim();
+
+      if (!pin || pin.length !== 6) {
+        feedback.className = "text-xs p-2.5 rounded-xl bg-amber-950/70 border border-amber-500/40 text-amber-200";
+        feedback.textContent = "⚠️ กรุณากรอกตัวเลข PIN 6 หลักให้ครบถ้วน";
+        feedback.classList.remove("hidden");
+        input?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> <span>กำลังตรวจสอบ...</span>';
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/admin-pin?action=verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success && data.token) {
+          sessionStorage.setItem("admin_pin_session", data.token);
+          modal.classList.add("hidden");
+          feedback.classList.add("hidden");
+          input.value = "";
+          showToast("✅ ยืนยันรหัส PIN 2FA ถูกต้อง", "success");
+          await loadDashboardData();
+        } else {
+          feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+          feedback.textContent = `❌ ${data.message || 'รหัส PIN ไม่ถูกต้อง'}`;
+          feedback.classList.remove("hidden");
+          input.select();
+        }
+      } catch (err) {
+        feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+        feedback.textContent = `ข้อผิดพลาด: ${err.message}`;
+        feedback.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="key-round" class="w-4 h-4"></i> <span>ยืนยันรหัสความปลอดภัย</span>';
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    // ==============================================================================
+    // SPRINT 2: PROGRAM STATUS HUB MANAGEMENT SUITE
+    // ==============================================================================
+    let currentAdminProgramStatuses = [];
+
+    async function loadAdminProgramStatuses() {
+      const container = document.getElementById("admin-program-status-list");
+      if (!container) return;
+      container.innerHTML = '<div class="text-center py-8 text-slate-500 text-xs"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto mb-2 text-cyan-400"></i>กำลังโหลดรายการสถานะโปรแกรม...</div>';
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/program-statuses?all=true", {
+          headers: { "X-Admin-Key": currentAdminSecret }
+        });
+        const data = await res.json();
+
+        if (!data || !data.success) {
+          container.innerHTML = `<div class="text-center py-6 text-red-400 text-xs">${data?.message || 'ไม่สามารถโหลดสถานะโปรแกรมได้'}</div>`;
+          return;
+        }
+
+        currentAdminProgramStatuses = data.statuses || [];
+
+        if (currentAdminProgramStatuses.length === 0) {
+          container.innerHTML = '<div class="text-center py-8 text-amber-400/80 text-xs">ยังไม่มีรายการโปรแกรมในระบบ กดปุ่ม "เพิ่มโปรแกรม" เพื่อเริ่มเพิ่ม</div>';
+          return;
+        }
+
+        const statusBadges = {
+          online: '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE</span>',
+          updating: '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> UPDATING</span>',
+          maintenance: '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> MAINTENANCE</span>',
+          detected: '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/15 border border-red-500/40 text-red-400 font-bold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span> DETECTED</span>'
+        };
+
+        container.innerHTML = `
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 uppercase font-mono text-[10px] border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">ชื่อโปรแกรม / สคริปต์</th>
+                  <th class="py-2.5 px-3">เวอร์ชัน</th>
+                  <th class="py-2.5 px-3">สถานะปัจจุบัน</th>
+                  <th class="py-2.5 px-3">ปรับเปลี่ยนสถานะ</th>
+                  <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60">
+                ${currentAdminProgramStatuses.map(p => `
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-3">
+                      <div class="font-bold text-white">${escapeHtml(p.name)}</div>
+                      <div class="text-[10px] text-slate-500 font-mono">slug: ${escapeHtml(p.slug || '-')}</div>
+                    </td>
+                    <td class="py-3 px-3 font-mono text-cyan-300">
+                      ${escapeHtml(p.version || 'v1.0')}
+                    </td>
+                    <td class="py-3 px-3">
+                      ${statusBadges[p.status] || p.status}
+                    </td>
+                    <td class="py-3 px-3">
+                      <select onchange="handleUpdateProgramStatus(${p.id}, this.value)" class="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-semibold cursor-pointer">
+                        <option value="online" ${p.status === 'online' ? 'selected' : ''}>🟢 Online</option>
+                        <option value="updating" ${p.status === 'updating' ? 'selected' : ''}>🟡 Updating</option>
+                        <option value="maintenance" ${p.status === 'maintenance' ? 'selected' : ''}>🟠 Maintenance</option>
+                        <option value="detected" ${p.status === 'detected' ? 'selected' : ''}>🔴 Detected</option>
+                      </select>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                      <button onclick="handleDeleteProgramStatus(${p.id})" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 cursor-pointer transition-colors" title="ลบรายการ">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+      } catch (err) {
+        container.innerHTML = `<div class="text-center py-6 text-red-400 text-xs">เกิดข้อผิดพลาด: ${err.message}</div>`;
+      } finally {
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function openAddProgramStatusModal() {
+      const modal = document.getElementById("modal-program-status");
+      if (modal) {
+        document.getElementById("status-input-name").value = "";
+        document.getElementById("status-input-version").value = "";
+        document.getElementById("status-input-download").value = "";
+        document.getElementById("status-input-status").value = "online";
+        modal.classList.remove("hidden");
+        document.getElementById("status-input-name")?.focus();
+      }
+    }
+
+    function closeProgramStatusModal() {
+      const modal = document.getElementById("modal-program-status");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    async function handleSaveProgramStatus() {
+      const name = document.getElementById("status-input-name")?.value.trim();
+      const status = document.getElementById("status-input-status")?.value;
+      const version = document.getElementById("status-input-version")?.value.trim();
+      const download_url = document.getElementById("status-input-download")?.value.trim();
+      const btn = document.getElementById("btn-save-program-status");
+
+      if (!name) {
+        alert("กรุณาระบุชื่อโปรแกรม");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> บันทึก...';
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/program-statuses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Key": currentAdminSecret
+          },
+          body: JSON.stringify({ name, status, version, download_url })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(`เพิ่มโปรแกรม "${name}" สำเร็จ`, "success");
+          closeProgramStatusModal();
+          await loadAdminProgramStatuses();
+        } else {
+          alert("ไม่สามารถบันทึกได้: " + (data.message || "เกิดข้อผิดพลาด"));
+        }
+      } catch (err) {
+        alert("ข้อผิดพลาด: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "บันทึก";
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    async function handleUpdateProgramStatus(id, newStatus) {
+      try {
+        const res = await fetch("/api/program-statuses", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Key": currentAdminSecret
+          },
+          body: JSON.stringify({ id, status: newStatus })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(`อัปเดตสถานะเป็น ${newStatus.toUpperCase()} สำเร็จ`, "success");
+          await loadAdminProgramStatuses();
+        } else {
+          alert("ไม่สามารถอัปเดตสถานะได้: " + (data.message || "เกิดข้อผิดพลาด"));
+        }
+      } catch (err) {
+        alert("ข้อผิดพลาด: " + err.message);
+      }
+    }
+
+    async function handleDeleteProgramStatus(id) {
+      if (!confirm("⚠️ ยืนยันการลบรายการสถานะโปรแกรมนี้ออกจากระบบ?")) return;
+      try {
+        const res = await fetch(`/api/program-statuses?id=${id}&hard=true`, {
+          method: "DELETE",
+          headers: { "X-Admin-Key": currentAdminSecret }
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast("ลบรายการโปรแกรมเรียบร้อย", "success");
+          await loadAdminProgramStatuses();
+        } else {
+          alert("ไม่สามารถลบได้: " + (data.message || "เกิดข้อผิดพลาด"));
+        }
+      } catch (err) {
+        alert("ข้อผิดพลาด: " + err.message);
       }
     }
 
