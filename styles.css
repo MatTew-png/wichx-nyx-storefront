@@ -722,3 +722,8 @@ html.nyx-intro-active body {
     transform: translateY(0);
   }
 }
+
+/* iOS Safe-Area & Ergonomic Thumb Padding (TC-HUD-01) */
+.safe-area-bottom {
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0.65rem));
+}

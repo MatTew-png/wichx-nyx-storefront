@@ -937,6 +937,12 @@ html.nyx-intro-active body {
     transform: translateY(0);
   }
 }
+
+/* iOS Safe-Area & Ergonomic Thumb Padding (TC-HUD-01) */
+.safe-area-bottom {
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0.65rem));
+}
+
 </style>
 </head>
 <body class="bg-[#06080C] cyber-canvas-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-[var(--accent)] selection:text-black">
@@ -1007,7 +1013,7 @@ html.nyx-intro-active body {
        1. FULL-WIDTH MODERN APP HEADER (ZERO-GAP EDGE-TO-EDGE)
        ============================================================================== -->
   <header class="sticky top-0 z-40 w-full bg-[#070A0F]/90 backdrop-blur-2xl border-b border-[rgba(255,255,255,0.08)]">
-    <div class="max-w-7xl mx-auto px-4 md:px-8 h-18 py-3 flex items-center justify-between gap-3 sm:gap-4">
+    <div class="max-w-[1440px] mx-auto px-3.5 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between gap-2 sm:gap-4 lg:gap-6">
       
       <!-- Store Branding & Dynamic Back Navigation -->
       <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -1045,23 +1051,23 @@ html.nyx-intro-active body {
       </div>
 
       <!-- Quick Desktop Page Navigation Links (Consolidated Architecture & Strict Whitespace Protection) -->
-      <nav class="hidden lg:flex items-center gap-1.5 text-xs font-medium text-slate-300 shrink-0">
-        <button onclick="window.navigateToPage('home', '#category-filter-bar')" class="px-3 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5">
+      <nav class="hidden lg:flex items-center gap-2 lg:gap-2.5 text-xs font-medium text-slate-300 shrink-0">
+        <button onclick="window.navigateToPage('home', '#category-filter-bar')" class="px-3.5 py-2 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5">
           <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-slate-400"></i>
           <span>สินค้าทั้งหมด</span>
         </button>
-        <button onclick="window.navigateToPage('topup')" class="px-3 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5">
+        <button onclick="window.navigateToPage('topup')" class="px-3.5 py-2 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5">
           <i data-lucide="wallet" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
           <span>เติมเงิน</span>
         </button>
-        <button onclick="window.navigateToPage('minigame')" class="px-3 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 text-purple-300 font-semibold bg-purple-500/10 border border-purple-500/25">
+        <button onclick="window.navigateToPage('minigame')" class="px-3.5 py-2 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 text-purple-300 font-semibold bg-purple-500/10 border border-purple-500/25">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-400"></i>
           <span>วงล้อลุ้นโชค</span>
         </button>
 
         <!-- Dropdown: บริการอื่นๆ & ข้อมูลช่วยเหลือ (Mega Utilities Dropdown) -->
         <div class="relative group" id="nav-dropdown-more">
-          <button class="px-3 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 text-slate-300 group-hover:text-white">
+          <button class="px-3.5 py-2 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 text-slate-300 group-hover:text-white">
             <span>บริการอื่นๆ</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
           </button>
@@ -1101,31 +1107,31 @@ html.nyx-intro-active body {
       </nav>
 
       <!-- Action Buttons & User Telemetry -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         
-        <!-- Shopping Cart -->
-        <button onclick="toggleCartDrawer()" class="relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group active:scale-95 whitespace-nowrap shrink-0" title="ตะกร้าสินค้า">
+        <!-- Shopping Cart (Hidden on mobile; mobile uses ergonomic Sticky Bottom HUD) -->
+        <button onclick="toggleCartDrawer()" class="hidden sm:flex relative items-center gap-2 px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group active:scale-95 whitespace-nowrap shrink-0" title="ตะกร้าสินค้า">
           <div class="relative flex items-center justify-center">
             <i data-lucide="shopping-cart" class="w-4 h-4 text-[var(--accent)] group-hover:scale-110 transition-transform"></i>
             <span id="cart-badge-count" class="hidden">0</span>
           </div>
-          <span class="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors hidden sm:inline">ตะกร้า</span>
+          <span class="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">ตะกร้า</span>
         </button>
 
-        <!-- Wallet Balance & Top-Up Pill (Direct Navigation to /topup) -->
-        <button onclick="window.navigateToPage('topup')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[rgba(0,242,255,0.06)] hover:bg-[rgba(0,242,255,0.12)] border border-[rgba(0,242,255,0.15)] hover:border-[rgba(0,242,255,0.35)] transition-all group cursor-pointer active:scale-95 shadow-sm whitespace-nowrap shrink-0" title="คลิกเพื่อไปหน้าเติมเงิน">
-          <div class="w-5 h-5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] flex items-center justify-center">
+        <!-- Wallet Balance & Top-Up Pill (Direct Navigation to /topup - Mobile-Adaptive Pill) -->
+        <button onclick="window.navigateToPage('topup')" class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl bg-[rgba(0,242,255,0.06)] hover:bg-[rgba(0,242,255,0.12)] border border-[rgba(0,242,255,0.15)] hover:border-[rgba(0,242,255,0.35)] transition-all group cursor-pointer active:scale-95 shadow-sm whitespace-nowrap shrink-0" title="คลิกเพื่อไปหน้าเติมเงิน">
+          <div class="w-5 h-5 rounded-md bg-[rgba(0,242,255,0.15)] text-[var(--accent)] flex items-center justify-center shrink-0">
             <i data-lucide="wallet" class="w-3 h-3"></i>
           </div>
           <div class="text-left">
-            <div class="text-[9px] text-slate-400 font-mono-val leading-none">กระเป๋าเงิน</div>
+            <div class="text-[9px] text-slate-400 font-mono-val leading-none hidden sm:block">กระเป๋าเงิน</div>
             <div id="user-wallet-balance" class="text-xs font-mono-val font-extrabold text-[var(--accent)] leading-tight">฿0.00</div>
           </div>
-          <span class="w-4 h-4 rounded-md bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold flex items-center justify-center ml-0.5 group-hover:scale-110 transition-transform">+</span>
+          <span class="hidden sm:flex w-4 h-4 rounded-md bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold items-center justify-center ml-0.5 group-hover:scale-110 transition-transform shrink-0">+</span>
         </button>
 
-        <!-- Daily Free Chest Pill (TC-DLY-01) -->
-        <button id="btn-nav-daily-chest" onclick="window.DailyRewardModalInstance?.open()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-sm whitespace-nowrap shrink-0" title="รับกล่องสุ่มฟรีรายวัน">
+        <!-- Daily Free Chest Pill (TC-DLY-01 - Hidden on small mobile to maximize breathing room) -->
+        <button id="btn-nav-daily-chest" onclick="window.DailyRewardModalInstance?.open()" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-sm whitespace-nowrap shrink-0" title="รับกล่องสุ่มฟรีรายวัน">
           <i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400 animate-pulse"></i>
           <span class="hidden xl:inline text-[11px]">กล่องสุ่มฟรี</span>
         </button>
@@ -1147,7 +1153,7 @@ html.nyx-intro-active body {
         </button>
 
         <!-- Subtle Dot Separator -->
-        <span class="inline-block w-1 h-1 rounded-full bg-slate-700/60 mx-0.5 sm:mx-1"></span>
+        <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-700/60 mx-0.5 sm:mx-1"></span>
 
         <!-- Discord Auth Section (Login Button / Profile Dropdown) -->
         <div id="auth-section" class="relative flex items-center">
@@ -1291,8 +1297,8 @@ html.nyx-intro-active body {
   </header>
 
   <!-- Top System Feed (Dynamic Announcements Marquee Track) -->
-  <div id="top-system-feed-bar" class="w-full bg-[#05070B] border-b border-white/[0.06] overflow-hidden py-1.5 px-4 z-30">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+  <div id="top-system-feed-bar" class="w-full bg-[#05070B] border-b border-white/[0.06] overflow-hidden py-1.5 px-3.5 sm:px-6 z-30">
+    <div class="max-w-[1440px] mx-auto flex items-center justify-between gap-3">
       <div class="flex items-center gap-1.5 shrink-0 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
         <span>SYSTEM FEED</span>
@@ -1310,7 +1316,7 @@ html.nyx-intro-active body {
   </div>
 
   <!-- Mobile Search Bar (Only visible on mobile screens) -->
-  <div class="md:hidden px-4 max-w-7xl mx-auto w-full mt-3">
+  <div class="md:hidden px-3.5 max-w-[1440px] mx-auto w-full mt-3">
     <div class="relative">
       <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
       <input 
@@ -1325,7 +1331,7 @@ html.nyx-intro-active body {
   <!-- ==============================================================================
        2. HERO PROMO BANNER CAROUSEL (PROMOTIONAL SLIDER)
        ============================================================================== -->
-  <main class="max-w-7xl mx-auto px-4 md:px-8 py-6 w-full flex-1 relative z-10">
+  <main class="max-w-[1440px] mx-auto px-3.5 sm:px-6 lg:px-8 py-6 w-full flex-1 relative z-10 pb-24 sm:pb-8">
     <!-- ============================================================================
          VIEW 1: HOME CATALOG (STOREFRONT)
          ============================================================================ -->
@@ -2720,7 +2726,7 @@ html.nyx-intro-active body {
     <!-- Ambient Flare -->
     <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-40 bg-[var(--accent)]/5 blur-3xl pointer-events-none rounded-full"></div>
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 mb-10 relative z-10">
+    <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 mb-10 relative z-10">
       
       <!-- Col 1 (md:col-span-4): Store Brand, Human Contact & Trust Status -->
       <div class="md:col-span-4 space-y-4">
@@ -2878,7 +2884,7 @@ html.nyx-intro-active body {
     <!-- =========================================================================
          DISCORD SERVERS IN OUR NETWORK (Alliance Matrix Banner)
          ========================================================================= -->
-    <div class="max-w-7xl mx-auto mb-8 pt-8 border-t border-white/[0.06] relative z-10">
+    <div class="max-w-[1440px] mx-auto mb-8 pt-8 border-t border-white/[0.06] relative z-10">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
         <div class="flex items-center gap-2">
           <i data-lucide="network" class="w-4 h-4 text-[var(--accent)]"></i>
@@ -3025,7 +3031,7 @@ html.nyx-intro-active body {
     <!-- =========================================================================
          Sub-Footer Bar (สงวนลิขสิทธิ์ & แถบชำระเงินเรียบหรูสไตล์ของเก่า)
          ========================================================================= -->
-    <div class="max-w-7xl mx-auto pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400 relative z-10">
+    <div class="max-w-[1440px] mx-auto pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400 relative z-10">
       
       <!-- Copyright & Real Human Assurance (เหมือนของเก่า) -->
       <div class="flex flex-wrap items-center gap-1.5 text-center md:text-left">
@@ -3352,21 +3358,21 @@ html.nyx-intro-active body {
        📱 STICKY MOBILE BOTTOM NAVIGATION HUD (TC-HUD-01)
        Ergonomic thumb-friendly navigation bar for mobile viewports (sm:hidden)
        ============================================================================== -->
-  <div id="mobile-bottom-hud" class="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-slate-950/90 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5 flex items-center justify-around safe-area-bottom shadow-2xl">
+  <div id="mobile-bottom-hud" class="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-[#070A0F]/95 backdrop-blur-2xl border-t border-white/[0.08] px-3 pt-2 pb-2.5 flex items-center justify-around shadow-2xl safe-area-bottom" style="padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0.65rem));">
     <!-- 1. Home -->
-    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); window.navigateToPage('home');" class="flex flex-col items-center justify-center p-1.5 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer">
+    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); window.navigateToPage('home');" class="flex flex-col items-center justify-center py-1 px-2 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer min-w-[54px]">
       <i data-lucide="home" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-bold">หน้าแรก</span>
     </button>
 
     <!-- 2. Catalog -->
-    <button onclick="openCatalogTab('all')" class="flex flex-col items-center justify-center p-1.5 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer">
+    <button onclick="openCatalogTab('all')" class="flex flex-col items-center justify-center py-1 px-2 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer min-w-[54px]">
       <i data-lucide="grid" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-bold">สินค้า</span>
     </button>
 
     <!-- 3. Topup -->
-    <button onclick="openTopUpModal()" class="flex flex-col items-center justify-center p-1.5 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer">
+    <button onclick="openTopUpModal()" class="flex flex-col items-center justify-center py-1 px-2 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer min-w-[54px]">
       <div class="relative w-8 h-8 rounded-full bg-gradient-to-tr from-[var(--accent)]/20 to-[var(--accent)]/40 border border-[var(--accent)]/50 flex items-center justify-center text-[var(--accent)] mb-0.5 shadow-sm">
         <i data-lucide="wallet" class="w-4 h-4"></i>
       </div>
@@ -3374,13 +3380,13 @@ html.nyx-intro-active body {
     </button>
 
     <!-- 4. History -->
-    <button onclick="openHistoryModal()" class="flex flex-col items-center justify-center p-1.5 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer">
+    <button onclick="openHistoryModal()" class="flex flex-col items-center justify-center py-1 px-2 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer min-w-[54px]">
       <i data-lucide="clock" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-bold">ประวัติ</span>
     </button>
 
     <!-- 5. Cart Drawer -->
-    <button onclick="window.Shop?.cartManager?.open()" class="relative flex flex-col items-center justify-center p-1.5 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer">
+    <button onclick="window.Shop?.cartManager?.open()" class="relative flex flex-col items-center justify-center py-1 px-2 text-slate-400 hover:text-[var(--accent)] active:scale-95 transition-all cursor-pointer min-w-[54px]">
       <div class="relative">
         <i data-lucide="shopping-bag" class="w-5 h-5 mb-0.5"></i>
         <span id="mobile-cart-badge-count" class="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-[var(--accent)] text-slate-950 font-black text-[9px] flex items-center justify-center shadow-sm">0</span>
@@ -8146,7 +8152,7 @@ class ReviewsSectionComponent {
       if (main) {
         section = document.createElement("section");
         section.id = this.containerId;
-        section.className = "max-w-7xl mx-auto px-4 md:px-6 mb-16 relative z-10";
+        section.className = "max-w-[1440px] mx-auto px-3.5 sm:px-6 lg:px-8 mb-16 relative z-10";
         main.appendChild(section);
       }
     }

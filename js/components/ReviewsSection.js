@@ -23,7 +23,7 @@ class ReviewsSectionComponent {
       if (main) {
         section = document.createElement("section");
         section.id = this.containerId;
-        section.className = "max-w-7xl mx-auto px-4 md:px-6 mb-16 relative z-10";
+        section.className = "max-w-[1440px] mx-auto px-3.5 sm:px-6 lg:px-8 mb-16 relative z-10";
         main.appendChild(section);
       }
     }
