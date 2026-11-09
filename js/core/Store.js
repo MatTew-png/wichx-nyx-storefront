@@ -28,6 +28,7 @@ class Store {
     this.state = {
       user: null,
       walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_balance") || "0.00") : 0.00,
+      loyaltyPoints: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_points") || "0.00") : 0.00,
       cart: safeParse("nyx_cart", []),
       orderHistory: safeParse("nyx_orders", []),
       appliedPromo: null,
@@ -89,6 +90,29 @@ class Store {
 
   debitWallet(amount) {
     this.setWalletBalance(Math.max(0, this.state.walletBalance - parseFloat(amount)));
+  }
+
+  // --- LOYALTY POINTS METHODS (Sprint 3) ---
+  setLoyaltyPoints(points) {
+    this.state.loyaltyPoints = Math.max(0, Math.floor(parseFloat(points) || 0));
+    if (typeof localStorage !== "undefined") {
+      try { localStorage.setItem("nyx_points", this.state.loyaltyPoints.toString()); } catch (_) {}
+    }
+    this.emit("change:points", this.state.loyaltyPoints);
+    if (typeof document !== "undefined") {
+      const els = document.querySelectorAll("#user-points-balance, .user-points-val");
+      els.forEach(el => {
+        el.textContent = `${this.state.loyaltyPoints.toLocaleString()} แต้ม`;
+      });
+    }
+  }
+
+  creditLoyaltyPoints(points) {
+    this.setLoyaltyPoints(this.state.loyaltyPoints + parseFloat(points || 0));
+  }
+
+  debitLoyaltyPoints(points) {
+    this.setLoyaltyPoints(Math.max(0, this.state.loyaltyPoints - parseFloat(points || 0)));
   }
 
   // --- CART METHODS ---

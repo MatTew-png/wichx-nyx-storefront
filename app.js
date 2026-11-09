@@ -44,6 +44,7 @@ class ShopApp {
     this.authModal = window.AuthModalComponent ? new window.AuthModalComponent(this.store, this.auth) : null;
     this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
+    this.luckyWheel = window.LuckyWheelComponent ? new window.LuckyWheelComponent(this.store) : null;
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
@@ -67,6 +68,8 @@ class ShopApp {
     safeRun("ReviewsSection", () => this.reviewsSection?.render());
     safeRun("AuthModal", () => this.authModal?.initDOM());
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
+    safeRun("NavbarPoints", () => this.navbar?.updatePointsUI());
+    safeRun("LuckyWheel", () => this.luckyWheel?.initDOM());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
     safeRun("AnnouncementsTicker", () => this.renderAnnouncementsTicker(window.storeConfig?.announcements || []));

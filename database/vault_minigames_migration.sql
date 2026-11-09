@@ -94,6 +94,9 @@ CREATE TABLE IF NOT EXISTS public.minigame_rewards (
     variant_id UUID REFERENCES public.product_variants(id) ON DELETE CASCADE,
     money_amount NUMERIC(12,2),
     points_amount INT,
+    label TEXT,
+    color_hex TEXT,
+    icon TEXT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -591,7 +594,7 @@ BEGIN
     )
     VALUES (
         p_user_id, p_minigame_id,
-        CASE WHEN v_reward_type IN ('money', 'points', 'vault') THEN v_reward.id ELSE NULL END,
+        v_reward.id,
         v_credential_id,
         v_cost_money, v_cost_points,
         v_reward_type, v_reward_payload
@@ -602,6 +605,10 @@ BEGIN
         'success', true,
         'play_id', v_play_id,
         'minigame_id', p_minigame_id,
+        'reward_id', v_reward.id,
+        'reward_label', COALESCE(v_reward.label, v_reward.reward_type),
+        'reward_color', v_reward.color_hex,
+        'reward_icon', v_reward.icon,
         'played_with', CASE WHEN p_use_points THEN 'points' ELSE 'money' END,
         'cost_money', v_cost_money,
         'cost_points', v_cost_points,

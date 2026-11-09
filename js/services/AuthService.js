@@ -89,6 +89,7 @@ class AuthService {
         if (profile.avatar_url) userData.avatarUrl = profile.avatar_url;
         if (profile.role) userData.role = profile.role;
         this.store.setWalletBalance(parseFloat(profile.balance || 0));
+        this.store.setLoyaltyPoints(parseFloat(profile.points || 0));
       }
     } catch (err) {
       console.warn("[AUTH SERVICE] Profile balance warning:", err.message);
@@ -112,6 +113,7 @@ class AuthService {
     } catch (e) {}
     this.store.setUser(null);
     this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || "0.00"));
+    this.store.setLoyaltyPoints(parseFloat(localStorage.getItem("nyx_points") || "0.00"));
   }
 
   // --- SOCIAL OAUTH LOGINS ---

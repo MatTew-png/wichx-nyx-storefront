@@ -343,6 +343,8 @@ DECLARE
   v_existing_topup_id UUID;
   v_topup_id UUID;
   v_new_balance NUMERIC := 0.00;
+  v_points_earned NUMERIC := 0.00;
+  v_new_points NUMERIC := 0.00;
   v_user_discord_id TEXT;
   v_client_ip TEXT;
   v_client_discord_id TEXT;
@@ -471,11 +473,13 @@ BEGIN
   RETURNING id INTO v_topup_id;
 
   IF p_user_id IS NOT NULL THEN
+    v_points_earned := FLOOR(p_amount * 0.10); -- 10% Loyalty Points Cashback (10 pts per 100 THB)
     UPDATE public.profiles
     SET balance = balance + p_amount,
+        points = COALESCE(points, 0) + v_points_earned,
         updated_at = NOW()
     WHERE id = p_user_id
-    RETURNING balance INTO v_new_balance;
+    RETURNING balance, points INTO v_new_balance, v_new_points;
   END IF;
 
   INSERT INTO public.system_audit_logs (
@@ -491,6 +495,7 @@ BEGIN
     jsonb_build_object(
       'gateway', p_gateway,
       'amount', p_amount,
+      'points_earned', v_points_earned,
       'trans_ref', p_trans_ref,
       'timestamp', NOW()
     )
@@ -503,6 +508,8 @@ BEGIN
     'amount', p_amount,
     'trans_ref', p_trans_ref,
     'new_balance', v_new_balance,
+    'points_earned', v_points_earned,
+    'new_points', v_new_points,
     'message', 'เติมเงินสำเร็จเรียบร้อยแล้ว'
   );
 END;
@@ -546,6 +553,8 @@ DECLARE
   v_final_total NUMERIC := 0.00;
   v_current_balance NUMERIC;
   v_new_balance NUMERIC := 0.00;
+  v_points_earned NUMERIC := 0.00;
+  v_new_points NUMERIC := 0.00;
   v_i INT;
 BEGIN
   v_caller_id := auth.uid();

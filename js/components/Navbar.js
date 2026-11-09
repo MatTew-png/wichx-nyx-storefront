@@ -13,6 +13,7 @@ class NavbarComponent {
 
   initListeners() {
     this.store.on("change:wallet", () => this.updateWalletUI());
+    this.store.on("change:points", () => this.updatePointsUI());
     this.store.on("change:user", () => this.updateAuthUI());
     this.store.on("change:cart", () => this.updateCartBadge());
   }
@@ -74,6 +75,15 @@ class NavbarComponent {
 
     const menuBal = document.getElementById("menu-wallet-balance");
     if (menuBal) menuBal.textContent = `฿${balance.toFixed(2)}`;
+  }
+
+  updatePointsUI() {
+    const points = this.store.get("loyaltyPoints") || 0;
+    const el = document.getElementById("user-points-balance");
+    if (el) el.textContent = `${Math.floor(points).toLocaleString()} แต้ม`;
+
+    const menuPts = document.getElementById("menu-points-balance");
+    if (menuPts) menuPts.textContent = `${Math.floor(points).toLocaleString()} แต้ม`;
   }
 
   updateAuthUI() {

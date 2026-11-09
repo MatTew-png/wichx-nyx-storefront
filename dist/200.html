@@ -1009,6 +1009,10 @@ html.nyx-intro-active body {
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>สถานะโปรแกรม</span>
         </button>
+        <button onclick="window.navigateToPage('minigame')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer flex items-center gap-1.5 text-purple-400 font-semibold">
+          <span>🎡</span>
+          <span>วงล้อเสี่ยงโชค</span>
+        </button>
         <button onclick="window.navigateToPage('faq')" class="px-2.5 py-1.5 rounded-xl hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer">
           คำถามที่พบบ่อย
         </button>
@@ -1033,9 +1037,20 @@ html.nyx-intro-active body {
           </div>
           <div class="text-left">
             <div class="text-[9px] text-slate-400 font-mono-val leading-none">กระเป๋าเงิน</div>
-            <div id="user-wallet-balance" class="text-xs font-mono-val font-extrabold text-[var(--accent)] leading-tight">฿500.00</div>
+            <div id="user-wallet-balance" class="text-xs font-mono-val font-extrabold text-[var(--accent)] leading-tight">฿0.00</div>
           </div>
           <span class="w-4 h-4 rounded-md bg-[var(--accent)] text-[#06080C] text-[10px] font-extrabold flex items-center justify-center ml-0.5 group-hover:scale-110 transition-transform">+</span>
+        </button>
+
+        <!-- Loyalty Points Pill (Sprint 3) -->
+        <button onclick="window.navigateToPage('minigame')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/20 hover:border-amber-500/35 transition-all group cursor-pointer active:scale-95 shadow-sm" title="แต้มสะสม Loyalty Points (คลิกเพื่อหมุนวงล้อ)">
+          <div class="w-5 h-5 rounded-md bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">
+            <span>🪙</span>
+          </div>
+          <div class="text-left hidden md:block">
+            <div class="text-[9px] text-slate-400 font-mono-val leading-none">แต้มสะสม</div>
+            <div id="user-points-balance" class="text-xs font-mono-val font-extrabold text-amber-400 leading-tight">0 แต้ม</div>
+          </div>
         </button>
 
         <!-- Subtle Dot Separator -->
@@ -1088,10 +1103,28 @@ html.nyx-intro-active body {
                 </span>
                 <span id="menu-wallet-balance" class="text-xs font-mono font-bold text-[var(--accent)]">฿0.00</span>
               </div>
+              <div class="mt-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400 flex items-center gap-1.5 font-medium">
+                  <span>🪙</span>
+                  แต้มสะสม
+                </span>
+                <span id="menu-points-balance" class="text-xs font-mono font-bold text-amber-400">0 แต้ม</span>
+              </div>
             </div>
 
             <!-- Action Menu Items -->
             <div class="space-y-0.5 text-xs font-medium">
+              <!-- วงล้อเสี่ยงโชค (Sprint 3) -->
+              <button onclick="window.navigateToPage('minigame')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer text-left group">
+                <div class="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform text-xs">
+                  <span>🎡</span>
+                </div>
+                <div class="flex-1">
+                  <div class="text-white font-semibold">วงล้อเสี่ยงโชค (Lucky Wheel)</div>
+                  <div class="text-[10px] text-slate-400">ลุ้นรับ Nitro, เครดิต และแต้ม</div>
+                </div>
+              </button>
+
               <!-- ประวัติคำสั่งซื้อ -->
               <button onclick="window.navigateToPage('history')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer text-left group">
                 <div class="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -1320,6 +1353,158 @@ html.nyx-intro-active body {
       <div class="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">
         <span>ดูสถานะทั้งหมด</span>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+      </div>
+    </div>
+
+    <!-- ==============================================================================
+         4.2 SPRINT 3: GAMIFICATION SPOTLIGHT & DISCORD BOOST CALCULATOR
+         ============================================================================== -->
+    <div class="mb-8 grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <!-- Discord Server Boosts & Nitro Calculator Card (lg:col-span-8) -->
+      <div class="lg:col-span-8 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#0B0F19]/95 via-[#0A0D15]/90 to-[#070A10]/95 border border-[#5865F2]/25 shadow-xl shadow-[#5865F2]/5 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-60 h-60 bg-[#5865F2]/10 blur-3xl pointer-events-none rounded-full"></div>
+        
+        <div class="relative z-10 space-y-5">
+          <!-- Widget Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 text-[#5865F2] flex items-center justify-center shrink-0 shadow-md">
+                <i data-lucide="calculator" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-white">ระบบคำนวณราคา Discord Server Boost</span>
+                  <span class="px-2 py-0.5 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[9px] font-mono text-[#5865F2] font-bold">LIVE ESTIMATOR</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">เลือกจำนวนบูสต์และระยะเวลา คำนวณส่วนลดทันทีสูงสุด 88% เมื่อเทียบกับราคาทางการ</p>
+              </div>
+            </div>
+            <button onclick="window.openDiscordServicesModal()" class="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-[#5865F2]/15 hover:bg-[#5865F2]/25 border border-[#5865F2]/30 text-xs font-bold text-[#5865F2] flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>เปิดแบบเต็มจอ</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </button>
+          </div>
+
+          <!-- Preset Buttons & Sliders -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="window.selectWidgetBoostPreset(2)" class="widget-boost-preset active p-2.5 rounded-xl border border-[#5865F2] bg-[#5865F2]/15 text-white font-bold text-xs text-center transition-all cursor-pointer" data-boost="2">
+              <div>2 บูสต์ (Level 1)</div>
+              <div class="text-[10px] text-emerald-400 font-mono mt-0.5">฿49 / ฿129</div>
+            </button>
+            <button type="button" onclick="window.selectWidgetBoostPreset(7)" class="widget-boost-preset p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 font-bold text-xs text-center hover:border-white/20 transition-all cursor-pointer" data-boost="7">
+              <div>7 บูสต์ (Level 2)</div>
+              <div class="text-[10px] text-emerald-400 font-mono mt-0.5">฿169 / ฿429</div>
+            </button>
+            <button type="button" onclick="window.selectWidgetBoostPreset(14)" class="widget-boost-preset p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 font-bold text-xs text-center hover:border-white/20 transition-all cursor-pointer" data-boost="14">
+              <div>14 บูสต์ (Level 3)</div>
+              <div class="text-[10px] text-emerald-400 font-mono mt-0.5">฿299 / ฿799</div>
+            </button>
+            <button type="button" onclick="window.selectWidgetBoostPreset(30)" class="widget-boost-preset p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 font-bold text-xs text-center hover:border-white/20 transition-all cursor-pointer" data-boost="30">
+              <div>30 บูสต์ (Max Power)</div>
+              <div class="text-[10px] text-emerald-400 font-mono mt-0.5">฿599 / ฿1,599</div>
+            </button>
+          </div>
+
+          <!-- Slider & Duration Options -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+            <!-- Slider -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-400 font-medium">ปรับจำนวนบูสต์ตามต้องการ:</span>
+                <span id="widget-boost-count-label" class="font-mono font-bold text-cyan-400 text-sm">2 บูสต์</span>
+              </div>
+              <input id="widget-boost-slider" type="range" min="2" max="30" value="2" oninput="window.updateWidgetBoostSlider(this.value)" class="w-full accent-cyan-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg" />
+              <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>2 บูสต์ (Lv.1)</span>
+                <span>14 บูสต์ (Lv.3)</span>
+                <span>30 บูสต์</span>
+              </div>
+            </div>
+
+            <!-- Duration Toggle -->
+            <div class="space-y-1.5">
+              <span class="text-xs text-slate-400 font-medium block">ระยะเวลาการบูสต์:</span>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="widget-duration-1m" onclick="window.setWidgetDuration(1)" class="py-2 px-3 rounded-xl border border-cyan-500 bg-cyan-500/10 text-cyan-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                  <span>1 เดือน</span>
+                </button>
+                <button type="button" id="widget-duration-3m" onclick="window.setWidgetDuration(3)" class="py-2 px-3 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                  <span>3 เดือน (สุดคุ้ม)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Breakdown & Action Footer -->
+          <div class="p-3.5 rounded-2xl bg-[#06080E]/90 border border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">ราคาทางการ Discord:</span>
+                <span id="widget-retail-price" class="text-xs line-through text-slate-500 font-mono">฿350.00</span>
+                <span id="widget-savings-badge" class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold font-mono">ประหยัด ฿301 (-86%)</span>
+              </div>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span class="text-xs text-slate-300 font-semibold">ราคาพิเศษ NYX9:</span>
+                <span id="widget-calculated-price" class="text-2xl font-mono font-extrabold text-[var(--accent)]">฿49.00</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="window.addBoostWidgetToCart()" class="btn-cyber-primary px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                <span>สั่งซื้อ / เพิ่มลงตะกร้า</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lucky Wheel Gamification Spotlight Card (lg:col-span-4) -->
+      <div class="lg:col-span-4 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-purple-950/30 via-[#0A0D15]/90 to-[#070A10]/95 border border-purple-500/25 shadow-xl shadow-purple-500/5 flex flex-col justify-between space-y-4 relative overflow-hidden group">
+        <div class="absolute -top-16 -right-16 w-40 h-40 bg-purple-500/10 blur-3xl pointer-events-none rounded-full"></div>
+        
+        <div class="space-y-3 relative z-10">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-[10px] font-mono text-purple-400 font-bold">GAMIFICATION</span>
+            <span class="text-xs text-amber-400 flex items-center gap-1 font-mono font-bold">
+              <span>🪙</span>
+              <span>สะสมแต้มได้</span>
+            </span>
+          </div>
+
+          <div>
+            <div class="text-3xl mb-1">🎡</div>
+            <h3 class="text-base sm:text-lg font-heading font-extrabold text-white">วงล้อเสี่ยงโชค NYX9 Lucky Wheel</h3>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+              หมุนวงล้อลุ้นรับ Discord Nitro 1 เดือน, เครดิตกระเป๋าเงิน และแต้มสะสมพิเศษ เริ่มต้นเพียง ฿15 หรือ 50 แต้ม
+            </p>
+          </div>
+
+          <!-- Highlight Prizes -->
+          <div class="space-y-1.5 pt-1 text-xs">
+            <div class="flex items-center gap-2 text-slate-300">
+              <span>💎</span>
+              <span class="text-white font-medium">Discord Nitro 1 เดือน (จัดส่งทันที)</span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-300">
+              <span>💵</span>
+              <span class="text-white font-medium">เครดิตกระเป๋าเงิน ฿20 - ฿50</span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-300">
+              <span>🪙</span>
+              <span class="text-white font-medium">แต้มสะสม 20 - 100 Points</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative z-10 pt-2">
+          <button onclick="window.navigateToPage('minigame')" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-heading font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+            <span>👉 ไปที่หน้าหมุนวงล้อ</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2306,6 +2491,119 @@ html.nyx-intro-active body {
       <!-- Programs Grid -->
       <div id="program-status-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="text-center py-12 text-slate-500 text-xs md:col-span-2">กำลังเชื่อมต่อข้อมูลสถานะระบบ...</div>
+      </div>
+
+    </div>
+
+    <!-- ==============================================================================
+         VIEW 9: LUCKY WHEEL & GAMIFICATION (/minigame) (Sprint 3)
+         ============================================================================== -->
+    <div id="view-minigame" class="view-panel hidden py-4 sm:py-6 max-w-5xl mx-auto space-y-6">
+      
+      <!-- Top Title Strip -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center shadow-lg shadow-purple-500/10 shrink-0 text-2xl">
+            🎡
+          </div>
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[10px] font-mono text-purple-400 font-bold mb-1">
+              <span>PROVABLY FAIR 100%</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white">วงล้อเสี่ยงโชค (NYX9 Lucky Wheel)</h2>
+            <p class="text-xs text-slate-400 mt-0.5">ลุ้นรับรางวัล Discord Nitro 1 เดือน, เครดิตกระเป๋าเงิน และแต้มสะสม Loyalty Points</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateToPage('topup')" class="px-3.5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-semibold text-cyan-400 transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            <span>เติมเงิน</span>
+          </button>
+          <button onclick="window.navigateToPage('home')" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>กลับหน้าหลัก</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main 2-Column Wheel Area -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Canvas Wheel & Spin Controls (lg:col-span-7) -->
+        <div class="lg:col-span-7 p-6 rounded-3xl bg-[#090D15]/90 border border-purple-500/20 shadow-2xl shadow-purple-500/5 flex flex-col items-center justify-center space-y-6">
+          
+          <!-- Wheel Container -->
+          <div class="relative w-full max-w-[380px] aspect-square flex items-center justify-center">
+            <canvas id="lucky-wheel-canvas" width="420" height="420" class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(0,242,255,0.2)]"></canvas>
+          </div>
+
+          <!-- Spin Action Buttons -->
+          <div class="w-full max-w-md grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button id="btn-wheel-spin-money" class="btn-cyber-primary py-3.5 px-4 rounded-2xl font-heading font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+              <span class="flex items-center gap-1.5 text-sm">
+                <span>💰</span>
+                <span>หมุนด้วยเครดิต</span>
+              </span>
+              <span class="text-[10px] text-[#06080C]/80 font-mono font-bold">฿15.00 / ครั้ง</span>
+            </button>
+            <button id="btn-wheel-spin-points" class="py-3.5 px-4 rounded-2xl font-heading font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 bg-amber-500 hover:bg-amber-400 text-[#06080C] shadow-lg shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+              <span class="flex items-center gap-1.5 text-sm">
+                <span>🪙</span>
+                <span>หมุนด้วยแต้ม</span>
+              </span>
+              <span class="text-[10px] text-[#06080C]/80 font-mono font-bold">50 แต้ม / ครั้ง</span>
+            </button>
+          </div>
+
+          <!-- User Quick Balance Pill -->
+          <div class="w-full max-w-md flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-xs">
+            <div class="flex items-center gap-2">
+              <i data-lucide="wallet" class="w-4 h-4 text-cyan-400"></i>
+              <span class="text-slate-400">ยอดเงิน:</span>
+              <span id="page-wheel-balance" class="font-bold text-cyan-400 font-mono">฿0.00</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>🪙</span>
+              <span class="text-slate-400">แต้มสะสม:</span>
+              <span id="page-wheel-points" class="font-bold text-amber-400 font-mono">0 แต้ม</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Chances & Rules & Fairness Guarantee (lg:col-span-5) -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Chances Card -->
+          <div class="p-5 rounded-3xl bg-[#090D15]/90 border border-white/[0.08] shadow-lg space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-heading font-extrabold text-white flex items-center gap-2">
+                <span>📊</span>
+                <span>อัตราการออกรางวัล (Win Chances)</span>
+              </h3>
+              <span class="text-[10px] font-mono text-slate-400">8 SLICES</span>
+            </div>
+            <div id="minigame-chances-list" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar">
+              <div class="text-center py-6 text-slate-500 text-xs">กำลังโหลดรายการรางวัล...</div>
+            </div>
+          </div>
+
+          <!-- Fairness & Zero-Fraud Card -->
+          <div class="p-5 rounded-3xl bg-[#090D15]/90 border border-cyan-500/20 shadow-lg space-y-2.5">
+            <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>ระบบสุ่มยุติธรรม (Provably Fair)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              การสุ่มรางวัลประมวลผลบนเซิร์ฟเวอร์แบบเบ็ดเสร็จผ่าน PostgreSQL Stored Procedure (<code class="text-cyan-300">fn_play_minigame</code>) โดยใช้ตัวเลขสุ่มแบบ Cryptographic Random ไม่มีการล็อกผลจากฝั่งไคลเอนต์ 100%
+            </p>
+            <div class="flex items-center gap-2 text-[10px] text-emerald-400 font-mono pt-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>ATOMIC DISPENSING FOR UPDATE SKIP LOCKED</span>
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
@@ -4063,6 +4361,7 @@ class Store {
     this.state = {
       user: null,
       walletBalance: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_balance") || "0.00") : 0.00,
+      loyaltyPoints: typeof localStorage !== "undefined" ? parseFloat(localStorage.getItem("nyx_points") || "0.00") : 0.00,
       cart: safeParse("nyx_cart", []),
       orderHistory: safeParse("nyx_orders", []),
       appliedPromo: null,
@@ -4124,6 +4423,29 @@ class Store {
 
   debitWallet(amount) {
     this.setWalletBalance(Math.max(0, this.state.walletBalance - parseFloat(amount)));
+  }
+
+  // --- LOYALTY POINTS METHODS (Sprint 3) ---
+  setLoyaltyPoints(points) {
+    this.state.loyaltyPoints = Math.max(0, Math.floor(parseFloat(points) || 0));
+    if (typeof localStorage !== "undefined") {
+      try { localStorage.setItem("nyx_points", this.state.loyaltyPoints.toString()); } catch (_) {}
+    }
+    this.emit("change:points", this.state.loyaltyPoints);
+    if (typeof document !== "undefined") {
+      const els = document.querySelectorAll("#user-points-balance, .user-points-val");
+      els.forEach(el => {
+        el.textContent = `${this.state.loyaltyPoints.toLocaleString()} แต้ม`;
+      });
+    }
+  }
+
+  creditLoyaltyPoints(points) {
+    this.setLoyaltyPoints(this.state.loyaltyPoints + parseFloat(points || 0));
+  }
+
+  debitLoyaltyPoints(points) {
+    this.setLoyaltyPoints(Math.max(0, this.state.loyaltyPoints - parseFloat(points || 0)));
   }
 
   // --- CART METHODS ---
@@ -5170,6 +5492,7 @@ class AuthService {
         if (profile.avatar_url) userData.avatarUrl = profile.avatar_url;
         if (profile.role) userData.role = profile.role;
         this.store.setWalletBalance(parseFloat(profile.balance || 0));
+        this.store.setLoyaltyPoints(parseFloat(profile.points || 0));
       }
     } catch (err) {
       console.warn("[AUTH SERVICE] Profile balance warning:", err.message);
@@ -5193,6 +5516,7 @@ class AuthService {
     } catch (e) {}
     this.store.setUser(null);
     this.store.setWalletBalance(parseFloat(localStorage.getItem("nyx_balance") || "0.00"));
+    this.store.setLoyaltyPoints(parseFloat(localStorage.getItem("nyx_points") || "0.00"));
   }
 
   // --- SOCIAL OAUTH LOGINS ---
@@ -6242,6 +6566,7 @@ class NavbarComponent {
 
   initListeners() {
     this.store.on("change:wallet", () => this.updateWalletUI());
+    this.store.on("change:points", () => this.updatePointsUI());
     this.store.on("change:user", () => this.updateAuthUI());
     this.store.on("change:cart", () => this.updateCartBadge());
   }
@@ -6303,6 +6628,15 @@ class NavbarComponent {
 
     const menuBal = document.getElementById("menu-wallet-balance");
     if (menuBal) menuBal.textContent = `฿${balance.toFixed(2)}`;
+  }
+
+  updatePointsUI() {
+    const points = this.store.get("loyaltyPoints") || 0;
+    const el = document.getElementById("user-points-balance");
+    if (el) el.textContent = `${Math.floor(points).toLocaleString()} แต้ม`;
+
+    const menuPts = document.getElementById("menu-points-balance");
+    if (menuPts) menuPts.textContent = `${Math.floor(points).toLocaleString()} แต้ม`;
   }
 
   updateAuthUI() {
@@ -8980,6 +9314,608 @@ if (typeof module !== "undefined" && module.exports) {
 
 
 /* ============================================================================== */
+/* 📦 MODULE: js/components/LuckyWheelModal.js */
+/* ============================================================================== */
+/**
+ * ==============================================================================
+ * 🎡 NYX9 STUDIO — LUCKY WHEEL & GAMIFICATION ENGINE (Sprint 3)
+ * ==============================================================================
+ * มินิเกมวงล้อเสี่ยงโชคพร้อมระบบฟิสิกส์ HTML5 Canvas, Web Audio Synthesizer,
+ * Confetti Celebration และเชื่อมต่อ Stored Procedure fn_play_minigame แบบ Atomic
+ * ==============================================================================
+ */
+
+class LuckyWheelComponent {
+  constructor(store) {
+    this.store = store;
+    this.minigame = null;
+    this.rewards = [];
+    this.isSpinning = false;
+    this.currentRotation = 0; // degrees
+    this.audioCtx = null;
+    this.canvas = null;
+    this.ctx = null;
+    this.initDOM();
+  }
+
+  async initDOM() {
+    if (typeof document === "undefined") return;
+
+    // ตรวจสอบหรือสร้าง Modal ผลรางวัลมินิเกม
+    this.ensureResultModal();
+
+    // ดึงข้อมูลวงล้อจาก API
+    await this.fetchMinigameData();
+
+    // ตรวจสอบว่ามี canvas ในหน้า view-minigame หรือไม่
+    this.canvas = document.getElementById("lucky-wheel-canvas");
+    if (this.canvas) {
+      this.ctx = this.canvas.getContext("2d");
+      this.drawWheel();
+      this.bindEvents();
+    }
+  }
+
+  getAudioContext() {
+    if (!this.audioCtx && typeof window !== "undefined") {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.audioCtx = new AudioCtx();
+    }
+    if (this.audioCtx && this.audioCtx.state === "suspended") {
+      this.audioCtx.resume();
+    }
+    return this.audioCtx;
+  }
+
+  playTickSound() {
+    try {
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(600 + Math.random() * 200, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    } catch (_) {}
+  }
+
+  playWinFanfare() {
+    try {
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.1);
+        osc.stop(ctx.currentTime + idx * 0.1 + 0.45);
+      });
+    } catch (_) {}
+  }
+
+  async fetchMinigameData() {
+    try {
+      const user = this.store.get("user");
+      const url = user?.id ? `/api/minigames?user_id=${user.id}` : `/api/minigames`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        this.minigame = data.minigame;
+        this.rewards = data.rewards || [];
+        if (data.user) {
+          this.store.setWalletBalance(data.user.balance);
+          this.store.setLoyaltyPoints(data.user.points);
+        }
+        this.renderChancesTable();
+        if (this.canvas) this.drawWheel();
+      }
+    } catch (err) {
+      console.warn("[LUCKY WHEEL] Fetch data error:", err.message);
+    }
+  }
+
+  drawWheel() {
+    if (!this.canvas || !this.ctx || this.rewards.length === 0) return;
+    const ctx = this.ctx;
+    const size = this.canvas.width;
+    const center = size / 2;
+    const radius = center - 12;
+    const numSlices = this.rewards.length;
+    const sliceAngle = (2 * Math.PI) / numSlices;
+
+    ctx.clearRect(0, 0, size, size);
+
+    // Save context for entire wheel rotation
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate((this.currentRotation * Math.PI) / 180);
+
+    // 1. Draw Slices
+    for (let i = 0; i < numSlices; i++) {
+      const reward = this.rewards[i];
+      const startAngle = i * sliceAngle;
+      const endAngle = startAngle + sliceAngle;
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, radius, startAngle, endAngle);
+      ctx.closePath();
+
+      // Gradient Fill for Luxury Game Feel
+      ctx.fillStyle = reward.color_hex || this.getDefaultColor(i);
+      ctx.fill();
+
+      // Slice Inner Border
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // 2. Draw Slice Content (Icon & Text)
+      ctx.save();
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+
+      // Icon & Label Text
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 13px 'Prompt', sans-serif";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+      ctx.shadowBlur = 4;
+      const label = reward.label || reward.reward_type;
+      const icon = reward.icon || "";
+      ctx.fillText(`${icon} ${label}`, radius - 20, 0);
+
+      ctx.restore();
+    }
+
+    // Outer Glow Ring
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "#00F2FF";
+    ctx.shadowColor = "#00F2FF";
+    ctx.shadowBlur = 15;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Light Bulb Dots on Outer Ring
+    const numDots = 24;
+    for (let d = 0; d < numDots; d++) {
+      const dotAngle = (d * (2 * Math.PI)) / numDots;
+      const dotX = Math.cos(dotAngle) * (radius + 2);
+      const dotY = Math.sin(dotAngle) * (radius + 2);
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, 3, 0, 2 * Math.PI);
+      ctx.fillStyle = d % 2 === 0 ? "#FFE57F" : "#FFFFFF";
+      ctx.fill();
+    }
+
+    ctx.restore();
+
+    // 3. Center Hub (Static Pin / Button)
+    ctx.save();
+    ctx.translate(center, center);
+
+    // Outer Hub Circle
+    ctx.beginPath();
+    ctx.arc(0, 0, 42, 0, 2 * Math.PI);
+    ctx.fillStyle = "#0A0E17";
+    ctx.shadowColor = "#000000";
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Inner Hub Circle
+    ctx.beginPath();
+    ctx.arc(0, 0, 32, 0, 2 * Math.PI);
+    const hubGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, 32);
+    hubGrad.addColorStop(0, "#00F2FF");
+    hubGrad.addColorStop(1, "#5865F2");
+    ctx.fillStyle = hubGrad;
+    ctx.fill();
+
+    // Center Text
+    ctx.fillStyle = "#FFFFFF";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "900 12px 'Orbitron', 'Prompt', sans-serif";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.9)";
+    ctx.shadowBlur = 4;
+    ctx.fillText("NYX9", 0, -2);
+    ctx.font = "bold 8px 'Prompt', sans-serif";
+    ctx.fillText("LUCKY", 0, 10);
+
+    ctx.restore();
+
+    // 4. Top Pointer Needle (Fixed at 12 o'clock / -90 deg)
+    ctx.save();
+    ctx.translate(center, 12);
+    ctx.beginPath();
+    ctx.moveTo(-14, -6);
+    ctx.lineTo(14, -6);
+    ctx.lineTo(0, 26);
+    ctx.closePath();
+    ctx.fillStyle = "#FF0055";
+    ctx.shadowColor = "#FF0055";
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Pointer Pivot Dot
+    ctx.beginPath();
+    ctx.arc(0, 2, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  getDefaultColor(index) {
+    const colors = ["#5865F2", "#F59E0B", "#10B981", "#475569", "#EC4899", "#8B5CF6", "#3B82F6", "#334155"];
+    return colors[index % colors.length];
+  }
+
+  renderChancesTable() {
+    const container = document.getElementById("minigame-chances-list");
+    if (!container || this.rewards.length === 0) return;
+
+    container.innerHTML = this.rewards.map(r => `
+      <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.1] transition-colors">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm shadow-sm" style="background-color: ${r.color_hex}22; border: 1px solid ${r.color_hex}55; color: ${r.color_hex}">
+            ${r.icon || "🎁"}
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">${r.label}</div>
+            <div class="text-[10px] text-slate-400 capitalize">${r.reward_type}</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-xs font-mono font-bold text-cyan-400">${r.win_chance}%</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  bindEvents() {
+    const spinMoneyBtn = document.getElementById("btn-wheel-spin-money");
+    const spinPointsBtn = document.getElementById("btn-wheel-spin-points");
+
+    if (spinMoneyBtn) {
+      spinMoneyBtn.onclick = () => this.spin(false);
+    }
+    if (spinPointsBtn) {
+      spinPointsBtn.onclick = () => this.spin(true);
+    }
+  }
+
+  async spin(usePoints = false) {
+    if (this.isSpinning) return;
+
+    const user = this.store.get("user");
+    if (!user || !user.id) {
+      window.UI?.toast("กรุณาเข้าสู่ระบบก่อนหมุนวงล้อ", "warning");
+      if (typeof window.openAuthModal === "function") {
+        window.openAuthModal("login");
+      }
+      return;
+    }
+
+    const costPrice = parseFloat(this.minigame?.play_price || 15);
+    const costPoints = parseInt(this.minigame?.play_points || 50, 10);
+    const balance = this.store.get("walletBalance") || 0;
+    const points = this.store.get("loyaltyPoints") || 0;
+
+    if (usePoints) {
+      if (points < costPoints) {
+        window.UI?.toast(`แต้มไม่พอสำหรับการหมุน (ต้องการ ${costPoints} แต้ม / คุณมี ${points} แต้ม)`, "error");
+        return;
+      }
+    } else {
+      if (balance < costPrice) {
+        window.UI?.toast(`ยอดเงินไม่พอสำหรับการหมุน (ต้องการ ฿${costPrice.toFixed(2)} / คุณมี ฿${balance.toFixed(2)})`, "error");
+        if (typeof window.navigateToPage === "function") {
+          window.navigateToPage("topup");
+        }
+        return;
+      }
+    }
+
+    this.isSpinning = true;
+    this.setSpinButtonsState(false);
+
+    // เริ่มหมุนล่วงหน้าเพื่อให้รู้สึก Instant Response
+    let animId;
+    let speed = 25;
+    const startSpinTime = Date.now();
+
+    const fastSpin = () => {
+      this.currentRotation = (this.currentRotation + speed) % 360;
+      this.drawWheel();
+      this.playTickSound();
+      animId = requestAnimationFrame(fastSpin);
+    };
+    animId = requestAnimationFrame(fastSpin);
+
+    try {
+      const res = await fetch("/api/minigames", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "spin",
+          user_id: user.id,
+          minigame_id: this.minigame?.id || 1,
+          use_points: usePoints
+        })
+      });
+
+      const outcome = await res.json();
+      cancelAnimationFrame(animId);
+
+      if (!outcome.success) {
+        this.isSpinning = false;
+        this.setSpinButtonsState(true);
+        window.UI?.toast(outcome.message || "เกิดข้อผิดพลาดในการหมุนวงล้อ", "error");
+        return;
+      }
+
+      // คำนวณมุมหยุดที่ถูกต้อง
+      // เข็มชี้อยู่ที่มุม 12 นาฬิกา (-90 องศา หรือ 270 องศา)
+      // Slice แต่ละชิ้นกว้าง = 360 / numSlices
+      // Slice ที่ index ชนะอยู่ระหว่าง index * sliceDeg ถึง (index + 1) * sliceDeg
+      const numSlices = this.rewards.length;
+      const sliceDeg = 360 / numSlices;
+      const targetIndex = outcome.reward_index;
+      
+      // กึ่งกลางของ slice ที่ชนะ (ในระบบพิกัดวงล้อเริ่มต้น)
+      const sliceCenterDeg = targetIndex * sliceDeg + sliceDeg / 2;
+      
+      // เพื่อให้ sliceCenterDeg หมุนไปอยู่ตรงเข็มชี้ (270 องศา)
+      // (currentRotation + sliceCenterDeg) % 360 = 270
+      // currentRotation = 270 - sliceCenterDeg
+      const targetAngleWithinCircle = (270 - sliceCenterDeg + 360) % 360;
+      
+      // หมุนอย่างน้อย 5-7 รอบเต็ม
+      const extraSpins = 360 * 6;
+      const currentMod = this.currentRotation % 360;
+      let finalTarget = this.currentRotation + extraSpins + (targetAngleWithinCircle - currentMod);
+      if (finalTarget < this.currentRotation + extraSpins) {
+        finalTarget += 360;
+      }
+
+      // Smooth Deceleration Animation
+      const duration = 4500; // 4.5 วินาที
+      const startRot = this.currentRotation;
+      const totalDelta = finalTarget - startRot;
+      const startTime = performance.now();
+      let lastTickAngle = startRot;
+
+      const animateDecel = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        
+        // Easing: ease-out-cubic
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        this.currentRotation = startRot + totalDelta * easeProgress;
+        this.drawWheel();
+
+        // เสียงกระดิกเมื่อข้าม Slice
+        if (Math.abs(this.currentRotation - lastTickAngle) >= sliceDeg) {
+          this.playTickSound();
+          lastTickAngle = this.currentRotation;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animateDecel);
+        } else {
+          this.currentRotation = finalTarget % 360;
+          this.drawWheel();
+          this.isSpinning = false;
+          this.setSpinButtonsState(true);
+
+          // อัปเดตยอดเงินและแต้มใน Store
+          if (outcome.new_balance !== undefined) {
+            this.store.setWalletBalance(outcome.new_balance);
+          }
+          if (outcome.new_points !== undefined) {
+            this.store.setLoyaltyPoints(outcome.new_points);
+          }
+
+          // แสดงผลรางวัลและฉลอง
+          this.showRewardResult(outcome);
+        }
+      };
+
+      requestAnimationFrame(animateDecel);
+
+    } catch (err) {
+      cancelAnimationFrame(animId);
+      this.isSpinning = false;
+      this.setSpinButtonsState(true);
+      window.UI?.toast(`การหมุนล้มเหลว: ${err.message}`, "error");
+    }
+  }
+
+  setSpinButtonsState(enabled) {
+    const b1 = document.getElementById("btn-wheel-spin-money");
+    const b2 = document.getElementById("btn-wheel-spin-points");
+    if (b1) b1.disabled = !enabled;
+    if (b2) b2.disabled = !enabled;
+  }
+
+  showRewardResult(outcome) {
+    const modal = document.getElementById("modal-wheel-result");
+    if (!modal) return;
+
+    const iconEl = document.getElementById("wheel-result-icon");
+    const titleEl = document.getElementById("wheel-result-title");
+    const descEl = document.getElementById("wheel-result-desc");
+    const credBox = document.getElementById("wheel-result-cred-box");
+    const credData = document.getElementById("wheel-result-cred-data");
+
+    if (iconEl) iconEl.textContent = outcome.reward_icon || "🎁";
+    if (titleEl) titleEl.textContent = outcome.reward_label || "ขอแสดงความยินดี!";
+
+    let desc = "";
+    if (outcome.reward_type === "money") {
+      desc = `คุณได้รับเครดิตเข้ากระเป๋าเงินทันที ฿${outcome.reward?.amount || 0}!`;
+      this.playWinFanfare();
+      this.launchConfetti();
+    } else if (outcome.reward_type === "points") {
+      desc = `คุณได้รับ Loyalty Points สะสมเพิ่ม ${outcome.reward?.amount || 0} แต้ม!`;
+      this.playWinFanfare();
+      this.launchConfetti();
+    } else if (outcome.reward_type === "vault") {
+      desc = `แจ็กพอตแตก! คุณได้รับสินค้าพิเศษจัดส่งจากคลังทันที!`;
+      this.playWinFanfare();
+      this.launchConfetti();
+    } else {
+      desc = "ไม่เป็นไรนะ! ขอให้คุณโชคดีและได้รับรางวัลใหญ่ในการหมุนครั้งต่อไป 🍀";
+    }
+
+    if (descEl) descEl.textContent = desc;
+
+    // ถ้ามีคีย์จากคลังให้แสดงกล่องคัดลอก
+    if (outcome.reward?.credential_data && credBox && credData) {
+      credBox.classList.remove("hidden");
+      credData.value = outcome.reward.credential_data;
+    } else if (credBox) {
+      credBox.classList.add("hidden");
+    }
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  ensureResultModal() {
+    if (document.getElementById("modal-wheel-result")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "modal-wheel-result";
+    modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md";
+    modal.innerHTML = `
+      <div class="relative w-full max-w-md rounded-3xl bg-[#0B0F19] border border-cyan-500/30 p-6 sm:p-8 shadow-2xl shadow-cyan-500/20 text-center space-y-4">
+        
+        <!-- Canvas Confetti -->
+        <canvas id="wheel-confetti-canvas" class="pointer-events-none absolute inset-0 w-full h-full z-10"></canvas>
+
+        <div id="wheel-result-icon" class="text-6xl animate-bounce">🎁</div>
+        <h3 id="wheel-result-title" class="text-2xl font-heading font-extrabold text-white">ยินดีด้วย!</h3>
+        <p id="wheel-result-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+
+        <!-- Product Credential Copy Box (If Won Vault Product) -->
+        <div id="wheel-result-cred-box" class="hidden text-left space-y-1.5 p-3 rounded-2xl bg-[#06080E] border border-cyan-500/40">
+          <div class="text-[10px] text-cyan-400 font-mono font-bold flex items-center justify-between">
+            <span>🔑 รหัสสินค้าของคุณ (พร้อมใช้งาน):</span>
+            <span class="text-[9px] text-emerald-400">100% WORKING</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="wheel-result-cred-data" type="text" readonly class="w-full bg-transparent text-xs font-mono text-white outline-none select-all font-bold" />
+            <button onclick="window.copyWheelKey()" class="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#06080C] text-xs font-bold shrink-0 cursor-pointer transition-all">
+              คัดลอก
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button onclick="document.getElementById('modal-wheel-result').classList.add('hidden'); document.getElementById('modal-wheel-result').classList.remove('flex');" class="btn-cyber-primary w-full py-3 rounded-xl font-heading font-extrabold text-xs cursor-pointer shadow-lg shadow-cyan-500/25">
+            หมุนอีกครั้ง / ปิดหน้าต่าง
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    window.copyWheelKey = () => {
+      const input = document.getElementById("wheel-result-cred-data");
+      if (input) {
+        navigator.clipboard.writeText(input.value);
+        window.UI?.toast("คัดลอกรหัสสินค้าเรียบร้อยแล้ว!", "success");
+      }
+    };
+  }
+
+  launchConfetti() {
+    const canvas = document.getElementById("wheel-confetti-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    const particles = [];
+    const colors = ["#00F2FF", "#5865F2", "#F59E0B", "#10B981", "#EC4899", "#FFFFFF"];
+
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: (Math.random() - 0.5) * 12 - 3,
+        size: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        vr: (Math.random() - 0.5) * 10,
+        alpha: 1
+      });
+    }
+
+    let frame = 0;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.25; // gravity
+        p.rotation += p.vr;
+        p.alpha -= 0.015;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+      });
+
+      frame++;
+      if (frame < 80) {
+        requestAnimationFrame(animate);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+    requestAnimationFrame(animate);
+  }
+}
+
+// Global Export
+if (typeof window !== "undefined") {
+  window.LuckyWheelComponent = LuckyWheelComponent;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = LuckyWheelComponent;
+}
+
+
+
+/* ============================================================================== */
 /* 📦 MODULE: js/components/Modals.js */
 /* ============================================================================== */
 /**
@@ -9678,6 +10614,7 @@ class ShopApp {
     this.authModal = window.AuthModalComponent ? new window.AuthModalComponent(this.store, this.auth) : null;
     this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
+    this.luckyWheel = window.LuckyWheelComponent ? new window.LuckyWheelComponent(this.store) : null;
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
@@ -9701,6 +10638,8 @@ class ShopApp {
     safeRun("ReviewsSection", () => this.reviewsSection?.render());
     safeRun("AuthModal", () => this.authModal?.initDOM());
     safeRun("NavbarWallet", () => this.navbar?.updateWalletUI());
+    safeRun("NavbarPoints", () => this.navbar?.updatePointsUI());
+    safeRun("LuckyWheel", () => this.luckyWheel?.initDOM());
     safeRun("NavbarCart", () => this.navbar?.updateCartBadge());
     safeRun("AcceptedPaymentsFooter", () => this.renderAcceptedPaymentsFooter());
     safeRun("AnnouncementsTicker", () => this.renderAnnouncementsTicker(window.storeConfig?.announcements || []));
