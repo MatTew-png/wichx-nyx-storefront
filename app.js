@@ -45,6 +45,7 @@ class ShopApp {
     this.restockModal = window.RestockModalComponent ? new window.RestockModalComponent(this.store) : null;
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.luckyWheel = window.LuckyWheelComponent ? new window.LuckyWheelComponent(this.store) : null;
+    this.memberCardModal = window.MemberCardModalComponent ? new window.MemberCardModalComponent(this.store) : null;
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
@@ -948,5 +949,56 @@ window.handleReviewSubmit = async function(e) {
       submitBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> <span>ส่งรีวิว</span>`;
       if (window.lucide) lucide.createIcons();
     }
+  }
+};
+
+
+// ==============================================================================
+// 💳 SPRINT 4: VIP MEMBER CARD & ROBLOX LOADER SCRIPT GLOBAL BRIDGES
+// ==============================================================================
+window.openVipCardModal = function() {
+  if (window.Shop?.memberCardModal) {
+    window.Shop.memberCardModal.open();
+  } else if (window.MemberCardModalComponent) {
+    if (!window._activeMemberCardModal) {
+      window._activeMemberCardModal = new window.MemberCardModalComponent(window.Shop?.store);
+    }
+    window._activeMemberCardModal.open();
+  }
+};
+
+window.closeVipCardModal = function() {
+  if (window.Shop?.memberCardModal) {
+    window.Shop.memberCardModal.close();
+  } else if (window._activeMemberCardModal) {
+    window._activeMemberCardModal.close();
+  } else {
+    const el = document.getElementById("modal-vip-member-card");
+    if (el) {
+      el.classList.add("hidden");
+      el.classList.remove("flex");
+    }
+  }
+};
+
+window.saveVipCardImagePNG = function() {
+  if (window.Shop?.memberCardModal) {
+    window.Shop.memberCardModal.exportCardPNG();
+  } else if (window._activeMemberCardModal) {
+    window._activeMemberCardModal.exportCardPNG();
+  }
+};
+
+window.copyRobloxLoaderScript = function(productId) {
+  const loaderScript = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/MatTew-png/wichx-nyx-storefront/main/scripts/loader.lua"))()';
+  if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(loaderScript).then(() => {
+      window.UI?.toast("📋 คัดลอก Roblox Loader Script ลง Clipboard เรียบร้อยแล้ว!", "success");
+      window.UI?.confetti();
+    }).catch(() => {
+      prompt("คัดลอก Roblox Loader Script:", loaderScript);
+    });
+  } else if (typeof prompt !== "undefined") {
+    prompt("คัดลอก Roblox Loader Script:", loaderScript);
   }
 };

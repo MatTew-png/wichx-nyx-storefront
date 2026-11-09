@@ -108,6 +108,57 @@ module.exports = async (req, res) => {
       );
       const newStock = syncResult.rows[0]?.new_stock ?? 0;
 
+      // Automated Restock Radar Dispatch (Sprint 4: TC-RDR-01)
+      if (Number(added_count) > 0) {
+        try {
+          const pendingSubscribers = await client.query(`
+            SELECT rn.id, rn.discord_id, p.title as product_title
+            FROM public.restock_notifications rn
+            LEFT JOIN public.products p ON rn.product_id = p.id
+            WHERE rn.product_id = $1 AND rn.status = 'pending'
+            FOR UPDATE OF rn SKIP LOCKED;
+          `, [String(product_id)]);
+
+          if (pendingSubscribers.rows.length > 0) {
+            const subIds = pendingSubscribers.rows.map(s => s.id);
+            await client.query(`
+              UPDATE public.restock_notifications 
+              SET status = 'notified', notified_at = NOW() 
+              WHERE id = ANY($1::uuid[]);
+            `, [subIds]);
+
+            if (process.env.DISCORD_WEBHOOK_URL && process.env.DISCORD_WEBHOOK_URL.startsWith('http')) {
+              const productTitle = pendingSubscribers.rows[0].product_title || product_id;
+              const mentions = pendingSubscribers.rows
+                .filter(s => s.discord_id)
+                .map(s => /^\d{17,19}$/.test(s.discord_id) ? `<@${s.discord_id}>` : `\`${s.discord_id}\``)
+                .join(' ');
+
+              await fetch(process.env.DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  content: mentions ? `🔔 แจ้งเตือนสินค้าเติมสต็อก: ${mentions}` : undefined,
+                  embeds: [{
+                    title: '🎉 สินค้าเติมสต็อกแล้ว! (Restock Radar Dispatch)',
+                    color: 0x10B981,
+                    fields: [
+                      { name: '📦 สินค้า', value: `**${productTitle}**`, inline: true },
+                      { name: '⚡ เติมเพิ่ม', value: `+${added_count} ชิ้น`, inline: true },
+                      { name: '👥 ลูกค้าที่รอคอย', value: `${subIds.length} ท่าน`, inline: true }
+                    ],
+                    footer: { text: 'NYX9 STUDIO • 24/7 Automated Restock Radar' },
+                    timestamp: new Date().toISOString()
+                  }]
+                })
+              }).catch(() => {});
+            }
+          }
+        } catch (rdrErr) {
+          console.warn('[RESTOCK RADAR DISPATCH ERROR]:', rdrErr.message);
+        }
+      }
+
       return res.status(200).json({
         success: true,
         message: `เพิ่มสต็อกสำเร็จ ${added_count} รายการ${skipped_count > 0 ? ` (ข้าม ${skipped_count} รายการที่ซ้ำ)` : ''}`,

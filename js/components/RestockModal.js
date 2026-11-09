@@ -136,21 +136,25 @@ class RestockModalComponent {
 
     try {
       const user = this.store ? this.store.get("user") : null;
-      if (window.SupabaseAdapter && window.SupabaseAdapter.isLive) {
-        await window.SupabaseAdapter.client.from("restock_subscriptions").insert({
+      const res = await fetch("/api/restock-radar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "subscribe",
           product_id: this.currentProductId,
-          discord_contact: contact,
+          discord_id: contact,
           user_id: user?.id || null
-        });
-      }
+        })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "บันทึกล้มเหลว");
 
       window.UI?.confetti();
-      window.UI?.toast(`🔔 บันทึกการแจ้งเตือนสำหรับ "${this.currentProductTitle}" เรียบร้อย!`, "success");
+      window.UI?.toast(`🔔 ${data.message || 'บันทึกการแจ้งเตือนเรียบร้อยแล้ว!'}`, "success");
       this.close();
     } catch (err) {
       console.warn("[RESTOCK NOTIFY] Submit error:", err);
-      window.UI?.toast("บันทึกการแจ้งเตือนเรียบร้อย (ระบบจองคิวออฟไลน์)", "success");
-      this.close();
+      window.UI?.toast(`เกิดข้อผิดพลาด: ${err.message}`, "error");
     } finally {
       if (btn) {
         btn.disabled = false;

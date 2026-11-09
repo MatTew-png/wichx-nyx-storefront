@@ -322,6 +322,26 @@ class CatalogViewComponent {
               <span class="px-2 py-0.5 rounded-md bg-[#070A0F] border border-[rgba(255,255,255,0.06)] text-[10px] text-slate-300 font-mono-val">${chip}</span>
             `).join("")}
           </div>
+
+          ${(cat.id === 'cat-roblox-scripts' || p.category === 'cat-roblox-scripts') ? `
+            <!-- Roblox Executor Compatibility Radar & One-Click Script Loader (Sprint 4: 4.2) -->
+            <div class="my-2 p-2.5 rounded-xl bg-white/[0.02] border border-cyan-500/20 space-y-2">
+              <div class="flex items-center justify-between text-[10px] font-mono">
+                <span class="flex items-center gap-1 text-slate-300"><i data-lucide="shield" class="w-3 h-3 text-cyan-400"></i> EXECUTOR RADAR:</span>
+                <span class="text-emerald-400 font-bold">BYPASS 100%</span>
+              </div>
+              <div class="grid grid-cols-2 gap-1 text-[9px] font-mono font-semibold">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-center">Delta 🟢</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-center">Codex 🟢</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-center">Wave 🟢</span>
+                <span class="px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 text-center">Solara 🟡</span>
+              </div>
+              <button onclick="window.copyRobloxLoaderScript('${p.id}')" class="w-full py-1.5 px-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-[10px] font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95">
+                <i data-lucide="terminal" class="w-3 h-3"></i>
+                <span>⚡ คัดลอก Loader Script</span>
+              </button>
+            </div>
+          ` : ''}
         </div>
 
                 <!-- Footer & Action (Fitts's Law Dual-Action: Cart + 1-Click Buy) -->

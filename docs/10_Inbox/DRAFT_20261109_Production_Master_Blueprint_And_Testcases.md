@@ -289,7 +289,9 @@ $$;
 | **TC-PTS-01** | Points System | เติมเงินแล้วได้รับ Points Cash-back + จ่ายแต้มหมุนวงล้อ | เติมเงินผ่าน PromptPay 100 บาท | ยอดเงินขึ้น 100 บาท + ได้รับแต้มสะสมเพิ่ม 10 Points (10%) และตัดแต้มสำเร็จ | ✅ PASSED (`scripts/test-sprint3-verification.js`) |
 | **TC-PIN-01** | Admin Security | ป้องกันการเข้าถึง `admin.html` หากไม่มี PIN | เปิดหน้าแอดมินโดยไม่ระบุ PIN | หน้าจอถูก Overlay บดบัง และ Redirect ไปหน้ากรอก PIN | ✅ PASSED (`scripts/test-sprint2-verification.js`) |
 | **TC-PIN-02** | Discord PIN | สุ่ม PIN ส่งเข้า Discord Webhook | กดปุ่มขอ PIN เข้าหลังบ้าน | Webhook ส่งตัวเลข 6 หลักเข้า Discord ทันที | ✅ PASSED (`scripts/test-sprint2-verification.js`) |
-| **TC-RDR-01** | Restock Radar | แจ้งเตือนลูกค้าเมื่อมีสินค้าเติมเข้าคลัง | เติมสต็อกสินค้าที่เคยหมด (`stock = 0`) | Discord Bot ส่งข้อความ DM หา User ID ที่เคยกดกระดิ่งไว้ | ⏳ Pending (Sprint 4) |
+| **TC-RDR-01** | Restock Radar | แจ้งเตือนลูกค้าเมื่อมีสินค้าเติมเข้าคลัง | เติมสต็อกสินค้าที่เคยหมด (`stock = 0`) | Discord Webhook / Bot ส่งแจ้งเตือนหาคิวลูกค้าที่รอคอย | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
+| **TC-VIP-01** | 3D VIP Card | บัตรสมาชิก 3D Hologram Tilt & PNG Export | เปิดโมดอลการ์ด ขยับเมาส์ และกด Save PNG | เอฟเฟกต์โฮโลแกรมขยับตามเมาส์ และบันทึก PNG 1200x675 | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
+| **TC-RBX-01** | Roblox Radar | ตารางสถานะ Executor & Universal Loader | แสดงแท็ก Delta/Codex/Wave/Solara และกดปุ่มก็อปสคริปต์ | คัดลอก `loadstring(...)` พร้อมแจ้งเตือน และมีไฟล์ Luau รองรับ | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
 
 ---
 
