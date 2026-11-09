@@ -42,6 +42,23 @@ const SOURCE_FILES = [
   'app.js'
 ];
 
+const ADMIN_SOURCE_FILES = [
+  'js/admin/core/AdminStore.js',
+  'js/admin/core/AdminUI.js',
+  'js/admin/core/AdminApiClient.js',
+  'js/admin/core/AdminAuth.js',
+  'js/admin/services/AnalyticsService.js',
+  'js/admin/services/InventoryService.js',
+  'js/admin/services/OrderFinanceService.js',
+  'js/admin/services/UserService.js',
+  'js/admin/services/VoucherService.js',
+  'js/admin/services/ProgramStatusService.js',
+  'js/admin/services/SecuritySentinelService.js',
+  'js/admin/services/ThemeStudioService.js',
+  'js/admin/services/SettingsService.js',
+  'js/admin/AdminApp.js'
+];
+
 function build() {
   console.log('⚡ [BUILD] Packaging Storefront modules into single bundle...');
   const distDir = path.join(__dirname, 'dist');
@@ -49,6 +66,7 @@ function build() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
+  // 1. Package Storefront Bundle
   const chunks = [];
   let totalBytes = 0;
 
@@ -74,12 +92,11 @@ function build() {
     console.log('✅ [BUILD] Synced assets/ into dist/assets/');
   }
 
-  // Validate syntax
+  // Validate Storefront syntax
   new Function(bundleCode);
-
   console.log(`✅ [BUILD] dist/store.bundle.js generated successfully! (${Math.round(totalBytes / 1024)} KB)`);
 
-  // 1. Build self-contained storefront (100% Antivirus & Chrome Safe Browsing Immunity)
+  // 2. Build self-contained storefront (100% Antivirus & Chrome Safe Browsing Immunity)
   const stylesPath = path.join(__dirname, 'styles.css');
   const stylesContent = fs.existsSync(stylesPath) ? fs.readFileSync(stylesPath, 'utf8') : '';
   const rootIndex = path.join(__dirname, 'index.html');
@@ -138,6 +155,64 @@ function build() {
     fs.writeFileSync(path.join(distDir, 'index.html'), html, 'utf8');
     fs.writeFileSync(path.join(distDir, '200.html'), html, 'utf8');
     console.log(`✅ [BUILD] Production storefront synchronized & verified across index.html, 200.html, and dist/ (${Math.round(html.length / 1024)} KB)`);
+  }
+
+  // 3. Package Modular Admin Engine Bundle
+  console.log('⚡ [BUILD] Packaging Modular Admin OOP Engine into bundle...');
+  const adminChunks = [];
+  let adminTotalBytes = 0;
+
+  for (const relPath of ADMIN_SOURCE_FILES) {
+    const fullPath = path.join(__dirname, relPath);
+    if (!fs.existsSync(fullPath)) {
+      throw new Error(`Missing admin source file: ${relPath}`);
+    }
+    const content = fs.readFileSync(fullPath, 'utf8');
+    adminTotalBytes += content.length;
+    adminChunks.push(`\n/* ============================================================================== */\n/* 🛡️ ADMIN OOP MODULE: ${relPath} */\n/* ============================================================================== */\n${content}`);
+  }
+
+  const adminBundleCode = adminChunks.join('\n\n');
+  const adminBundlePath = path.join(distDir, 'admin.bundle.js');
+  fs.writeFileSync(adminBundlePath, adminBundleCode, 'utf8');
+
+  // Validate Admin bundle syntax
+  new Function(adminBundleCode);
+  console.log(`✅ [BUILD] dist/admin.bundle.js generated successfully! (${Math.round(adminTotalBytes / 1024)} KB)`);
+
+  // 4. Inlined Modular Admin Deployment
+  const rootAdmin = path.join(__dirname, 'admin.html');
+  if (fs.existsSync(rootAdmin)) {
+    let adminHtml = fs.readFileSync(rootAdmin, 'utf8');
+    const adminMarkerRegex = /<!-- NYX_ADMIN_SCRIPTS_START -->[\s\S]*?<!-- NYX_ADMIN_SCRIPTS_END -->/i;
+    const inlineAdminTag = `<!-- NYX_ADMIN_SCRIPTS_START -->\n  <!-- Unified Admin Operations Engine (OOP Bundled for Antivirus Immunity & Zero-Latency) -->\n  <script id="nyx-admin-bundle">\n${adminBundleCode}\n  </script>\n  <!-- NYX_ADMIN_SCRIPTS_END -->`;
+
+    if (!adminMarkerRegex.test(adminHtml)) {
+      throw new Error('❌ [BUILD ERROR] Missing <!-- NYX_ADMIN_SCRIPTS_START --> marker in admin.html!');
+    }
+
+    adminHtml = adminHtml.replace(adminMarkerRegex, inlineAdminTag);
+
+    // Verify Admin DOM integrity
+    const REQUIRED_ADMIN_IDS = [
+      'nav-btn-analytics',
+      'nav-btn-products',
+      'nav-btn-vault',
+      'nav-btn-users',
+      'nav-btn-orders',
+      'nav-btn-theme',
+      'tab-pane-access-logs'
+    ];
+
+    for (const reqId of REQUIRED_ADMIN_IDS) {
+      if (!adminHtml.includes(`id="${reqId}"`)) {
+        throw new Error(`❌ [BUILD ASSERTION FAILED] Essential Admin DOM id="${reqId}" is missing from build!`);
+      }
+    }
+
+    fs.writeFileSync(rootAdmin, adminHtml, 'utf8');
+    fs.writeFileSync(path.join(distDir, 'admin.html'), adminHtml, 'utf8');
+    console.log(`✅ [BUILD] Production Admin Operations Suite synchronized & verified across admin.html and dist/admin.html (${Math.round(adminHtml.length / 1024)} KB)`);
   }
 }
 
