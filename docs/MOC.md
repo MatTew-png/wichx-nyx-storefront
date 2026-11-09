@@ -42,6 +42,7 @@ tags:
 - [[ARCH_02_Refactoring_Roadmap|ARCH-02: Technical Refactoring Roadmap]] — 4-phase development plan using Tasks plugin syntax.
 - [[ARCH_03_Enterprise_Security_Vault|ARCH-03: Enterprise Security Vault]] — AES-256-GCM encryption, RLS policies, Honeypot bot trap.
 - [[ARCH_04_Database_Schema_Cluster|ARCH-04: Database Schema Cluster]] — 12-table ER diagram, foreign keys, and stored procedures.
+- [[10_Inbox/DRAFT_20261109_NextGen_Security_Defense_Architecture|DRAFT: 5-Layer Defense Blueprint & Sprint 6 Financial Shield]] — Pre-OCR Image Hash Cache, Receiver Whitelist, Angpao Mutex, Roblox Gamertag Assurance.
 - [[KANBAN_Board|Kanban Board]] — Interactive workflow board for Backlog, In Progress, Testing, and Completed tasks.
 - [[DATAVIEW_Live_Dashboard|Live Dataview Dashboard]] — Dynamic queries for features, architecture notes, and scripts.
 

@@ -49,13 +49,41 @@ class PaymentService {
     return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=Q&data=${encodeURIComponent(payload)}`;
   }
 
-  async verifyPromptPaySlip(amount, transRef) {
-    return this.processTopup({
-      gateway: "promptpay",
-      transRef: transRef,
-      amount: amount,
-      rawPayload: { qr: true, verifiedAt: new Date().toISOString() }
-    });
+  async verifyPromptPaySlip(amount, transRef, slipImageBase64 = null) {
+    const user = this.store.get("user");
+    try {
+      const response = await fetch("/api/verify-slip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          transRef: transRef,
+          slipImageBase64: slipImageBase64,
+          userId: user?.id || null
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "สลิปไม่ผ่านการตรวจสอบ");
+      }
+      if (result.new_balance !== undefined) {
+        this.store.set("walletBalance", result.new_balance);
+      } else {
+        this.store.creditWallet(parseFloat(amount));
+      }
+      return result;
+    } catch (err) {
+      if (err.message && !err.message.includes("fetch") && !err.message.includes("Failed to fetch")) {
+        throw err;
+      }
+      // Fallback to direct RPC
+      return this.processTopup({
+        gateway: "promptpay",
+        transRef: transRef,
+        amount: amount,
+        rawPayload: { qr: true, verifiedAt: new Date().toISOString() }
+      });
+    }
   }
 
   // --- 2. TRUEMONEY VOUCHER ---

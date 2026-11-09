@@ -27,16 +27,36 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { items, honeypotTrap, promoCode, userBalance, userId, customerInfo } = req.body || {};
+    const { items, honeypotTrap, nyx_decoy_trap_field, promoCode, userBalance, userId, customerInfo } = req.body || {};
     const idempotencyKey = req.headers["idempotency-key"] || `IDEM-${Date.now()}`;
+    const decoyValue = honeypotTrap || nyx_decoy_trap_field;
 
-    // 1. HONEYPOT TRAP CHECK
-    if (honeypotTrap && honeypotTrap.trim() !== "") {
-      console.warn(`[SECURITY ALERT] Honeypot triggered from IP: ${req.headers["x-forwarded-for"] || "unknown"}`);
+    // 1. HONEYPOT TRAP CHECK (TC-HNY-01)
+    if (decoyValue && String(decoyValue).trim() !== "") {
+      const clientIp = req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"]?.split(',')[0]?.trim() || req.headers["x-real-ip"] || req.socket?.remoteAddress || "";
+      console.warn(`[SECURITY ALERT] Honeypot triggered from IP: ${clientIp}`);
+
+      // Auto-blacklist bot IP in Supabase
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+      if (supabaseUrl && supabaseKey && clientIp) {
+        try {
+          const supabase = createClient(supabaseUrl, supabaseKey);
+          await supabase.from('blacklists').insert([{
+            target_type: 'ip',
+            target_value: clientIp,
+            reason: 'Honeypot Decoy Trap Tripped (Auto-Blacklisted Bot)'
+          }]);
+        } catch (blErr) {
+          console.warn('[HONEYPOT] Failed to insert blacklist:', blErr.message);
+        }
+      }
+
       return res.status(403).json({
         success: false,
+        code: "BOT_HONEYPOT_TRIGGERED",
         security_block: true,
-        message: "ระบบความปลอดภัยตรวจพบพฤติกรรมอัตโนมัติ (Access Denied)"
+        message: "ระบบความปลอดภัยตรวจพบพฤติกรรมอัตโนมัติ (Access Denied - Honeypot Tripped)"
       });
     }
 

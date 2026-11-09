@@ -30,6 +30,7 @@ const SOURCE_FILES = [
   'js/components/LuckyWheelModal.js',
   'js/components/MemberCardModal.js',
   'js/components/KeyAuthModal.js',
+  'js/components/GamertagConfirmModal.js',
   'js/components/Modals.js',
   'js/components/SocialProof.js',
   'js/components/AmbientWaves.js',

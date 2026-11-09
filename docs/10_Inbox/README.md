@@ -35,3 +35,6 @@ This directory serves as the **quarantine and staging zone** for all unverified 
 - [[10_Inbox/DRAFT_20261109_NYX9_Signature_Moat_And_Vexzy_Fusion|DRAFT_20261109_NYX9_Signature_Moat_And_Vexzy_Fusion]] — Master Fusion Strategy: Vexzy Adaptation Suite & The 4 Signature Moat Features.
 - [[10_Inbox/DRAFT_20261109_Production_Master_Blueprint_And_Testcases|DRAFT_20261109_Production_Master_Blueprint_And_Testcases]] — Production Master Blueprint, Service Contracts & Complete Test Case Matrix (Synthesized via DeepSeek-V4-Pro).
 - [[10_Inbox/DRAFT_20261109_F4RY_Model_X_Feature_Audit|DRAFT_20261109_F4RY_Model_X_Feature_Audit]] — Benchmark Audit & Deep Architecture Reverse-Engineering (F4RY Model X).
+- [[10_Inbox/DRAFT_20261109_Enterprise_Security_And_Defense_Roadmap|DRAFT_20261109_Enterprise_Security_And_Defense_Roadmap]] — แผนยกระดับความปลอดภัยระบบป้องกัน 7 เสาหลัก (Next-Gen Enterprise Security & Financial Defense Roadmap).
+- [[10_Inbox/DRAFT_20261109_NextGen_Security_Defense_Roadmap|DRAFT_20261109_NextGen_Security_Defense_Roadmap]] — สถาปัตยกรรมระบบป้องกันขั้นสูง 5 ชั้น (Next-Gen Security & Defense Roadmap).
+- [[10_Inbox/DRAFT_20261109_NextGen_Security_Defense_Architecture|DRAFT_20261109_NextGen_Security_Defense_Architecture]] — Next-Gen Enterprise Security & Financial Defense Architecture (6-Tier Defense Blueprint).

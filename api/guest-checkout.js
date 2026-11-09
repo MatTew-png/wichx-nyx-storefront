@@ -29,6 +29,9 @@ function getDbClient() {
 
 const GUEST_FEE_PERCENT = 0.029; // 2.9% TrueMoney voucher processing fee
 
+// Global In-Flight Mutex for TrueMoney Voucher Redemption across concurrent requests
+const activeVoucherLocks = global._activeVoucherLocks || (global._activeVoucherLocks = new Set());
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -105,14 +108,31 @@ module.exports = async (req, res) => {
     quantity = 1,
     voucher_url,
     customer_contact,
-    honeypotTrap
+    honeypotTrap,
+    nyx_decoy_trap_field
   } = req.body || {};
 
-  // 1. Honeypot check
-  if (honeypotTrap && honeypotTrap.trim() !== '') {
+  const decoyValue = honeypotTrap || nyx_decoy_trap_field;
+
+  // 1. Honeypot check (TC-HNY-01)
+  if (decoyValue && String(decoyValue).trim() !== '') {
+    const clientIp = getClientIp(req);
+    try {
+      const blClient = getDbClient();
+      await blClient.connect();
+      await blClient.query(
+        "INSERT INTO public.blacklists (target_type, target_value, reason, expires_at) VALUES ('ip', $1, 'Honeypot Decoy Trap Tripped (Auto-Blacklisted Bot)', NOW() + INTERVAL '30 days') ON CONFLICT DO NOTHING;",
+        [clientIp]
+      );
+      await blClient.end().catch(() => {});
+    } catch (blErr) {
+      console.warn('[HONEYPOT] Blacklist error:', blErr.message);
+    }
+
     return res.status(403).json({
       success: false,
-      message: 'ระบบความปลอดภัยตรวจพบพฤติกรรมอัตโนมัติ (Access Denied)'
+      code: "BOT_HONEYPOT_TRIGGERED",
+      message: 'ระบบความปลอดภัยตรวจพบพฤติกรรมอัตโนมัติ (Access Denied - Honeypot Tripped)'
     });
   }
 
@@ -137,6 +157,17 @@ module.exports = async (req, res) => {
       message: 'รูปแบบรหัสซองของขวัญ TrueMoney ไม่ถูกต้อง'
     });
   }
+
+  // 🔒 In-Flight Mutex Concurrency Lock (TC-VCH-01)
+  if (activeVoucherLocks.has(voucherCode)) {
+    return res.status(409).json({
+      success: false,
+      code: "VOUCHER_MUTEX_LOCKED",
+      message: "ซองของขวัญนี้กำลังอยู่ในขั้นตอนการประมวลผล กรุณารอสักครู่ (In-Flight Concurrency Lock)"
+    });
+  }
+
+  activeVoucherLocks.add(voucherCode);
 
   const client = getDbClient();
 
@@ -377,6 +408,9 @@ module.exports = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   } finally {
+    if (voucherCode) {
+      activeVoucherLocks.delete(voucherCode);
+    }
     await client.end().catch(() => {});
   }
 };
