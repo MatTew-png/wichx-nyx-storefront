@@ -214,13 +214,28 @@ module.exports = async (req, res) => {
 
       // Verify Hash
       const inputHash = hashPin(pin);
+      const clientIp = req.headers['cf-connecting-ip'] || req.headers['x-real-ip'] || (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : '') || req.socket?.remoteAddress || '127.0.0.1';
+      const userAgent = req.headers['user-agent'] || 'Unknown Agent';
+
       if (inputHash !== pin_hash) {
+        // Log Failed Attempt in Audit Sentinel
+        await client.query(`
+          INSERT INTO public.system_audit_logs (event_type, severity, ip_address, user_agent, payload, created_at)
+          VALUES ('ADMIN_LOGIN_FAILED', 'WARNING', $1, $2, $3::jsonb, NOW());
+        `, [clientIp, userAgent, JSON.stringify({ attemptedPin: '******', error: 'INVALID_PIN' })]).catch(() => {});
+
         return res.status(401).json({
           success: false,
           code: 'INVALID_PIN',
           message: 'รหัส PIN 6 หลักไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง'
         });
       }
+
+      // Log Success in Audit Sentinel
+      await client.query(`
+        INSERT INTO public.system_audit_logs (event_type, severity, ip_address, user_agent, payload, created_at)
+        VALUES ('ADMIN_LOGIN_SUCCESS', 'INFO', $1, $2, $3::jsonb, NOW());
+      `, [clientIp, userAgent, JSON.stringify({ message: '2FA PIN verified successfully' })]).catch(() => {});
 
       // Issue Session Token
       const sessionToken = createSessionToken();

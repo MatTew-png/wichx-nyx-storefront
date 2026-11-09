@@ -292,6 +292,11 @@ $$;
 | **TC-RDR-01** | Restock Radar | แจ้งเตือนลูกค้าเมื่อมีสินค้าเติมเข้าคลัง | เติมสต็อกสินค้าที่เคยหมด (`stock = 0`) | Discord Webhook / Bot ส่งแจ้งเตือนหาคิวลูกค้าที่รอคอย | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
 | **TC-VIP-01** | 3D VIP Card | บัตรสมาชิก 3D Hologram Tilt & PNG Export | เปิดโมดอลการ์ด ขยับเมาส์ และกด Save PNG | เอฟเฟกต์โฮโลแกรมขยับตามเมาส์ และบันทึก PNG 1200x675 | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
 | **TC-RBX-01** | Roblox Radar | ตารางสถานะ Executor & Universal Loader | แสดงแท็ก Delta/Codex/Wave/Solara และกดปุ่มก็อปสคริปต์ | คัดลอก `loadstring(...)` พร้อมแจ้งเตือน และมีไฟล์ Luau รองรับ | ✅ PASSED (`scripts/test-sprint4-verification.js`) |
+| **TC-BOT-01** | Bot Shield | ระบบแก้โจทย์ PoW สกัดกั้นบอทสแปมและคัดกรองอัตโนมัติ | ยิงคำขอพร้อม Challenge Token และทดสอบ Token ปลอม | ป้องกันบอทยิงสุ่ม, ตรวจจับ Signature ปลอม และดีดเข้า Blacklist | ✅ PASSED (`scripts/test-sprint5-verification.js`) |
+| **TC-AST-01** | Access Sentinel | บันทึกประวัติการเข้าหลังบ้าน & 1-Click Blacklist | ทดสอบ Blacklist และ Unban IP ผ่าน API | บันทึก IP, User-Agent และสั่งระงับการเข้าถึงใน Database ทันที | ✅ PASSED (`scripts/test-sprint5-verification.js`) |
+| **TC-KAH-01** | KeyAuth HWID | ระบบลูกค้ารีเซ็ต Hardware ID ด้วยตนเอง | ตรวจสอบสถานะและกดย้ายเครื่องผ่านหน้าเว็บ | รีเซ็ตสำเร็จทันที และล็อก Cooldown 24 ชั่วโมงห้ามกดซ้ำ | ✅ PASSED (`scripts/test-sprint5-verification.js`) |
+| **TC-DEV-01** | Developer API | ระบบออกคีย์และยิงซื้อสำหรับคู่ค้า (Wholesale) | สร้างคีย์ `nyx_sec_...` และยิงเช็กสต็อก | ยืนยันตัวตนผ่าน Bearer Token และรองรับการสั่งซื้อผ่าน API | ✅ PASSED (`scripts/test-sprint5-verification.js`) |
+| **TC-RSL-01** | Reseller Pricing | ระบบราคาส่งอัตโนมัติสำหรับสมาชิกยศ Reseller | ตรวจสอบราคาสินค้าในฐานข้อมูลและหน้าสโตร์ | แสดงราคาส่งลด 10-15% สำหรับยศ Reseller พร้อมป้ายกำกับ | ✅ PASSED (`scripts/test-sprint5-verification.js`) |
 
 ---
 

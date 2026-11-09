@@ -46,6 +46,7 @@ class ShopApp {
     this.discordServiceModal = new window.DiscordServiceModalComponent(this.store);
     this.luckyWheel = window.LuckyWheelComponent ? new window.LuckyWheelComponent(this.store) : null;
     this.memberCardModal = window.MemberCardModalComponent ? new window.MemberCardModalComponent(this.store) : null;
+    this.keyAuthModal = window.KeyAuthModalComponent ? new window.KeyAuthModalComponent(this.store) : null;
     this.modals = new window.ModalsComponent(this.store, this.checkoutService);
     this.socialProof = new window.SocialProofComponent();
     this.ambientWaves = window.AmbientWavesEngine ? new window.AmbientWavesEngine() : null;
@@ -1000,5 +1001,34 @@ window.copyRobloxLoaderScript = function(productId) {
     });
   } else if (typeof prompt !== "undefined") {
     prompt("คัดลอก Roblox Loader Script:", loaderScript);
+  }
+};
+
+
+// ==============================================================================
+// 🔑 SPRINT 5: KEYAUTH HWID RESET GLOBAL BRIDGES
+// ==============================================================================
+window.openKeyAuthModal = function() {
+  if (window.Shop?.keyAuthModal) {
+    window.Shop.keyAuthModal.open();
+  } else if (window.KeyAuthModalComponent) {
+    if (!window._activeKeyAuthModal) {
+      window._activeKeyAuthModal = new window.KeyAuthModalComponent(window.Shop?.store);
+    }
+    window._activeKeyAuthModal.open();
+  }
+};
+
+window.closeKeyAuthModal = function() {
+  if (window.Shop?.keyAuthModal) {
+    window.Shop.keyAuthModal.close();
+  } else if (window._activeKeyAuthModal) {
+    window._activeKeyAuthModal.close();
+  } else {
+    const el = document.getElementById("modal-keyauth-reset");
+    if (el) {
+      el.classList.add("hidden");
+      el.classList.remove("flex");
+    }
   }
 };

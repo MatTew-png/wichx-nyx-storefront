@@ -271,6 +271,10 @@ class CatalogViewComponent {
     createProductCardHTML(p, cat) {
     const isOut = p.stock === 0;
     const isCustom = p.fulfillmentType === "custom_form";
+    const user = this.store ? this.store.get("user") : null;
+    const isReseller = user?.role === "reseller" || user?.is_reseller;
+    const resellerPrice = p.reseller_price ? Number(p.reseller_price) : (p.price > 0 ? Math.round(p.price * 0.88) : p.price);
+    const activePrice = isReseller ? resellerPrice : p.price;
 
     return `
       <div class="product-card group rounded-2xl bg-[#0A0D14] hover:bg-[#0F1420] border border-white/[0.07] hover:border-white/[0.18] transition-all duration-200 p-4 flex flex-col justify-between relative shadow-lg hover:shadow-[0_16px_36px_-10px_rgba(0,0,0,0.85)] hover:-translate-y-1">
@@ -348,7 +352,15 @@ class CatalogViewComponent {
         <div class="pt-3.5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 line-through font-mono-val">${p.originalPrice ? `฿${p.originalPrice}` : ""}</div>
-            <div class="text-base font-mono-val font-bold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
+            ${isReseller ? `
+              <div class="flex items-center gap-1.5">
+                <span class="text-base font-mono-val font-bold text-emerald-400 tracking-tight">฿${activePrice.toFixed(2)}</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[9px] font-mono font-bold">RESELLER</span>
+              </div>
+            ` : `
+              <div class="text-base font-mono-val font-bold text-[var(--accent)] tracking-tight">฿${p.price.toFixed(2)}</div>
+              <div class="text-[9px] text-emerald-400/90 font-mono tracking-tight font-semibold">ราคาส่ง Reseller: ฿${resellerPrice.toFixed(2)}</div>
+            `}
           </div>
 
           ${isOut ? `

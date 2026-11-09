@@ -413,6 +413,13 @@
                 </div>
                 <span class="px-1.5 py-0.5 text-[9px] rounded-md bg-cyan-500/10 text-cyan-400 font-mono font-bold">100% DIY</span>
               </button>
+              <button onclick="switchAdminTab('access-logs')" id="nav-btn-access-logs" class="nav-item w-full text-left justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
+                  <span>ประวัติการเข้าถึง (Access Sentinel)</span>
+                </div>
+                <span class="px-1.5 py-0.5 text-[9px] rounded-md bg-rose-500/10 text-rose-400 font-mono font-bold">2FA / BOT</span>
+              </button>
               <button onclick="switchAdminTab('discord')" id="nav-btn-discord" class="nav-item w-full text-left">
                 <i data-lucide="bell-ring" class="w-4 h-4 text-purple-400"></i>
                 <span>Discord Webhook</span>
@@ -1148,6 +1155,103 @@
         <!-- ==============================================================================
              PANE: PROGRAM STATUS HUB & SCRIPT MONITOR (SPRINT 2)
              ============================================================================== -->
+        <!-- ==============================================================================
+             PANE: ACCESS SENTINEL & AUDIT TRAIL (SPRINT 5)
+             ============================================================================== -->
+        <div id="tab-pane-access-logs" class="hidden space-y-6">
+          <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-6">
+            
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+              <div>
+                <h3 class="text-base font-heading font-extrabold text-white flex items-center gap-2">
+                  <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+                  <span>ประวัติการเข้าถึง & ตรวจจับภัยคุกคาม (Access Sentinel & Audit Trail)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">บันทึกทุกการล็อกอิน 2FA PIN, ความพยายามเจาะระบบ, บอทสแปม และจัดการบัญชีดำ (Blacklist)</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="loadAccessSentinelLogs(); loadBlacklistList();" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 border border-slate-700 cursor-pointer transition-all active:scale-95">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>รีเฟรชบันทึก</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Manual IP Blacklist Form -->
+            <div class="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center">
+                  <i data-lucide="ban" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white">สั่งระงับและขึ้นบัญชีดำ IP ทันที (Manual IP Blacklist)</div>
+                  <div class="text-[10px] text-slate-400">IP ที่ติดแบล็กลิสต์จะถูกตัดการเข้าถึง API ทุกระบบทันที</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="text" id="manual-blacklist-ip" placeholder="เช่น 192.168.1.1" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-mono text-white focus:outline-none focus:border-rose-400 w-full sm:w-48" />
+                <button onclick="blacklistManualIp()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shrink-0 cursor-pointer transition-all active:scale-95">
+                  🚫 บล็อก IP
+                </button>
+              </div>
+            </div>
+
+            <!-- Access Log Explorer Table -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-slate-400 font-bold">📜 ประวัติการเข้าถึง 50 รายการล่าสุด</span>
+                <span id="access-logs-count" class="text-cyan-400 font-bold">กำลังโหลด...</span>
+              </div>
+              <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/50">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-400 font-mono text-[11px]">
+                      <th class="p-3">เหตุการณ์ (EVENT)</th>
+                      <th class="p-3">ระดับความรุนแรง</th>
+                      <th class="p-3">IP ADDRESS</th>
+                      <th class="p-3">อุปกรณ์ / BROWSER</th>
+                      <th class="p-3">วันเวลา</th>
+                      <th class="p-3 text-right">การจัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="access-sentinel-tbody" class="divide-y divide-slate-800/60 font-mono">
+                    <tr>
+                      <td colspan="6" class="p-6 text-center text-slate-500">กำลังโหลดประวัติ Access Sentinel...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Current Active Blacklists Table -->
+            <div class="space-y-3 pt-4 border-t border-slate-800">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-slate-400 font-bold">🚫 รายการบัญชีดำปัจจุบัน (Active Blacklists)</span>
+                <span id="blacklist-items-count" class="text-rose-400 font-bold">0 รายการ</span>
+              </div>
+              <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/50">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-400 font-mono text-[11px]">
+                      <th class="p-3">ประเภท</th>
+                      <th class="p-3">ค่าที่ถูกบล็อก (IP / USER)</th>
+                      <th class="p-3">สาเหตุที่บล็อก</th>
+                      <th class="p-3">วันที่เริ่มบล็อก</th>
+                      <th class="p-3 text-right">ปลดแบน</th>
+                    </tr>
+                  </thead>
+                  <tbody id="active-blacklists-tbody" class="divide-y divide-slate-800/60 font-mono">
+                    <tr>
+                      <td colspan="5" class="p-4 text-center text-slate-500">ไม่มีรายการบัญชีดำในขณะนี้</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <div id="tab-pane-status" class="hidden space-y-6">
           <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
@@ -4328,6 +4432,10 @@
         title: "⚙️ Discord Webhook & แจ้งเตือน 24 ชม.",
         desc: "ตั้งค่าและยิงทดสอบ Rich Embed เข้า Channel Discord ของทีมงาน"
       },
+      "access-logs": {
+        title: "🛡️ ประวัติการเข้าถึง (Access Sentinel & Audit Trail)",
+        desc: "ตรวจสอบบันทึก IP ทุกครั้งที่เข้าหลังบ้าน ตรวจจับการใส่ PIN ผิด สกัดกั้นบอทสแปม และจัดการ Blacklist"
+      },
       reviews: {
         title: "⭐ รีวิวและความคิดเห็นจากลูกค้า",
         desc: "ตรวจสอบคะแนนดาว ความคิดเห็น และจัดการการแสดงผลรีวิวจากผู้ซื้อจริง"
@@ -4335,7 +4443,7 @@
     };
 
     function switchAdminTab(tabKey) {
-      const tabs = ["analytics", "visitors", "categories", "products", "vault", "vouchers", "status", "users", "orders", "topups", "claims", "reviews", "discord", "settings"];
+      const tabs = ["analytics", "visitors", "categories", "products", "vault", "vouchers", "status", "users", "orders", "topups", "claims", "reviews", "discord", "settings", "access-logs"];
       tabs.forEach(t => {
         const btn = document.getElementById(`nav-btn-${t}`);
         const pane = document.getElementById(`tab-pane-${t}`);
@@ -4359,6 +4467,12 @@
       if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains("-translate-x-full")) {
         sidebar.classList.add("-translate-x-full");
         backdrop.classList.add("hidden");
+      }
+
+      // If switching to access-logs tab, trigger initial load
+      if (tabKey === "access-logs") {
+        loadAccessSentinelLogs();
+        loadBlacklistList();
       }
 
       // If switching to visitors tab, trigger initial load
@@ -5425,6 +5539,157 @@
         }
       } catch (err) {
         alert("ข้อผิดพลาด: " + err.message);
+      }
+    }
+
+    // ==============================================================================
+    // 🛡️ SPRINT 5: ACCESS SENTINEL & AUDIT TRAIL CONTROLLER
+    // ==============================================================================
+    async function loadAccessSentinelLogs() {
+      const tbody = document.getElementById("access-sentinel-tbody");
+      const countEl = document.getElementById("access-logs-count");
+      if (!tbody) return;
+
+      try {
+        const res = await fetch("/api/admin-audit?action=list&limit=50");
+        const data = await res.json();
+
+        if (!data.success || !Array.isArray(data.logs)) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+          return;
+        }
+
+        if (countEl) countEl.textContent = `${data.logs.length} รายการ`;
+
+        if (data.logs.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">ยังไม่มีบันทึกเหตุการณ์ความปลอดภัย</td></tr>`;
+          return;
+        }
+
+        const badgeStyles = {
+          ADMIN_LOGIN_SUCCESS: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+          ADMIN_LOGIN_FAILED: "bg-red-500/20 text-red-300 border-red-500/40",
+          ADMIN_PIN_ATTEMPT: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",
+          ADMIN_BLOCKED_ATTEMPT: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+          BOT_SHIELD_VIOLATION: "bg-amber-500/20 text-amber-300 border-amber-500/40"
+        };
+
+        tbody.innerHTML = data.logs.map(log => {
+          const bStyle = badgeStyles[log.event_type] || "bg-slate-800 text-slate-300 border-slate-700";
+          const timeStr = new Date(log.created_at).toLocaleString("th-TH");
+          const shortAgent = String(log.user_agent || "Unknown").slice(0, 45);
+
+          return `
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-3">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold border ${bStyle}">${log.event_type}</span>
+              </td>
+              <td class="p-3">
+                <span class="text-[10px] ${log.severity === 'CRITICAL' ? 'text-red-400 font-bold' : log.severity === 'WARNING' ? 'text-amber-400' : 'text-slate-400'}">${log.severity || 'INFO'}</span>
+              </td>
+              <td class="p-3 font-bold text-white">${log.ip_address || '127.0.0.1'}</td>
+              <td class="p-3 text-[10px] text-slate-400 truncate max-w-xs" title="${log.user_agent || ''}">${shortAgent}...</td>
+              <td class="p-3 text-[10px] text-slate-500">${timeStr}</td>
+              <td class="p-3 text-right">
+                <button onclick="blacklistIpFromSentinel('${log.ip_address}')" class="px-2.5 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-[10px] font-bold cursor-pointer transition-all active:scale-95">
+                  🚫 บล็อก IP
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+        if (window.lucide) lucide.createIcons();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function blacklistIpFromSentinel(ip) {
+      if (!ip) return;
+      if (!confirm(`คุณต้องการขึ้นบัญชีดำ (Blacklist) IP: ${ip} ทันทีใช่หรือไม่?`)) return;
+
+      try {
+        const res = await fetch("/api/admin-audit?action=blacklist_ip", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ip, reason: "Manual 1-Click Blacklist via Admin Sentinel" })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message || "Failed");
+
+        showToast(data.message, "success");
+        loadAccessSentinelLogs();
+        loadBlacklistList();
+      } catch (err) {
+        alert("ไม่สามารถบล็อก IP ได้: " + err.message);
+      }
+    }
+
+    async function blacklistManualIp() {
+      const input = document.getElementById("manual-blacklist-ip");
+      const ip = String(input?.value || "").trim();
+      if (!ip) {
+        alert("กรุณากรอก IP Address ที่ต้องการบล็อก");
+        return;
+      }
+      await blacklistIpFromSentinel(ip);
+      if (input) input.value = "";
+    }
+
+    async function loadBlacklistList() {
+      const tbody = document.getElementById("active-blacklists-tbody");
+      const countEl = document.getElementById("blacklist-items-count");
+      if (!tbody) return;
+
+      try {
+        const res = await fetch("/api/admin-audit?action=blacklists");
+        const data = await res.json();
+
+        if (!data.success || !Array.isArray(data.blacklists)) return;
+        if (countEl) countEl.textContent = `${data.blacklists.length} รายการ`;
+
+        if (data.blacklists.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">ไม่มีรายการบัญชีดำในขณะนี้</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.blacklists.map(item => {
+          const timeStr = new Date(item.created_at).toLocaleString("th-TH");
+          return `
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-3 uppercase text-[10px] font-bold text-slate-400">${item.target_type || item.type || 'IP'}</td>
+              <td class="p-3 font-bold text-rose-400">${item.target_value || item.value}</td>
+              <td class="p-3 text-slate-300 text-xs">${item.reason || '-'}</td>
+              <td class="p-3 text-slate-500 text-[10px]">${timeStr}</td>
+              <td class="p-3 text-right">
+                <button onclick="removeBlacklistFromSentinel('${item.target_value || item.value}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer transition-all active:scale-95">
+                  ปลดแบน
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      } catch (err) {
+        console.warn("Error loading blacklists:", err);
+      }
+    }
+
+    async function removeBlacklistFromSentinel(ip) {
+      if (!ip) return;
+      if (!confirm(`ต้องการปลดแบน IP: ${ip} ใช่หรือไม่?`)) return;
+
+      try {
+        const res = await fetch("/api/admin-audit?action=remove_blacklist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ip })
+        });
+        const data = await res.json();
+        showToast(data.message || "ปลดแบนสำเร็จ", "success");
+        loadBlacklistList();
+      } catch (err) {
+        alert("Error: " + err.message);
       }
     }
 
