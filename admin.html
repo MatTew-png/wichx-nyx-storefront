@@ -778,21 +778,36 @@
                 </h3>
                 <p class="text-xs text-slate-400 mt-0.5">ตรวจสอบ ลบคีย์หมดอายุ หรือเติมสต็อกเพิ่มแยกตามรายสินค้าได้ทันที</p>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <select id="vault-view-product-select" onchange="onVaultProductSelectChange()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono">
                   <!-- Populated dynamically -->
                 </select>
+                <button onclick="handleVaultViewSyncStock()" id="btn-vault-sync" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 border border-slate-700 cursor-pointer transition-all active:scale-95" title="รีแคลคูเลตสต็อกตรงกับฐานข้อมูลจริง">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>ซิงก์สต็อก</span>
+                </button>
+                <button onclick="handleVaultViewClearStock()" id="btn-vault-clear" class="px-3 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-xs font-semibold text-red-300 flex items-center gap-1.5 border border-red-500/30 cursor-pointer transition-all active:scale-95" title="ล้างคีย์ที่ยังไม่ขายทั้งหมดของสินค้านี้">
+                  <i data-lucide="trash" class="w-3.5 h-3.5 text-red-400"></i>
+                  <span>ล้างสต็อกคงเหลือ</span>
+                </button>
               </div>
             </div>
 
             <!-- Quick Add Area -->
             <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between flex-wrap gap-2">
                 <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                   <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
                   <span>เติมคีย์ด่วนเข้าสินค้านี้:</span>
                 </span>
-                <span class="text-[10px] text-slate-500 font-mono">(1 บรรทัด = 1 คีย์)</span>
+                <div class="flex items-center gap-2">
+                  <input type="file" id="vault-view-file-input" accept=".txt,.csv" onchange="handleVaultViewFileUpload(event)" class="hidden" />
+                  <button type="button" onclick="document.getElementById('vault-view-file-input').click()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium flex items-center gap-1 border border-slate-700 cursor-pointer transition-colors" title="นำเข้าคีย์จากไฟล์ .txt หรือ .csv (1 บรรทัด = 1 คีย์)">
+                    <i data-lucide="file-up" class="w-3 h-3 text-cyan-400"></i>
+                    <span>นำเข้าไฟล์ .txt/.csv</span>
+                  </button>
+                  <span class="text-[10px] text-slate-500 font-mono">(1 บรรทัด = 1 คีย์, กรองซ้ำอัตโนมัติ)</span>
+                </div>
               </div>
               <div class="flex gap-2">
                 <textarea id="vault-view-quick-input" rows="2" placeholder="mailpass_example_1:pass123&#10;mailpass_example_2:pass456..." class="flex-1 px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-emerald-300 focus:outline-none focus:border-[var(--accent)]"></textarea>
@@ -3353,21 +3368,50 @@
       soldList.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">กำลังดึงรายการคีย์ที่ขายแล้ว...</div>`;
 
       try {
-        const { data, error } = await supabaseClient.rpc("admin_get_inventory_keys", {
-          p_admin_secret: currentAdminSecret,
-          p_product_id: productId
-        });
+        // Attempt 1: Fetch via high-performance /api/stock-manager
+        let unsoldKeys = [];
+        let soldKeys = [];
+        let loadedViaApi = false;
 
-        if (error || !data || !data.success) {
-          unsoldList.innerHTML = `<div class="text-center py-4 text-red-400 text-xs">${data?.message || error?.message || 'ไม่สามารถโหลดคีย์ได้'}</div>`;
-          return;
+        try {
+          const [resUnsold, resSold] = await Promise.all([
+            fetch(`/api/stock-manager?action=list&product_id=${encodeURIComponent(productId)}&status=available&limit=100`),
+            fetch(`/api/stock-manager?action=list&product_id=${encodeURIComponent(productId)}&status=sold&limit=100`)
+          ]);
+
+          if (resUnsold.ok && resSold.ok) {
+            const dataUnsold = await resUnsold.json();
+            const dataSold = await resSold.json();
+
+            if (dataUnsold.success && dataSold.success) {
+              unsoldKeys = (dataUnsold.items || []).map(i => ({ id: i.id, key_data: i.credential_data, created_at: i.created_at }));
+              soldKeys = (dataSold.items || []).map(i => ({ id: i.id, key_data: i.credential_data, order_id: i.order_id, sold_at: i.sold_at }));
+              unsoldCount.textContent = dataUnsold.available_count ?? unsoldKeys.length;
+              soldCount.textContent = dataSold.sold_count ?? soldKeys.length;
+              loadedViaApi = true;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("[Vault View] Stock API fallback to Supabase RPC:", apiErr.message);
         }
 
-        const unsoldKeys = data.unsold_keys || [];
-        const soldKeys = data.sold_keys || [];
+        // Attempt 2: Fallback to Supabase RPC if API is offline
+        if (!loadedViaApi) {
+          const { data, error } = await supabaseClient.rpc("admin_get_inventory_keys", {
+            p_admin_secret: currentAdminSecret,
+            p_product_id: productId
+          });
 
-        unsoldCount.textContent = unsoldKeys.length;
-        soldCount.textContent = soldKeys.length;
+          if (error || !data || !data.success) {
+            unsoldList.innerHTML = `<div class="text-center py-4 text-red-400 text-xs">${data?.message || error?.message || 'ไม่สามารถโหลดคีย์ได้'}</div>`;
+            return;
+          }
+
+          unsoldKeys = data.unsold_keys || [];
+          soldKeys = data.sold_keys || [];
+          unsoldCount.textContent = unsoldKeys.length;
+          soldCount.textContent = soldKeys.length;
+        }
 
         // Render Unsold
         unsoldList.innerHTML = "";
@@ -3386,7 +3430,7 @@
                 <button onclick="copyToClipboard('${escapeJs(k.key_data)}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer" title="คัดลอกคีย์">
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                 </button>
-                <button onclick="handleDeleteVaultKey('${k.id}', '${productId}')" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 cursor-pointer" title="ลบคีย์ที่หมดอายุทิ้ง">
+                <button onclick="handleDeleteVaultKey('${k.id}', '${productId}')" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 cursor-pointer" title="ลบคีย์นี้ทิ้ง">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
@@ -3432,16 +3476,34 @@
     async function handleDeleteVaultKey(keyId, productId) {
       if (!confirm("⚠️ ยืนยันการลบคีย์นี้ออกจากคลัง? (ไม่สามารถกู้คืนได้)")) return;
       try {
-        const { data, error } = await supabaseClient.rpc("admin_delete_inventory_key", {
-          p_admin_secret: currentAdminSecret,
-          p_key_id: keyId
-        });
-        if (data && data.success) {
-          await loadVaultViewKeys(productId);
-          await loadDashboardData();
-        } else {
-          alert("ไม่สามารถลบคีย์ได้: " + (data?.message || error?.message));
+        let deleted = false;
+        try {
+          const res = await fetch(`/api/stock-manager?action=delete_item&id=${encodeURIComponent(keyId)}`, {
+            method: 'DELETE'
+          });
+          const resData = await res.json();
+          if (res.ok && resData.success) {
+            deleted = true;
+          }
+        } catch (apiErr) {
+          console.warn("[Vault View] Delete API fallback to Supabase RPC:", apiErr.message);
         }
+
+        if (!deleted) {
+          const { data, error } = await supabaseClient.rpc("admin_delete_inventory_key", {
+            p_admin_secret: currentAdminSecret,
+            p_key_id: keyId
+          });
+          if (data && data.success) {
+            deleted = true;
+          } else {
+            alert("ไม่สามารถลบคีย์ได้: " + (data?.message || error?.message));
+            return;
+          }
+        }
+
+        await loadVaultViewKeys(productId);
+        await loadDashboardData();
       } catch (e) {
         alert("ข้อผิดพลาด: " + e.message);
       }
@@ -3465,21 +3527,48 @@
       lucide.createIcons();
 
       try {
-        const { data, error } = await supabaseClient.rpc("admin_bulk_restock", {
-          p_admin_secret: currentAdminSecret,
-          p_product_id: productId,
-          p_keys: keysArray
-        });
+        let success = false;
+        let successMessage = "";
 
-        if (error || !data || !data.success) {
-          feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
-          feedback.textContent = data?.message || error?.message || "เติมคีย์ไม่สำเร็จ";
-          feedback.classList.remove("hidden");
-          return;
+        // Attempt 1: Bulk insert via high-performance /api/stock-manager
+        try {
+          const res = await fetch("/api/stock-manager?action=bulk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              product_id: productId,
+              keys: keysArray
+            })
+          });
+
+          const resData = await res.json();
+          if (res.ok && resData.success) {
+            success = true;
+            successMessage = `✅ ${resData.message} | สต็อกปัจจุบัน: ${resData.current_stock} ชิ้น`;
+          }
+        } catch (apiErr) {
+          console.warn("[Vault View] Stock API fallback to Supabase RPC:", apiErr.message);
+        }
+
+        // Attempt 2: Fallback to Supabase RPC
+        if (!success) {
+          const { data, error } = await supabaseClient.rpc("admin_bulk_restock", {
+            p_admin_secret: currentAdminSecret,
+            p_product_id: productId,
+            p_keys: keysArray
+          });
+
+          if (error || !data || !data.success) {
+            feedback.className = "text-xs p-2.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200";
+            feedback.textContent = data?.message || error?.message || "เติมคีย์ไม่สำเร็จ";
+            feedback.classList.remove("hidden");
+            return;
+          }
+          successMessage = `✅ ${data.message}`;
         }
 
         feedback.className = "text-xs p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200";
-        feedback.textContent = `✅ ${data.message}`;
+        feedback.textContent = successMessage;
         feedback.classList.remove("hidden");
         textarea.value = "";
 
@@ -3492,6 +3581,118 @@
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i data-lucide="upload" class="w-3.5 h-3.5"></i> <span>เติมคีย์</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    function handleVaultViewFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const textarea = document.getElementById("vault-view-quick-input");
+      const feedback = document.getElementById("vault-view-feedback");
+      const reader = new FileReader();
+
+      reader.onload = async (e) => {
+        const text = e.target.result || "";
+        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+
+        if (lines.length === 0) {
+          alert("ไฟล์ว่างเปล่า ไม่มีรายการคีย์");
+          return;
+        }
+
+        if (lines.length > 100) {
+          if (confirm(`พบรายการคีย์ทั้งหมด ${lines.length} รายการจากไฟล์ "${file.name}"\nต้องการเติมเข้าสต็อกทันทีหรือไม่?`)) {
+            textarea.value = lines.join("\n");
+            await handleVaultViewQuickAdd();
+            return;
+          }
+        }
+
+        textarea.value = lines.join("\n");
+        feedback.className = "text-xs p-2.5 rounded-xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-200";
+        feedback.textContent = `📂 โหลดคีย์จากไฟล์ "${file.name}" จำนวน ${lines.length} รายการเรียบร้อย กด "เติมคีย์" เพื่อบันทึก`;
+        feedback.classList.remove("hidden");
+      };
+
+      reader.onerror = () => {
+        alert("ไม่สามารถอ่านไฟล์ได้ กรุณาลองใหม่อีกครั้ง");
+      };
+
+      reader.readAsText(file);
+      // Reset input
+      event.target.value = "";
+    }
+
+    async function handleVaultViewSyncStock() {
+      const select = document.getElementById("vault-view-product-select");
+      const btn = document.getElementById("btn-vault-sync");
+      if (!select || !select.value) return;
+
+      const productId = select.value;
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-cyan-400"></i> <span>กำลังซิงก์...</span>`;
+      lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/stock-manager?action=sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ product_id: productId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✅ ${data.message} | สต็อกจริงในคลัง: ${data.current_stock} ชิ้น`);
+        } else {
+          alert(`⚠️ การซิงก์ไม่สำเร็จ: ${data.message || 'เกิดข้อผิดพลาด'}`);
+        }
+        await loadVaultViewKeys(productId);
+        await loadDashboardData();
+      } catch (err) {
+        alert("ข้อผิดพลาดในการซิงก์: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+      }
+    }
+
+    async function handleVaultViewClearStock() {
+      const select = document.getElementById("vault-view-product-select");
+      if (!select || !select.value) return;
+
+      const productId = select.value;
+      const productName = select.options[select.selectedIndex]?.text || productId;
+
+      if (!confirm(`⚠️ ยืนยันการล้างสต็อกคงเหลือ (ที่ยังไม่ได้ขาย) ทั้งหมดของ:\n"${productName}"\n\nการกระทำนี้ไม่สามารถย้อนกลับได้!`)) {
+        return;
+      }
+
+      const btn = document.getElementById("btn-vault-clear");
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-red-400"></i> <span>กำลังล้าง...</span>`;
+      lucide.createIcons();
+
+      try {
+        const res = await fetch(`/api/stock-manager?action=clear&product_id=${encodeURIComponent(productId)}`, {
+          method: "DELETE"
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✅ ${data.message}`);
+        } else {
+          alert(`⚠️ ไม่สามารถล้างสต็อกได้: ${data.message || 'เกิดข้อผิดพลาด'}`);
+        }
+        await loadVaultViewKeys(productId);
+        await loadDashboardData();
+      } catch (err) {
+        alert("ข้อผิดพลาดในการล้างสต็อก: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
         lucide.createIcons();
       }
     }

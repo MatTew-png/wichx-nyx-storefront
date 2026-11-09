@@ -33,6 +33,12 @@ const SECURITY_HEADERS = {
 
 const server = http.createServer((req, res) => {
   let reqPath = req.url.split('?')[0];
+  try {
+    const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    req.query = Object.fromEntries(parsedUrl.searchParams.entries());
+  } catch (e) {
+    req.query = {};
+  }
 
   // Helper for Express/Vercel compatibility
   res.status = function (code) {

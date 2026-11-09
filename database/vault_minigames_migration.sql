@@ -145,10 +145,11 @@ CREATE TABLE IF NOT EXISTS public.restock_notifications (
     status TEXT NOT NULL DEFAULT 'pending'
       CHECK (status IN ('pending', 'sent', 'cancelled')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    notified_at TIMESTAMPTZ,
-    CONSTRAINT uq_restock_notification
-      UNIQUE (product_id, COALESCE(variant_id::TEXT, ''), COALESCE(user_id::TEXT, discord_id))
+    notified_at TIMESTAMPTZ
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_restock_notification
+  ON public.restock_notifications (product_id, COALESCE(variant_id::TEXT, ''), COALESCE(user_id::TEXT, discord_id));
 
 -- 2.8 Admin PIN 2FA config (singleton row)
 CREATE TABLE IF NOT EXISTS public.admin_pin_config (
@@ -289,16 +290,17 @@ DECLARE
     v_added INT := 0;
     v_skipped INT := 0;
 BEGIN
-    -- Authorization: admin profile or service_role only
-    v_caller_id := auth.uid();
-    IF v_caller_id IS NOT NULL THEN
-        SELECT EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = v_caller_id AND role = 'admin'
-        ) INTO v_is_authorized;
-    END IF;
-    IF NOT v_is_authorized AND auth.role() = 'service_role' THEN
+    -- Authorization: postgres superuser, admin profile or service_role only
+    IF current_user = 'postgres' OR auth.role() = 'service_role' THEN
         v_is_authorized := TRUE;
+    ELSE
+        v_caller_id := auth.uid();
+        IF v_caller_id IS NOT NULL THEN
+            SELECT EXISTS (
+                SELECT 1 FROM public.profiles
+                WHERE id = v_caller_id AND role = 'admin'
+            ) INTO v_is_authorized;
+        END IF;
     END IF;
     IF NOT v_is_authorized THEN
         RAISE EXCEPTION 'UNAUTHORIZED: bulk stock insert requires admin or service_role';
@@ -437,8 +439,8 @@ DECLARE
 BEGIN
     v_caller_id := auth.uid();
 
-    -- Only the owner may play (service_role may act on behalf)
-    IF auth.role() <> 'service_role' THEN
+    -- Only the owner may play (postgres / service_role may act on behalf)
+    IF current_user <> 'postgres' AND auth.role() <> 'service_role' THEN
         IF v_caller_id IS NULL OR v_caller_id <> p_user_id THEN
             RETURN jsonb_build_object(
                 'success', false, 'error', 'UNAUTHORIZED',

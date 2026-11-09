@@ -276,20 +276,20 @@ $$;
 
 ## 6. 🧪 Complete Test Case Specification (Test Matrix)
 
-| Test ID | Subsystem | Test Objective | Execution Method | Expected Output / Assertion |
-| :--- | :--- | :--- | :--- | :--- |
-| **TC-STK-01** | Stock Ingestion | นำเข้ารหัส 1,000 ชิ้นแบบ Bulk | เรียก `fn_bulk_insert_stock` พร้อม Array | `added_count = 1000`, `skipped_count = 0` |
-| **TC-STK-02** | Deduplication | นำเข้ารหัสเดิมซ้ำอีก 500 ชิ้น | เรียก `fn_bulk_insert_stock` ซ้ำ | `added_count = 0`, `skipped_count = 500` |
-| **TC-STK-03** | Concurrency | 10 Client แย่งซื้อของชิ้นสุดท้ายพร้อมกัน | รันคำสั่ง Asynchronous Parallel Curl 10 เธรด | มีเพียง 1 Client ที่ได้คีย์, อีก 9 Client ได้ `409 Out of Stock` ห้ามมีคีย์ชนกัน |
-| **TC-STK-04** | Stock Sync | ตัวเลขสต็อกต้องตรงกับคลังจริง | เรียก `fn_sync_product_stock` | ตัวเลขใน `products.stock` เท่ากับจำนวนแถว `is_sold = false` |
-| **TC-GST-01** | Guest Angpao | สั่งซื้อผ่านซองอั่งเปาไม่ต้องสมัครสมาชิก | ยิง `POST /api/checkout/guest-angpao` | ไถ่ถอนสำเร็จ, ตัดคีย์ส่งมอบทันที, มีสถานะ 200 OK |
-| **TC-GST-02** | Guest Fee | ตรวจสอบการคิดค่าธรรมเนียมซอง 2.9% | ตรวจสอบยอดเงินที่หักจากซอง | ยอดหักตรงกับ `ราคา + 2.9%` |
-| **TC-MIN-01** | Minigames | สุ่มรางวัลตามน้ำหนักความน่าจะเป็น | รันสุ่มทดสอบ 1,000 ครั้ง | อัตราการออกของแต่ละรางวัลกระจายตัวตรงตามค่า `win_chance` (เบี่ยงเบนไม่เกิน ±3%) |
-| **TC-MIN-02** | Reward Vault | รางวัลประเภทสินค้าต้องดึงคีย์จริงออกจากคลัง | สุ่มได้รางวัลประเภท `product` | คีย์ใน Vault ถูกเปลี่ยนเป็น `is_sold = true` และส่งรหัสให้ผู้เล่น |
-| **TC-PTS-01** | Points System | เติมเงินแล้วได้รับ Points Cash-back | เติมเงินผ่าน PromptPay 100 บาท | ยอดเงินขึ้น 100 บาท + ได้รับแต้มสะสมเพิ่ม 10 Points |
-| **TC-PIN-01** | Admin Security | ป้องกันการเข้าถึง `admin.html` หากไม่มี PIN | เปิดหน้าแอดมินโดยไม่ระบุ PIN | หน้าจอถูก Overlay บดบัง และ Redirect ไปหน้ากรอก PIN |
-| **TC-PIN-02** | Discord PIN | สุ่ม PIN ส่งเข้า Discord Webhook | กดปุ่มขอ PIN เข้าหลังบ้าน | Webhook ส่งตัวเลข 6 หลักเข้า Discord ทันที |
-| **TC-RDR-01** | Restock Radar | แจ้งเตือนลูกค้าเมื่อมีสินค้าเติมเข้าคลัง | เติมสต็อกสินค้าที่เคยหมด (`stock = 0`) | Discord Bot ส่งข้อความ DM หา User ID ที่เคยกดกระดิ่งไว้ |
+| Test ID | Subsystem | Test Objective | Execution Method | Expected Output / Assertion | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **TC-STK-01** | Stock Ingestion | นำเข้ารหัส 1,000 ชิ้นแบบ Bulk | เรียก `fn_bulk_insert_stock` พร้อม Array | `added_count = 1000`, `skipped_count = 0` | ✅ PASSED (`scripts/test-stock-concurrency.js`) |
+| **TC-STK-02** | Deduplication | นำเข้ารหัสเดิมซ้ำอีก 500 ชิ้น | เรียก `fn_bulk_insert_stock` ซ้ำ | `added_count = 0`, `skipped_count = 500` | ✅ PASSED (`scripts/test-stock-concurrency.js`) |
+| **TC-STK-03** | Concurrency | 10 Client แย่งซื้อของชิ้นสุดท้ายพร้อมกัน | รันคำสั่ง Asynchronous Parallel Curl 10 เธรด | มีเพียง 1 Client ที่ได้คีย์, อีก 9 Client ได้ `409 Out of Stock` ห้ามมีคีย์ชนกัน | ✅ PASSED (`FOR UPDATE SKIP LOCKED`) |
+| **TC-STK-04** | Stock Sync | ตัวเลขสต็อกต้องตรงกับคลังจริง | เรียก `fn_sync_product_stock` | ตัวเลขใน `products.stock` เท่ากับจำนวนแถว `is_sold = false` | ✅ PASSED (100% Synced) |
+| **TC-GST-01** | Guest Angpao | สั่งซื้อผ่านซองอั่งเปาไม่ต้องสมัครสมาชิก | ยิง `POST /api/checkout/guest-angpao` | ไถ่ถอนสำเร็จ, ตัดคีย์ส่งมอบทันที, มีสถานะ 200 OK | ⏳ Pending (Sprint 2) |
+| **TC-GST-02** | Guest Fee | ตรวจสอบการคิดค่าธรรมเนียมซอง 2.9% | ตรวจสอบยอดเงินที่หักจากซอง | ยอดหักตรงกับ `ราคา + 2.9%` | ⏳ Pending (Sprint 2) |
+| **TC-MIN-01** | Minigames | สุ่มรางวัลตามน้ำหนักความน่าจะเป็น | รันสุ่มทดสอบ 1,000 ครั้ง | อัตราการออกของแต่ละรางวัลกระจายตัวตรงตามค่า `win_chance` (เบี่ยงเบนไม่เกิน ±3%) | ⏳ Pending (Sprint 3) |
+| **TC-MIN-02** | Reward Vault | รางวัลประเภทสินค้าต้องดึงคีย์จริงออกจากคลัง | สุ่มได้รางวัลประเภท `product` | คีย์ใน Vault ถูกเปลี่ยนเป็น `is_sold = true` และส่งรหัสให้ผู้เล่น | ⏳ Pending (Sprint 3) |
+| **TC-PTS-01** | Points System | เติมเงินแล้วได้รับ Points Cash-back | เติมเงินผ่าน PromptPay 100 บาท | ยอดเงินขึ้น 100 บาท + ได้รับแต้มสะสมเพิ่ม 10 Points | ⏳ Pending (Sprint 3) |
+| **TC-PIN-01** | Admin Security | ป้องกันการเข้าถึง `admin.html` หากไม่มี PIN | เปิดหน้าแอดมินโดยไม่ระบุ PIN | หน้าจอถูก Overlay บดบัง และ Redirect ไปหน้ากรอก PIN | ⏳ Pending (Sprint 2) |
+| **TC-PIN-02** | Discord PIN | สุ่ม PIN ส่งเข้า Discord Webhook | กดปุ่มขอ PIN เข้าหลังบ้าน | Webhook ส่งตัวเลข 6 หลักเข้า Discord ทันที | ⏳ Pending (Sprint 2) |
+| **TC-RDR-01** | Restock Radar | แจ้งเตือนลูกค้าเมื่อมีสินค้าเติมเข้าคลัง | เติมสต็อกสินค้าที่เคยหมด (`stock = 0`) | Discord Bot ส่งข้อความ DM หา User ID ที่เคยกดกระดิ่งไว้ | ⏳ Pending (Sprint 4) |
 
 ---
 
